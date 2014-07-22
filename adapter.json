@@ -1,0 +1,33 @@
+{
+    "common": {
+        "name":                     "hm-rpc",
+        "version":                  "0.1.0",
+        "mode":                     "daemon",
+        "language":                 "javascript",
+        "loglevel":                 "info"
+    },
+    "native": {
+        "ip":                       "172.16.23.3",
+        "port":                     "2001",
+        "type":                     "xml",
+        "daemon":                   "rfd",
+        "init":                     true,
+        "checkInit":                false,
+        "checkInitInterval":        180,
+        "checkInitTrigger":         "BidCos-RF:50.PRESS_LONG"
+    },
+    "objects": [
+        {
+            "_id": "_design/hm-rpc",
+            "language": "javascript",
+            "views": {
+                "listDevices": {
+                    "map": "function(doc) {\n  if (doc._id.match(/^hm-rpc\\.[0-9]+\\.\\*?[A-Za-z0-9_-]+(:[0-9]+)?$/)) {\n   emit(doc._id, {ADDRESS:doc.native.ADDRESS,VERSION:doc.native.VERSION});\n  }\n}"
+                },
+                "paramsetDescription": {
+                    "map": "function(doc) {\n  if (doc._id.match(/^hm-rpc\\.meta/) && doc.meta.type === 'paramsetDescription') {\n   emit(doc._id, doc);\n  }\n}"
+                }
+            }
+        }
+    ]
+}
