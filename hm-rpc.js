@@ -155,8 +155,34 @@ function initRpcServer(type) {
             adapter.log.info(adapter.config.type + 'rpc <- newDevices ' + deviceArr.length);
 
             for (var i = 0; i < deviceArr.length; i++) {
+
+                var type;
+                var common = {};
+
+                if (deviceArr[i].PARENT) {
+                    type = 'device';
+                } else {
+                    type = 'channel';
+
+                    // hm-channel-TYPE -> channel common.role
+                    switch (deviceArr[i].TYPE) {
+                        case 'DIMMER':
+                            common.role = 'light.dimmer';
+                            break;
+                        case 'KEY':
+                            common.role = 'button';
+                            break;
+                        case 'SWITCH':
+                            common.role = 'switch';
+                            break;
+                        case 'SHUTTER_CONTACT':
+                            common.role = 'sensor';
+                            break;
+                    }
+                }
+
                 var obj = {
-                    type: (deviceArr[i].PARENT === '' ? 'device' : 'channel'),
+                    type: type,
                     parent: (deviceArr[i].PARENT === '' ? null : adapter.namespace + '.' + deviceArr[i].PARENT),
                     common: {
 
@@ -241,11 +267,8 @@ function addParamsetObjects(channel, paramset) {
             common: {
                 def: paramset[key].DEFAULT,
                 type: commonType[paramset[key].TYPE] || paramset[key].TYPE,
-                oper: {
-                    read:   (paramset[key].OPERATIONS & 1 ? true : false),
-                    write:  (paramset[key].OPERATIONS & 2 ? true : false),
-                    event:  (paramset[key].OPERATIONS & 4 ? true : false)
-                }
+                read:   (paramset[key].OPERATIONS & 1 ? true : false),
+                write:  (paramset[key].OPERATIONS & 2 ? true : false)
             },
             native: paramset[key]
         };
