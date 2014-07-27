@@ -1,7 +1,7 @@
 var adapter = require(__dirname + '/../../lib/adapter.js')({
 
     name:                   'hm-rpc',
-    version:                '0.1.0',
+    version:                '0.1.2',
 
     ready: function () {
         adapter.subscribeStates('*');
@@ -160,9 +160,9 @@ function initRpcServer(type) {
                 var common = {};
 
                 if (deviceArr[i].PARENT) {
-                    type = 'device';
-                } else {
                     type = 'channel';
+                } else {
+                    type = 'device';
 
                     // hm-channel-TYPE -> channel common.role
                     switch (deviceArr[i].TYPE) {
@@ -332,11 +332,11 @@ function getValueParamsets() {
     var obj = queueValueParamsets.pop();
     var cid = obj.native.PARENT_TYPE + '.' + obj.native.TYPE + '.' + obj.native.VERSION;
 
-    adapter.log.debug('getValueParamsets ' + cid);
+    adapter.log.info('getValueParamsets ' + cid);
 
     if (metaValues[cid]) {
 
-        adapter.log.debug('paramset cache hit');
+        adapter.log.info('paramset cache hit');
         addParamsetObjects(obj, metaValues[cid]);
         getValueParamsets();
 
