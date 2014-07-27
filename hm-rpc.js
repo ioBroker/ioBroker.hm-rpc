@@ -81,7 +81,8 @@ var rpcClientPending;
 var rpcServer;
 var rpcServerStarted;
 
-var metaValues = {};
+var metaValues =    {};
+var metaRoles =     {};
 var channelParams = {};
 
 
@@ -95,15 +96,26 @@ function main() {
         path: '/'
     });
 
-    if (adapter.config.init) {
-        if (!rpcServerStarted) initRpcServer(adapter.config.type);
-    }
 
+
+    // Load VALUE paramsetDescriptions (needed to create state objects)
     adapter.objects.getObjectView('hm-rpc', 'paramsetDescription', {startkey: 'hm-rpc.meta.VALUES', endkey: 'hm-rpc.meta.VALUES.\u9999'}, function (err, doc) {
+        // Todo Handle Errors
         var response = [];
         for (var i = 0; i < doc.rows.length; i++) {
             metaValues[doc.rows[i].id.slice(19)] = doc.rows[i].value.native;
         }
+        // Load common.role assignments
+        adapter.objects.getObject('hm-rpc.meta.roles', function (err, res) {
+            // Todo Handle Errors
+            metaRoles = res.native;
+
+            // Start Adapter
+            if (adapter.config.init) {
+                if (!rpcServerStarted) initRpcServer(adapter.config.type);
+            }
+
+        });
     });
 
 }
@@ -157,28 +169,13 @@ function initRpcServer(type) {
             for (var i = 0; i < deviceArr.length; i++) {
 
                 var type;
-                var common = {};
+                var role;
 
                 if (deviceArr[i].PARENT) {
                     type = 'channel';
+                    role = metaRoles.chTYPE && metaRoles.chTYPE[deviceArr[i].TYPE] ? metaRoles.chTYPE && metaRoles.chTYPE[deviceArr[i].TYPE] : undefined;
                 } else {
                     type = 'device';
-
-                    // hm-channel-TYPE -> channel common.role
-                    switch (deviceArr[i].TYPE) {
-                        case 'DIMMER':
-                            common.role = 'light.dimmer';
-                            break;
-                        case 'KEY':
-                            common.role = 'button';
-                            break;
-                        case 'SWITCH':
-                            common.role = 'switch';
-                            break;
-                        case 'SHUTTER_CONTACT':
-                            common.role = 'sensor';
-                            break;
-                    }
                 }
 
                 var obj = {
@@ -300,6 +297,15 @@ function addParamsetObjects(channel, paramset) {
             obj.common.unit = paramset[key].UNIT;
         }
 
+        if (metaRoles.dpCONTROL && metaRoles.dpCONTROL[obj.native.CONTROL]) {
+            obj.common.role = metaRoles.dpCONTROL[obj.native.CONTROL];
+        } else if (metaRoles.chTYPE_dpNAME && metaRoles.chTYPE_dpNAME[channel.native.TYPE + '.' + key]) {
+            obj.common.role = metaRoles.chTYPE_dpNAME[channel.native.TYPE + '.' + key];
+        } else if (metaRoles.dpNAME && metaRoles.dpNAME[key]) {
+            obj.common.role = metaRoles.dpNAME[key];
+        }
+
+
         if (paramset[key].OPERATIONS & 8) {
             obj.common.role = 'indicator.service'
         } else if (channel.native.type == 'DIMMER' && key == 'LEVEL') {
@@ -338,7 +344,7 @@ function getValueParamsets() {
 
         adapter.log.info('paramset cache hit');
         addParamsetObjects(obj, metaValues[cid]);
-        getValueParamsets();
+        setTimeout(getValueParamsets, 50);
 
     } else {
 
@@ -349,7 +355,7 @@ function getValueParamsets() {
                 adapter.log.debug(key + ' found');
                 metaValues[cid] = res.native;
                 addParamsetObjects(obj, res.native);
-                getValueParamsets();
+                setTimeout(getValueParamsets, 50);
 
             } else {
 
