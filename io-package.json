@@ -3,12 +3,12 @@
         "name":                     "hm-rpc",
         "title":                    "HomeMatic RPC Adapter",
         "desc":                     "Connects HomeMatic Interface-Processes (\"BidCos-Service\" or rfd/hs485d on a CCU) to ioBroker",
-        "version":                  "0.1.3",
+        "version":                  "0.1.4",
         "authors": [
             "hobbyquaker <hq@ccu.io>"
         ],
         "mode":                     "daemon",
-        "language":                 "javascript",
+        "platform":                 "Javascript/Node.js",
         "loglevel":                 "info"
     },
     "native": {
