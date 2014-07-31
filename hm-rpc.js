@@ -39,12 +39,12 @@ var adapter = require(__dirname + '/../../lib/adapter.js')({
     },
     //  - callback must be called in any case!
     unload: function (callback) {
-        adapter.states.setState('system.adapter.' + adapter.namespace + '.connected', {val: false});
         try {
             if (adapter.config.init) {
                 adapter.config.init = false;
                 log.info(adapter.config.type + "rpc -> " + adapter.config.ip + ':' + adapter.config.port + ' init ' + JSON.stringify(['http://' + adapter.host + ':' + adapter.config.port, '']));
                 rpcClient.methodCall('init', ['http://' + adapter.host + ':' + adapter.config.port, ''], function (err, data) {
+                    adapter.states.setState('system.adapter.' + adapter.namespace + '.connected', {val: false});
                     callback();
                 });
             } else {
@@ -80,6 +80,8 @@ var rpcClientPending;
 
 var rpcServer;
 var rpcServerStarted;
+
+var connected;
 
 var metaValues =    {};
 var metaRoles =     {};
@@ -135,7 +137,11 @@ function initRpcServer(type) {
 
         log.info(type + 'rpc -> ' + adapter.config.ip + ':' + adapter.config.port + ' init ' + JSON.stringify([protocol + adapter.host + ':' + port, adapter.namespace]));
 
-        rpcClient.methodCall('init', [protocol + adapter.host + ':' + port, adapter.namespace], function (err, data) { });
+        rpcClient.methodCall('init', [protocol + adapter.host + ':' + port, adapter.namespace], function (err, data) {
+            if (!err) {
+                connection();
+            }
+        });
 
         rpcServer.on('NotFound', function(method, params) {
             adapter.log.warn(type + 'rpc <- undefined method ' + method + ' ' + JSON.stringify(params).slice(0, 80));
@@ -159,6 +165,7 @@ function initRpcServer(type) {
         });
 
         rpcServer.on('event', function(err, params, callback) {
+            connection();
             callback(null, methods.event(err, params));
         });
 
@@ -382,5 +389,19 @@ function getValueParamsets() {
 
         });
     }
+}
+
+var connectionTimer;
+
+function connection() {
+    /* Todo Ping/Pong or eventTrigger
+    connected = true;
+    if (connectionTimer) clearTimeout(connectionTimer);
+    connectionTimer = setTimeout(function () {
+        connection = false;
+
+    }, 300000);*/
+
+    adapter.states.setState('system.adapter.' + adapter.namespace + '.connected', {val: true, expire: 300});
 }
 

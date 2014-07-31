@@ -15,6 +15,9 @@ native.ip is the IP of the HomeMatic CCU respectively the Host that is running t
 
 ## Changelog
 
+### 0.1.4
+* (hobbyquaker) set connected state, prepared connection check
+
 ### 0.1.3
 * (hobbyquaker) ship known meta.paramsetDescription
 * (hobbyquaker) add meta.roles - table for channel/state common.role assignment
