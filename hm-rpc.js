@@ -1,7 +1,7 @@
 var adapter = require(__dirname + '/../../lib/adapter.js')({
 
     name:                   'hm-rpc',
-    version:                '0.1.2',
+    version:                '0.1.5',
 
     ready: function () {
         adapter.subscribeStates('*');
@@ -178,26 +178,31 @@ function initRpcServer(type) {
                 var type;
                 var role;
 
+                var children = [];
+
                 if (deviceArr[i].PARENT) {
                     type = 'channel';
                     role = metaRoles.chTYPE && metaRoles.chTYPE[deviceArr[i].TYPE] ? metaRoles.chTYPE && metaRoles.chTYPE[deviceArr[i].TYPE] : undefined;
                 } else {
                     type = 'device';
+                    for (var j = 0; j < deviceArr[i].CHILDREN.length; j++) {
+                        children.push(adapter.namespace + '.' + deviceArr[i].CHILDREN[j]);
+                    }
                 }
 
                 var obj = {
                     type: type,
                     parent: (deviceArr[i].PARENT === '' ? null : adapter.namespace + '.' + deviceArr[i].PARENT),
                     common: {
-
+                        children: children
                     },
                     native: deviceArr[i]
                 };
 
-                adapter.log.info('object ' + deviceArr[i].ADDRESS + ' created');
-                adapter.setObject(deviceArr[i].ADDRESS, obj);
 
-                obj._id = adapter.namespace + '.' + deviceArr[i].ADDRESS;
+
+                adapter.setObject(deviceArr[i].ADDRESS, obj);
+                adapter.log.info('object ' + deviceArr[i].ADDRESS + ' created');
 
                 if (obj.type === 'channel') {
                     var cid = obj.PARENT_TYPE + '.' + obj.TYPE + '.' + obj.VERSION;
@@ -254,7 +259,9 @@ var methods = {
 var queueValueParamsets = [];
 
 function addParamsetObjects(channel, paramset) {
+    var channelChildren = [];
     for (var key in paramset) {
+        channelChildren.push(channel._id + '.' + key);
         var commonType = {
             'ACTION':       'boolean',
             'BOOL':         'boolean',
@@ -331,11 +338,14 @@ function addParamsetObjects(channel, paramset) {
             obj.common.role = 'button.stop';
         }
 
-        adapter.log.info('setObject ' + channel.native.ADDRESS + '.' + key);
+        adapter.log.info('object ' + channel.native.ADDRESS + '.' + key + ' created');
         adapter.setObject(channel.native.ADDRESS + '.' + key, obj, function () {
 
         });
     }
+    adapter.extendObject(channel.native.ADDRESS, {common: {children: channelChildren}});
+    adapter.log.info('object ' + channel.native.ADDRESS + ' extended');
+
 }
 
 function getValueParamsets() {
@@ -345,11 +355,11 @@ function getValueParamsets() {
     var obj = queueValueParamsets.pop();
     var cid = obj.native.PARENT_TYPE + '.' + obj.native.TYPE + '.' + obj.native.VERSION;
 
-    adapter.log.info('getValueParamsets ' + cid);
+    adapter.log.debug('getValueParamsets ' + cid);
 
     if (metaValues[cid]) {
 
-        adapter.log.info('paramset cache hit');
+        adapter.log.debug('paramset cache hit');
         addParamsetObjects(obj, metaValues[cid]);
         setTimeout(getValueParamsets, 50);
 
