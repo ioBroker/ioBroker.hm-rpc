@@ -322,20 +322,6 @@ function addParamsetObjects(channel, paramset) {
 
         if (paramset[key].OPERATIONS & 8) {
             obj.common.role = 'indicator.service'
-        } else if (channel.native.type == 'DIMMER' && key == 'LEVEL') {
-            obj.common.role = 'level.dimmer'
-        } else if (channel.native.type == 'BLIND' && key == 'LEVEL') {
-            obj.common.role = 'level.blind';
-        } else if (key == 'WORKING') {
-            obj.common.role = 'indicator.working';
-        } else if (key == 'DIRECTION') {
-            obj.common.role = 'indicator.direction';
-        } else if (key == 'PRESS_SHORT') {
-            obj.common.role = 'button';
-        } else if (key == 'PRESS_LONG') {
-            obj.common.role = 'button.long';
-        } else if (key == 'STOP') {
-            obj.common.role = 'button.stop';
         }
 
         adapter.log.info('object ' + channel.native.ADDRESS + '.' + key + ' created');
