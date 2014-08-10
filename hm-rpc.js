@@ -193,9 +193,8 @@ function initRpcServer(type) {
                 var obj = {
                     type: type,
                     parent: (deviceArr[i].PARENT === '' ? null : adapter.namespace + '.' + deviceArr[i].PARENT),
-                    common: {
-                        children: children
-                    },
+                    children: children,
+                    common: {},
                     native: deviceArr[i]
                 };
 
@@ -329,7 +328,7 @@ function addParamsetObjects(channel, paramset) {
 
         });
     }
-    adapter.extendObject(channel.native.ADDRESS, {common: {children: channelChildren}});
+    adapter.extendObject(channel.native.ADDRESS, {children: channelChildren});
     adapter.log.info('object ' + channel.native.ADDRESS + ' extended');
 
 }
