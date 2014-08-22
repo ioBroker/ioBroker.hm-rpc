@@ -15,6 +15,9 @@ native.ip is the IP of the HomeMatic CCU respectively the Host that is running t
 
 ## Changelog
 
+### 0.1.6
+* (hobbyquaker) config UI
+
 ### 0.1.5
 * (hobbyquaker) added common.children
 
