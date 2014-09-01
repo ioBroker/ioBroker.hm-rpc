@@ -8,12 +8,18 @@ Connects HomeMatic Interface-Processes ("BidCos-Service" or rfd/hs485d on a CCU)
 
 ### Configuration
 
-common.host has to be the hostname/ip under which the host that is running the adapter itself is reachable. This address
-is used by the CCU to connect to the adapter.
+native.adapterAddress has to be the ip under which the host that is running the adapter itself is reachable.
+This address is used by the CCU to connect to the adapter.
 
-native.ip is the IP of the HomeMatic CCU respectively the Host that is running the BidCos-Service(s)
+native.homematicAddress is the IP of the HomeMatic CCU respectively the Host that is running the BidCos-Service(s)
 
 ## Changelog
+
+### 0.1.7
+* (hobbyquaker) renamed "ip" to "homematicAddress" and "port" to "homematicPort"
+* (hobbyquaker) new config attribute "adapterAddress"
+* (hobbyquaker) fixes
+* (hobbyquaker) added more role attributes (still many missing)
 
 ### 0.1.6
 * (hobbyquaker) config UI

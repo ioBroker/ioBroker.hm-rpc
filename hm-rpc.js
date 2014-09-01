@@ -42,8 +42,8 @@ var adapter = require(__dirname + '/../../lib/adapter.js')({
         try {
             if (adapter.config.init) {
                 adapter.config.init = false;
-                log.info(adapter.config.type + "rpc -> " + adapter.config.ip + ':' + adapter.config.port + ' init ' + JSON.stringify(['http://' + adapter.host + ':' + adapter.config.port, '']));
-                rpcClient.methodCall('init', ['http://' + adapter.host + ':' + adapter.config.port, ''], function (err, data) {
+                log.info(adapter.config.type + "rpc -> " + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + ' init ' + JSON.stringify(['http://' + adapter.config.adapterAddress + ':' + adapter.config.homematicPort, '']));
+                rpcClient.methodCall('init', ['http://' + adapter.config.adapterAddress + ':' + adapter.config.homematicPort, ''], function (err, data) {
                     adapter.states.setState('system.adapter.' + adapter.namespace + '.connected', {val: false});
                     callback();
                 });
@@ -93,8 +93,8 @@ var iconv = require('iconv-lite');
 
 function main() {
     rpcClient = xmlrpc.createClient({
-        host: adapter.config.ip,
-        port: adapter.config.port,
+        host: adapter.config.homematicAddress,
+        port: adapter.config.homematicPort,
         path: '/'
     });
 
@@ -123,21 +123,23 @@ function main() {
 }
 
 function initRpcServer(type) {
+    console.log(adapter.config);
     adapter.getPort(2000, function (port) {
         rpcServerStarted = true;
         var protocol = 'http://';
         if (type === 'bin') {
             var protocol = 'xmlrpc_bin://';
-            rpcServer = binrpc.createServer({ host: adapter.host, port: port });
+            rpcServer = binrpc.createServer({ host: adapter.config.adapterAddress, port: port });
         } else {
-            rpcServer = xmlrpc.createServer({ host: adapter.host, port: port });
+            rpcServer = xmlrpc.createServer({ host: adapter.config.adapterAddress, port: port });
         }
 
-        log.info(type + 'rpc server listening on ' + adapter.host + ':' + port);
+        log.info(type + 'rpc server listening on ' + adapter.config.adapterAddress + ':' + port);
 
-        log.info(type + 'rpc -> ' + adapter.config.ip + ':' + adapter.config.port + ' init ' + JSON.stringify([protocol + adapter.host + ':' + port, adapter.namespace]));
 
-        rpcClient.methodCall('init', [protocol + adapter.host + ':' + port, adapter.namespace], function (err, data) {
+        log.info(type + 'rpc -> ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + ' init ' + JSON.stringify([protocol + adapter.config.adapterAddress + ':' + port, adapter.namespace]));
+
+        rpcClient.methodCall('init', [protocol + adapter.config.adapterAddress + ':' + port, adapter.namespace], function (err, data) {
             if (!err) {
                 connection();
             }
