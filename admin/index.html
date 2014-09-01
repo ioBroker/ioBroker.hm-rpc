@@ -35,6 +35,24 @@
         });
         callback(obj);
     }
+
+    $(document).ready(function () {
+        $('#daemon').change(function () {
+            switch ($(this).val()) {
+                case 'rfd':
+                    $('#homematicPort').val('2001');
+                    break;
+                case 'hs485d':
+                    $('#homematicPort').val('2000');
+                    break;
+                case 'cuxd':
+                    $('#homematicPort').val('8701');
+                    break;
+                default:
+            }
+        });
+    });
+
 </script>
 
 <div id="adapter-container">
