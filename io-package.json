@@ -10,7 +10,8 @@
         "license":                  "MIT",
         "mode":                     "daemon",
         "platform":                 "Javascript/Node.js",
-        "loglevel":                 "info"
+        "loglevel":                 "info",
+        "readme":                   "https://github.com/ioBroker/ioBroker.hm-rpc/blob/master/README.md"
     },
     "native": {
         "homematicAddress":         "172.16.23.3",
@@ -59,7 +60,8 @@
                     "BLIND.LEVEL":                  "level.blind"
                 },
                 "chTYPE_dpNAME": {
-                    "DIMMER.LEVEL":                 "level.dimmer"
+                    "DIMMER.LEVEL":                 "level.dimmer",
+                    "DIMMER.OLD_LEVEL":             "level.dimmer"
                 },
                 "dpNAME": {
                     "ACTUAL_TEMPERATURE":           "value.temperature",
@@ -69,6 +71,8 @@
                     "STATE":                        "state",
                     "PRESS_SHORT":                  "button",
                     "PRESS_LONG":                   "button.long",
+                    "PRESS_LONG_RELEASE":           "button.release",
+                    "PRESS_CONT":                   "button.continuous",
                     "LEVEL":                        "level",
                     "LOWBAT":                       "indicator.battery",
                     "INSTALL_TEST":                 "indicator",
@@ -76,13 +80,20 @@
                     "WORKING":                      "indicator.working",
                     "DIRECTION":                    "indicator.direction",
                     "CONFIG_PENDING":               "indicator",
+                    "INSTALL_MODE":                 "indicator",
                     "RSSI_PEER":                    "value.rssi",
+                    "RSSI_DEVICE":                  "value",
+                    "AES_KEY":                      "value",
                     "STICKY_UNREACH":               "indicator.unreach",
                     "ERROR":                        "indicator.error",
                     "MOTION":                       "indicator.motion",
-                    "INHIBIT":                      "flag.inhibit",
+                    "INHIBIT":                      "state.inhibit",
                     "VALVE_STATE":                  "value.valve",
-                    "BRIGHTNESS":                   "value.brightness"
+                    "BRIGHTNESS":                   "value.brightness",
+                    "RAMP_TIME":                    "timer.ramp",
+                    "RAMP_STOP":                    "action.cancel",
+                    "ON_TIME":                      "timer.off",
+                    "DUTYCYCLE":                    "value"
                 }
             }
         },

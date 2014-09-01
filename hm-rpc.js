@@ -1,7 +1,6 @@
 var adapter = require(__dirname + '/../../lib/adapter.js')({
 
     name:                   'hm-rpc',
-    version:                '0.1.5',
 
     ready: function () {
         adapter.subscribeStates('*');
@@ -123,7 +122,6 @@ function main() {
 }
 
 function initRpcServer(type) {
-    console.log(adapter.config);
     adapter.getPort(2000, function (port) {
         rpcServerStarted = true;
         var protocol = 'http://';

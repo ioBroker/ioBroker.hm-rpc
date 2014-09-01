@@ -15,6 +15,10 @@ native.homematicAddress is the IP of the HomeMatic CCU respectively the Host tha
 
 ## Changelog
 
+### 0.1.8
+* (hobbyquaker) added more role attributes (still many missing)
+* (hobbyquaker) fixes
+
 ### 0.1.7
 * (hobbyquaker) renamed "ip" to "homematicAddress" and "port" to "homematicPort"
 * (hobbyquaker) new config attribute "adapterAddress"
