@@ -61,12 +61,17 @@
                 },
                 "chTYPE_dpNAME": {
                     "DIMMER.LEVEL":                 "level.dimmer",
-                    "DIMMER.OLD_LEVEL":             "level.dimmer"
+                    "DIMMER.OLD_LEVEL":             "level.dimmer",
+                    "DIMMER.LEVEL_REAL":            "value.dimmer",
+                    "VIRTUAL_DIMMER.LEVEL":         "level.dimmer",
+                    "VIRTUAL_DIMMER.OLD_LEVEL":     "level.dimmer",
+                    "VIRTUAL_DIMMER.LEVEL_REAL":    "value.dimmer"
                 },
                 "dpNAME": {
                     "ACTUAL_TEMPERATURE":           "value.temperature",
                     "TEMPERATURE":                  "value.temperature",
                     "SETPOINT":                     "level.temperature",
+                    "SET_TEMPERATURE":              "level.temperature",
                     "HUMIDITY":                     "value.humidity",
                     "STATE":                        "state",
                     "PRESS_SHORT":                  "button",
@@ -86,12 +91,16 @@
                     "AES_KEY":                      "value",
                     "STICKY_UNREACH":               "indicator.unreach",
                     "ERROR":                        "indicator.error",
+                    "ERROR_OVERHEAT":               "indicator.error.overheat",
+                    "ERROR_OVERLOAD":               "indicator.error.overload",
+                    "ERROR_REDUCED":                "indicator.error",
                     "MOTION":                       "indicator.motion",
                     "INHIBIT":                      "state.inhibit",
                     "VALVE_STATE":                  "value.valve",
                     "BRIGHTNESS":                   "value.brightness",
                     "RAMP_TIME":                    "timer.ramp",
                     "RAMP_STOP":                    "action.cancel",
+                    "STOP":                         "action.stop",
                     "ON_TIME":                      "timer.off",
                     "DUTYCYCLE":                    "value"
                 }
