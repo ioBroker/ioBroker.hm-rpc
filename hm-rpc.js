@@ -10,18 +10,12 @@ var adapter = require(__dirname + '/../../lib/adapter.js')({
         if (state.ack !== true) {
             var tmp = id.split('.');
             adapter.log.debug(adapter.config.type + 'rpc -> setValue ' + JSON.stringify([tmp[2], tmp[3], state.val]));
-            if (channelParams[tmp[2]] && metaValues[channelParams[tmp[2]]] && metaValues[channelParams[tmp[2]]][tmp[3]]) {
-                if (!(metaValues[channelParams[tmp[2]]][tmp[3]].OPERATIONS & 2)) {
-                    adapter.log.warn(adapter.config.type + 'rpc -> setValue ' + JSON.stringify([tmp[2], tmp[3], state.val]) + ' is not writeable');
-                }
-                var type = metaValues[channelParams[tmp[2]]][tmp[3]].TYPE;
-            } else {
-                var type = 'UNKNOWN';
-            }
-            if (metaValues[channelParams[tmp[2]]][tmp[3]].TYPE === '100%') {
+
+            if (dpTypes[id] && dpTypes[id].UNIT === '100%') {
                 state.val = state.val / 100;
             }
-            switch (type) {
+            var type = (dpTypes[id] ? dpTypes[id].TYPE : undefined);
+            switch (dpTypes[id].TYPE) {
                 case 'BOOL':
                     var val = !!state.val;
                     break;
@@ -34,7 +28,7 @@ var adapter = require(__dirname + '/../../lib/adapter.js')({
             adapter.log.info('setValue ' + JSON.stringify([tmp[2], tmp[3], val]) + ' ' + type);
             rpcClient.methodCall('setValue', [tmp[2], tmp[3], val], function (err, data) {
                 if (err) {
-                    adapter.log.error(adapter.config.type + 'rpc -> setValue ' + JSON.stringify([tmp[2], tmp[3], state.val]));
+                    adapter.log.error(adapter.config.type + 'rpc -> setValue ' + JSON.stringify([tmp[2], tmp[3], state.val]) + ' ' + type);
                     adapter.log.error(err);
                 }
             });
@@ -89,10 +83,10 @@ var connected;
 var metaValues =    {};
 var metaRoles =     {};
 var channelParams = {};
+var dpTypes =       {};
 
 
 var xmlrpc = require('xmlrpc');
-var iconv = require('iconv-lite');
 
 function main() {
     rpcClient = xmlrpc.createClient({
@@ -121,6 +115,14 @@ function main() {
             }
 
         });
+    });
+
+    adapter.objects.getObjectView('system', 'state', {startkey: 'hm-rpc.' + adapter.instance, endkey: 'hm-rpc.' + adapter.instance + '\u9999'}, function (err, res) {
+        if (!err && res.rows) {
+            for (var i = 0; i < res.rows.length; i++) {
+                dpTypes[res.rows[i].id] = {UNIT: res.rows[i].value.native.UNIT, TYPE: res.rows[i].value.native.TYPE};
+            }
+        }
     });
 
 }
@@ -202,11 +204,13 @@ function initRpcServer(type) {
                     parent: (deviceArr[i].PARENT === '' ? null : adapter.namespace + '.' + deviceArr[i].PARENT),
                     children: children,
                     common: {
+                        // FIXME strange bug - LEVEL and WORKING datapoint of Dimmers have name of first dimmer device?!?
+                        name: deviceArr[i].ADDRESS,
                         role: role
                     },
                     native: deviceArr[i]
                 };
-
+                dpTypes[deviceArr[i].ADDRESS] = {UNIT: deviceArr[i].UNIT, TYPE: deviceArr[i].TYPE};
                 objs.push(obj);
 
             }
