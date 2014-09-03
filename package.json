@@ -3,6 +3,5 @@
   "private": true,
   "dependencies": {
     "xmlrpc": "https://github.com/hobbyquaker/node-xmlrpc/tarball/b5b97f2856b4bcbc1c6a1ec3aa99bd7f75eee3fc",
-    "iconv-lite": "~0.4.3"
   }
 }

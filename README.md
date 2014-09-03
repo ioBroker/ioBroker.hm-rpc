@@ -15,6 +15,10 @@ native.homematicAddress is the IP of the HomeMatic CCU respectively the Host tha
 
 ## Changelog
 
+### 0.1.10
+* (hobbyquaker) fixed rpc setValue type
+* (hobbyquaker) fixed rpc setValue unit 100%
+
 ### 0.1.9
 * (hobbyquaker) queue device/channel/datapoint creation - fixes missing children
 * (hobbyquaker) added more role attributes (still many missing)
