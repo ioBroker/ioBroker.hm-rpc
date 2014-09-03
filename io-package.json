@@ -3,7 +3,7 @@
         "name":                     "hm-rpc",
         "title":                    "HomeMatic RPC Adapter",
         "desc":                     "Connects HomeMatic Interface-Processes (\"BidCos-Service\" or rfd/hs485d on a CCU) to ioBroker",
-        "version":                  "0.1.7",
+        "version":                  "0.1.9",
         "authors": [
             "hobbyquaker <hq@ccu.io>"
         ],
@@ -52,21 +52,37 @@
             "native": {
                 "chTYPE": {
                     "DIMMER":                       "light.dimmer",
+                    "BLIND":                        "blind",
                     "SWITCH":                       "switch",
                     "KEY":                          "button",
                     "SHUTTER_CONTACT":              "sensor"
                 },
                 "dpCONTROL": {
+                    "DIMMER.LEVEL":                 "level.dimmer",
                     "BLIND.LEVEL":                  "level.blind"
                 },
                 "chTYPE_dpNAME": {
                     "DIMMER.LEVEL":                 "level.dimmer",
-                    "DIMMER.OLD_LEVEL":             "level.dimmer"
+                    "DIMMER.OLD_LEVEL":             "value.dimmer",
+                    "DIMMER.LEVEL_REAL":            "value.dimmer",
+                    "VIRTUAL_DIMMER.LEVEL":         "level.dimmer",
+                    "VIRTUAL_DIMMER.OLD_LEVEL":     "value.dimmer",
+                    "VIRTUAL_DIMMER.LEVEL_REAL":    "value.dimmer"
                 },
                 "dpNAME": {
+                    "AUTO_MODE":                    "state",
+                    "BATTERY_STATE":                "value.voltage",
+                    "BOOST_MODE":                   "action",
+                    "BOOST_STATE":                  "level.temperature",
+                    "COMFORT_MODE":                 "action",
+                    "CONTROL_MODE":                 "indicator",
+                    "FAULT_REPORTING":              "indicator",
+                    "LOWERING_MODE":                "action",
+                    "MANU_MODE":                    "level.temperature",
                     "ACTUAL_TEMPERATURE":           "value.temperature",
                     "TEMPERATURE":                  "value.temperature",
                     "SETPOINT":                     "level.temperature",
+                    "SET_TEMPERATURE":              "level.temperature",
                     "HUMIDITY":                     "value.humidity",
                     "STATE":                        "state",
                     "PRESS_SHORT":                  "button",
@@ -86,12 +102,16 @@
                     "AES_KEY":                      "value",
                     "STICKY_UNREACH":               "indicator.unreach",
                     "ERROR":                        "indicator.error",
+                    "ERROR_OVERHEAT":               "indicator.error.overheat",
+                    "ERROR_OVERLOAD":               "indicator.error.overload",
+                    "ERROR_REDUCED":                "indicator.error",
                     "MOTION":                       "indicator.motion",
                     "INHIBIT":                      "state.inhibit",
                     "VALVE_STATE":                  "value.valve",
                     "BRIGHTNESS":                   "value.brightness",
                     "RAMP_TIME":                    "timer.ramp",
                     "RAMP_STOP":                    "action.cancel",
+                    "STOP":                         "action.stop",
                     "ON_TIME":                      "timer.off",
                     "DUTYCYCLE":                    "value"
                 }
