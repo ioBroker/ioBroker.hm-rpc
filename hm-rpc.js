@@ -18,9 +18,12 @@ var adapter = require(__dirname + '/../../lib/adapter.js')({
             } else {
                 var type = 'UNKNOWN';
             }
+            if (metaValues[channelParams[tmp[2]]][tmp[3]].TYPE === '100%') {
+                state.val = state.val / 100;
+            }
             switch (type) {
                 case 'BOOL':
-                    var val = state.val ? true : false;
+                    var val = !!state.val;
                     break;
                 case 'FLOAT':
                     var val = {explicitDouble: state.val};
@@ -28,6 +31,7 @@ var adapter = require(__dirname + '/../../lib/adapter.js')({
                 default:
                     var val = state.val;
             }
+            adapter.log.info('setValue ' + JSON.stringify([tmp[2], tmp[3], val]) + ' ' + type);
             rpcClient.methodCall('setValue', [tmp[2], tmp[3], val], function (err, data) {
                 if (err) {
                     adapter.log.error(adapter.config.type + 'rpc -> setValue ' + JSON.stringify([tmp[2], tmp[3], state.val]));
@@ -173,6 +177,8 @@ function initRpcServer(type) {
             var deviceArr = params[1];
             adapter.log.info(adapter.config.type + 'rpc <- newDevices ' + deviceArr.length);
 
+            var objs = [];
+
             for (var i = 0; i < deviceArr.length; i++) {
 
                 var type;
@@ -191,30 +197,50 @@ function initRpcServer(type) {
                 }
 
                 var obj = {
+                    _id: deviceArr[i].ADDRESS,
                     type: type,
                     parent: (deviceArr[i].PARENT === '' ? null : adapter.namespace + '.' + deviceArr[i].PARENT),
                     children: children,
-                    common: {},
+                    common: {
+                        role: role
+                    },
                     native: deviceArr[i]
                 };
 
+                objs.push(obj);
+
+            }
 
 
-                adapter.setObject(deviceArr[i].ADDRESS, obj);
-                adapter.log.info('object ' + deviceArr[i].ADDRESS + ' created');
+            function queue() {
+                if (objs.length > 1) {
 
-                if (obj.type === 'channel') {
-                    var cid = obj.PARENT_TYPE + '.' + obj.TYPE + '.' + obj.VERSION;
-                    channelParams[deviceArr[i].ADDRESS] = cid;
-                    if (metaValues[cid]) {
+                    var obj = objs.pop();
+                    adapter.setObject(obj._id, obj, function (err, res) {
+                        if (!err) {
+                            adapter.log.info('object ' + res.id + ' created');
+                        } else {
+                            adapter.log.error('object ' + (res ? res.id : '?') + ' error on creation: ' + err);
+                        }
+                        queue();
+                    });
 
-                    } else {
-                        queueValueParamsets.push(obj);
+                    if (obj.type === 'channel') {
+                        var cid = obj.PARENT_TYPE + '.' + obj.TYPE + '.' + obj.VERSION;
+                        channelParams[obj._id] = cid;
+                        if (!metaValues[cid]) {
+                            queueValueParamsets.push(obj);
+                        }
                     }
+
+                } else {
+                    getValueParamsets();
+                    callback(null, '');
                 }
             }
-            getValueParamsets();
-            callback(null, '');
+
+            queue();
+
         });
 
         rpcServer.on('listDevices', function(err, params, callback) {
@@ -275,8 +301,8 @@ function addParamsetObjects(channel, paramset) {
             parent: channel._id,
 
             common: {
-                def: paramset[key].DEFAULT,
-                type: commonType[paramset[key].TYPE] || paramset[key].TYPE,
+                def:    paramset[key].DEFAULT,
+                type:   commonType[paramset[key].TYPE] || paramset[key].TYPE,
                 read:   (paramset[key].OPERATIONS & 1 ? true : false),
                 write:  (paramset[key].OPERATIONS & 2 ? true : false)
             },
@@ -312,24 +338,39 @@ function addParamsetObjects(channel, paramset) {
 
         if (metaRoles.dpCONTROL && metaRoles.dpCONTROL[obj.native.CONTROL]) {
             obj.common.role = metaRoles.dpCONTROL[obj.native.CONTROL];
+
         } else if (metaRoles.chTYPE_dpNAME && metaRoles.chTYPE_dpNAME[channel.native.TYPE + '.' + key]) {
             obj.common.role = metaRoles.chTYPE_dpNAME[channel.native.TYPE + '.' + key];
+
         } else if (metaRoles.dpNAME && metaRoles.dpNAME[key]) {
-            obj.common.role = metaRoles.dpNAME[key];
+            obj.common.role =  metaRoles.dpNAME[key];
         }
 
 
         if (paramset[key].OPERATIONS & 8) {
-            obj.common.role = 'indicator.service'
+            obj.common.role = 'indicator.service';
         }
 
-        adapter.log.info('object ' + channel.native.ADDRESS + '.' + key + ' created');
-        adapter.setObject(channel.native.ADDRESS + '.' + key, obj, function () {
+        if (typeof obj.common.role !== 'string' && typeof obj.common.role !== 'undefined') {
+            throw 'typeof obj.common.role ' + typeof obj.common.role;
+         }
+        adapter.setObject(channel.native.ADDRESS + '.' + key, obj, function (err, res) {
+            if (!err) {
+                adapter.log.info('object ' + res.id + ' created');
+            } else {
+                adapter.log.error('object ' + (res ? res.id : '?') + ' create ' + err);
+            }
+
 
         });
     }
-    adapter.extendObject(channel.native.ADDRESS, {children: channelChildren});
-    adapter.log.info('object ' + channel.native.ADDRESS + ' extended');
+    adapter.extendObject(channel.native.ADDRESS, {children: channelChildren}, function (err, res, id) {
+        if (!err) {
+            adapter.log.info('object ' + res.id + ' extended');
+        } else {
+            adapter.log.error('object ' + id + ' extend: ' + err);
+        }
+    });
 
 }
 
