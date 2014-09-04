@@ -3,7 +3,7 @@
         "name":                     "hm-rpc",
         "title":                    "HomeMatic RPC",
         "desc":                     "Connects HomeMatic Interface-Processes (\"BidCos-Service\" or rfd/hs485d on a CCU) to ioBroker",
-        "version":                  "0.1.10",
+        "version":                  "0.1.11",
         "authors": [
             "hobbyquaker <hq@ccu.io>"
         ],

@@ -279,7 +279,13 @@ var methods = {
 
     event: function (err, params) {
         log.debug(adapter.config.type + 'rpc <- event ' + JSON.stringify(params));
-        adapter.setState(params[1]+'.'+params[2], {val: params[3], ack: true});
+        if (dpTypes['hm-rpc.' + adapter.instance + '.' + params[1]+'.'+params[2]] && dpTypes['hm-rpc.' + adapter.instance + '.' + params[1]+'.'+params[2]].UNIT === '100%') {
+            var val = (params[3] * 100);
+        } else {
+            var val = params[3];
+        }
+
+        adapter.setState(params[1] + '.' + params[2], {val: val, ack: true});
         return '';
     }
 
