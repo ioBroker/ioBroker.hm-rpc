@@ -15,6 +15,9 @@ native.homematicAddress is the IP of the HomeMatic CCU respectively the Host tha
 
 ## Changelog
 
+### 0.1.12
+* (hobbyquaker) fixed error in package.json
+
 ### 0.1.11
 * (hobbyquaker) fixed rpc event unit 100%
 
