@@ -13,7 +13,7 @@
         "loglevel":                 "info",
         "readme":                   "https://github.com/ioBroker/ioBroker.hm-rpc/blob/master/README.md",
         "icon":                     "homematic.png",
-        "extIcon":                  "https://raw.githubusercontent.com/ioBroker/ioBroker.hm-rpc/master/admin/homematic.png",
+        "extIcon":                  "https://raw.githubusercontent.com/ioBroker/ioBroker.hm-rpc/master/admin/homematic.png"
     },
     "native": {
         "homematicAddress":         "172.16.23.3",
