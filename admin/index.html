@@ -45,8 +45,9 @@
                 case 'hs485d':
                     $('#homematicPort').val('2000');
                     break;
-                case 'cuxd':
+                case 'CUxD':
                     $('#homematicPort').val('8701');
+                    $('#type').val('bin');
                     break;
                 default:
             }
@@ -68,16 +69,27 @@
             <td><input type="text" id="adapterAddress" class="value"></td>
         </tr>
         <tr>
-            <td>HomeMatic Port</td>
-            <td><input type="number" id="homematicPort" class="value"></td>
-        </tr>
-        <tr>
-            <td>Type</td>
+            <td>Daemon</td>
             <td>
                 <select id="daemon" class="value">
                     <option>rfd</option>
                     <option>hs485d</option>
-                    <option>cuxd</option>
+                    <option>CUxD</option>
+                    <option>Homegear</option>
+                </select>
+            </td>
+        </tr>
+        <tr><td colspan="2">&nbsp;</td></tr>
+        <tr>
+            <td>HomeMatic Port</td>
+            <td><input type="number" id="homematicPort" class="value"></td>
+        </tr>
+        <tr>
+            <td>Protocol</td>
+            <td>
+                <select id="type" class="value">
+                    <option value="xml">XML-RPC</option>
+                    <option value="bin">BIN-RPC</option>
                 </select>
             </td>
         </tr>

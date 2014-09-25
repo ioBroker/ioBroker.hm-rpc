@@ -2,8 +2,8 @@
     "common": {
         "name":                     "hm-rpc",
         "title":                    "HomeMatic RPC",
-        "desc":                     "Connects HomeMatic Interface-Processes (\"BidCos-Service\" or rfd/hs485d on a CCU) to ioBroker",
-        "version":                  "0.1.11",
+        "desc":                     "Connects HomeMatic Interface-Processes (BidCos-Services, Homegear and CUxD) via XML-RPC or BIN-RPC to ioBroker",
+        "version":                  "0.2.0",
         "authors": [
             "hobbyquaker <hq@ccu.io>"
         ],
@@ -14,7 +14,7 @@
         "readme":                   "https://github.com/ioBroker/ioBroker.hm-rpc/blob/master/README.md",
         "icon":                     "homematic.png",
         "extIcon":                  "https://raw.githubusercontent.com/ioBroker/ioBroker.hm-rpc/master/admin/homematic.png",
-        "keywords":                 ["homematic", "bidcos", "eq3", "ccu1", "ccu2", "rpc", "xmlrpc", "homegear"]
+        "keywords":                 ["homematic", "bidcos", "eq3", "ELV", "CCU", "CCU1", "CCU2", "rpc", "xmlrpc", "homegear", "binrpc", "CUxD", "FS20", "FHT", "HMS", "EnOcean"]
     },
     "native": {
         "homematicAddress":         "172.16.23.3",
@@ -119,6 +119,26 @@
                     "DUTYCYCLE":                    "value"
                 }
             }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HM-CC-RT-DN.CLIMATECONTROL_RECEIVER.19",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {}
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HM-CC-RT-DN.CLIMATECONTROL_RT_RECEIVER.19",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {}
         },
         {
             "_id": "hm-rpc.meta.VALUES.HM-CC-RT-DN.CLIMATECONTROL_RECEIVER.19",
@@ -2135,6 +2155,171 @@
             }
         },
         {
+            "_id": "hm-rpc.meta.VALUES.HM-LC-Sw1-Pl.MAINTENANCE.1",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "UNREACH": {
+                    "ID": "UNREACH",
+                    "UNIT": "",
+                    "TAB_ORDER": 0,
+                    "OPERATIONS": 5,
+                    "FLAGS": 9,
+                    "TYPE": "BOOL",
+                    "MIN": false,
+                    "MAX": true,
+                    "DEFAULT": false
+                },
+                "RSSI_PEER": {
+                    "ID": "RSSI_PEER",
+                    "UNIT": "dBm",
+                    "TAB_ORDER": 1,
+                    "OPERATIONS": 5,
+                    "FLAGS": 1,
+                    "TYPE": "INTEGER",
+                    "MIN": -255,
+                    "MAX": 0,
+                    "DEFAULT": -255
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HM-LC-Sw1-Pl.SENSOR.1",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "COUNTER": {
+                    "ID": "COUNTER",
+                    "UNIT": "",
+                    "TAB_ORDER": 0,
+                    "OPERATIONS": 1,
+                    "FLAGS": 1,
+                    "TYPE": "INTEGER",
+                    "MIN": 0,
+                    "MAX": 255,
+                    "DEFAULT": 0
+                },
+                "SUM": {
+                    "ID": "SUM",
+                    "UNIT": "",
+                    "TAB_ORDER": 1,
+                    "OPERATIONS": 1,
+                    "FLAGS": 1,
+                    "TYPE": "FLOAT",
+                    "MIN": 0,
+                    "MAX": 9999999.890625,
+                    "DEFAULT": 0
+                },
+                "MEAN5MINUTES": {
+                    "ID": "MEAN5MINUTES",
+                    "UNIT": "",
+                    "TAB_ORDER": 2,
+                    "OPERATIONS": 1,
+                    "FLAGS": 1,
+                    "TYPE": "FLOAT",
+                    "MIN": 0,
+                    "MAX": 9999999.890625,
+                    "DEFAULT": 0
+                },
+                "MAX5MINUTES": {
+                    "ID": "MAX5MINUTES",
+                    "UNIT": "",
+                    "TAB_ORDER": 3,
+                    "OPERATIONS": 1,
+                    "FLAGS": 1,
+                    "TYPE": "FLOAT",
+                    "MIN": 0,
+                    "MAX": 9999999.890625,
+                    "DEFAULT": 0
+                },
+                "SUM_1H": {
+                    "ID": "SUM_1H",
+                    "UNIT": "",
+                    "TAB_ORDER": 4,
+                    "OPERATIONS": 1,
+                    "FLAGS": 1,
+                    "TYPE": "FLOAT",
+                    "MIN": 0,
+                    "MAX": 9999999.890625,
+                    "DEFAULT": 0
+                },
+                "MAX_1H": {
+                    "ID": "MAX_1H",
+                    "UNIT": "",
+                    "TAB_ORDER": 5,
+                    "OPERATIONS": 1,
+                    "FLAGS": 1,
+                    "TYPE": "FLOAT",
+                    "MIN": 0,
+                    "MAX": 9999999.890625,
+                    "DEFAULT": 0
+                },
+                "SUM_24H": {
+                    "ID": "SUM_24H",
+                    "UNIT": "",
+                    "TAB_ORDER": 6,
+                    "OPERATIONS": 1,
+                    "FLAGS": 1,
+                    "TYPE": "FLOAT",
+                    "MIN": 0,
+                    "MAX": 9999999.890625,
+                    "DEFAULT": 0
+                },
+                "MAX_24H": {
+                    "ID": "MAX_24H",
+                    "UNIT": "",
+                    "TAB_ORDER": 7,
+                    "OPERATIONS": 1,
+                    "FLAGS": 1,
+                    "TYPE": "FLOAT",
+                    "MIN": 0,
+                    "MAX": 9999999.890625,
+                    "DEFAULT": 0
+                },
+                "MISS_24H": {
+                    "ID": "MISS_24H",
+                    "UNIT": "",
+                    "TAB_ORDER": 8,
+                    "OPERATIONS": 1,
+                    "FLAGS": 1,
+                    "TYPE": "INTEGER",
+                    "MIN": 0,
+                    "MAX": 65535,
+                    "DEFAULT": 0
+                },
+                "METER": {
+                    "ID": "METER",
+                    "UNIT": "",
+                    "TAB_ORDER": 9,
+                    "OPERATIONS": 1,
+                    "FLAGS": 1,
+                    "TYPE": "FLOAT",
+                    "MIN": 0,
+                    "MAX": 9999999.890625,
+                    "DEFAULT": 0
+                },
+                "CONTROL": {
+                    "ID": "CONTROL",
+                    "UNIT": "",
+                    "TAB_ORDER": 10,
+                    "OPERATIONS": 1,
+                    "FLAGS": 2,
+                    "TYPE": "INTEGER",
+                    "MIN": 0,
+                    "MAX": 3,
+                    "DEFAULT": 0
+                }
+            }
+        },
+        {
             "_id": "hm-rpc.meta.VALUES.HM-LC-Sw2-FM.MAINTENANCE.1",
             "type": "meta",
             "meta": {
@@ -2779,6 +2964,106 @@
                     "TAB_ORDER": 0,
                     "TYPE": "BOOL",
                     "UNIT": ""
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HM-RC-P1.MAINTENANCE.1",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "RSSI_PEER": {
+                    "ID": "RSSI_PEER",
+                    "UNIT": "dBm",
+                    "TAB_ORDER": 0,
+                    "OPERATIONS": 5,
+                    "FLAGS": 1,
+                    "TYPE": "INTEGER",
+                    "MIN": -255,
+                    "MAX": 0,
+                    "DEFAULT": -255
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HM-RC-P1.SHUTTER_CONTACT.1",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "STATE": {
+                    "ID": "STATE",
+                    "UNIT": "",
+                    "TAB_ORDER": 0,
+                    "OPERATIONS": 7,
+                    "FLAGS": 1,
+                    "CONTROL": "DOOR_SENSOR.STATE",
+                    "TYPE": "BOOL",
+                    "MIN": false,
+                    "MAX": true,
+                    "DEFAULT": false
+                },
+                "VALUE": {
+                    "ID": "VALUE",
+                    "UNIT": "",
+                    "TAB_ORDER": 1,
+                    "OPERATIONS": 3,
+                    "FLAGS": 1,
+                    "TYPE": "INTEGER",
+                    "MIN": 0,
+                    "MAX": 31,
+                    "DEFAULT": 0
+                },
+                "ON_TIME": {
+                    "ID": "ON_TIME",
+                    "UNIT": "s",
+                    "TAB_ORDER": 2,
+                    "OPERATIONS": 3,
+                    "FLAGS": 1,
+                    "TYPE": "FLOAT",
+                    "MIN": 0,
+                    "MAX": 15360,
+                    "DEFAULT": 0
+                },
+                "WORKING": {
+                    "ID": "WORKING",
+                    "UNIT": "",
+                    "TAB_ORDER": 3,
+                    "OPERATIONS": 5,
+                    "FLAGS": 2,
+                    "TYPE": "BOOL",
+                    "MIN": false,
+                    "MAX": true,
+                    "DEFAULT": false
+                },
+                "EVENTCTR": {
+                    "ID": "EVENTCTR",
+                    "UNIT": "",
+                    "TAB_ORDER": 4,
+                    "OPERATIONS": 3,
+                    "FLAGS": 1,
+                    "TYPE": "INTEGER",
+                    "MIN": 0,
+                    "MAX": 999999,
+                    "DEFAULT": 0
+                },
+                "CONTROL": {
+                    "ID": "CONTROL",
+                    "UNIT": "",
+                    "TAB_ORDER": 5,
+                    "OPERATIONS": 1,
+                    "FLAGS": 2,
+                    "TYPE": "INTEGER",
+                    "MIN": 0,
+                    "MAX": 4,
+                    "DEFAULT": 0
                 }
             }
         },
@@ -3624,6 +3909,171 @@
             }
         },
         {
+            "_id": "hm-rpc.meta.VALUES.HM-Sen-EP.MAINTENANCE.1",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "UNREACH": {
+                    "ID": "UNREACH",
+                    "UNIT": "",
+                    "TAB_ORDER": 0,
+                    "OPERATIONS": 5,
+                    "FLAGS": 9,
+                    "TYPE": "BOOL",
+                    "MIN": false,
+                    "MAX": true,
+                    "DEFAULT": false
+                },
+                "RSSI_PEER": {
+                    "ID": "RSSI_PEER",
+                    "UNIT": "dBm",
+                    "TAB_ORDER": 1,
+                    "OPERATIONS": 5,
+                    "FLAGS": 1,
+                    "TYPE": "INTEGER",
+                    "MIN": -255,
+                    "MAX": 0,
+                    "DEFAULT": -255
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HM-Sen-EP.SENSOR.1",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "COUNTER": {
+                    "ID": "COUNTER",
+                    "UNIT": "",
+                    "TAB_ORDER": 0,
+                    "OPERATIONS": 1,
+                    "FLAGS": 1,
+                    "TYPE": "INTEGER",
+                    "MIN": 0,
+                    "MAX": 255,
+                    "DEFAULT": 0
+                },
+                "SUM": {
+                    "ID": "SUM",
+                    "UNIT": "",
+                    "TAB_ORDER": 1,
+                    "OPERATIONS": 1,
+                    "FLAGS": 1,
+                    "TYPE": "FLOAT",
+                    "MIN": 0,
+                    "MAX": 9999999.890625,
+                    "DEFAULT": 0
+                },
+                "MEAN5MINUTES": {
+                    "ID": "MEAN5MINUTES",
+                    "UNIT": "",
+                    "TAB_ORDER": 2,
+                    "OPERATIONS": 1,
+                    "FLAGS": 1,
+                    "TYPE": "FLOAT",
+                    "MIN": 0,
+                    "MAX": 9999999.890625,
+                    "DEFAULT": 0
+                },
+                "MAX5MINUTES": {
+                    "ID": "MAX5MINUTES",
+                    "UNIT": "",
+                    "TAB_ORDER": 3,
+                    "OPERATIONS": 1,
+                    "FLAGS": 1,
+                    "TYPE": "FLOAT",
+                    "MIN": 0,
+                    "MAX": 9999999.890625,
+                    "DEFAULT": 0
+                },
+                "SUM_1H": {
+                    "ID": "SUM_1H",
+                    "UNIT": "",
+                    "TAB_ORDER": 4,
+                    "OPERATIONS": 1,
+                    "FLAGS": 1,
+                    "TYPE": "FLOAT",
+                    "MIN": 0,
+                    "MAX": 9999999.890625,
+                    "DEFAULT": 0
+                },
+                "MAX_1H": {
+                    "ID": "MAX_1H",
+                    "UNIT": "",
+                    "TAB_ORDER": 5,
+                    "OPERATIONS": 1,
+                    "FLAGS": 1,
+                    "TYPE": "FLOAT",
+                    "MIN": 0,
+                    "MAX": 9999999.890625,
+                    "DEFAULT": 0
+                },
+                "SUM_24H": {
+                    "ID": "SUM_24H",
+                    "UNIT": "",
+                    "TAB_ORDER": 6,
+                    "OPERATIONS": 1,
+                    "FLAGS": 1,
+                    "TYPE": "FLOAT",
+                    "MIN": 0,
+                    "MAX": 9999999.890625,
+                    "DEFAULT": 0
+                },
+                "MAX_24H": {
+                    "ID": "MAX_24H",
+                    "UNIT": "",
+                    "TAB_ORDER": 7,
+                    "OPERATIONS": 1,
+                    "FLAGS": 1,
+                    "TYPE": "FLOAT",
+                    "MIN": 0,
+                    "MAX": 9999999.890625,
+                    "DEFAULT": 0
+                },
+                "MISS_24H": {
+                    "ID": "MISS_24H",
+                    "UNIT": "",
+                    "TAB_ORDER": 8,
+                    "OPERATIONS": 1,
+                    "FLAGS": 1,
+                    "TYPE": "INTEGER",
+                    "MIN": 0,
+                    "MAX": 65535,
+                    "DEFAULT": 0
+                },
+                "METER": {
+                    "ID": "METER",
+                    "UNIT": "",
+                    "TAB_ORDER": 9,
+                    "OPERATIONS": 1,
+                    "FLAGS": 1,
+                    "TYPE": "FLOAT",
+                    "MIN": 0,
+                    "MAX": 9999999.890625,
+                    "DEFAULT": 0
+                },
+                "CONTROL": {
+                    "ID": "CONTROL",
+                    "UNIT": "",
+                    "TAB_ORDER": 10,
+                    "OPERATIONS": 1,
+                    "FLAGS": 2,
+                    "TYPE": "INTEGER",
+                    "MIN": 0,
+                    "MAX": 3,
+                    "DEFAULT": 0
+                }
+            }
+        },
+        {
             "_id": "hm-rpc.meta.VALUES.HM-Sen-MDIR-SM.MAINTENANCE.7",
             "type": "meta",
             "meta": {
@@ -3987,43 +4437,6 @@
             }
         },
         {
-            "_id": "hm-rpc.meta.VALUES.HM-Sen-RD-O.RAINDETECTOR.1",
-            "type": "meta",
-            "meta": {
-                "adapter": "hm-rpc",
-                "type": "paramsetDescription"
-            },
-            "common": {},
-            "native": {
-                "INSTALL_TEST": {
-                    "DEFAULT": false,
-                    "FLAGS": 3,
-                    "ID": "INSTALL_TEST",
-                    "MAX": true,
-                    "MIN": false,
-                    "OPERATIONS": 4,
-                    "TAB_ORDER": 1,
-                    "TYPE": "ACTION",
-                    "UNIT": ""
-                },
-                "STATE": {
-                    "DEFAULT": 0,
-                    "FLAGS": 1,
-                    "ID": "STATE",
-                    "MAX": 1,
-                    "MIN": 0,
-                    "OPERATIONS": 5,
-                    "TAB_ORDER": 0,
-                    "TYPE": "ENUM",
-                    "UNIT": "",
-                    "VALUE_LIST": [
-                        "DRY",
-                        "RAIN"
-                    ]
-                }
-            }
-        },
-        {
             "_id": "hm-rpc.meta.VALUES.HM-Sen-RD-O.RAINDETECTOR_HEAT.1",
             "type": "meta",
             "meta": {
@@ -4089,6 +4502,197 @@
                     "TAB_ORDER": 4,
                     "TYPE": "BOOL",
                     "UNIT": ""
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HM-Sen-RD-O.RAINDETECTOR.1",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "INSTALL_TEST": {
+                    "DEFAULT": false,
+                    "FLAGS": 3,
+                    "ID": "INSTALL_TEST",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 4,
+                    "TAB_ORDER": 1,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
+                },
+                "STATE": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "STATE",
+                    "MAX": 1,
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 0,
+                    "TYPE": "ENUM",
+                    "UNIT": "",
+                    "VALUE_LIST": [
+                        "DRY",
+                        "RAIN"
+                    ]
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HM-WDS10-TH-O.MAINTENANCE.1",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "UNREACH": {
+                    "ID": "UNREACH",
+                    "UNIT": "",
+                    "TAB_ORDER": 0,
+                    "OPERATIONS": 5,
+                    "FLAGS": 9,
+                    "TYPE": "BOOL",
+                    "MIN": false,
+                    "MAX": true,
+                    "DEFAULT": false
+                },
+                "RSSI_PEER": {
+                    "ID": "RSSI_PEER",
+                    "UNIT": "dBm",
+                    "TAB_ORDER": 1,
+                    "OPERATIONS": 5,
+                    "FLAGS": 1,
+                    "TYPE": "INTEGER",
+                    "MIN": -255,
+                    "MAX": 0,
+                    "DEFAULT": -255
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HM-WDS10-TH-O.WEATHER.1",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "TEMPERATURE": {
+                    "ID": "TEMPERATURE",
+                    "UNIT": "&#176;C",
+                    "TAB_ORDER": 0,
+                    "OPERATIONS": 1,
+                    "FLAGS": 1,
+                    "TYPE": "FLOAT",
+                    "MIN": -40,
+                    "MAX": 80,
+                    "DEFAULT": 0
+                },
+                "HUMIDITY": {
+                    "ID": "HUMIDITY",
+                    "UNIT": "%",
+                    "TAB_ORDER": 1,
+                    "OPERATIONS": 1,
+                    "FLAGS": 1,
+                    "TYPE": "INTEGER",
+                    "MIN": 0,
+                    "MAX": 100,
+                    "DEFAULT": 0
+                },
+                "DEW_POINT": {
+                    "ID": "DEW_POINT",
+                    "UNIT": "&#176;C",
+                    "TAB_ORDER": 2,
+                    "OPERATIONS": 1,
+                    "FLAGS": 1,
+                    "TYPE": "FLOAT",
+                    "MIN": -100,
+                    "MAX": 100,
+                    "DEFAULT": 0
+                },
+                "ABS_HUMIDITY": {
+                    "ID": "ABS_HUMIDITY",
+                    "UNIT": "g/m&#179;",
+                    "TAB_ORDER": 3,
+                    "OPERATIONS": 1,
+                    "FLAGS": 1,
+                    "TYPE": "FLOAT",
+                    "MIN": 0,
+                    "MAX": 500,
+                    "DEFAULT": 0
+                },
+                "HUMIDITYF": {
+                    "ID": "HUMIDITYF",
+                    "UNIT": "%",
+                    "TAB_ORDER": 4,
+                    "OPERATIONS": 1,
+                    "FLAGS": 2,
+                    "TYPE": "FLOAT",
+                    "MIN": 0,
+                    "MAX": 100,
+                    "DEFAULT": 0
+                },
+                "TEMP_MIN_24H": {
+                    "ID": "TEMP_MIN_24H",
+                    "UNIT": "&#176;C",
+                    "TAB_ORDER": 5,
+                    "OPERATIONS": 1,
+                    "FLAGS": 1,
+                    "TYPE": "FLOAT",
+                    "MIN": -40,
+                    "MAX": 80,
+                    "DEFAULT": 0
+                },
+                "TEMP_MAX_24H": {
+                    "ID": "TEMP_MAX_24H",
+                    "UNIT": "&#176;C",
+                    "TAB_ORDER": 6,
+                    "OPERATIONS": 1,
+                    "FLAGS": 1,
+                    "TYPE": "FLOAT",
+                    "MIN": -40,
+                    "MAX": 80,
+                    "DEFAULT": 0
+                },
+                "HUM_MIN_24H": {
+                    "ID": "HUM_MIN_24H",
+                    "UNIT": "%",
+                    "TAB_ORDER": 7,
+                    "OPERATIONS": 1,
+                    "FLAGS": 1,
+                    "TYPE": "FLOAT",
+                    "MIN": 0,
+                    "MAX": 100,
+                    "DEFAULT": 0
+                },
+                "HUM_MAX_24H": {
+                    "ID": "HUM_MAX_24H",
+                    "UNIT": "%",
+                    "TAB_ORDER": 8,
+                    "OPERATIONS": 1,
+                    "FLAGS": 1,
+                    "TYPE": "FLOAT",
+                    "MIN": 0,
+                    "MAX": 100,
+                    "DEFAULT": 0
+                },
+                "MISS_24H": {
+                    "ID": "MISS_24H",
+                    "UNIT": "",
+                    "TAB_ORDER": 9,
+                    "OPERATIONS": 1,
+                    "FLAGS": 1,
+                    "TYPE": "INTEGER",
+                    "MIN": 0,
+                    "MAX": 65535,
+                    "DEFAULT": 0
                 }
             }
         },
@@ -4201,6 +4805,597 @@
                     "TAB_ORDER": 0,
                     "TYPE": "FLOAT",
                     "UNIT": "°C"
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HM-WS550STH-I.MAINTENANCE.1",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "LOWBAT": {
+                    "ID": "LOWBAT",
+                    "UNIT": "",
+                    "TAB_ORDER": 0,
+                    "OPERATIONS": 5,
+                    "FLAGS": 9,
+                    "TYPE": "BOOL",
+                    "MIN": false,
+                    "MAX": true,
+                    "DEFAULT": false
+                },
+                "RSSI_PEER": {
+                    "ID": "RSSI_PEER",
+                    "UNIT": "dBm",
+                    "TAB_ORDER": 1,
+                    "OPERATIONS": 5,
+                    "FLAGS": 1,
+                    "TYPE": "INTEGER",
+                    "MIN": -255,
+                    "MAX": 0,
+                    "DEFAULT": -255
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HM-WS550STH-I.WEATHER.1",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "TEMPERATURE": {
+                    "ID": "TEMPERATURE",
+                    "UNIT": "&#176;C",
+                    "TAB_ORDER": 0,
+                    "OPERATIONS": 1,
+                    "FLAGS": 1,
+                    "TYPE": "FLOAT",
+                    "MIN": -100,
+                    "MAX": 100,
+                    "DEFAULT": 0
+                },
+                "TEMP_MIN_24H": {
+                    "ID": "TEMP_MIN_24H",
+                    "UNIT": "&#176;C",
+                    "TAB_ORDER": 5,
+                    "OPERATIONS": 1,
+                    "FLAGS": 1,
+                    "TYPE": "FLOAT",
+                    "MIN": -40,
+                    "MAX": 80,
+                    "DEFAULT": 0
+                },
+                "TEMP_MAX_24H": {
+                    "ID": "TEMP_MAX_24H",
+                    "UNIT": "&#176;C",
+                    "TAB_ORDER": 6,
+                    "OPERATIONS": 1,
+                    "FLAGS": 1,
+                    "TYPE": "FLOAT",
+                    "MIN": -40,
+                    "MAX": 80,
+                    "DEFAULT": 0
+                },
+                "MISS_24H": {
+                    "ID": "MISS_24H",
+                    "UNIT": "",
+                    "TAB_ORDER": 1,
+                    "OPERATIONS": 1,
+                    "FLAGS": 1,
+                    "TYPE": "INTEGER",
+                    "MIN": 0,
+                    "MAX": 65535,
+                    "DEFAULT": 0
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HMW-IO-12-Sw7-DR.KEY.11",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "INSTALL_TEST": {
+                    "DEFAULT": false,
+                    "FLAGS": 3,
+                    "ID": "INSTALL_TEST",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 4,
+                    "TAB_ORDER": 2,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
+                },
+                "PRESS_LONG": {
+                    "CONTROL": "BUTTON.LONG",
+                    "DEFAULT": false,
+                    "FLAGS": 1,
+                    "ID": "PRESS_LONG",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 6,
+                    "TAB_ORDER": 1,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
+                },
+                "PRESS_SHORT": {
+                    "CONTROL": "BUTTON.SHORT",
+                    "DEFAULT": false,
+                    "FLAGS": 1,
+                    "ID": "PRESS_SHORT",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 6,
+                    "TAB_ORDER": 0,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HMW-IO-12-Sw7-DR.MAINTENANCE.11",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "CONFIG_PENDING": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "CONFIG_PENDING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 2,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "STICKY_UNREACH": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "STICKY_UNREACH",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 7,
+                    "TAB_ORDER": 1,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "UNREACH": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "UNREACH",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 0,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HMW-IO-12-Sw7-DR.SWITCH.11",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "INHIBIT": {
+                    "CONTROL": "NONE",
+                    "DEFAULT": false,
+                    "FLAGS": 1,
+                    "ID": "INHIBIT",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 7,
+                    "TAB_ORDER": 1,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "INSTALL_TEST": {
+                    "DEFAULT": false,
+                    "FLAGS": 3,
+                    "ID": "INSTALL_TEST",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 2,
+                    "TAB_ORDER": 2,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
+                },
+                "STATE": {
+                    "CONTROL": "SWITCH.STATE",
+                    "DEFAULT": false,
+                    "FLAGS": 1,
+                    "ID": "STATE",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 7,
+                    "TAB_ORDER": 0,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "WORKING": {
+                    "DEFAULT": false,
+                    "FLAGS": 3,
+                    "ID": "WORKING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 3,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HMW-LC-Dim1L-DR.DIMMER.11",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "DIRECTION": {
+                    "DEFAULT": 0,
+                    "FLAGS": 3,
+                    "ID": "DIRECTION",
+                    "MAX": 3,
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 2,
+                    "TYPE": "ENUM",
+                    "UNIT": "",
+                    "VALUE_LIST": [
+                        "NONE",
+                        "UP",
+                        "DOWN",
+                        "UNDEFINED"
+                    ]
+                },
+                "INHIBIT": {
+                    "CONTROL": "NONE",
+                    "DEFAULT": false,
+                    "FLAGS": 1,
+                    "ID": "INHIBIT",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 7,
+                    "TAB_ORDER": 1,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "INSTALL_TEST": {
+                    "DEFAULT": false,
+                    "FLAGS": 3,
+                    "ID": "INSTALL_TEST",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 2,
+                    "TAB_ORDER": 3,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
+                },
+                "LEVEL": {
+                    "CONTROL": "DIMMER.LEVEL",
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "LEVEL",
+                    "MAX": 1,
+                    "MIN": 0,
+                    "OPERATIONS": 7,
+                    "TAB_ORDER": 0,
+                    "TYPE": "FLOAT",
+                    "UNIT": "100%"
+                },
+                "WORKING": {
+                    "DEFAULT": false,
+                    "FLAGS": 3,
+                    "ID": "WORKING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 4,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HMW-LC-Dim1L-DR.KEY.11",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "INSTALL_TEST": {
+                    "DEFAULT": false,
+                    "FLAGS": 3,
+                    "ID": "INSTALL_TEST",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 4,
+                    "TAB_ORDER": 2,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
+                },
+                "PRESS_LONG": {
+                    "CONTROL": "BUTTON.LONG",
+                    "DEFAULT": false,
+                    "FLAGS": 1,
+                    "ID": "PRESS_LONG",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 6,
+                    "TAB_ORDER": 1,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
+                },
+                "PRESS_SHORT": {
+                    "CONTROL": "BUTTON.SHORT",
+                    "DEFAULT": false,
+                    "FLAGS": 1,
+                    "ID": "PRESS_SHORT",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 6,
+                    "TAB_ORDER": 0,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HMW-LC-Dim1L-DR.MAINTENANCE.11",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "CONFIG_PENDING": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "CONFIG_PENDING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 2,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "STICKY_UNREACH": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "STICKY_UNREACH",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 7,
+                    "TAB_ORDER": 1,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "UNREACH": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "UNREACH",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 0,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HMW-LC-Sw2-DR.KEY.12",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "INSTALL_TEST": {
+                    "DEFAULT": false,
+                    "FLAGS": 3,
+                    "ID": "INSTALL_TEST",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 4,
+                    "TAB_ORDER": 2,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
+                },
+                "PRESS_LONG": {
+                    "CONTROL": "BUTTON.LONG",
+                    "DEFAULT": false,
+                    "FLAGS": 1,
+                    "ID": "PRESS_LONG",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 6,
+                    "TAB_ORDER": 1,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
+                },
+                "PRESS_SHORT": {
+                    "CONTROL": "BUTTON.SHORT",
+                    "DEFAULT": false,
+                    "FLAGS": 1,
+                    "ID": "PRESS_SHORT",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 6,
+                    "TAB_ORDER": 0,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HMW-LC-Sw2-DR.MAINTENANCE.12",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "CONFIG_PENDING": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "CONFIG_PENDING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 2,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "STICKY_UNREACH": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "STICKY_UNREACH",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 7,
+                    "TAB_ORDER": 1,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "UNREACH": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "UNREACH",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 0,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HMW-LC-Sw2-DR.SWITCH.12",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "INHIBIT": {
+                    "CONTROL": "NONE",
+                    "DEFAULT": false,
+                    "FLAGS": 1,
+                    "ID": "INHIBIT",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 7,
+                    "TAB_ORDER": 1,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "INSTALL_TEST": {
+                    "DEFAULT": false,
+                    "FLAGS": 3,
+                    "ID": "INSTALL_TEST",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 2,
+                    "TAB_ORDER": 2,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
+                },
+                "STATE": {
+                    "CONTROL": "SWITCH.STATE",
+                    "DEFAULT": false,
+                    "FLAGS": 1,
+                    "ID": "STATE",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 7,
+                    "TAB_ORDER": 0,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "WORKING": {
+                    "DEFAULT": false,
+                    "FLAGS": 3,
+                    "ID": "WORKING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 3,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HMW-RCV-50.MAINTENANCE.3",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {}
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HMW-RCV-50.VIRTUAL_KEY.3",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "PRESS_LONG": {
+                    "CONTROL": "BUTTON.LONG",
+                    "DEFAULT": false,
+                    "FLAGS": 1,
+                    "ID": "PRESS_LONG",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 6,
+                    "TAB_ORDER": 1,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
+                },
+                "PRESS_SHORT": {
+                    "CONTROL": "BUTTON.SHORT",
+                    "DEFAULT": false,
+                    "FLAGS": 1,
+                    "ID": "PRESS_SHORT",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 6,
+                    "TAB_ORDER": 0,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
                 }
             }
         }
