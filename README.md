@@ -1,3 +1,4 @@
+![Logo](admin/homematic.png)
 # ioBroker HomeMatic RPC Adapter
 
 Connects HomeMatic Interface-Processes (BidCos-Services, Homegear and CUxD) via XML-RPC or BIN-RPC to ioBroker
