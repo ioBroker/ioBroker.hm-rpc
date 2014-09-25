@@ -1,6 +1,6 @@
 # ioBroker HomeMatic RPC Adapter
 
-Connects HomeMatic Interface-Processes ("BidCos-Service" or rfd/hs485d on a CCU) to ioBroker
+Connects HomeMatic Interface-Processes (BidCos-Services, Homegear and CUxD) via XML-RPC or BIN-RPC to ioBroker
 
 ## Install
 
@@ -14,6 +14,11 @@ This address is used by the CCU to connect to the adapter.
 native.homematicAddress is the IP of the HomeMatic CCU respectively the Host that is running the BidCos-Service(s)
 
 ## Changelog
+
+### 0.2.0
+* (hobbyquaker) added BIN-RPC support
+* (hobbyquaker) added CUxD support
+* (hobbyquaker) bugfixes
 
 ### 0.1.12
 * (hobbyquaker) fixed error in package.json
@@ -66,7 +71,6 @@ native.homematicAddress is the IP of the HomeMatic CCU respectively the Host tha
 
 ## Roadmap
 
-* BIN-RPC Support for CUxD
 * PING/PONG implementation when possible (CCU Firmware >= 2.9) - check via system.listMethods
 
 ## License

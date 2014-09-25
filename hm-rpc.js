@@ -34,13 +34,19 @@ var adapter = require(__dirname + '/../../lib/adapter.js')({
             });
         }
     },
-    //  - callback must be called in any case!
     unload: function (callback) {
         try {
             if (adapter.config.init) {
                 adapter.config.init = false;
-                log.info(adapter.config.type + "rpc -> " + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + ' init ' + JSON.stringify(['http://' + adapter.config.adapterAddress + ':' + adapter.config.homematicPort, '']));
-                rpcClient.methodCall('init', ['http://' + adapter.config.adapterAddress + ':' + adapter.config.homematicPort, ''], function (err, data) {
+                var protocol;
+                if (adapter.config.type === 'bin') {
+                    protocol = 'xmlrpc_bin://';
+                } else {
+                    protocol = 'http://';
+                }
+
+                adapter.log.info(adapter.config.type + "rpc -> " + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + ' init ' + JSON.stringify([protocol + adapter.config.adapterAddress + ':' + adapter.config.homematicPort, '']));
+                rpcClient.methodCall('init', [protocol + adapter.config.adapterAddress + ':' + adapter.config.homematicPort, ''], function (err, data) {
                     adapter.states.setState('system.adapter.' + adapter.namespace + '.connected', {val: false});
                     callback();
                 });
@@ -48,6 +54,7 @@ var adapter = require(__dirname + '/../../lib/adapter.js')({
                 callback();
             }
         } catch (e) {
+            adapter.log.error(e);
             callback();
         }
     },
@@ -57,15 +64,15 @@ var adapter = require(__dirname + '/../../lib/adapter.js')({
             "language": "javascript",
             "views": {
                 "listDevices": {
-                    "map": "function(doc) {\n  if (doc._id.match(/^hm-rpc\\.[0-9]+\\.\\*?[A-Za-z0-9_-]+(:[0-9]+)?$/)) {\n   emit(doc._id, {ADDRESS:doc.native.ADDRESS,VERSION:doc.native.VERSION,PARENT_TYPE:doc.native.PARENT_TYPE,TYPE:doc.native.TYPE});\n  }\n}"
+                    "map": "function (doc) {\n  if (doc._id.match(/^hm-rpc\\.[0-9]+\\.\\*?[A-Za-z0-9_-]+(:[0-9]+)?$/)) {\n   emit(doc._id, {ADDRESS:doc.native.ADDRESS,VERSION:doc.native.VERSION,PARENT_TYPE:doc.native.PARENT_TYPE,TYPE:doc.native.TYPE});\n  }\n}"
                 },
                 "paramsetDescription": {
-                    "map": "function(doc) {\n  if (doc._id.match(/^hm-rpc\\.meta/) && doc.meta.type === 'paramsetDescription') {\n   emit(doc._id, doc);\n  }\n}"
+                    "map": "function (doc) {\n  if (doc._id.match(/^hm-rpc\\.meta/) && doc.meta.type === 'paramsetDescription') {\n   emit(doc._id, doc);\n  }\n}"
                 }
             }
         };
         adapter.objects.setObject(design._id, design, function () {
-            log.info('object _design/hm-rpc created');
+            adapter.log.info('object _design/hm-rpc created');
             if (typeof callback === 'function') callback();
         });
     }
@@ -87,15 +94,20 @@ var dpTypes =       {};
 
 
 var xmlrpc = require('xmlrpc');
+var binrpc = require('binrpc');
 
 function main() {
-    rpcClient = xmlrpc.createClient({
+    if (adapter.config.type === 'bin') {
+        rpc = binrpc;
+    } else {
+        rpc = xmlrpc;
+    }
+
+    rpcClient = rpc.createClient({
         host: adapter.config.homematicAddress,
         port: adapter.config.homematicPort,
         path: '/'
     });
-
-
 
     // Load VALUE paramsetDescriptions (needed to create state objects)
     adapter.objects.getObjectView('hm-rpc', 'paramsetDescription', {startkey: 'hm-rpc.meta.VALUES', endkey: 'hm-rpc.meta.VALUES.\u9999'}, function (err, doc) {
@@ -111,7 +123,7 @@ function main() {
 
             // Start Adapter
             if (adapter.config.init) {
-                if (!rpcServerStarted) initRpcServer(adapter.config.type);
+                if (!rpcServerStarted) initRpcServer();
             }
 
         });
@@ -127,33 +139,46 @@ function main() {
 
 }
 
-function initRpcServer(type) {
+function initRpcServer() {
     adapter.getPort(2000, function (port) {
         rpcServerStarted = true;
-        var protocol = 'http://';
-        if (type === 'bin') {
-            var protocol = 'xmlrpc_bin://';
+        var protocol;
+        if (adapter.config.type === 'bin') {
+            protocol = 'xmlrpc_bin://';
             rpcServer = binrpc.createServer({ host: adapter.config.adapterAddress, port: port });
         } else {
+            adapter.config.type = 'xml';
+            protocol = 'http://';
             rpcServer = xmlrpc.createServer({ host: adapter.config.adapterAddress, port: port });
         }
 
-        log.info(type + 'rpc server listening on ' + adapter.config.adapterAddress + ':' + port);
+        adapter.log.info(adapter.config.type + 'rpc server listening on ' + adapter.config.adapterAddress + ':' + port);
 
-
-        log.info(type + 'rpc -> ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + ' init ' + JSON.stringify([protocol + adapter.config.adapterAddress + ':' + port, adapter.namespace]));
+        adapter.log.info(adapter.config.type + 'rpc -> ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + ' init ' + JSON.stringify([protocol + adapter.config.adapterAddress + ':' + port, adapter.namespace]));
 
         rpcClient.methodCall('init', [protocol + adapter.config.adapterAddress + ':' + port, adapter.namespace], function (err, data) {
             if (!err) {
-                connection();
+                if (adapter.config.daemon === 'CUxD') {
+                    getCuxDevices(function (err2) {
+                        if (!err2) {
+                            connection();
+                        } else {
+                            adapter.log.error(err2);
+                        }
+                    });
+                } else {
+                    connection();
+                }
+            } else {
+                adapter.log.error(err);
             }
         });
 
-        rpcServer.on('NotFound', function(method, params) {
+        rpcServer.on('NotFound', function (method, params) {
             adapter.log.warn(type + 'rpc <- undefined method ' + method + ' ' + JSON.stringify(params).slice(0, 80));
         });
 
-        rpcServer.on('system.multicall', function(method, params, callback) {
+        rpcServer.on('system.multicall', function (method, params, callback) {
             var response = [];
             for (var i = 0; i < params[0].length; i++) {
                 if (methods[params[0][i].methodName]) {
@@ -165,90 +190,23 @@ function initRpcServer(type) {
             callback(null, response);
         });
 
-        rpcServer.on('system.listMethods', function(err, params, callback) {
+        rpcServer.on('system.listMethods', function (err, params, callback) {
             adapter.log.info(adapter.config.type + 'rpc <- system.listMethods ' + JSON.stringify(params));
             callback(null, ['event', 'deleteDevices', 'listDevices', 'newDevices', 'system.listMethods', 'system.multicall']);
         });
 
-        rpcServer.on('event', function(err, params, callback) {
+        rpcServer.on('event', function (err, params, callback) {
             connection();
             callback(null, methods.event(err, params));
         });
 
-        rpcServer.on('newDevices', function(err, params, callback) {
-            var deviceArr = params[1];
-            adapter.log.info(adapter.config.type + 'rpc <- newDevices ' + deviceArr.length);
-
-            var objs = [];
-
-            for (var i = 0; i < deviceArr.length; i++) {
-
-                var type;
-                var role;
-
-                var children = [];
-
-                if (deviceArr[i].PARENT) {
-                    type = 'channel';
-                    role = metaRoles.chTYPE && metaRoles.chTYPE[deviceArr[i].TYPE] ? metaRoles.chTYPE && metaRoles.chTYPE[deviceArr[i].TYPE] : undefined;
-                } else {
-                    type = 'device';
-                    for (var j = 0; j < deviceArr[i].CHILDREN.length; j++) {
-                        children.push(adapter.namespace + '.' + deviceArr[i].CHILDREN[j]);
-                    }
-                }
-
-                var obj = {
-                    _id: deviceArr[i].ADDRESS,
-                    type: type,
-                    parent: (deviceArr[i].PARENT === '' ? null : adapter.namespace + '.' + deviceArr[i].PARENT),
-                    children: children,
-                    common: {
-                        // FIXME strange bug - LEVEL and WORKING datapoint of Dimmers have name of first dimmer device?!?
-                        name: deviceArr[i].ADDRESS,
-                        role: role
-                    },
-                    native: deviceArr[i]
-                };
-                dpTypes[deviceArr[i].ADDRESS] = {UNIT: deviceArr[i].UNIT, TYPE: deviceArr[i].TYPE};
-                objs.push(obj);
-
-            }
-
-
-            function queue() {
-                if (objs.length > 1) {
-
-                    var obj = objs.pop();
-                    adapter.setObject(obj._id, obj, function (err, res) {
-                        if (!err) {
-                            adapter.log.info('object ' + res.id + ' created');
-                        } else {
-                            adapter.log.error('object ' + (res ? res.id : '?') + ' error on creation: ' + err);
-                        }
-                        queue();
-                    });
-
-                    if (obj.type === 'channel') {
-                        var cid = obj.PARENT_TYPE + '.' + obj.TYPE + '.' + obj.VERSION;
-                        channelParams[obj._id] = cid;
-                        if (!metaValues[cid]) {
-                            queueValueParamsets.push(obj);
-                        }
-                    }
-
-                } else {
-                    getValueParamsets();
-                    callback(null, '');
-                }
-            }
-
-            queue();
-
+        rpcServer.on('newDevices', function (err, params, callback) {
+            adapter.log.info(adapter.config.type + 'rpc <- newDevices ' + params[1].length);
+            createDevices(params[1], callback);
         });
 
-        rpcServer.on('listDevices', function(err, params, callback) {
-            log.info(adapter.config.type + 'rpc <- listDevices ' + JSON.stringify(params));
+        rpcServer.on('listDevices', function (err, params, callback) {
+            adapter.log.info(adapter.config.type + 'rpc <- listDevices ' + JSON.stringify(params));
             adapter.objects.getObjectView('hm-rpc', 'listDevices', {startkey: 'hm-rpc.' + adapter.instance + '.', endkey: 'hm-rpc.' + adapter.instance + '.\u9999'}, function (err, doc) {
                 var response = [];
                 for (var i = 0; i < doc.rows.length; i++) {
@@ -259,13 +217,14 @@ function initRpcServer(type) {
                     }
                     response.push({ADDRESS: val.ADDRESS, VERSION: val.VERSION});
                 }
-                log.info(adapter.config.type + 'rpc -> ' + doc.rows.length + ' devices');
+                adapter.log.info(adapter.config.type + 'rpc -> ' + doc.rows.length + ' devices');
+                //log.info(JSON.stringify(response));
                 callback(null, response);
             });
         });
 
-        rpcServer.on('deleteDevices', function(err, params, callback) {
-            log.info(adapter.config.type + 'rpc <- deleteDevices ' + params[1].length);
+        rpcServer.on('deleteDevices', function (err, params, callback) {
+            adapter.log.info(adapter.config.type + 'rpc <- deleteDevices ' + params[1].length);
             for (var i = 0; i < params[1].length; i++) {
                 adapter.log.info('object ' + params[1][i].ADDRESS + ' deleted');
                 adapter.delObject(params[1][i]);
@@ -364,11 +323,11 @@ function addParamsetObjects(channel, paramset) {
         if (typeof obj.common.role !== 'string' && typeof obj.common.role !== 'undefined') {
             throw 'typeof obj.common.role ' + typeof obj.common.role;
          }
-        adapter.setObject(channel.native.ADDRESS + '.' + key, obj, function (err, res) {
+        adapter.extendObject(channel.native.ADDRESS + '.' + key, obj, function (err, res) {
             if (!err) {
-                adapter.log.info('object ' + res.id + ' created');
+                adapter.log.info('object ' + res.id + ' extended');
             } else {
-                adapter.log.error('object ' + (res ? res.id : '?') + ' create ' + err);
+                adapter.log.error('object ' + (res ? res.id : '?') + ' extend ' + err);
             }
 
 
@@ -426,7 +385,7 @@ function getValueParamsets() {
                         'native': res
                     };
                     metaValues[key] = res;
-                    setTimeout(getValueParamsets, 1000);
+                    setTimeout(getValueParamsets, 1200); // Slow down
                     adapter.log.info('setObject ' + key);
                     adapter.objects.setObject(key, paramset);
                     addParamsetObjects(obj, res);
@@ -437,9 +396,94 @@ function getValueParamsets() {
     }
 }
 
+function createDevices(deviceArr, callback) {
+    adapter.log.debug(JSON.stringify(deviceArr));
+
+    var objs = [];
+
+    for (var i = 0; i < deviceArr.length; i++) {
+        var type;
+        var role;
+
+        var children = [];
+
+        if (deviceArr[i].PARENT) {
+            type = 'channel';
+            role = metaRoles.chTYPE && metaRoles.chTYPE[deviceArr[i].TYPE] ? metaRoles.chTYPE && metaRoles.chTYPE[deviceArr[i].TYPE] : undefined;
+        } else {
+            type = 'device';
+            for (var j = 0; j < deviceArr[i].CHILDREN.length; j++) {
+                children.push(adapter.namespace + '.' + deviceArr[i].CHILDREN[j]);
+            }
+        }
+
+        var obj = {
+            _id: deviceArr[i].ADDRESS,
+            type: type,
+            parent: (deviceArr[i].PARENT === '' ? null : adapter.namespace + '.' + deviceArr[i].PARENT),
+            children: children,
+            common: {
+                // FIXME strange bug - LEVEL and WORKING datapoint of Dimmers have name of first dimmer device?!?
+                name: deviceArr[i].ADDRESS,
+                role: role
+            },
+            native: deviceArr[i]
+        };
+        dpTypes[deviceArr[i].ADDRESS] = {UNIT: deviceArr[i].UNIT, TYPE: deviceArr[i].TYPE};
+        //adapter.log.debug(JSON.stringify(obj));
+        objs.push(obj);
+
+    }
+    function queue() {
+        if (objs.length) {
+
+            var obj = objs.pop();
+            adapter.setObject(obj._id, obj, function (err, res) {
+                if (!err) {
+                    adapter.log.info('object ' + res.id + ' created');
+                } else {
+                    adapter.log.error('object ' + (res ? res.id : '?') + ' error on creation: ' + err);
+                }
+                queue();
+            });
+
+            if (obj.type === 'channel') {
+                var cid = obj.PARENT_TYPE + '.' + obj.TYPE + '.' + obj.VERSION;
+                channelParams[obj._id] = cid;
+                if (!metaValues[cid]) {
+                    queueValueParamsets.push(obj);
+                }
+            }
+
+        } else {
+            getValueParamsets();
+            callback(null, '');
+        }
+    }
+
+    queue();
+}
+
+function getCuxDevices(callback) {
+    // Todo read existing devices from couchdb and put IDs in array
+    var devices = [];
+
+    // request devices from CUxD
+    rpcClient.methodCall('listDevices', [], function (err, data) {
+        adapter.log.info(adapter.config.type + 'rpc -> listDevices ' + data.length);
+        // Todo remove device ids from array
+        createDevices(data, callback);
+    });
+
+    // Todo delete all in array remaining devices
+}
+
 var connectionTimer;
 
 function connection() {
+
+
+
     /* Todo Ping/Pong or eventTrigger
     connected = true;
     if (connectionTimer) clearTimeout(connectionTimer);
@@ -447,6 +491,9 @@ function connection() {
         connection = false;
 
     }, 300000);*/
+
+
+
 
     adapter.states.setState('system.adapter.' + adapter.namespace + '.connected', {val: true, expire: 300});
 }
