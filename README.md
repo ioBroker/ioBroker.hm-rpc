@@ -15,6 +15,9 @@ native.homematicAddress is the IP of the HomeMatic CCU respectively the Host tha
 
 ## Changelog
 
+### 0.2.1
+* (hobbyquaker) changed XML-RPC module source
+
 ### 0.2.0
 * (hobbyquaker) added BIN-RPC support
 * (hobbyquaker) added CUxD support

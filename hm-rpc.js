@@ -93,7 +93,7 @@ var channelParams = {};
 var dpTypes =       {};
 
 
-var xmlrpc = require('xmlrpc');
+var xmlrpc = require('homematic-xmlrpc');
 var binrpc = require('binrpc');
 
 function main() {
