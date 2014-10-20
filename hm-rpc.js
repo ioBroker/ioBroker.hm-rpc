@@ -9,6 +9,7 @@ var adapter = require(__dirname + '/../../lib/adapter.js')({
     stateChange: function (id, state) {
         if (state.ack !== true) {
             var tmp = id.split('.');
+            var val;
             adapter.log.debug(adapter.config.type + 'rpc -> setValue ' + JSON.stringify([tmp[2], tmp[3], state.val]));
 
             if (dpTypes[id] && dpTypes[id].UNIT === '100%') {
@@ -17,13 +18,13 @@ var adapter = require(__dirname + '/../../lib/adapter.js')({
             var type = (dpTypes[id] ? dpTypes[id].TYPE : undefined);
             switch (dpTypes[id].TYPE) {
                 case 'BOOL':
-                    var val = !!state.val;
+                    val = !!state.val;
                     break;
                 case 'FLOAT':
-                    var val = {explicitDouble: state.val};
+                    val = {explicitDouble: state.val};
                     break;
                 default:
-                    var val = state.val;
+                    val = state.val;
             }
             adapter.log.info('setValue ' + JSON.stringify([tmp[2], tmp[3], val]) + ' ' + type);
             rpcClient.methodCall('setValue', [tmp[2], tmp[3], val], function (err, data) {
@@ -145,11 +146,11 @@ function initRpcServer() {
         var protocol;
         if (adapter.config.type === 'bin') {
             protocol = 'xmlrpc_bin://';
-            rpcServer = binrpc.createServer({ host: adapter.config.adapterAddress, port: port });
+            rpcServer = binrpc.createServer({host: adapter.config.adapterAddress, port: port});
         } else {
             adapter.config.type = 'xml';
             protocol = 'http://';
-            rpcServer = xmlrpc.createServer({ host: adapter.config.adapterAddress, port: port });
+            rpcServer = xmlrpc.createServer({host: adapter.config.adapterAddress, port: port});
         }
 
         adapter.log.info(adapter.config.type + 'rpc server listening on ' + adapter.config.adapterAddress + ':' + port);
@@ -237,11 +238,12 @@ function initRpcServer() {
 var methods = {
 
     event: function (err, params) {
-        log.debug(adapter.config.type + 'rpc <- event ' + JSON.stringify(params));
-        if (dpTypes['hm-rpc.' + adapter.instance + '.' + params[1]+'.'+params[2]] && dpTypes['hm-rpc.' + adapter.instance + '.' + params[1]+'.'+params[2]].UNIT === '100%') {
-            var val = (params[3] * 100);
+        adapter.log.debug(adapter.config.type + 'rpc <- event ' + JSON.stringify(params));
+        var val;
+        if (dpTypes['hm-rpc.' + adapter.instance + '.' + params[1] + '.' + params[2]] && dpTypes['hm-rpc.' + adapter.instance + '.' + params[1] + '.' + params[2]].UNIT === '100%') {
+            val = (params[3] * 100);
         } else {
-            var val = params[3];
+            val = params[3];
         }
 
         adapter.setState(params[1] + '.' + params[2], {val: val, ack: true});
@@ -251,6 +253,14 @@ var methods = {
 };
 
 var queueValueParamsets = [];
+
+function _logResult(err, res) {
+    if (!err) {
+        adapter.log.info('object ' + res.id + ' extended');
+    } else {
+        adapter.log.error('object ' + (res ? res.id : '?') + ' extend ' + err);
+    }
+}
 
 function addParamsetObjects(channel, paramset) {
     var channelChildren = [];
@@ -279,19 +289,20 @@ function addParamsetObjects(channel, paramset) {
         };
 
         if (obj.common.type === 'number') {
+            var i;
             obj.common.min = paramset[key].MIN;
             obj.common.max = paramset[key].MAX;
 
             if (paramset[key].TYPE === 'ENUM') {
                 obj.common.states = {};
-                for (var i = 0; i < paramset[key].VALUE_LIST.length; i++) {
+                for (i = 0; i < paramset[key].VALUE_LIST.length; i++) {
                     obj.common.states[i] = paramset[key].VALUE_LIST[i];
                 }
             }
 
             if (paramset[key].SPECIAL) {
                 if (!obj.common.states) obj.common.states = {};
-                for (var i = 0; i < paramset[key].SPECIAL.length; i++) {
+                for (i = 0; i < paramset[key].SPECIAL.length; i++) {
                     obj.common.states[paramset[key].SPECIAL[i].VALUE] = paramset[key].SPECIAL[i].ID;
                 }
             }
@@ -322,16 +333,11 @@ function addParamsetObjects(channel, paramset) {
 
         if (typeof obj.common.role !== 'string' && typeof obj.common.role !== 'undefined') {
             throw 'typeof obj.common.role ' + typeof obj.common.role;
-         }
-        adapter.extendObject(channel.native.ADDRESS + '.' + key, obj, function (err, res) {
-            if (!err) {
-                adapter.log.info('object ' + res.id + ' extended');
-            } else {
-                adapter.log.error('object ' + (res ? res.id : '?') + ' extend ' + err);
-            }
+        }
 
 
-        });
+
+        adapter.extendObject(channel.native.ADDRESS + '.' + key, obj, _logResult);
     }
     adapter.extendObject(channel.native.ADDRESS, {children: channelChildren}, function (err, res, id) {
         if (!err) {
