@@ -16,6 +16,11 @@ var adapter = require(__dirname + '/../../lib/adapter.js')({
                 state.val = state.val / 100;
             }
             var type = (dpTypes[id] ? dpTypes[id].TYPE : undefined);
+            if (!dpTypes[id]) {
+                adapter.log.error(adapter.config.type + 'rpc -> setValue: no dpType for ' + id + '!');
+                return;
+            }
+
             switch (dpTypes[id].TYPE) {
                 case 'BOOL':
                     val = !!state.val;
