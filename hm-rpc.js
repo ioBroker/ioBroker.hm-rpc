@@ -1,6 +1,6 @@
 var adapter = require(__dirname + '/../../lib/adapter.js')({
 
-    name:                   'hm-rpc',
+    name: 'hm-rpc',
 
     ready: function () {
         adapter.subscribeStates('*');
@@ -31,10 +31,10 @@ var adapter = require(__dirname + '/../../lib/adapter.js')({
                 default:
                     val = state.val;
             }
-            adapter.log.info('setValue ' + JSON.stringify([tmp[2], tmp[3], val]) + ' ' + type);
-            rpcClient.methodCall('setValue', [tmp[2], tmp[3], val], function (err, data) {
+            adapter.log.info('setValue ' + JSON.stringify([tmp[3], tmp[4], val]) + ' ' + type);
+            rpcClient.methodCall('setValue', [tmp[3], tmp[4], val], function (err, data) {
                 if (err) {
-                    adapter.log.error(adapter.config.type + 'rpc -> setValue ' + JSON.stringify([tmp[2], tmp[3], state.val]) + ' ' + type);
+                    adapter.log.error(adapter.config.type + 'rpc -> setValue ' + JSON.stringify([tmp[3], tmp[4], state.val]) + ' ' + type);
                     adapter.log.error(err);
                 }
             });
@@ -70,7 +70,7 @@ var adapter = require(__dirname + '/../../lib/adapter.js')({
             "language": "javascript",
             "views": {
                 "listDevices": {
-                    "map": "function (doc) {\n  if (doc._id.match(/^hm-rpc\\.[0-9]+\\.\\*?[A-Za-z0-9_-]+(:[0-9]+)?$/)) {\n   emit(doc._id, {ADDRESS:doc.native.ADDRESS,VERSION:doc.native.VERSION,PARENT_TYPE:doc.native.PARENT_TYPE,TYPE:doc.native.TYPE});\n  }\n}"
+                    "map": "function (doc) {\n  if (doc._id.match(/^hm-rpc\\.[0-9]+\\.\\*?[A-Za-z0-9_-]+(:[0-9]+)?$/)) {\n   emit(doc._id, {ADDRESS:doc.native.ADDRESS, VERSION:doc.native.VERSION, PARENT_TYPE:doc.native.PARENT_TYPE, TYPE:doc.native.TYPE});\n  }\n}"
                 },
                 "paramsetDescription": {
                     "map": "function (doc) {\n  if (doc._id.match(/^hm-rpc\\.meta/) && doc.meta.type === 'paramsetDescription') {\n   emit(doc._id, doc);\n  }\n}"
@@ -98,6 +98,8 @@ var metaRoles =     {};
 var channelParams = {};
 var dpTypes =       {};
 
+// Set ths flag to true if want to reinit objects for debug purposes
+var forceReInit =   true;
 
 var xmlrpc = require('homematic-xmlrpc');
 var binrpc = require('binrpc');
@@ -135,7 +137,7 @@ function main() {
         });
     });
 
-    adapter.objects.getObjectView('system', 'state', {startkey: 'hm-rpc.' + adapter.instance, endkey: 'hm-rpc.' + adapter.instance + '\u9999'}, function (err, res) {
+    adapter.objects.getObjectView('system', 'state', {startkey: 'io.' + adapter.namespace, endkey: 'io.' + adapter.namespace + '\u9999'}, function (err, res) {
         if (!err && res.rows) {
             for (var i = 0; i < res.rows.length; i++) {
                 dpTypes[res.rows[i].id] = {UNIT: res.rows[i].value.native.UNIT, TYPE: res.rows[i].value.native.TYPE};
@@ -215,13 +217,16 @@ function initRpcServer() {
             adapter.log.info(adapter.config.type + 'rpc <- listDevices ' + JSON.stringify(params));
             adapter.objects.getObjectView('hm-rpc', 'listDevices', {startkey: 'hm-rpc.' + adapter.instance + '.', endkey: 'hm-rpc.' + adapter.instance + '.\u9999'}, function (err, doc) {
                 var response = [];
-                for (var i = 0; i < doc.rows.length; i++) {
-                    var val = doc.rows[i].value;
-                    if (val.PARENT_TYPE) {
-                        var cid = val.PARENT_TYPE + '.' + val.TYPE + '.' + val.VERSION;
-                        channelParams[val.ADDRESS] = cid;
-                    }
-                    response.push({ADDRESS: val.ADDRESS, VERSION: val.VERSION});
+                if (!forceReInit) {
+                     for (var i = 0; i < doc.rows.length; i++) {
+                         var val = doc.rows[i].value;
+
+                         if (val.PARENT_TYPE) {
+                            channelParams[val.ADDRESS] = val.PARENT_TYPE + '.' + val.TYPE + '.' + val.VERSION;
+                         }
+
+                         response.push({ADDRESS: val.ADDRESS, VERSION: val.VERSION});
+                     }
                 }
                 adapter.log.info(adapter.config.type + 'rpc -> ' + doc.rows.length + ' devices');
                 //log.info(JSON.stringify(response));
@@ -245,13 +250,15 @@ var methods = {
     event: function (err, params) {
         adapter.log.debug(adapter.config.type + 'rpc <- event ' + JSON.stringify(params));
         var val;
-        if (dpTypes['hm-rpc.' + adapter.instance + '.' + params[1] + '.' + params[2]] && dpTypes['hm-rpc.' + adapter.instance + '.' + params[1] + '.' + params[2]].UNIT === '100%') {
+        var name = 'io.' + params[0] + '.' + params[1] + '.' + params[2];
+
+        if ((dpTypes[name] && dpTypes[name].UNIT === '100%')){
             val = (params[3] * 100);
         } else {
             val = params[3];
         }
 
-        adapter.setState(params[1] + '.' + params[2], {val: val, ack: true});
+        adapter.setState('io.' + params[1] + '.' + params[2], {val: val, ack: true});
         return '';
     }
 
@@ -270,7 +277,7 @@ function _logResult(err, res) {
 function addParamsetObjects(channel, paramset) {
     var channelChildren = [];
     for (var key in paramset) {
-        channelChildren.push(channel._id + '.' + key);
+        channelChildren.push('io.' + channel._id + '.' + key);
         var commonType = {
             'ACTION':       'boolean',
             'BOOL':         'boolean',
@@ -281,14 +288,14 @@ function addParamsetObjects(channel, paramset) {
         };
 
         var obj = {
-            type: 'state',
+            type:   'state',
             parent: channel._id,
 
             common: {
-                def:    paramset[key].DEFAULT,
-                type:   commonType[paramset[key].TYPE] || paramset[key].TYPE,
-                read:   (paramset[key].OPERATIONS & 1 ? true : false),
-                write:  (paramset[key].OPERATIONS & 2 ? true : false)
+                def:   paramset[key].DEFAULT,
+                type:  commonType[paramset[key].TYPE] || paramset[key].TYPE || '',
+                read:  (paramset[key].OPERATIONS & 1 ? true : false),
+                write: (paramset[key].OPERATIONS & 2 ? true : false)
             },
             native: paramset[key]
         };
@@ -339,12 +346,10 @@ function addParamsetObjects(channel, paramset) {
         if (typeof obj.common.role !== 'string' && typeof obj.common.role !== 'undefined') {
             throw 'typeof obj.common.role ' + typeof obj.common.role;
         }
-
-
-
-        adapter.extendObject(channel.native.ADDRESS + '.' + key, obj, _logResult);
+        //dpTypes[channel.native.ADDRESS] = {UNIT: paramset[key].UNIT, TYPE: paramset[key].TYPE};
+        adapter.extendObject('io.' + channel.native.ADDRESS + '.' + key, obj, _logResult);
     }
-    adapter.extendObject(channel.native.ADDRESS, {children: channelChildren}, function (err, res, id) {
+    adapter.extendObject(channel.native.ADDRESS, {children: channelChildren, type: 'channel'}, function (err, res, id) {
         if (!err) {
             adapter.log.info('object ' + res.id + ' extended');
         } else {
@@ -440,7 +445,7 @@ function createDevices(deviceArr, callback) {
             },
             native: deviceArr[i]
         };
-        dpTypes[deviceArr[i].ADDRESS] = {UNIT: deviceArr[i].UNIT, TYPE: deviceArr[i].TYPE};
+        dpTypes[adapter.namespace + '.' + deviceArr[i].ADDRESS] = {UNIT: deviceArr[i].UNIT, TYPE: deviceArr[i].TYPE};
         //adapter.log.debug(JSON.stringify(obj));
         objs.push(obj);
 
@@ -449,6 +454,7 @@ function createDevices(deviceArr, callback) {
         if (objs.length) {
 
             var obj = objs.pop();
+
             adapter.setObject(obj._id, obj, function (err, res) {
                 if (!err) {
                     adapter.log.info('object ' + res.id + ' created');

@@ -28,18 +28,33 @@
         }
     };
 
+    function setValue(id, value) {
+        // example: select elements with id=key and class=value and insert value
+        if ($('#' + id + '.value').attr('type') == 'checkbox') {
+            $('#' + id + '.value').prop('checked', value).change(function() {
+                changed = true;
+                $('#save').button("enable");
+            });
+        } else {
+            $('#' + id + '.value').val(value).change(function() {
+                changed = true;
+                $('#save').button("enable");
+            }).keyup(function() {
+                changed = true;
+                $('#save').button("enable");
+            });
+        }
+    }
+
     function load(settings) {
-        console.log('load', settings)
         fillSelectIPs('#adapterAddress', settings.adapterAddress, false, true);
 
         for (var key in settings) {
-            $('#' + key + '.value').val(settings[key]);
-            if (settings[key]) {
-                $('#' + key + '.check').attr('checked', true);
-            } else {
-                $('#' + key + '.check').removeAttr('checked');
-            }
+            setValue(key, settings[key]);
         }
+
+        changed = false;
+        $('#save').button("disable");
     }
 
     function save(callback) {
@@ -52,6 +67,8 @@
             var $this = $(this);
             obj[$this.attr('id')] = $this.is(':checked');
         });
+        changed = false;
+        $('#save').button("disable");
         callback(obj);
     }
 
@@ -114,11 +131,11 @@
         </tr>
         <tr>
             <td class="translate">Init</td>
-            <td><input type="checkbox" id="init" value="true" class="check"/></td>
+            <td><input type="checkbox" id="init" value="true" class="value"/></td>
         </tr>
         <tr>
             <td class="translate">Check init</td>
-            <td><input type="checkbox" id="checkInit" value="true" class="check"/></td>
+            <td><input type="checkbox" id="checkInit" value="true" class="value"/></td>
         </tr>
         <tr>
             <td class="translate">Check init interval</td>
