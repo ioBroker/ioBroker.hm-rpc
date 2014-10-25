@@ -10,18 +10,20 @@ var adapter = require(__dirname + '/../../lib/adapter.js')({
         if (state.ack !== true) {
             var tmp = id.split('.');
             var val;
-            adapter.log.debug(adapter.config.type + 'rpc -> setValue ' + JSON.stringify([tmp[2], tmp[3], state.val]));
+            adapter.log.debug(adapter.config.type + 'rpc -> setValue ' + JSON.stringify([tmp[3], tmp[4], state.val]));
 
-            if (dpTypes[id] && dpTypes[id].UNIT === '100%') {
-                state.val = state.val / 100;
-            }
-            var type = (dpTypes[id] ? dpTypes[id].TYPE : undefined);
             if (!dpTypes[id]) {
                 adapter.log.error(adapter.config.type + 'rpc -> setValue: no dpType for ' + id + '!');
                 return;
             }
 
-            switch (dpTypes[id].TYPE) {
+            if (dpTypes[id].UNIT === '100%') {
+                state.val = state.val / 100;
+            }
+
+            var type = dpTypes[id].TYPE;
+
+            switch (type) {
                 case 'BOOL':
                     val = !!state.val;
                     break;
@@ -86,7 +88,6 @@ var adapter = require(__dirname + '/../../lib/adapter.js')({
 
 var rpc;
 var rpcClient;
-var rpcClientPending;
 
 var rpcServer;
 var rpcServerStarted;
@@ -99,7 +100,7 @@ var channelParams = {};
 var dpTypes =       {};
 
 // Set ths flag to true if want to reinit objects for debug purposes
-var forceReInit =   true;
+var forceReInit =   false;
 
 var xmlrpc = require('homematic-xmlrpc');
 var binrpc = require('binrpc');
@@ -346,7 +347,7 @@ function addParamsetObjects(channel, paramset) {
         if (typeof obj.common.role !== 'string' && typeof obj.common.role !== 'undefined') {
             throw 'typeof obj.common.role ' + typeof obj.common.role;
         }
-        //dpTypes[channel.native.ADDRESS] = {UNIT: paramset[key].UNIT, TYPE: paramset[key].TYPE};
+        dpTypes['io.' + adapter.namespace +'.' + channel._id + '.' + key] = {UNIT: paramset[key].UNIT, TYPE: paramset[key].TYPE};
         adapter.extendObject('io.' + channel.native.ADDRESS + '.' + key, obj, _logResult);
     }
     adapter.extendObject(channel.native.ADDRESS, {children: channelChildren, type: 'channel'}, function (err, res, id) {

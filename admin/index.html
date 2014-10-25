@@ -40,6 +40,21 @@
                 changed = true;
                 $('#save').button("enable");
             }).keyup(function() {
+                // Chack that only numbers entered
+                if ($(this).hasClass('number')) {
+                    var val = $(this).val();
+                    if (val) {
+                        var newVal = '';
+                        for (var i = 0; i < val.length; i++) {
+                            if (val[i] >= '0' && val[i] <= '9') {
+                                newVal += val[i];
+                            }
+                        }
+
+                        if (val != newVal) $(this).val(newVal);
+                    }
+                }
+
                 changed = true;
                 $('#save').button("enable");
             });
@@ -57,19 +72,25 @@
         $('#save').button("disable");
     }
 
-    function save(callback) {
+    function getSettings() {
         var obj = {};
         $('.value').each(function () {
             var $this = $(this);
-            obj[$this.attr('id')] = $this.val();
+            var id = $this.attr('id');
+
+            if ($this.attr('type') == 'checkbox') {
+                obj[$this.attr('id')] = $this.prop('checked');
+            } else {
+                obj[$this.attr('id')] = $this.val();
+            }
         });
-        $('.check').each(function () {
-            var $this = $(this);
-            obj[$this.attr('id')] = $this.is(':checked');
-        });
+        return obj;
+    }
+
+    function save(callback) {
         changed = false;
         $('#save').button("disable");
-        callback(obj);
+        callback(getSettings());
     }
 
     $(document).ready(function () {
@@ -93,7 +114,7 @@
 </script>
 
 <div id="adapter-container">
-    <table><tr><td><img src="homematic.png"></td><td><h3 class="translate">Homematic RPC adapter settings</h3></td></tr></table>
+    <table><tr><td><img src="homematic.png" width="64" height="64"></td><td><h3 class="translate">Homematic RPC adapter settings</h3></td></tr></table>
 
     <table>
         <tr>
@@ -118,7 +139,7 @@
         <tr><td colspan="2">&nbsp;</td></tr>
         <tr>
             <td class="translate">HomeMatic Port</td>
-            <td><input type="number" id="homematicPort" class="value"/></td>
+            <td><input type="number" id="homematicPort" class="value number"/></td>
         </tr>
         <tr>
             <td class="translate">Protocol</td>
@@ -139,7 +160,7 @@
         </tr>
         <tr>
             <td class="translate">Check init interval</td>
-            <td><input type="number" id="checkInitInterval" value="true" class="value"/></td>
+            <td><input type="number" id="checkInitInterval" value="true" class="value number"/></td>
         </tr>
         <tr>
             <td class="translate">Check init trigger</td>
