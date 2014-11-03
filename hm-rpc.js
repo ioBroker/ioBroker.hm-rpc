@@ -25,7 +25,7 @@ var adapter = require(__dirname + '/../../lib/adapter.js')({
 
             switch (type) {
                 case 'BOOL':
-                    val = !!state.val;
+                    val = (state.val === "false") ? false : !!state.val;
                     break;
                 case 'FLOAT':
                     val = {explicitDouble: state.val};
