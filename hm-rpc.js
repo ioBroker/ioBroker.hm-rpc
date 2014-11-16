@@ -121,9 +121,10 @@ function main() {
     // Load VALUE paramsetDescriptions (needed to create state objects)
     adapter.objects.getObjectView('hm-rpc', 'paramsetDescription', {startkey: 'hm-rpc.meta.VALUES', endkey: 'hm-rpc.meta.VALUES.\u9999'}, function (err, doc) {
         // Todo Handle Errors
-        var response = [];
-        for (var i = 0; i < doc.rows.length; i++) {
-            metaValues[doc.rows[i].id.slice(19)] = doc.rows[i].value.native;
+        if (!doc) {
+            for (var i = 0; i < doc.rows.length; i++) {
+                metaValues[doc.rows[i].id.slice(19)] = doc.rows[i].value.native;
+            }
         }
         // Load common.role assignments
         adapter.objects.getObject('hm-rpc.meta.roles', function (err, res) {
@@ -141,7 +142,12 @@ function main() {
     adapter.objects.getObjectView('system', 'state', {startkey: 'io.' + adapter.namespace, endkey: 'io.' + adapter.namespace + '\u9999'}, function (err, res) {
         if (!err && res.rows) {
             for (var i = 0; i < res.rows.length; i++) {
-                dpTypes[res.rows[i].id] = {UNIT: res.rows[i].value.native.UNIT, TYPE: res.rows[i].value.native.TYPE};
+                if (!res.rows[i].value.native) {
+                    adapter.log.warn('State ' + res.rows[i].id + ' does not have native.');
+                    dpTypes[res.rows[i].id] = {UNIT: '', TYPE: ''};
+                } else {
+                    dpTypes[res.rows[i].id] = {UNIT: res.rows[i].value.native.UNIT, TYPE: res.rows[i].value.native.TYPE};
+                }
             }
         }
     });
@@ -253,7 +259,7 @@ var methods = {
         var val;
         var name = 'io.' + params[0] + '.' + params[1] + '.' + params[2];
 
-        if ((dpTypes[name] && dpTypes[name].UNIT === '100%')){
+        if (dpTypes[name] && dpTypes[name].UNIT === '100%') {
             val = (params[3] * 100);
         } else {
             val = params[3];
@@ -347,7 +353,7 @@ function addParamsetObjects(channel, paramset) {
         if (typeof obj.common.role !== 'string' && typeof obj.common.role !== 'undefined') {
             throw 'typeof obj.common.role ' + typeof obj.common.role;
         }
-        dpTypes['io.' + adapter.namespace +'.' + channel._id + '.' + key] = {UNIT: paramset[key].UNIT, TYPE: paramset[key].TYPE};
+        dpTypes['io.' + adapter.namespace + '.' + channel._id + '.' + key] = {UNIT: paramset[key].UNIT, TYPE: paramset[key].TYPE};
         adapter.extendObject('io.' + channel.native.ADDRESS + '.' + key, obj, _logResult);
     }
     adapter.extendObject(channel.native.ADDRESS, {children: channelChildren, type: 'channel'}, function (err, res, id) {
