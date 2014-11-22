@@ -33,8 +33,8 @@ var adapter = require(__dirname + '/../../lib/adapter.js')({
                 default:
                     val = state.val;
             }
-            adapter.log.info('setValue ' + JSON.stringify([tmp[3], tmp[4], val]) + ' ' + type);
-            rpcClient.methodCall('setValue', [tmp[3], tmp[4], val], function (err, data) {
+            adapter.log.info('setValue ' + JSON.stringify([tmp[2] + ':' + tmp[3], tmp[4], val]) + ' ' + type);
+            rpcClient.methodCall('setValue', [tmp[2] + ':' + tmp[3], tmp[4], val], function (err, data) {
                 if (err) {
                     adapter.log.error(adapter.config.type + 'rpc -> setValue ' + JSON.stringify([tmp[3], tmp[4], state.val]) + ' ' + type);
                     adapter.log.error(err);
@@ -96,7 +96,7 @@ var connected;
 
 var metaValues =    {};
 var metaRoles =     {};
-var channelParams = {};
+//var channelParams = {};
 var dpTypes =       {};
 
 // Set ths flag to true if want to reinit objects for debug purposes
@@ -139,7 +139,7 @@ function main() {
         });
     });
 
-    adapter.objects.getObjectView('system', 'state', {startkey: 'io.' + adapter.namespace, endkey: 'io.' + adapter.namespace + '\u9999'}, function (err, res) {
+    adapter.objects.getObjectView('system', 'state', {startkey: adapter.namespace, endkey: adapter.namespace + '\u9999'}, function (err, res) {
         if (!err && res.rows) {
             for (var i = 0; i < res.rows.length; i++) {
                 if (!res.rows[i].value.native) {
@@ -228,9 +228,9 @@ function initRpcServer() {
                      for (var i = 0; i < doc.rows.length; i++) {
                          var val = doc.rows[i].value;
 
-                         if (val.PARENT_TYPE) {
+                         /*if (val.PARENT_TYPE) {
                             channelParams[val.ADDRESS] = val.PARENT_TYPE + '.' + val.TYPE + '.' + val.VERSION;
-                         }
+                         }*/
 
                          response.push({ADDRESS: val.ADDRESS, VERSION: val.VERSION});
                      }
@@ -257,7 +257,8 @@ var methods = {
     event: function (err, params) {
         adapter.log.debug(adapter.config.type + 'rpc <- event ' + JSON.stringify(params));
         var val;
-        var name = 'io.' + params[0] + '.' + params[1] + '.' + params[2];
+        var channel = params[1].replace(':', '.');
+        var name = params[0] + '.' + channel + '.' + params[2];
 
         if (dpTypes[name] && dpTypes[name].UNIT === '100%') {
             val = (params[3] * 100);
@@ -265,7 +266,7 @@ var methods = {
             val = params[3];
         }
 
-        adapter.setState('io.' + params[1] + '.' + params[2], {val: val, ack: true});
+        adapter.setState(channel + '.' + params[2], {val: val, ack: true});
         return '';
     }
 
@@ -284,7 +285,7 @@ function _logResult(err, res) {
 function addParamsetObjects(channel, paramset) {
     var channelChildren = [];
     for (var key in paramset) {
-        channelChildren.push('io.' + channel._id + '.' + key);
+        channelChildren.push(channel._id + '.' + key);
         var commonType = {
             'ACTION':       'boolean',
             'BOOL':         'boolean',
@@ -296,8 +297,6 @@ function addParamsetObjects(channel, paramset) {
 
         var obj = {
             type:   'state',
-            parent: channel._id,
-
             common: {
                 def:   paramset[key].DEFAULT,
                 type:  commonType[paramset[key].TYPE] || paramset[key].TYPE || '',
@@ -353,17 +352,9 @@ function addParamsetObjects(channel, paramset) {
         if (typeof obj.common.role !== 'string' && typeof obj.common.role !== 'undefined') {
             throw 'typeof obj.common.role ' + typeof obj.common.role;
         }
-        dpTypes['io.' + adapter.namespace + '.' + channel._id + '.' + key] = {UNIT: paramset[key].UNIT, TYPE: paramset[key].TYPE};
-        adapter.extendObject('io.' + channel.native.ADDRESS + '.' + key, obj, _logResult);
+        dpTypes[adapter.namespace + '.' + channel._id + '.' + key] = {UNIT: paramset[key].UNIT, TYPE: paramset[key].TYPE};
+        adapter.extendObject(channel._id + '.' + key, obj, _logResult);
     }
-    adapter.extendObject(channel.native.ADDRESS, {children: channelChildren, type: 'channel'}, function (err, res, id) {
-        if (!err) {
-            adapter.log.info('object ' + res.id + ' extended');
-        } else {
-            adapter.log.error('object ' + id + ' extend: ' + err);
-        }
-    });
-
 }
 
 function getValueParamsets() {
@@ -428,23 +419,16 @@ function createDevices(deviceArr, callback) {
         var type;
         var role;
 
-        var children = [];
-
         if (deviceArr[i].PARENT) {
             type = 'channel';
             role = metaRoles.chTYPE && metaRoles.chTYPE[deviceArr[i].TYPE] ? metaRoles.chTYPE && metaRoles.chTYPE[deviceArr[i].TYPE] : undefined;
         } else {
             type = 'device';
-            for (var j = 0; j < deviceArr[i].CHILDREN.length; j++) {
-                children.push(adapter.namespace + '.' + deviceArr[i].CHILDREN[j]);
-            }
         }
 
         var obj = {
-            _id: deviceArr[i].ADDRESS,
+            _id: deviceArr[i].ADDRESS.replace(':', '.'),
             type: type,
-            parent: (deviceArr[i].PARENT === '' ? null : adapter.namespace + '.' + deviceArr[i].PARENT),
-            children: children,
             common: {
                 // FIXME strange bug - LEVEL and WORKING datapoint of Dimmers have name of first dimmer device?!?
                 name: deviceArr[i].ADDRESS,
@@ -452,11 +436,10 @@ function createDevices(deviceArr, callback) {
             },
             native: deviceArr[i]
         };
-        dpTypes[adapter.namespace + '.' + deviceArr[i].ADDRESS] = {UNIT: deviceArr[i].UNIT, TYPE: deviceArr[i].TYPE};
-        //adapter.log.debug(JSON.stringify(obj));
+        dpTypes[adapter.namespace + '.' + obj._id] = {UNIT: deviceArr[i].UNIT, TYPE: deviceArr[i].TYPE};
         objs.push(obj);
-
     }
+
     function queue() {
         if (objs.length) {
 
@@ -473,7 +456,7 @@ function createDevices(deviceArr, callback) {
 
             if (obj.type === 'channel') {
                 var cid = obj.PARENT_TYPE + '.' + obj.TYPE + '.' + obj.VERSION;
-                channelParams[obj._id] = cid;
+                //channelParams[obj._id] = cid;
                 if (!metaValues[cid]) {
                     queueValueParamsets.push(obj);
                 }
