@@ -72,7 +72,7 @@ var adapter = require(__dirname + '/../../lib/adapter.js')({
             "language": "javascript",
             "views": {
                 "listDevices": {
-                    "map": "function (doc) {\n  if (doc._id.match(/^hm-rpc\\.[0-9]+\\.\\*?[A-Za-z0-9_-]+(:[0-9]+)?$/)) {\n   emit(doc._id, {ADDRESS:doc.native.ADDRESS, VERSION:doc.native.VERSION, PARENT_TYPE:doc.native.PARENT_TYPE, TYPE:doc.native.TYPE});\n  }\n}"
+                    "map": "function (doc) {\n  if (doc._id.match(/^hm-rpc\\.[0-9]+\\.\\*?[A-Za-z0-9_-]+(\\.[0-9]+)?$/)) {\n   emit(doc._id, {ADDRESS:(doc.native?doc.native.ADDRESS:''), VERSION:(doc.native?doc.native.VERSION:''), PARENT_TYPE:(doc.native?doc.native.PARENT_TYPE:''), TYPE:(doc.native?doc.native.TYPE:'')});\n  }\n}"
                 },
                 "paramsetDescription": {
                     "map": "function (doc) {\n  if (doc._id.match(/^hm-rpc\\.meta/) && doc.meta.type === 'paramsetDescription') {\n   emit(doc._id, doc);\n  }\n}"
@@ -359,6 +359,7 @@ function addParamsetObjects(channel, paramset) {
 
 function getValueParamsets() {
     if (queueValueParamsets.length === 0) {
+        adapter.setState('ready', true, true);
         return;
     }
     var obj = queueValueParamsets.pop();
@@ -411,7 +412,7 @@ function getValueParamsets() {
 }
 
 function createDevices(deviceArr, callback) {
-    adapter.log.debug(JSON.stringify(deviceArr));
+    adapter.setState('ready', false, true);
 
     var objs = [];
 
@@ -444,14 +445,13 @@ function createDevices(deviceArr, callback) {
         if (objs.length) {
 
             var obj = objs.pop();
-
             adapter.setObject(obj._id, obj, function (err, res) {
                 if (!err) {
                     adapter.log.info('object ' + res.id + ' created');
                 } else {
                     adapter.log.error('object ' + (res ? res.id : '?') + ' error on creation: ' + err);
                 }
-                queue();
+                setTimeout(queue, 0);
             });
 
             if (obj.type === 'channel') {
