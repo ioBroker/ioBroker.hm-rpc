@@ -105,6 +105,125 @@ var forceReInit =   false;
 var xmlrpc = require('homematic-xmlrpc');
 var binrpc = require('binrpc');
 
+var images =  {
+    'HM-LC-Dim1TPBU-FM': 'PushButton-2ch-wm_thumb.png',
+    'HM-LC-Sw1PBU-FM':   'PushButton-2ch-wm_thumb.png',
+    'HM-LC-Bl1PBU-FM':   'PushButton-2ch-wm_thumb.png',
+    'HM-LC-Sw1-PB-FM':   'PushButton-2ch-wm_thumb.png',
+    'HM-PB-2-WM':        'PushButton-2ch-wm_thumb.png',
+    'HM-LC-Sw2-PB-FM':   'PushButton-4ch-wm_thumb.png',
+    'HM-PB-4-WM':        'PushButton-4ch-wm_thumb.png',
+    'HM-LC-Dim1L-Pl':    'OM55_DimmerSwitch_thumb.png',
+    'HM-LC-Dim1T-Pl':    'OM55_DimmerSwitch_thumb.png',
+    'HM-LC-Sw1-Pl':      'OM55_DimmerSwitch_thumb.png',
+    'HM-LC-Dim1L-Pl-2':  'OM55_DimmerSwitch_thumb.png',
+    'HM-LC-Sw1-Pl-OM54': 'OM55_DimmerSwitch_thumb.png',
+    'HM-Sys-sRP-Pl':     'OM55_DimmerSwitch_thumb.png',
+    'HM-LC-Dim1T-Pl-2':  'OM55_DimmerSwitch_thumb.png',
+    'HM-LC-Sw1-Pl-2':    'OM55_DimmerSwitch_thumb.png',
+    'HM-LC-Sw4-Ba-PCB':  '88_hm-lc-sw4-ba-pcb_thumb.png',
+    'HM-Sen-RD-O':       '87_hm-sen-rd-o_thumb.png',
+    'HM-RC-Sec4-2':      '86_hm-rc-sec4-2_thumb.png',
+    'HM-PB-6-WM55':      '86_hm-pb-6-wm55_thumb.png',
+    'HM-RC-Key4-2':      '85_hm-rc-key4-2_thumb.png',
+    'HM-RC-4-2':         '84_hm-rc-4-2_thumb.png',
+    'HM-CC-RT-DN':       '83_hm-cc-rt-dn_thumb.png',
+    'HM-Sen-Wa-Od':      '82_hm-sen-wa-od_thumb.png',
+    'HM-Sen-WA-OD':      '82_hm-sen-wa-od_thumb.png',
+    'HM-Dis-TD-T':       '81_hm-dis-td-t_thumb.png',
+    'HM-Sen-MDIR-O':     '80_hm-sen-mdir-o_thumb.png',
+    'HM-OU-LED16':       '78_hm-ou-led16_thumb.png',
+    'HM-LC-Sw1-Ba-PCB':  '77_hm-lc-sw1-ba-pcb_thumb.png',
+    'HM-LC-Sw4-WM':      '76_hm-lc-sw4-wm_thumb.png',
+    'HM-PB-2-WM55':      '75_hm-pb-2-wm55_thumb.png',
+    'atent':             '73_hm-atent_thumb.png',
+    'HM-RC-BRC-H':       '72_hm-rc-brc-h_thumb.png',
+    'HMW-IO-12-Sw14-DR': '71_hmw-io-12-sw14-dr_thumb.png',
+    'HM-PB-4Dis-WM':     '70_hm-pb-4dis-wm_thumb.png',
+    'HM-LC-Sw2-DR':      '69_hm-lc-sw2-dr_thumb.png',
+    'HM-LC-Sw4-DR':      '68_hm-lc-sw4-dr_thumb.png',
+    'HM-SCI-3-FM':       '67_hm-sci-3-fm_thumb.png',
+    'HM-LC-Dim1T-CV':    '66_hm-lc-dim1t-cv_thumb.png',
+    'HM-LC-Dim1T-FM':    '65_hm-lc-dim1t-fm_thumb.png',
+    'HM-LC-Dim2T-SM':    '64_hm-lc-dim2T-sm_thumb.png',
+    'HM-LC-Bl1-pb-FM':   '61_hm-lc-bl1-pb-fm_thumb.png',
+    'HM-LC-Bi1-pb-FM':   '61_hm-lc-bi1-pb-fm_thumb.png',
+    'HM-OU-CF-Pl':       '60_hm-ou-cf-pl_thumb.png',
+    'HM-OU-CFM-Pl':      '60_hm-ou-cf-pl_thumb.png',
+    'HMW-IO-12-FM':      '59_hmw-io-12-fm_thumb.png',
+    'HMW-Sen-SC-12-FM':  '58_hmw-sen-sc-12-fm_thumb.png',
+    'HM-CC-SCD':         '57_hm-cc-scd_thumb.png',
+    'HMW-Sen-SC-12-DR':  '56_hmw-sen-sc-12-dr_thumb.png',
+    'HM-Sec-SFA-SM':     '55_hm-sec-sfa-sm_thumb.png',
+    'HM-LC-ddc1':        '54a_lc-ddc1_thumb.png',
+    'HM-LC-ddc1-PCB':    '54_hm-lc-ddc1-pcb_thumb.png',
+    'HM-Sen-MDIR-SM':    '53_hm-sen-mdir-sm_thumb.png',
+    'HM-Sec-SD-Team':    '52_hm-sec-sd-team_thumb.png',
+    'HM-Sec-SD':         '51_hm-sec-sd_thumb.png',
+    'HM-Sec-MDIR':       '50_hm-sec-mdir_thumb.png',
+    'HM-Sec-WDS':        '49_hm-sec-wds_thumb.png',
+    'HM-Sen-EP':         '48_hm-sen-ep_thumb.png',
+    'HM-Sec-TiS':        '47_hm-sec-tis_thumb.png',
+    'HM-LC-Sw4-PCB':     '46_hm-lc-sw4-pcb_thumb.png',
+    'HM-LC-Dim2L-SM':    '45_hm-lc-dim2l-sm_thumb.png',
+    'HM-EM-CCM':         '44_hm-em-ccm_thumb.png',
+    'HM-CC-VD':          '43_hm-cc-vd_thumb.png',
+    'HM-CC-TC':          '42_hm-cc-tc_thumb.png',
+    'HM-Swi-3-FM':       '39_hm-swi-3-fm_thumb.png',
+    'HM-PBI-4-FM':       '38_hm-pbi-4-fm_thumb.png',
+    'HMW-Sys-PS7-DR':    '36_hmw-sys-ps7-dr_thumb.png',
+    'HMW-Sys-TM-DR':     '35_hmw-sys-tm-dr_thumb.png',
+    'HMW-Sys-TM':        '34_hmw-sys-tm_thumb.png',
+    'HMW-Sec-TR-FM':     '33_hmw-sec-tr-fm_thumb.png',
+    'HMW-WSTH-SM':       '32_hmw-wsth-sm_thumb.png',
+    'HMW-WSE-SM':        '31_hmw-wse-sm_thumb.png',
+    'HMW-IO-12-Sw7-DR':  '30_hmw-io-12-sw7-dr_thumb.png',
+    'HMW-IO-4-FM':       '29_hmw-io-4-fm_thumb.png',
+    'HMW-LC-Dim1L-DR':   '28_hmw-lc-dim1l-dr_thumb.png',
+    'HMW-LC-Bl1-DR':     '27_hmw-lc-bl1-dr_thumb.png',
+    'HMW-LC-Sw2-DR':     '26_hmw-lc-sw2-dr_thumb.png',
+    'HM-EM-CMM':         '25_hm-em-cmm_thumb.png',
+    'HM-CCU-1':          '24_hm-cen-3-1_thumb.png',
+    'HM-RCV-50':         '24_hm-cen-3-1_thumb.png',
+    'HMW-RCV-50':        '24_hm-cen-3-1_thumb.png',
+    'HM-RC-Key3':        '23_hm-rc-key3-b_thumb.png',
+    'HM-RC-Key3-B':      '23_hm-rc-key3-b_thumb.png',
+    'HM-RC-Sec3':        '22_hm-rc-sec3-b_thumb.png',
+    'HM-RC-Sec3-B':      '22_hm-rc-sec3-b_thumb.png',
+    'HM-RC-P1':          '21_hm-rc-p1_thumb.png',
+    'HM-RC-19':          '20_hm-rc-19_thumb.png',
+    'HM-RC-19-B':        '20_hm-rc-19_thumb.png',
+    'HM-RC-19-SW':       '20_hm-rc-19_thumb.png',
+    'HM-RC-12':          '19_hm-rc-12_thumb.png',
+    'HM-RC-12-B':        '19_hm-rc-12_thumb.png',
+    'HM-RC-4':           '18_hm-rc-4_thumb.png',
+    'HM-RC-4-B':         '18_hm-rc-4_thumb.png',
+    'HM-Sec-RHS':        '17_hm-sec-rhs_thumb.png',
+    'HM-Sec-SC':         '16_hm-sec-sc_thumb.png',
+    'HM-Sec-Win':        '15_hm-sec-win_thumb.png',
+    'HM-Sec-Key':        '14_hm-sec-key_thumb.png',
+    'HM-Sec-Key-S':      '14_hm-sec-key_thumb.png',
+    'HM-WS550STH-I':     '13_hm-ws550sth-i_thumb.png',
+    'HM-WDS40-TH-I':     '13_hm-ws550sth-i_thumb.png',
+    'HM-WS550-US':       '9_hm-ws550-us_thumb.png',
+    'WS550':             '9_hm-ws550-us_thumb.png',
+    'HM-WDC7000':        '9_hm-ws550-us_thumb.png',
+    'HM-LC-Sw1-SM':      '8_hm-lc-sw1-sm_thumb.png',
+    'HM-LC-Bl1-FM':      '7_hm-lc-bl1-fm_thumb.png',
+    'HM-LC-Bl1-SM':      '6_hm-lc-bl1-sm_thumb.png',
+    'HM-LC-Sw2-FM':      '5_hm-lc-sw2-fm_thumb.png',
+    'HM-LC-Sw1-FM':      '4_hm-lc-sw1-fm_thumb.png',
+    'HM-LC-Sw4-SM':      '3_hm-lc-sw4-sm_thumb.png',
+    'HM-LC-Dim1L-CV':    '2_hm-lc-dim1l-cv_thumb.png',
+    'HM-LC-Dim1PWM-CV':  '2_hm-lc-dim1l-cv_thumb.png',
+    'HM-WS550ST-IO':     'IP65_G201_thumb.png',
+    'HM-WDS30-T-O':      'IP65_G201_thumb.png',
+    'HM-WDS100-C6-O':    'WeatherCombiSensor_thumb.png',
+    'HM-WDS10-TH-O':     'TH_CS_thumb.png',
+    'HM-WS550STH-O':     'TH_CS_thumb.png',
+    'HM-WDS30-OT2-SM':   'IP65_G201_thumb.png'
+};
+
 function main() {
     if (adapter.config.type === 'bin') {
         rpc = binrpc;
@@ -419,12 +538,14 @@ function createDevices(deviceArr, callback) {
     for (var i = 0; i < deviceArr.length; i++) {
         var type;
         var role;
+        var icon;
 
         if (deviceArr[i].PARENT) {
             type = 'channel';
             role = metaRoles.chTYPE && metaRoles.chTYPE[deviceArr[i].TYPE] ? metaRoles.chTYPE && metaRoles.chTYPE[deviceArr[i].TYPE] : undefined;
         } else {
             type = 'device';
+            icon = images[deviceArr[i].TYPE] ? ('/icons/' + images[deviceArr[i].TYPE]) : '';
         }
 
         var obj = {
@@ -437,6 +558,9 @@ function createDevices(deviceArr, callback) {
             },
             native: deviceArr[i]
         };
+
+        if (icon) obj.common.icon = icon;
+
         dpTypes[adapter.namespace + '.' + obj._id] = {UNIT: deviceArr[i].UNIT, TYPE: deviceArr[i].TYPE};
         objs.push(obj);
     }
