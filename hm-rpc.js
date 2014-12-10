@@ -12,6 +12,7 @@ var adapter = require(__dirname + '/../../lib/adapter.js')({
             var val;
             adapter.log.debug(adapter.config.type + 'rpc -> setValue ' + JSON.stringify([tmp[3], tmp[4], state.val]));
 
+            if (id == adapter.namespace + '.updated') return;
             if (!dpTypes[id]) {
                 adapter.log.error(adapter.config.type + 'rpc -> setValue: no dpType for ' + id + '!');
                 return;
@@ -98,9 +99,6 @@ var metaValues =    {};
 var metaRoles =     {};
 //var channelParams = {};
 var dpTypes =       {};
-
-// Set ths flag to true if want to reinit objects for debug purposes
-var forceReInit =   false;
 
 var xmlrpc = require('homematic-xmlrpc');
 var binrpc = require('binrpc');
@@ -261,6 +259,7 @@ function main() {
     adapter.objects.getObjectView('system', 'state', {startkey: adapter.namespace, endkey: adapter.namespace + '\u9999'}, function (err, res) {
         if (!err && res.rows) {
             for (var i = 0; i < res.rows.length; i++) {
+                if (res.rows[i].id == adapter.namespace + '.updated') continue;
                 if (!res.rows[i].value.native) {
                     adapter.log.warn('State ' + res.rows[i].id + ' does not have native.');
                     dpTypes[res.rows[i].id] = {UNIT: '', TYPE: ''};
@@ -343,8 +342,9 @@ function initRpcServer() {
             adapter.log.info(adapter.config.type + 'rpc <- listDevices ' + JSON.stringify(params));
             adapter.objects.getObjectView('hm-rpc', 'listDevices', {startkey: 'hm-rpc.' + adapter.instance + '.', endkey: 'hm-rpc.' + adapter.instance + '.\u9999'}, function (err, doc) {
                 var response = [];
-                if (!forceReInit) {
+                if (!adapter.config.forceReInit) {
                      for (var i = 0; i < doc.rows.length; i++) {
+                         if (doc.rows[i].id == adapter.namespace + '.updated') continue;
                          var val = doc.rows[i].value;
 
                          /*if (val.PARENT_TYPE) {
@@ -354,7 +354,7 @@ function initRpcServer() {
                          response.push({ADDRESS: val.ADDRESS, VERSION: val.VERSION});
                      }
                 }
-                adapter.log.info(adapter.config.type + 'rpc -> ' + doc.rows.length + ' devices');
+                adapter.log.info(adapter.config.type + 'rpc -> ' + response.length + ' devices');
                 //log.info(JSON.stringify(response));
                 callback(null, response);
             });
@@ -478,7 +478,12 @@ function addParamsetObjects(channel, paramset) {
 
 function getValueParamsets() {
     if (queueValueParamsets.length === 0) {
-        adapter.setState('ready', true, true);
+        // Inform hm-rega about new devices
+        adapter.setState('updated', true, true);
+        // Inform hm-rega about new devices
+        if (adapter.config.forceReInit) {
+            adapter.extendForeignObject('system.adapter.' + adapter.namespace, {native: {forceReInit: false}});
+        }
         return;
     }
     var obj = queueValueParamsets.pop();
@@ -531,8 +536,6 @@ function getValueParamsets() {
 }
 
 function createDevices(deviceArr, callback) {
-    adapter.setState('ready', false, true);
-
     var objs = [];
 
     for (var i = 0; i < deviceArr.length; i++) {

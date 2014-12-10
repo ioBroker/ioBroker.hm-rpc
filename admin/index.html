@@ -25,7 +25,8 @@
             "en": "Homematic RPC adapter settings",
             "de": "Homematic RPC Adapter Einstellungen",
             "ru": "Настройки Homematic RPC драйвера"
-        }
+        },
+        "Force objects re-init": {"en": "Force objects re-init (once)", "de": "Initiiere Geräte neu (einmalig)",  "ru": "Синхронизировать объекты (один раз)"}
     };
 
     function setValue(id, value) {
@@ -165,6 +166,10 @@
         <tr>
             <td class="translate">Check init trigger</td>
             <td><input type="text" id="checkInitTrigger" class="value" size="40"/></td>
+        </tr>
+        <tr>
+            <td class="translate">Force objects re-init</td>
+            <td><input type="checkbox" id="forceReInit" class="value"/></td>
         </tr>
     </table>
 
