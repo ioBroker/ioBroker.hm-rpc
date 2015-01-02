@@ -1,6 +1,24 @@
 {
   "name": "ioBroker.hm-rpc",
-  "private": true,
+  "version": "0.2.10",
+  "description": "Connects HomeMatic Interface-Processes (BidCos-Services, Homegear and CUxD) via XML-RPC or BIN-RPC to ioBroker",
+  "author": "hobbyquaker <hq@ccu.io>",
+  "contributors": [
+    "hobbyquaker <hq@ccu.io>",
+    "bluefox <bluefox@ccu.io>"
+  ],
+  "homepage": "https://github.com/ioBroker/ioBroker.hm-rpc",
+  "license": "MIT",
+  "keywords": [
+    "ioBroker",
+    "hm-rpc",
+    "homematic",
+    "home automation"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ioBroker/ioBroker.hm-rpc"
+  },
   "dependencies": {
     "homematic-xmlrpc": ">=1.0.0",
     "binrpc": ">=0.0.2"
@@ -15,5 +33,12 @@
     "grunt-contrib-compress": "~0.8.0",
     "grunt-contrib-copy": "~0.5.0",
     "grunt-exec": "~0.4.5"
+  },
+  "bugs": {
+    "url": "https://github.com/ioBroker/ioBroker.hm-rpc/issues"
+  },
+  "main": "hm-rpc.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   }
 }
