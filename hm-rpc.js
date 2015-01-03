@@ -68,7 +68,11 @@ var adapter = utils.adapter({
                 callback();
             }
         } catch (e) {
-            adapter.log.error(e);
+            if (adapter && adapter.log) {
+                adapter.log.error(e);
+            } else {
+                console.log(e);
+            }
             callback();
         }
     },
@@ -243,7 +247,7 @@ function main() {
     // Load VALUE paramsetDescriptions (needed to create state objects)
     adapter.objects.getObjectView('hm-rpc', 'paramsetDescription', {startkey: 'hm-rpc.meta.VALUES', endkey: 'hm-rpc.meta.VALUES.\u9999'}, function (err, doc) {
         // Todo Handle Errors
-        if (!doc) {
+        if (doc) {
             for (var i = 0; i < doc.rows.length; i++) {
                 metaValues[doc.rows[i].id.slice(19)] = doc.rows[i].value.native;
             }
