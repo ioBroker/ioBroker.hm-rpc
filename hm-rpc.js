@@ -12,7 +12,7 @@ var adapter = utils.adapter({
         main();
     },
     stateChange: function (id, state) {
-        if (state.ack !== true) {
+        if (state && state.ack !== true) {
             var tmp = id.split('.');
             var val;
             adapter.log.debug(adapter.config.type + 'rpc -> setValue ' + JSON.stringify([tmp[3], tmp[4], state.val]));
