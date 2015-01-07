@@ -460,6 +460,11 @@ function addParamsetObjects(channel, paramset) {
             obj.common.max = 100 * paramset[key].MAX;
         } else if (paramset[key].UNIT !== '') {
             obj.common.unit = paramset[key].UNIT;
+            if (obj.common.unit == '�C') {
+                obj.common.unit = '°C';
+            } else if (obj.common.unit == '�F') {
+                obj.common.unit = '°F';
+            }
         }
 
         if (metaRoles.dpCONTROL && metaRoles.dpCONTROL[obj.native.CONTROL]) {
