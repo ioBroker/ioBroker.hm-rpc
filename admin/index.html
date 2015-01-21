@@ -35,11 +35,13 @@
             $('#' + id + '.value').prop('checked', value).change(function() {
                 changed = true;
                 $('#save').button("enable");
+                $('#saveclose').button("enable");
             });
         } else {
             $('#' + id + '.value').val(value).change(function() {
                 changed = true;
                 $('#save').button("enable");
+                $('#saveclose').button("enable");
             }).keyup(function() {
                 // Chack that only numbers entered
                 if ($(this).hasClass('number')) {
@@ -58,6 +60,7 @@
 
                 changed = true;
                 $('#save').button("enable");
+                $('#saveclose').button("enable");
             });
         }
     }
@@ -71,6 +74,7 @@
 
         changed = false;
         $('#save').button("disable");
+		$('#saveclose').button("disable");
     }
 
     function getSettings() {
@@ -91,6 +95,7 @@
     function save(callback) {
         changed = false;
         $('#save').button("disable");
+ 		$('#saveclose').button("disable");
         callback(getSettings());
     }
 

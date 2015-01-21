@@ -109,8 +109,8 @@ var metaRoles =     {};
 //var channelParams = {};
 var dpTypes =       {};
 
-var xmlrpc = require('homematic-xmlrpc');
-var binrpc = require('binrpc');
+var xmlrpc;
+var binrpc;
 
 var images =  {
     'HM-LC-Dim1TPBU-FM': 'PushButton-2ch-wm_thumb.png',
@@ -233,9 +233,9 @@ var images =  {
 
 function main() {
     if (adapter.config.type === 'bin') {
-        rpc = binrpc;
+        rpc = require('binrpc');
     } else {
-        rpc = xmlrpc;
+        rpc = require(__dirname + '/lib/homematic-xmlrpc/lib/xmlrpc.js');
     }
 
     rpcClient = rpc.createClient({
@@ -282,23 +282,23 @@ function main() {
 }
 
 function initRpcServer() {
-    adapter.getPort(2000, function (port) {
+    adapter.getPort(adapter.config.homematicPort, function (port) {
         rpcServerStarted = true;
         var protocol;
         if (adapter.config.type === 'bin') {
             protocol = 'xmlrpc_bin://';
-            rpcServer = binrpc.createServer({host: adapter.config.adapterAddress, port: port});
         } else {
             adapter.config.type = 'xml';
             protocol = 'http://';
-            rpcServer = xmlrpc.createServer({host: adapter.config.adapterAddress, port: port});
         }
+        rpcServer = rpc.createServer({host: adapter.config.adapterAddress, port: port});
 
-        adapter.log.info(adapter.config.type + 'rpc server listening on ' + adapter.config.adapterAddress + ':' + port);
+        adapter.log.info(adapter.config.type + 'rpc server is trying to listen on ' + adapter.config.adapterAddress + ':' + port);
 
         adapter.log.info(adapter.config.type + 'rpc -> ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + ' init ' + JSON.stringify([protocol + adapter.config.adapterAddress + ':' + port, adapter.namespace]));
 
         rpcClient.methodCall('init', [protocol + adapter.config.adapterAddress + ':' + port, adapter.namespace], function (err, data) {
+
             if (!err) {
                 if (adapter.config.daemon === 'CUxD') {
                     getCuxDevices(function (err2) {
@@ -317,7 +317,7 @@ function initRpcServer() {
         });
 
         rpcServer.on('NotFound', function (method, params) {
-            adapter.log.warn(type + 'rpc <- undefined method ' + method + ' ' + JSON.stringify(params).slice(0, 80));
+            adapter.log.warn(adapter.config.type + 'rpc <- undefined method ' + method + ' ' + JSON.stringify(params).slice(0, 80));
         });
 
         rpcServer.on('system.multicall', function (method, params, callback) {
