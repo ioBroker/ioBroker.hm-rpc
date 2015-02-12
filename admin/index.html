@@ -129,28 +129,13 @@
 
         // If ipv6 or DNS name
         if (i1.length != i2.length || i1.length != 4) return 1;
-        if (i1.length != i2.length || i1.length != 4) return 1;
 
-        var m = 0;
-        if (i1[0] == i2[0]) {
-            m++;
-        } else {
-            return m;
-        }
-        if (i1[1] == i2[1]) {
-            m++;
-        } else {
-            return m;
-        }
-        if (i1[2] == i2[2]) {
-            m++;
-        } else {
-            return m;
-        }
+        if (i1[0] != i2[0]) return 0;
+        if (i1[1] != i2[1]) return 1;
+        if (i1[2] != i2[2]) return 2;
+        if (i1[3] != i2[3]) return 3;
 
-        if (i1[3] == i2[3]) m++;
-
-        return m;
+        return 4;
     }
 
     $(document).ready(function () {
