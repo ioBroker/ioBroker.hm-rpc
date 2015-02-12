@@ -31,7 +31,7 @@ var adapter = utils.adapter({
 
             switch (type) {
                 case 'BOOL':
-                    val = (state.val === "false") ? false : !!state.val;
+                    val = (state.val === "false" || state.val === "0") ? false : !!state.val;
                     break;
                 case 'FLOAT':
                     val = {explicitDouble: state.val};

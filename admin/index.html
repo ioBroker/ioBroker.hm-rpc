@@ -9,6 +9,11 @@
 <script type="text/javascript" src="../../js/translate.js"></script>
 <script type="text/javascript" src="../../js/adapter-settings.js"></script>
 
+<style>
+    .invalid {
+        border: 3px solid red;
+    }
+</style>
 
 <script type="text/javascript">
     systemDictionary = {
@@ -29,21 +34,44 @@
         "Force objects re-init": {"en": "Force objects re-init (once)", "de": "Initiiere Geräte neu (einmalig)",  "ru": "Синхронизировать объекты (один раз)"}
     };
 
+    var onChange = null;
+
     function setValue(id, value) {
         // example: select elements with id=key and class=value and insert value
         if ($('#' + id + '.value').attr('type') == 'checkbox') {
             $('#' + id + '.value').prop('checked', value).change(function() {
-                changed = true;
-                $('#save').button("enable");
-                $('#saveclose').button("enable");
+                onChange();
             });
         } else {
             $('#' + id + '.value').val(value).change(function() {
-                changed = true;
-                $('#save').button("enable");
-                $('#saveclose').button("enable");
+                if (id == 'homematicAddress' || id == 'adapterAddress') {
+                    var ip1 = $('#homematicAddress').val();
+                    var ip2 = $('#adapterAddress').val();
+
+                    if (id == 'homematicAddress' && ip2 == '0.0.0.0') {
+                        var max = 0;
+                        var ip = '';
+                        $('#adapterAddress option').each(function () {
+                            var c = checkIPs(ip1, $(this).attr('value'));
+                            if (c > max) {
+                                max = c;
+                                ip = $(this).attr('value');
+                            }
+                        });
+                        if (ip) $('#adapterAddress').val(ip);
+
+                    }
+
+                    if (!ip2 || ip2 == '0.0.0.0' || !checkIPs(ip1, ip2)) {
+                        $('#adapterAddress').addClass('invalid').attr('title', _('This IP is unreachable from %s', $('#homematicAddress').val()));
+                    } else {
+                        $('#adapterAddress').removeClass('invalid').attr('title', '');
+                    }
+                }
+
+                onChange();
             }).keyup(function() {
-                // Chack that only numbers entered
+                // Check that only numbers entered
                 if ($(this).hasClass('number')) {
                     var val = $(this).val();
                     if (val) {
@@ -58,23 +86,20 @@
                     }
                 }
 
-                changed = true;
-                $('#save').button("enable");
-                $('#saveclose').button("enable");
+                $(this).trigger('change');
             });
         }
     }
 
-    function load(settings) {
+    function load(settings, _onChange) {
+        onChange = _onChange;
         fillSelectIPs('#adapterAddress', settings.adapterAddress, false, true);
 
         for (var key in settings) {
             setValue(key, settings[key]);
         }
 
-        changed = false;
-        $('#save').button("disable");
-		$('#saveclose').button("disable");
+        onChange(false);
     }
 
     function getSettings() {
@@ -93,10 +118,39 @@
     }
 
     function save(callback) {
-        changed = false;
-        $('#save').button("disable");
- 		$('#saveclose').button("disable");
         callback(getSettings());
+    }
+
+    function checkIPs(ip1, ip2) {
+        // normally it must be calculated the common subnet mask and applyed to both ip addresses, if result is the same => ok
+        // I will check only 2 first numbers of ipV4
+        var i1 = ip1.split('.');
+        var i2 = ip2.split('.');
+
+        // If ipv6 or DNS name
+        if (i1.length != i2.length || i1.length != 4) return 1;
+        if (i1.length != i2.length || i1.length != 4) return 1;
+
+        var m = 0;
+        if (i1[0] == i2[0]) {
+            m++;
+        } else {
+            return m;
+        }
+        if (i1[1] == i2[1]) {
+            m++;
+        } else {
+            return m;
+        }
+        if (i1[2] == i2[2]) {
+            m++;
+        } else {
+            return m;
+        }
+
+        if (i1[3] == i2[3]) m++;
+
+        return m;
     }
 
     $(document).ready(function () {
@@ -105,9 +159,11 @@
                 case 'rfd':
                     $('#homematicPort').val('2001');
                     break;
+
                 case 'hs485d':
                     $('#homematicPort').val('2000');
                     break;
+
                 case 'CUxD':
                     $('#homematicPort').val('8701');
                     $('#type').val('bin');
