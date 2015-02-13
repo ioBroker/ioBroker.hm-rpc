@@ -235,7 +235,7 @@ function main() {
     if (adapter.config.type === 'bin') {
         rpc = require('binrpc');
     } else {
-        rpc = require(__dirname + '/lib/homematic-xmlrpc/lib/xmlrpc.js');
+        rpc = require('homematic-xmlrpc');
     }
 
     rpcClient = rpc.createClient({
