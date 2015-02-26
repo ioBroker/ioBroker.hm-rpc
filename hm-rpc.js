@@ -15,7 +15,7 @@ var adapter = utils.adapter({
         if (state && state.ack !== true) {
             var tmp = id.split('.');
             var val;
-            adapter.log.debug(adapter.config.type + 'rpc -> setValue ' + JSON.stringify([tmp[3], tmp[4], state.val]));
+            adapter.log.debug(adapter.config.type + 'rpc -> setValue ' + tmp[3] + ' ' + tmp[4] + ': ' + state.val);
 
             if (id == adapter.namespace + '.updated') return;
             if (!dpTypes[id]) {
@@ -372,8 +372,9 @@ function initRpcServer() {
         rpcServer.on('deleteDevices', function (err, params, callback) {
             adapter.log.info(adapter.config.type + 'rpc <- deleteDevices ' + params[1].length);
             for (var i = 0; i < params[1].length; i++) {
-                adapter.log.info('object ' + params[1][i].ADDRESS + ' deleted');
-                adapter.delObject(params[1][i]);
+                params[1][i] = params[1][i].replace(':', '.');
+                adapter.log.info('object ' + params[1][i] + ' ' + params[1][i].ADDRESS + ' deleted');
+                adapter.deleteChannel(params[1][i]);
             }
             callback(null, '');
         });
