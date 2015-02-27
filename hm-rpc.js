@@ -372,9 +372,14 @@ function initRpcServer() {
         rpcServer.on('deleteDevices', function (err, params, callback) {
             adapter.log.info(adapter.config.type + 'rpc <- deleteDevices ' + params[1].length);
             for (var i = 0; i < params[1].length; i++) {
-                params[1][i] = params[1][i].replace(':', '.');
-                adapter.log.info('object ' + params[1][i] + ' ' + params[1][i].ADDRESS + ' deleted');
-                adapter.deleteChannel(params[1][i]);
+                if (params[1][i].indexOf(':')) {
+                    params[1][i] = params[1][i].replace(':', '.');
+                    adapter.log.info('channel ' + params[1][i] + ' ' + params[1][i].ADDRESS + ' deleted');
+                    adapter.deleteChannel(params[1][i]);
+                } else {
+                    adapter.log.info('device ' + params[1][i] + ' deleted');
+                    adapter.deleteDevice(params[1][i]);
+                }
             }
             callback(null, '');
         });
@@ -416,12 +421,12 @@ function addParamsetObjects(channel, paramset) {
     for (var key in paramset) {
         channelChildren.push(channel._id + '.' + key);
         var commonType = {
-            'ACTION':       'boolean',
-            'BOOL':         'boolean',
-            'FLOAT':        'number',
-            'ENUM':         'number',
-            'INTEGER':      'number',
-            'STRING':       'string'
+            'ACTION':  'boolean',
+            'BOOL':    'boolean',
+            'FLOAT':   'number',
+            'ENUM':    'number',
+            'INTEGER': 'number',
+            'STRING':  'string'
         };
 
         var obj = {
@@ -487,6 +492,10 @@ function addParamsetObjects(channel, paramset) {
             throw 'typeof obj.common.role ' + typeof obj.common.role;
         }
         dpTypes[adapter.namespace + '.' + channel._id + '.' + key] = {UNIT: paramset[key].UNIT, TYPE: paramset[key].TYPE};
+        if (key == 'LEVEL' && paramset['WORKING']) {
+            obj.common.workingID = 'WORKING';
+        }
+
         adapter.extendObject(channel._id + '.' + key, obj, _logResult);
     }
 }
@@ -522,9 +531,7 @@ function getValueParamsets() {
                 metaValues[cid] = res.native;
                 addParamsetObjects(obj, res.native);
                 setTimeout(getValueParamsets, 50);
-
             } else {
-
                 adapter.log.info(adapter.config.type + 'rpc -> getParamsetDescription ' + JSON.stringify([obj.native.ADDRESS, 'VALUES']));
                 rpcClient.methodCall('getParamsetDescription', [obj.native.ADDRESS, 'VALUES'], function (err, res) {
                     var paramset = {
