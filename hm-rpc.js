@@ -375,7 +375,8 @@ function initRpcServer() {
                 if (params[1][i].indexOf(':')) {
                     params[1][i] = params[1][i].replace(':', '.');
                     adapter.log.info('channel ' + params[1][i] + ' ' + params[1][i].ADDRESS + ' deleted');
-                    adapter.deleteChannel(params[1][i]);
+                    var parts = params[1][i].split('.');
+                    adapter.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
                 } else {
                     adapter.log.info('device ' + params[1][i] + ' deleted');
                     adapter.deleteDevice(params[1][i]);
