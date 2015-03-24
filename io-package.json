@@ -7,7 +7,7 @@
             "de": "Verbindet HomeMatic Interface-Prozesse (BidCos-Services, Homegear und CUxD) via XML-RPC oder BIN-RPC mit ioBroker",
             "ru": "Подключает HomeMatic интерфейсы (BidCos-сервисы, Homegear и CUxD) через XML-RPC или BIN-RPC к ioBroker"
         },
-        "version":                  "0.3.5",
+        "version":                  "0.4.0",
         "authors": [
             "hobbyquaker <hq@ccu.io>"
         ],
@@ -18,7 +18,8 @@
         "readme":                   "https://github.com/ioBroker/ioBroker.hm-rpc/blob/master/README.md",
         "icon":                     "homematic.png",
         "extIcon":                  "https://raw.githubusercontent.com/ioBroker/ioBroker.hm-rpc/master/admin/homematic.png",
-        "keywords":                 ["homematic", "bidcos", "eq3", "ELV", "CCU", "CCU1", "CCU2", "rpc", "xmlrpc", "homegear", "binrpc", "CUxD", "FS20", "FHT", "HMS", "EnOcean"]
+        "keywords":                 ["homematic", "bidcos", "eq3", "ELV", "CCU", "CCU1", "CCU2", "rpc", "xmlrpc", "homegear", "binrpc", "CUxD", "FS20", "FHT", "HMS", "EnOcean"],
+        "type":                     "hardware"
     },
     "native": {
         "homematicAddress":         "192.168.0.100",
@@ -29,7 +30,7 @@
         "init":                     true,
         "checkInit":                false,
         "checkInitInterval":        180,
-        "checkInitTrigger":         "BidCos-RF:50.PRESS_LONG",
+        "checkInitTrigger":         "BidCos-RF.BidCoS-RF:50.PRESS_LONG",
         "forceReInit":              false
     },
     "objects": [
@@ -5411,7 +5412,7 @@
             "type": "state",
             "common": {
                 "name": "Some new devices added",
-                "type": "bool",
+                "type": "boolean",
                 "read":  true,
                 "write": true
 

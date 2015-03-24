@@ -50,7 +50,12 @@ var adapter = utils.adapter({
     },
     unload: function (callback) {
         try {
-            if (adapter.config.init) {
+            if (eventInterval) {
+                clearInterval(eventInterval);
+                eventInterval = null;
+            }
+
+            if (adapter.config && adapter.config.init) {
                 adapter.config.init = false;
                 var protocol;
                 if (adapter.config.type === 'bin') {
@@ -75,7 +80,7 @@ var adapter = utils.adapter({
             }
             callback();
         }
-    },
+    }/*,
     install: function (callback) {
         var design = {
             "_id": "_design/hm-rpc",
@@ -93,7 +98,7 @@ var adapter = utils.adapter({
             adapter.log.info('object _design/hm-rpc created');
             if (typeof callback === 'function') callback();
         });
-    }
+    }*/
 });
 
 var rpc;
@@ -102,15 +107,13 @@ var rpcClient;
 var rpcServer;
 var rpcServerStarted;
 
-var connected;
-
 var metaValues =    {};
 var metaRoles =     {};
-//var channelParams = {};
 var dpTypes =       {};
 
-var xmlrpc;
-var binrpc;
+var lastEvent =     0;
+var eventInterval;
+var rpcInitString = null;
 
 var images =  {
     'HM-LC-Dim1TPBU-FM': 'PushButton-2ch-wm_thumb.png',
@@ -258,7 +261,7 @@ function main() {
             metaRoles = res.native;
 
             // Start Adapter
-            if (adapter.config.init) {
+            if (adapter.config && adapter.config.init) {
                 if (!rpcServerStarted) initRpcServer();
             }
 
@@ -281,6 +284,28 @@ function main() {
 
 }
 
+function sendInit(initAddress) {
+    if (initAddress) rpcInitString = initAddress;
+
+    rpcClient.methodCall('init', [rpcInitString, adapter.namespace], function (err, data) {
+        if (!err) {
+            if (initAddress && adapter.config.daemon === 'CUxD') {
+                getCuxDevices(function (err2) {
+                    if (!err2) {
+                        connection();
+                    } else {
+                        adapter.log.error(err2);
+                    }
+                });
+            } else {
+                connection();
+            }
+        } else {
+            adapter.log.error(err);
+        }
+    });
+}
+
 function initRpcServer() {
     adapter.getPort(adapter.config.homematicPort, function (port) {
         rpcServerStarted = true;
@@ -297,30 +322,14 @@ function initRpcServer() {
 
         adapter.log.info(adapter.config.type + 'rpc -> ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + ' init ' + JSON.stringify([protocol + adapter.config.adapterAddress + ':' + port, adapter.namespace]));
 
-        rpcClient.methodCall('init', [protocol + adapter.config.adapterAddress + ':' + port, adapter.namespace], function (err, data) {
-
-            if (!err) {
-                if (adapter.config.daemon === 'CUxD') {
-                    getCuxDevices(function (err2) {
-                        if (!err2) {
-                            connection();
-                        } else {
-                            adapter.log.error(err2);
-                        }
-                    });
-                } else {
-                    connection();
-                }
-            } else {
-                adapter.log.error(err);
-            }
-        });
+        sendInit(protocol + adapter.config.adapterAddress + ':' + port);
 
         rpcServer.on('NotFound', function (method, params) {
             adapter.log.warn(adapter.config.type + 'rpc <- undefined method ' + method + ' ' + JSON.stringify(params).slice(0, 80));
         });
 
         rpcServer.on('system.multicall', function (method, params, callback) {
+            connection();
             var response = [];
             for (var i = 0; i < params[0].length; i++) {
                 if (methods[params[0][i].methodName]) {
@@ -635,23 +644,36 @@ function getCuxDevices(callback) {
     // Todo delete all in array remaining devices
 }
 
-var connectionTimer;
-
 function connection() {
+    var now = (new Date()).getTime();
+    // do not send ofter than 5 seconds
+    if (!lastEvent || now - lastEvent > 5000) {
+        adapter.states.setState('system.adapter.' + adapter.namespace + '.connected', {val: true, expire: 300});
+    }
 
+    lastEvent = (new Date()).getTime();
 
+    if (adapter.config.checkInit && !eventInterval) {
+        if (!adapter.config.checkInitTrigger) {
+            adapter.config.checkInit = false;
+            adapter.log.error('Check init is enabled, but no trigger variable set. Check init disabled.');
+        } else {
+            adapter.config.checkInitInterval = parseInt(adapter.config.checkInitInterval, 10);
 
-    /* Todo Ping/Pong or eventTrigger
-    connected = true;
-    if (connectionTimer) clearTimeout(connectionTimer);
-    connectionTimer = setTimeout(function () {
-        connection = false;
+            if (adapter.config.checkInitInterval < 10) {
+                adapter.log.error('Check init interval is less than 10 seconds. Set init interval to 10 seconds.');
+                adapter.config.checkInitInterval = 10;
+            }
 
-    }, 300000);*/
-
-
-
-
-    adapter.states.setState('system.adapter.' + adapter.namespace + '.connected', {val: true, expire: 300});
+            eventInterval = setInterval(function () {
+                var _now = (new Date()).getTime();
+                // Check last event time
+                if (lastEvent && _now - lastEvent > adapter.config.checkInitInterval * 1000) {
+                    // Reinit !!!
+                    sendInit();
+                }
+            }, adapter.config.checkInitInterval * 1000);
+        }
+    }
 }
 
