@@ -4073,6 +4073,17 @@
                     "MIN": 0,
                     "MAX": 3,
                     "DEFAULT": 0
+                },
+                "LAST_VALUE": {
+                    "ID": "LAST_VALUE",
+                    "UNIT": "",
+                    "TAB_ORDER": 11,
+                    "OPERATIONS": 1,
+                    "FLAGS": 1,
+                    "TYPE": "FLOAT",
+                    "MIN": 0,
+                    "MAX": 9999999.890625,
+                    "DEFAULT": 0
                 }
             }
         },
