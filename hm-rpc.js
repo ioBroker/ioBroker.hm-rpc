@@ -3,6 +3,7 @@
 "use strict";
 var utils =    require(__dirname + '/lib/utils'); // Get common adapter utils
 
+// the adapter object
 var adapter = utils.adapter({
 
     name: 'hm-rpc',
@@ -55,17 +56,9 @@ var adapter = utils.adapter({
                 eventInterval = null;
             }
 
-            if (adapter.config && adapter.config.init) {
-                adapter.config.init = false;
-                var protocol;
-                if (adapter.config.type === 'bin') {
-                    protocol = 'xmlrpc_bin://';
-                } else {
-                    protocol = 'http://';
-                }
-
-                adapter.log.info(adapter.config.type + "rpc -> " + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + ' init ' + JSON.stringify([protocol + adapter.config.adapterAddress + ':' + adapter.config.homematicPort, '']));
-                rpcClient.methodCall('init', [protocol + adapter.config.adapterAddress + ':' + adapter.config.homematicPort, ''], function (err, data) {
+            if (adapter.config) {
+                adapter.log.info(adapter.config.type + "rpc -> " + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + ' init ' + JSON.stringify([daemonURL, '']));
+                rpcClient.methodCall('init', [daemonURL, ''], function (err, data) {
                     adapter.states.setState('system.adapter.' + adapter.namespace + '.connected', {val: false});
                     callback();
                 });
@@ -80,40 +73,23 @@ var adapter = utils.adapter({
             }
             callback();
         }
-    }/*,
-    install: function (callback) {
-        var design = {
-            "_id": "_design/hm-rpc",
-            "language": "javascript",
-            "views": {
-                "listDevices": {
-                    "map": "function (doc) {\n  if (doc._id.match(/^hm-rpc\\.[0-9]+\\.\\*?[A-Za-z0-9_-]+(\\.[0-9]+)?$/)) {\n   emit(doc._id, {ADDRESS:(doc.native?doc.native.ADDRESS:''), VERSION:(doc.native?doc.native.VERSION:''), PARENT_TYPE:(doc.native?doc.native.PARENT_TYPE:''), TYPE:(doc.native?doc.native.TYPE:'')});\n  }\n}"
-                },
-                "paramsetDescription": {
-                    "map": "function (doc) {\n  if (doc._id.match(/^hm-rpc\\.meta/) && doc.meta.type === 'paramsetDescription') {\n   emit(doc._id, doc);\n  }\n}"
-                }
-            }
-        };
-        adapter.objects.setObject(design._id, design, function () {
-            adapter.log.info('object _design/hm-rpc created');
-            if (typeof callback === 'function') callback();
-        });
-    }*/
+    }
 });
 
 var rpc;
 var rpcClient;
 
 var rpcServer;
-var rpcServerStarted;
 
 var metaValues =    {};
 var metaRoles =     {};
 var dpTypes =       {};
 
-var lastEvent =     0;
+var lastEvent = 0;
+var keepAliveSend = false;
 var eventInterval;
 var rpcInitString = null;
+var daemonURL;
 
 var images =  {
     'HM-LC-Dim1TPBU-FM': 'PushButton-2ch-wm_thumb.png',
@@ -237,18 +213,21 @@ var images =  {
 function main() {
     if (adapter.config.type === 'bin') {
         rpc = require('binrpc');
+        daemonURL = 'xmlrpc_bin://';
     } else {
         rpc = require('homematic-xmlrpc');
+        adapter.config.type = 'xml';
+        daemonURL = 'http://';
     }
-
+    
     rpcClient = rpc.createClient({
         host: adapter.config.homematicAddress,
         port: adapter.config.homematicPort,
         path: '/'
     });
-
+    
     // Load VALUE paramsetDescriptions (needed to create state objects)
-    adapter.objects.getObjectView('hm-rpc', 'paramsetDescription', {startkey: 'hm-rpc.meta.VALUES', endkey: 'hm-rpc.meta.VALUES.\u9999'}, function (err, doc) {
+    adapter.objects.getObjectView('hm-rpc', 'paramsetDescription', { startkey: 'hm-rpc.meta.VALUES', endkey: 'hm-rpc.meta.VALUES.\u9999' }, function handleValueParamSetDescriptions(err, doc) {
         // Todo Handle Errors
         if (doc) {
             for (var i = 0; i < doc.rows.length; i++) {
@@ -259,47 +238,59 @@ function main() {
         adapter.objects.getObject('hm-rpc.meta.roles', function (err, res) {
             // Todo Handle Errors
             metaRoles = res.native;
-
+            
             // Start Adapter
-            if (adapter.config && adapter.config.init) {
-                if (!rpcServerStarted) initRpcServer();
+            if (adapter.config) {
+                initRpcServer();
             }
-
         });
     });
-
-    adapter.objects.getObjectView('system', 'state', {startkey: adapter.namespace, endkey: adapter.namespace + '\u9999'}, function (err, res) {
+    
+    adapter.objects.getObjectView('system', 'state', { startkey: adapter.namespace, endkey: adapter.namespace + '\u9999' }, function handleStateViews(err, res) {
         if (!err && res.rows) {
             for (var i = 0; i < res.rows.length; i++) {
                 if (res.rows[i].id == adapter.namespace + '.updated') continue;
                 if (!res.rows[i].value.native) {
                     adapter.log.warn('State ' + res.rows[i].id + ' does not have native.');
-                    dpTypes[res.rows[i].id] = {UNIT: '', TYPE: ''};
+                    dpTypes[res.rows[i].id] = { UNIT: '', TYPE: '' };
                 } else {
-                    dpTypes[res.rows[i].id] = {UNIT: res.rows[i].value.native.UNIT, TYPE: res.rows[i].value.native.TYPE};
+                    dpTypes[res.rows[i].id] = { UNIT: res.rows[i].value.native.UNIT, TYPE: res.rows[i].value.native.TYPE };
                 }
             }
         }
     });
-
 }
 
-function sendInit(initAddress) {
-    if (initAddress) rpcInitString = initAddress;
-
-    rpcClient.methodCall('init', [rpcInitString, adapter.namespace], function (err, data) {
-        if (!err) {
-            if (initAddress && adapter.config.daemon === 'CUxD') {
-                getCuxDevices(function (err2) {
-                    if (!err2) {
-                        connection();
-                    } else {
-                        adapter.log.error(err2);
-                    }
-                });
+function sendInit() {
+    try {
+        rpcClient.methodCall('init', [daemonURL, adapter.namespace], function handleInit(err, data) {
+            if (!err) {
+                if (adapter.config.daemon === 'CUxD') {
+                    getCuxDevices(function handleCuxDevices(err2) {
+                        if (!err2) {
+                            connection();
+                        } else {
+                            adapter.log.error(err2);
+                        }
+                    });
+                } else {
+                    connection();
+                }
             } else {
-                connection();
+                adapter.log.error(err);
             }
+        });
+    }
+    catch (err) {
+        adapter.log.error("Init not possible, going to stop:", err);
+        adapter.stop();
+    }
+}
+
+function sendPing() {  
+    rpcClient.methodCall('ping', [adapter.namespace], function (err, data) {
+        if (!err) {
+            adapter.log.debug('no event recieved within keepalive-timeout, so now sending PING');
         } else {
             adapter.log.error(err);
         }
@@ -308,21 +299,16 @@ function sendInit(initAddress) {
 
 function initRpcServer() {
     adapter.getPort(adapter.config.homematicPort, function (port) {
-        rpcServerStarted = true;
-        var protocol;
-        if (adapter.config.type === 'bin') {
-            protocol = 'xmlrpc_bin://';
-        } else {
-            adapter.config.type = 'xml';
-            protocol = 'http://';
-        }
+        adapter.log.error("HEY!!!! HERE IS STILL A HARDCODED IP ADDRESS LEFT OVER FROM YOUR TESTING!!!!!!!!")        
+        adapter.config.adapterAddress = '192.168.2.201';
+        daemonURL += adapter.config.adapterAddress + ':' + port
         rpcServer = rpc.createServer({host: adapter.config.adapterAddress, port: port});
 
         adapter.log.info(adapter.config.type + 'rpc server is trying to listen on ' + adapter.config.adapterAddress + ':' + port);
 
-        adapter.log.info(adapter.config.type + 'rpc -> ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + ' init ' + JSON.stringify([protocol + adapter.config.adapterAddress + ':' + port, adapter.namespace]));
+        adapter.log.info(adapter.config.type + 'rpc -> ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + ' init ' + JSON.stringify([daemonURL, adapter.namespace]));
 
-        sendInit(protocol + adapter.config.adapterAddress + ':' + port);
+        sendInit();
 
         rpcServer.on('NotFound', function (method, params) {
             adapter.log.warn(adapter.config.type + 'rpc <- undefined method ' + method + ' ' + JSON.stringify(params).slice(0, 80));
@@ -333,7 +319,11 @@ function initRpcServer() {
             var response = [];
             for (var i = 0; i < params[0].length; i++) {
                 if (methods[params[0][i].methodName]) {
+                    adapter.log.debug(adapter.config.type + ' multicall <' + params[0][i].methodName + '>: ' + params[0][i].params);
                     response.push(methods[params[0][i].methodName](null, params[0][i].params));
+
+                    if ((params[0][i].params[2] === "PONG") && (keepAliveSend === true))
+                        keepAliveSend = false;
                 } else {
                     response.push('');
                 }
@@ -646,33 +636,37 @@ function getCuxDevices(callback) {
 
 function connection() {
     var now = (new Date()).getTime();
-    // do not send ofter than 5 seconds
+    // do not send more often than 5 seconds
     if (!lastEvent || now - lastEvent > 5000) {
-        adapter.states.setState('system.adapter.' + adapter.namespace + '.connected', {val: true, expire: 300});
+        adapter.states.setState('system.adapter.' + adapter.namespace + '.connected', { val: true, expire: 300 });
     }
-
+    
     lastEvent = (new Date()).getTime();
+    
+    if (!eventInterval) {
+        adapter.config.checkInitInterval = parseInt(adapter.config.checkInitInterval, 10);
+        
+        if (adapter.config.checkInitInterval < 10) {
+            adapter.log.error('Check init interval is less than 10 seconds. Set init interval to 10 seconds.');
+            adapter.config.checkInitInterval = 10;
+        }
+        
+        eventInterval = setInterval(keepAlive, adapter.config.checkInitInterval * 1000);
+    }
+}
 
-    if (adapter.config.checkInit && !eventInterval) {
-        if (!adapter.config.checkInitTrigger) {
-            adapter.config.checkInit = false;
-            adapter.log.error('Check init is enabled, but no trigger variable set. Check init disabled.');
-        } else {
-            adapter.config.checkInitInterval = parseInt(adapter.config.checkInitInterval, 10);
-
-            if (adapter.config.checkInitInterval < 10) {
-                adapter.log.error('Check init interval is less than 10 seconds. Set init interval to 10 seconds.');
-                adapter.config.checkInitInterval = 10;
-            }
-
-            eventInterval = setInterval(function () {
-                var _now = (new Date()).getTime();
-                // Check last event time
-                if (lastEvent && _now - lastEvent > adapter.config.checkInitInterval * 1000) {
-                    // Reinit !!!
-                    sendInit();
-                }
-            }, adapter.config.checkInitInterval * 1000);
+function keepAlive() {
+    var _now = (new Date()).getTime();
+    // Check last event time
+    if (lastEvent && _now - lastEvent > adapter.config.checkInitInterval * 1000) {
+        // Reinit !!!
+        if (keepAliveSend) {
+            keepAliveSend = false;            
+            sendInit();            
+        }
+        else {
+            keepAliveSend = true;
+            sendPing();            
         }
     }
 }
