@@ -299,8 +299,6 @@ function sendPing() {
 
 function initRpcServer() {
     adapter.getPort(adapter.config.homematicPort, function (port) {
-        adapter.log.error("HEY!!!! HERE IS STILL A HARDCODED IP ADDRESS LEFT OVER FROM YOUR TESTING!!!!!!!!")        
-        adapter.config.adapterAddress = '192.168.2.201';
         daemonURL += adapter.config.adapterAddress + ':' + port
         rpcServer = rpc.createServer({host: adapter.config.adapterAddress, port: port});
 
