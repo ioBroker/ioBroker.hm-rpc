@@ -1,11 +1,20 @@
 {
   "name": "iobroker.hm-rpc",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Connects HomeMatic Interface-Processes (BidCos-Services, Homegear and CUxD) via XML-RPC or BIN-RPC to ioBroker",
-  "author": "hobbyquaker <hq@ccu.io>",
+  "author": {
+    "name": "hobbyquaker",
+    "email": "hq@ccu.io"
+  },
   "contributors": [
-    "hobbyquaker <hq@ccu.io>",
-    "bluefox <bluefox@ccu.io>"
+    {
+      "name": "hobbyquaker",
+      "email": "hq@ccu.io"
+    },
+    {
+      "name": "bluefox",
+      "email": "bluefox@ccu.io"
+    }
   ],
   "homepage": "https://github.com/ioBroker/ioBroker.hm-rpc",
   "license": "MIT",
@@ -40,5 +49,27 @@
   "main": "hm-rpc.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
-  }
+  },
+  "gitHead": "050e8e99944ea39dee158c9025d6e0d63fcfdc21",
+  "_id": "iobroker.hm-rpc@0.4.0",
+  "_shasum": "3c5b10f130d947343adcbfb328a103293e963872",
+  "_from": "iobroker.hm-rpc@*",
+  "_npmVersion": "1.4.28",
+  "_npmUser": {
+    "name": "bluefox",
+    "email": "dogafox@gmail.com"
+  },
+  "maintainers": [
+    {
+      "name": "bluefox",
+      "email": "dogafox@gmail.com"
+    }
+  ],
+  "dist": {
+    "shasum": "3c5b10f130d947343adcbfb328a103293e963872",
+    "tarball": "http://registry.npmjs.org/iobroker.hm-rpc/-/iobroker.hm-rpc-0.4.0.tgz"
+  },
+  "directories": {},
+  "_resolved": "https://registry.npmjs.org/iobroker.hm-rpc/-/iobroker.hm-rpc-0.4.0.tgz",
+  "readme": "ERROR: No README data found!"
 }
