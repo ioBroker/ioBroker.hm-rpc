@@ -17,6 +17,7 @@ native.homematicAddress is the IP of the HomeMatic CCU respectively the Host tha
 ## Changelog
 ### 0.5.0 (2015-04-21)
 * (tschombe) replace check init / virtual key handling with simple PING / PONG xml-rpc api calls
+* (bluefox) fix deleteChannel
 
 ### 0.4.0 (2015-03-25)
 * (bluefox) implement check init function
