@@ -86,7 +86,6 @@ var metaRoles =     {};
 var dpTypes =       {};
 
 var lastEvent = 0;
-var keepAliveSend = false;
 var eventInterval;
 var rpcInitString = null;
 var daemonURL;
@@ -263,6 +262,7 @@ function main() {
 
 function sendInit() {
     try {
+        adapter.log.debug("Send INIT...");
         rpcClient.methodCall('init', [daemonURL, adapter.namespace], function handleInit(err, data) {
             if (!err) {
                 if (adapter.config.daemon === 'CUxD') {
@@ -287,10 +287,11 @@ function sendInit() {
     }
 }
 
-function sendPing() {  
+function sendPing() {
+    adapter.log.debug("Send PING...");
     rpcClient.methodCall('ping', [adapter.namespace], function (err, data) {
         if (!err) {
-            adapter.log.debug('no event recieved within keepalive-timeout, so now sending PING');
+            adapter.log.debug('no event recieved within keepalive-timeout, so PING sent');
         } else {
             adapter.log.error(err);
         }
@@ -319,9 +320,6 @@ function initRpcServer() {
                 if (methods[params[0][i].methodName]) {
                     adapter.log.debug(adapter.config.type + ' multicall <' + params[0][i].methodName + '>: ' + params[0][i].params);
                     response.push(methods[params[0][i].methodName](null, params[0][i].params));
-
-                    if ((params[0][i].params[2] === "PONG") && (keepAliveSend === true))
-                        keepAliveSend = false;
                 } else {
                     response.push('');
                 }
@@ -636,7 +634,7 @@ function connection() {
     var now = (new Date()).getTime();
     // do not send more often than 5 seconds
     if (!lastEvent || now - lastEvent > 5000) {
-        adapter.states.setState('system.adapter.' + adapter.namespace + '.connected', { val: true, expire: 300 });
+        adapter.states.setState('system.adapter.' + adapter.namespace + '.connected', {val: true, expire: 300});
     }
     
     lastEvent = (new Date()).getTime();
@@ -649,23 +647,19 @@ function connection() {
             adapter.config.checkInitInterval = 10;
         }
         
-        eventInterval = setInterval(keepAlive, adapter.config.checkInitInterval * 1000);
+        eventInterval = setInterval(keepAlive, adapter.config.checkInitInterval * 1000 / 2);
     }
 }
 
 function keepAlive() {
     var _now = (new Date()).getTime();
-    // Check last event time
-    if (lastEvent && _now - lastEvent > adapter.config.checkInitInterval * 1000) {
-        // Reinit !!!
-        if (keepAliveSend) {
-            keepAliveSend = false;            
-            sendInit();            
-        }
-        else {
-            keepAliveSend = true;
-            sendPing();            
-        }
+    // Check last event time. If timeout => send init again
+    if (!lastEvent || ((_now - lastEvent) >= adapter.config.checkInitInterval * 1000)) {
+        sendInit();
+    } else
+    // Send every half interval ping to CCU
+    if (!lastEvent || 1 || ((_now - lastEvent) >= adapter.config.checkInitInterval * 1000 / 2)) {
+        sendPing();
     }
 }
 
