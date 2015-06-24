@@ -49,6 +49,18 @@ var adapter = utils.adapter({
             });
         }
     },
+    // Add messagebox Function for ioBroker.occ
+    message: function (obj) {
+        if (obj.message.params == undefined ||obj.message.params == null) {
+            rpcClient.methodCall(obj.command, [obj.message.ID, obj.message.paramType], function (err, data) {
+                if (obj.callback) adapter.sendTo(obj.from, obj.command, {result: data, error: err}, obj.callback);
+            });
+        } else {
+            rpcClient.methodCall(obj.command, [obj.message.ID, obj.message.paramType, obj.message.params], function (err, data) {
+                if (obj.callback) adapter.sendTo(obj.from, obj.command, {result: data, error: err}, obj.callback);
+            });
+        }
+    },
     unload: function (callback) {
         try {
             if (eventInterval) {
