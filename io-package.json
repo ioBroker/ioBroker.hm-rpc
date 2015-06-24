@@ -19,7 +19,8 @@
         "icon":                     "homematic.png",
         "extIcon":                  "https://raw.githubusercontent.com/ioBroker/ioBroker.hm-rpc/master/admin/homematic.png",
         "keywords":                 ["homematic", "bidcos", "eq3", "ELV", "CCU", "CCU1", "CCU2", "rpc", "xmlrpc", "homegear", "binrpc", "CUxD", "FS20", "FHT", "HMS", "EnOcean"],
-        "type":                     "hardware"
+        "type":                     "hardware",
+        "messagebox":               true
     },
     "native": {
         "homematicAddress":         "192.168.0.100",
