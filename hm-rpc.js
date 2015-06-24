@@ -49,6 +49,33 @@ var adapter = utils.adapter({
             });
         }
     },
+    // Add messagebox Function for ioBroker.occ
+    // ioBroker.occ will send Message with following input
+    // adapter.sendTo(hmrpcInstance, "getParamset", {ID:dID, paramType:paramType}, function (res, err) {
+    // hmrpcInstance = Instance of hm-rpc (e.g. hm-rpc.0)
+    // dID = ObjectID (e.g. LEQ0885447:0)
+    // paramType (e.g. MASTER)
+    message: function (obj) {
+        adapter.log.info("called message for " + JSON.stringify(obj));
+        // split obj into fields
+        var command = obj.command;
+        var from = obj.from;
+        var callback = obj.callback;
+        var _id = obj._id;
+
+        var ID = obj.message.ID;
+        var paramType = obj.message.paramType;
+
+        adapter.log.info("ID = " + ID);
+        adapter.log.info("paramType = " + paramType);
+        adapter.log.info("command = " + command);
+        adapter.log.info("callback = " + JSON.stringify(callback));
+        rpcClient.methodCall(command, [ID, paramType], function (err, data) {
+            adapter.log.info("DATA = " + JSON.stringify(data));
+            adapter.log.info("ERR  = " + JSON.stringify(err));
+            if (obj.callback) adapter.sendTo(obj.from, obj.command, {result: data, error: err}, obj.callback);
+        });
+    },
     unload: function (callback) {
         try {
             if (eventInterval) {
