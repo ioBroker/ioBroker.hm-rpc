@@ -15,6 +15,11 @@ This address is used by the CCU to connect to the adapter.
 native.homematicAddress is the IP of the HomeMatic CCU respectively the Host that is running the BidCos-Service(s)
 
 ## Changelog
+
+### 0.5.1 (2015-06-28)
+* (husky-koglhof) Add messagebox Function for ioBroker.occ
+* (bluefox) update homematic-xmlrpc and binrpc versions
+
 ### 0.5.0 (2015-04-21)
 * (tschombe) replace check init / virtual key handling with simple PING / PONG xml-rpc api calls
 * (bluefox) fix deleteChannel
