@@ -16,6 +16,9 @@ native.homematicAddress is the IP of the HomeMatic CCU respectively the Host tha
 
 ## Changelog
 
+### 0.5.2 (2015-07-01)
+* (bluefox) fix error if 2 hm-rpc adapters
+
 ### 0.5.1 (2015-06-28)
 * (husky-koglhof) Add messagebox Function for ioBroker.occ
 * (bluefox) update homematic-xmlrpc and binrpc versions

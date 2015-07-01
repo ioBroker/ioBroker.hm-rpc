@@ -51,7 +51,7 @@ var adapter = utils.adapter({
     },
     // Add messagebox Function for ioBroker.occ
     message: function (obj) {
-        if (obj.message.params == undefined ||obj.message.params == null) {
+        if (obj.message.params === undefined || obj.message.params === null) {
             rpcClient.methodCall(obj.command, [obj.message.ID, obj.message.paramType], function (err, data) {
                 if (obj.callback) adapter.sendTo(obj.from, obj.command, {result: data, error: err}, obj.callback);
             });
@@ -100,7 +100,8 @@ var dpTypes =       {};
 var lastEvent = 0;
 var eventInterval;
 var rpcInitString = null;
-var daemonURL;
+var daemonURL = '';
+var daemonProto = '';
 
 var images =  {
     'HM-LC-Dim1TPBU-FM': 'PushButton-2ch-wm_thumb.png',
@@ -224,11 +225,11 @@ var images =  {
 function main() {
     if (adapter.config.type === 'bin') {
         rpc = require('binrpc');
-        daemonURL = 'xmlrpc_bin://';
+        daemonProto = 'xmlrpc_bin://';
     } else {
         rpc = require('homematic-xmlrpc');
         adapter.config.type = 'xml';
-        daemonURL = 'http://';
+        daemonProto = 'http://';
     }
     
     rpcClient = rpc.createClient({
@@ -238,7 +239,7 @@ function main() {
     });
     
     // Load VALUE paramsetDescriptions (needed to create state objects)
-    adapter.objects.getObjectView('hm-rpc', 'paramsetDescription', { startkey: 'hm-rpc.meta.VALUES', endkey: 'hm-rpc.meta.VALUES.\u9999' }, function handleValueParamSetDescriptions(err, doc) {
+    adapter.objects.getObjectView('hm-rpc', 'paramsetDescription', {startkey: 'hm-rpc.meta.VALUES', endkey: 'hm-rpc.meta.VALUES.\u9999'}, function handleValueParamSetDescriptions(err, doc) {
         // Todo Handle Errors
         if (doc) {
             for (var i = 0; i < doc.rows.length; i++) {
@@ -257,15 +258,15 @@ function main() {
         });
     });
     
-    adapter.objects.getObjectView('system', 'state', { startkey: adapter.namespace, endkey: adapter.namespace + '\u9999' }, function handleStateViews(err, res) {
+    adapter.objects.getObjectView('system', 'state', {startkey: adapter.namespace, endkey: adapter.namespace + '\u9999'}, function handleStateViews(err, res) {
         if (!err && res.rows) {
             for (var i = 0; i < res.rows.length; i++) {
                 if (res.rows[i].id == adapter.namespace + '.updated') continue;
                 if (!res.rows[i].value.native) {
                     adapter.log.warn('State ' + res.rows[i].id + ' does not have native.');
-                    dpTypes[res.rows[i].id] = { UNIT: '', TYPE: '' };
+                    dpTypes[res.rows[i].id] = {UNIT: '', TYPE: ''};
                 } else {
-                    dpTypes[res.rows[i].id] = { UNIT: res.rows[i].value.native.UNIT, TYPE: res.rows[i].value.native.TYPE };
+                    dpTypes[res.rows[i].id] = {UNIT: res.rows[i].value.native.UNIT, TYPE: res.rows[i].value.native.TYPE};
                 }
             }
         }
@@ -292,8 +293,7 @@ function sendInit() {
                 adapter.log.error(err);
             }
         });
-    }
-    catch (err) {
+    } catch (err) {
         adapter.log.error("Init not possible, going to stop:", err);
         adapter.stop();
     }
@@ -312,7 +312,7 @@ function sendPing() {
 
 function initRpcServer() {
     adapter.getPort(adapter.config.homematicPort, function (port) {
-        daemonURL += adapter.config.adapterAddress + ':' + port
+        daemonURL = daemonProto + adapter.config.adapterAddress + ':' + port;
         rpcServer = rpc.createServer({host: adapter.config.adapterAddress, port: port});
 
         adapter.log.info(adapter.config.type + 'rpc server is trying to listen on ' + adapter.config.adapterAddress + ':' + port);
@@ -500,7 +500,7 @@ function addParamsetObjects(channel, paramset) {
             throw 'typeof obj.common.role ' + typeof obj.common.role;
         }
         dpTypes[adapter.namespace + '.' + channel._id + '.' + key] = {UNIT: paramset[key].UNIT, TYPE: paramset[key].TYPE};
-        if (key == 'LEVEL' && paramset['WORKING']) {
+        if (key == 'LEVEL' && paramset.WORKING) {
             obj.common.workingID = 'WORKING';
         }
 
