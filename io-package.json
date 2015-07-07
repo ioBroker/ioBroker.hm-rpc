@@ -26,7 +26,7 @@
         "homematicAddress":         "192.168.0.100",
         "adapterAddress":           "0.0.0.0",
         "homematicPort":            "2001",
-        "type":                     "xml",
+        "type":                     "bin",
         "daemon":                   "rfd",
         "checkInitInterval":        180,
         "forceReInit":              false
