@@ -71,7 +71,7 @@ var adapter = utils.adapter({
             if (adapter.config) {
                 adapter.log.info(adapter.config.type + "rpc -> " + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + ' init ' + JSON.stringify([daemonURL, '']));
                 rpcClient.methodCall('init', [daemonURL, ''], function (err, data) {
-                    adapter.states.setState('system.adapter.' + adapter.namespace + '.connected', {val: false});
+                    adapter.setState('info.connection', false, true);
                     callback();
                 });
             } else {
@@ -646,7 +646,7 @@ function connection() {
     var now = (new Date()).getTime();
     // do not send more often than 5 seconds
     if (!lastEvent || now - lastEvent > 5000) {
-        adapter.states.setState('system.adapter.' + adapter.namespace + '.connected', {val: true, expire: 300});
+        adapter.setState('info.connection', {val: true, expire: 300, ack: true});
     }
     
     lastEvent = (new Date()).getTime();

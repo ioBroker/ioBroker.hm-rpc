@@ -1,11 +1,17 @@
 ![Logo](admin/homematic.png)
 # ioBroker HomeMatic RPC Adapter
+==================
+
+[![NPM version](http://img.shields.io/npm/v/iobroker.hm-rpc.svg)](https://www.npmjs.com/package/iobroker.hm-rpc)
+[![Downloads](https://img.shields.io/npm/dm/iobroker.hm-rpc.svg)](https://www.npmjs.com/package/iobroker.hm-rpc)
+
+[![NPM](https://nodei.co/npm/iobroker.hm-rpc.png?downloads=true)](https://nodei.co/npm/iobroker.hm-rpc/)
 
 Connects HomeMatic Interface-Processes (BidCos-Services, Homegear and CUxD) via XML-RPC or BIN-RPC to ioBroker
 
 ## Install
 
-```node iobroker.js add hm-rpc```
+```iobroker add hm-rpc```
 
 ### Configuration
 
@@ -15,6 +21,9 @@ This address is used by the CCU to connect to the adapter.
 native.homematicAddress is the IP of the HomeMatic CCU respectively the Host that is running the BidCos-Service(s)
 
 ## Changelog
+
+### 1.0.0 (2016-03-02)
+* (bluefox) add connection state
 
 ### 0.5.2 (2015-07-01)
 * (bluefox) fix error if 2 hm-rpc adapters
@@ -151,7 +160,7 @@ native.homematicAddress is the IP of the HomeMatic CCU respectively the Host tha
 
 The MIT License (MIT)
 
-Copyright (c) 2014 hobbyquaker
+Copyright (c) 2014-2016 bluefox, hobbyquaker
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
