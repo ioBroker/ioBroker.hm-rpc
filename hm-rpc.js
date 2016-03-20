@@ -311,8 +311,8 @@ function sendPing() {
 }
 
 function initRpcServer() {
-    //adapterPort was introduced in v1.0.1. If not set yet then try 20.000
-    var adapterPort = parseInt(adapter.config.port, 10) || 20000;
+    //adapterPort was introduced in v1.0.1. If not set yet then try 2000
+    var adapterPort = parseInt(adapter.config.port || adapter.config.homematicPort, 10) || 2000;
     adapter.getPort(adapterPort, function (port) {
         daemonURL = daemonProto + adapter.config.adapterAddress + ':' + port;
         rpcServer = rpc.createServer({host: adapter.config.adapterAddress, port: port});

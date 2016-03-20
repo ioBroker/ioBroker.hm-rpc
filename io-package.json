@@ -7,7 +7,7 @@
             "de": "Verbindet HomeMatic Interface-Prozesse (BidCos-Services, Homegear und CUxD) via XML-RPC oder BIN-RPC mit ioBroker",
             "ru": "Подключает HomeMatic интерфейсы (BidCos-сервисы, Homegear и CUxD) через XML-RPC или BIN-RPC к ioBroker"
         },
-        "version": "1.0.1",
+        "version": "1.0.2",
         "authors": [
             "hobbyquaker <hq@ccu.io>"
         ],
@@ -26,7 +26,7 @@
         "homematicAddress":         "192.168.0.100",
         "adapterAddress":           "0.0.0.0",
         "homematicPort":            "2001",
-        "port":                     "20000",
+        "port":                     "0",
         "type":                     "bin",
         "daemon":                   "rfd",
         "checkInitInterval":        180,
