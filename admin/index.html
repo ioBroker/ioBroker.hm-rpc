@@ -21,6 +21,7 @@
         "Adapter Address":       {"en": "Adapter Address",     "de": "Adapter Adresse",     "ru": "Собственный адрес"},
         "Daemon":                {"en": "Daemon",              "de": "Daemon",              "ru": "Служба"},
         "HomeMatic Port":        {"en": "HomeMatic Port",      "de": "HomeMatic Port",      "ru": "Порт HomeMatic"},
+        "Adapter Port":          {"en": "Adapter Port",        "de": "Adapter Port",        "ru": "Порт адрес"},
         "Protocol":              {"en": "Protocol",            "de": "Protokoll",           "ru": "Протокол"},
         "Check communication interval":   {"en": "Check communication interval(sec)", "de": "Verbindungs-Check Interval(sek)", "ru": "Интервал проверки соединения(сек)"},
         "Homematic RPC adapter settings": {
@@ -194,6 +195,10 @@
                 </select>
             </td>
         </tr>              
+        <tr>
+            <td class="translate">Adapter Port</td>
+            <td><input type="number" id="adapterPort" class="value number"/></td>
+        </tr>
         <tr>
             <td class="translate">Check communication interval</td>
             <td><input type="number" id="checkInitInterval" value="true" class="value number"/></td>
