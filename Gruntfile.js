@@ -47,6 +47,76 @@ module.exports = function (grunt) {
                         dest:    srcDir
                     }
                 ]
+            },
+            name: {
+                options: {
+                    patterns: [
+                        {
+                            match:       /iobroker/gi,
+                            replacement: appName
+                        }
+                    ]
+                },
+                files: [
+                    {
+                        expand:  true,
+                        flatten: true,
+                        src:     [
+                            srcDir + '*.*',
+                            srcDir + '.travis.yml'
+                        ],
+                        dest:    srcDir
+                    },
+                    {
+                        expand:  true,
+                        flatten: true,
+                        src:     [
+                            srcDir + 'admin/*.*',
+                            '!' + srcDir + 'admin/*.png'
+                        ],
+                        dest:    srcDir + 'admin'
+                    },
+                    {
+                        expand:  true,
+                        flatten: true,
+                        src:     [
+                            srcDir + 'lib/*.*'
+                        ],
+                        dest:    srcDir + 'lib'
+                    },
+                    {
+                        expand:  true,
+                        flatten: true,
+                        src:     [
+                            srcDir + 'example/*.*'
+                        ],
+                        dest:    srcDir + 'example'
+                    },
+                    {
+                        expand:  true,
+                        flatten: true,
+                        src:     [
+                            srcDir + 'www/*.*'
+                        ],
+                        dest:    srcDir + 'www'
+                    },
+                    {
+                        expand:  true,
+                        flatten: true,
+                        src:     [
+                            srcDir + 'test/*.*'
+                        ],
+                        dest:    srcDir + 'test'
+                    },
+                    {
+                        expand:  true,
+                        flatten: true,
+                        src:     [
+                            srcDir + 'test/lib/*.*'
+                        ],
+                        dest:    srcDir + 'test/lib'
+                    }
+                ]
             }
         },
         // Javascript code styler
@@ -65,12 +135,6 @@ module.exports = function (grunt) {
                     url: 'https://raw.githubusercontent.com/' + appName + '/' + appName + '.js-controller/master/tasks/jshint.js'
                 },
                 dest: 'tasks/jshint.js'
-            },
-            get_gruntfile: {
-                options: {
-                    url: 'https://raw.githubusercontent.com/' + appName + '/' + appName + '.build/master/adapters/Gruntfile.js'
-                },
-                dest: 'Gruntfile.js'
             },
             get_utilsfile: {
                 options: {
@@ -132,5 +196,8 @@ module.exports = function (grunt) {
     grunt.registerTask('p', [
         'replace:core',
         'updateReadme'
+    ]);
+    grunt.registerTask('rename', [
+        'replace:name'
     ]);
 };
