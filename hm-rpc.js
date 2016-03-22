@@ -402,7 +402,7 @@ function initRpcServer() {
                     callback(null, response);
                 } catch (err) {
                     adapter.log.error('Cannot response on listDevices:' + err);
-                    require('fs').writeFileSync('problem.json', JSON.stringify(response));
+                    require('fs').writeFileSync(__dirname + '/problem.json', JSON.stringify(response));
                 }
             });
         });
