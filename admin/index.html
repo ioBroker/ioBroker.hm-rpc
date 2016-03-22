@@ -93,6 +93,8 @@
         onChange = _onChange;
         fillSelectIPs('#adapterAddress', settings.adapterAddress, false, true);
 
+		settings.port = settings.port || 0;
+		
         for (var key in settings) {
             setValue(key, settings[key]);
         }
@@ -197,7 +199,7 @@
         </tr>              
         <tr>
             <td class="translate">Adapter Port</td>
-            <td><input type="number" id="adapterPort" class="value number"/></td>
+            <td><input type="number" id="port" class="value number"/></td>
         </tr>
         <tr>
             <td class="translate">Check communication interval</td>
