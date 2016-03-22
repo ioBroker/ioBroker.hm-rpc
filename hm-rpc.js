@@ -643,7 +643,7 @@ function createDevices(deviceArr, callback) {
             var obj = objs.pop();
             adapter.setObject(obj._id, obj, function (err, res) {
                 if (!err) {
-                    adapter.log.info('object ' + res.id + ' created');
+                    adapter.log.debug('object ' + res.id + ' created');
                 } else {
                     adapter.log.error('object ' + (res ? res.id : '?') + ' error on creation: ' + err);
                 }
