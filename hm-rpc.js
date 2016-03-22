@@ -116,7 +116,6 @@ var dpTypes =       {};
 
 var lastEvent = 0;
 var eventInterval;
-var rpcInitString = null;
 var daemonURL = '';
 var daemonProto = '';
 
@@ -369,7 +368,11 @@ function initRpcServer() {
 
         rpcServer.on('event', function (err, params, callback) {
             connection();
-            callback(null, methods.event(err, params));
+            try {
+                callback(null, methods.event(err, params));
+            } catch (err) {
+                adapter.log.error('Cannot response on event:' + err);
+            }
         });
 
         rpcServer.on('newDevices', function (err, params, callback) {
@@ -395,7 +398,12 @@ function initRpcServer() {
                 }
                 adapter.log.info(adapter.config.type + 'rpc -> ' + response.length + ' devices');
                 //log.info(JSON.stringify(response));
-                callback(null, response);
+                try {
+                    callback(null, response);
+                } catch (err) {
+                    adapter.log.error('Cannot response on listDevices:' + err);
+                    require('fs').writeFileSync('problem.json', JSON.stringify(response));
+                }
             });
         });
 
@@ -412,7 +420,11 @@ function initRpcServer() {
                     adapter.deleteDevice(params[1][i]);
                 }
             }
-            callback(null, '');
+            try {
+                callback(null, '');
+            } catch (err) {
+                adapter.log.error('Cannot response on deleteDevices:' + err);
+            }
         });
     });
 }
