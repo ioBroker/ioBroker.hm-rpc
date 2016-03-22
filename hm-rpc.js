@@ -41,24 +41,36 @@ var adapter = utils.adapter({
                     val = state.val;
             }
             adapter.log.info('setValue ' + JSON.stringify([tmp[2] + ':' + tmp[3], tmp[4], val]) + ' ' + type);
-            rpcClient.methodCall('setValue', [tmp[2] + ':' + tmp[3], tmp[4], val], function (err, data) {
-                if (err) {
-                    adapter.log.error(adapter.config.type + 'rpc -> setValue ' + JSON.stringify([tmp[3], tmp[4], state.val]) + ' ' + type);
-                    adapter.log.error(err);
-                }
-            });
+            try {
+                rpcClient.methodCall('setValue', [tmp[2] + ':' + tmp[3], tmp[4], val], function (err, data) {
+                    if (err) {
+                        adapter.log.error(adapter.config.type + 'rpc -> setValue ' + JSON.stringify([tmp[3], tmp[4], state.val]) + ' ' + type);
+                        adapter.log.error(err);
+                    }
+                });
+            } catch (err) {
+                adapter.log.error('Cannot call setValue: :' + err);
+            }
         }
     },
     // Add messagebox Function for ioBroker.occ
     message: function (obj) {
         if (obj.message.params === undefined || obj.message.params === null) {
-            rpcClient.methodCall(obj.command, [obj.message.ID, obj.message.paramType], function (err, data) {
-                if (obj.callback) adapter.sendTo(obj.from, obj.command, {result: data, error: err}, obj.callback);
-            });
+            try {
+                rpcClient.methodCall(obj.command, [obj.message.ID, obj.message.paramType], function (err, data) {
+                    if (obj.callback) adapter.sendTo(obj.from, obj.command, {result: data, error: err}, obj.callback);
+                });
+            } catch (err) {
+                adapter.log.error('Cannot call ' + obj.command + ': ' + err);
+            }
         } else {
-            rpcClient.methodCall(obj.command, [obj.message.ID, obj.message.paramType, obj.message.params], function (err, data) {
-                if (obj.callback) adapter.sendTo(obj.from, obj.command, {result: data, error: err}, obj.callback);
-            });
+            try {
+                rpcClient.methodCall(obj.command, [obj.message.ID, obj.message.paramType, obj.message.params], function (err, data) {
+                    if (obj.callback) adapter.sendTo(obj.from, obj.command, {result: data, error: err}, obj.callback);
+                });
+            } catch (err) {
+                adapter.log.error('Cannot call ' + obj.command + ': ' + err);
+            }
         }
     },
     unload: function (callback) {
@@ -70,10 +82,15 @@ var adapter = utils.adapter({
 
             if (adapter.config) {
                 adapter.log.info(adapter.config.type + "rpc -> " + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + ' init ' + JSON.stringify([daemonURL, '']));
-                rpcClient.methodCall('init', [daemonURL, ''], function (err, data) {
-                    adapter.setState('info.connection', false, true);
-                    callback();
-                });
+                try {
+                    rpcClient.methodCall('init', [daemonURL, ''], function (err, data) {
+                        adapter.setState('info.connection', false, true);
+                        callback();
+                    });
+                } catch (err) {
+                    adapter.log.error('Cannot call init: [' + daemonURL + ', ""]' + err);
+                }
+
             } else {
                 callback();
             }
@@ -274,8 +291,8 @@ function main() {
 }
 
 function sendInit() {
+    adapter.log.debug('Send INIT...');
     try {
-        adapter.log.debug("Send INIT...");
         rpcClient.methodCall('init', [daemonURL, adapter.namespace], function handleInit(err, data) {
             if (!err) {
                 if (adapter.config.daemon === 'CUxD') {
@@ -294,20 +311,24 @@ function sendInit() {
             }
         });
     } catch (err) {
-        adapter.log.error("Init not possible, going to stop:", err);
+        adapter.log.error('Init not possible, going to stop: ', err);
         adapter.stop();
     }
 }
 
 function sendPing() {
-    adapter.log.debug("Send PING...");
-    rpcClient.methodCall('ping', [adapter.namespace], function (err, data) {
-        if (!err) {
-            adapter.log.debug('no event recieved within keepalive-timeout, so PING sent');
-        } else {
-            adapter.log.error(err);
-        }
-    });
+    adapter.log.debug('Send PING...');
+    try {
+        rpcClient.methodCall('ping', [adapter.namespace], function (err, data) {
+            if (!err) {
+                adapter.log.debug('no event recieved within keepalive-timeout, so PING sent');
+            } else {
+                adapter.log.error(err);
+            }
+        });
+    } catch (err) {
+        adapter.log.error('Cannot call ping [' + adapter.namespace + ']: ' + err);
+    }
 }
 
 function initRpcServer() {
@@ -543,24 +564,28 @@ function getValueParamsets() {
                 setTimeout(getValueParamsets, 50);
             } else {
                 adapter.log.info(adapter.config.type + 'rpc -> getParamsetDescription ' + JSON.stringify([obj.native.ADDRESS, 'VALUES']));
-                rpcClient.methodCall('getParamsetDescription', [obj.native.ADDRESS, 'VALUES'], function (err, res) {
-                    var paramset = {
-                        'type': 'meta',
-                        'meta': {
-                            adapter: 'hm-rpc',
-                            type: 'paramsetDescription'
-                        },
-                        'common': {
+                try {
+                    rpcClient.methodCall('getParamsetDescription', [obj.native.ADDRESS, 'VALUES'], function (err, res) {
+                        var paramset = {
+                            'type': 'meta',
+                            'meta': {
+                                adapter: 'hm-rpc',
+                                type: 'paramsetDescription'
+                            },
+                            'common': {
 
-                        },
-                        'native': res
-                    };
-                    metaValues[key] = res;
-                    setTimeout(getValueParamsets, 1200); // Slow down
-                    adapter.log.info('setObject ' + key);
-                    adapter.objects.setObject(key, paramset);
-                    addParamsetObjects(obj, res);
-                });
+                            },
+                            'native': res
+                        };
+                        metaValues[key] = res;
+                        setTimeout(getValueParamsets, 1200); // Slow down
+                        adapter.log.info('setObject ' + key);
+                        adapter.objects.setObject(key, paramset);
+                        addParamsetObjects(obj, res);
+                    });
+                } catch (err) {
+                    adapter.log.error('Cannot call getParamsetDescription: :' + err);
+                }
             }
 
         });
@@ -632,15 +657,18 @@ function createDevices(deviceArr, callback) {
 
 function getCuxDevices(callback) {
     // Todo read existing devices from couchdb and put IDs in array
-    var devices = [];
+    // var devices = [];
 
     // request devices from CUxD
-    rpcClient.methodCall('listDevices', [], function (err, data) {
-        adapter.log.info(adapter.config.type + 'rpc -> listDevices ' + data.length);
-        // Todo remove device ids from array
-        createDevices(data, callback);
-    });
-
+    try {
+        rpcClient.methodCall('listDevices', [], function (err, data) {
+            adapter.log.info(adapter.config.type + 'rpc -> listDevices ' + data.length);
+            // Todo remove device ids from array
+            createDevices(data, callback);
+        });
+    } catch (err) {
+        adapter.log.error('Cannot call listDevices: ' + err);
+    }
     // Todo delete all in array remaining devices
 }
 
