@@ -399,6 +399,13 @@ function initRpcServer() {
                 adapter.log.info(adapter.config.type + 'rpc -> ' + response.length + ' devices');
                 //log.info(JSON.stringify(response));
                 try {
+                    for (var r = response.length - 1; r >= 0; r--) {
+                        if (!response[r].ADDRESS) {
+                            adapter.log.warn(adapter.config.type + 'rpc -> found empty entry at position ' + r + ' !');
+                            response.splice(r, 1);
+                        }
+                    }
+
                     callback(null, response);
                 } catch (err) {
                     adapter.log.error('Cannot response on listDevices:' + err);

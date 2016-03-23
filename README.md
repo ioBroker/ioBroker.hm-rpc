@@ -22,6 +22,9 @@ native.homematicAddress is the IP of the HomeMatic CCU respectively the Host tha
 
 ## Changelog
 
+### 1.0.4 (2016-03-22)
+* (bluefox) xmlrpc rpoblem
+
 ### 1.0.3 (2016-03-22)
 * (bluefox) fix settings of port in admin
 
