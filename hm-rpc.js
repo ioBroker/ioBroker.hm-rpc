@@ -460,7 +460,7 @@ var queueValueParamsets = [];
 
 function _logResult(err, res) {
     if (!err) {
-        adapter.log.info('object ' + res.id + ' extended');
+        adapter.log.debug('object ' + res.id + ' extended');
     } else {
         adapter.log.error('object ' + (res ? res.id : '?') + ' extend ' + err);
     }
