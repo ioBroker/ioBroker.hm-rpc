@@ -139,6 +139,8 @@ var images =  {
     'HM-Sys-sRP-Pl':     'OM55_DimmerSwitch_thumb.png',
     'HM-LC-Dim1T-Pl-2':  'OM55_DimmerSwitch_thumb.png',
     'HM-LC-Sw1-Pl-2':    'OM55_DimmerSwitch_thumb.png',
+    'HM-Sec-SCo':        '98_hm-sec-sco_thumb.png',
+    'HM-ES-PMSw1-Pl':    '93_hm-es-pmsw1-pl_thumb.png',
     'HM-LC-Sw4-Ba-PCB':  '88_hm-lc-sw4-ba-pcb_thumb.png',
     'HM-Sen-RD-O':       '87_hm-sen-rd-o_thumb.png',
     'HM-RC-Sec4-2':      '86_hm-rc-sec4-2_thumb.png',
@@ -335,6 +337,9 @@ function sendPing() {
 }
 
 function initRpcServer() {
+    adapter.config.homematicPort = parseInt(adapter.config.homematicPort, 10);
+    adapter.config.port          = parseInt(adapter.config.port, 10);
+
     //adapterPort was introduced in v1.0.1. If not set yet then try 2000
     var adapterPort = parseInt(adapter.config.port || adapter.config.homematicPort, 10) || 2000;
     adapter.getPort(adapterPort, function (port) {
@@ -396,8 +401,7 @@ function initRpcServer() {
                          /*if (val.PARENT_TYPE) {
                             channelParams[val.ADDRESS] = val.PARENT_TYPE + '.' + val.TYPE + '.' + val.VERSION;
                          }*/
-
-                         response.push({ADDRESS: val.ADDRESS, VERSION: val.VERSION});
+                         if (val.ADDRESS) response.push({ADDRESS: val.ADDRESS, VERSION: val.VERSION});
                      }
                 }
                 adapter.log.info(adapter.config.type + 'rpc -> ' + response.length + ' devices');
@@ -604,6 +608,7 @@ function getValueParamsets() {
                         };
                         metaValues[key] = res;
                         adapter.log.info('setObject ' + key);
+                        adapter.log.warn('Send this info to developer: ' + JSON.stringify(paramset));
                         adapter.objects.setObject(key, paramset, function () {
                             addParamsetObjects(obj, res, function () {
                                 setTimeout(getValueParamsets, 0);
@@ -620,7 +625,7 @@ function getValueParamsets() {
 }
 
 function createDevices(deviceArr, callback) {
-    var objs = [];
+    var objs    = [];
 
     for (var i = 0; i < deviceArr.length; i++) {
         var type;
@@ -632,8 +637,10 @@ function createDevices(deviceArr, callback) {
             role = metaRoles.chTYPE && metaRoles.chTYPE[deviceArr[i].TYPE] ? metaRoles.chTYPE && metaRoles.chTYPE[deviceArr[i].TYPE] : undefined;
         } else {
             type = 'device';
-            if (images[deviceArr[i].TYPE]) adapter.log.warn('No image for "' + deviceArr[i].TYPE + '" found.');
-            
+            if (!images[deviceArr[i].TYPE]) {
+                adapter.log.warn('No image for "' + deviceArr[i].TYPE + '" found.');
+            }
+
             icon = images[deviceArr[i].TYPE] ? ('/icons/' + images[deviceArr[i].TYPE]) : '';
         }
 
