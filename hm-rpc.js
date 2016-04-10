@@ -1,7 +1,7 @@
 /* jshint -W097 */// jshint strict:false
 /*jslint node: true */
 "use strict";
-var utils =    require(__dirname + '/lib/utils'); // Get common adapter utils
+var utils = require(__dirname + '/lib/utils'); // Get common adapter utils
 
 // the adapter object
 var adapter = utils.adapter({
@@ -42,12 +42,16 @@ var adapter = utils.adapter({
             }
             adapter.log.info('setValue ' + JSON.stringify([tmp[2] + ':' + tmp[3], tmp[4], val]) + ' ' + type);
             try {
-                rpcClient.methodCall('setValue', [tmp[2] + ':' + tmp[3], tmp[4], val], function (err, data) {
-                    if (err) {
-                        adapter.log.error(adapter.config.type + 'rpc -> setValue ' + JSON.stringify([tmp[3], tmp[4], state.val]) + ' ' + type);
-                        adapter.log.error(err);
-                    }
-                });
+                if (rpcClient && rpcClient.connected) {
+                    rpcClient.methodCall('setValue', [tmp[2] + ':' + tmp[3], tmp[4], val], function (err, data) {
+                        if (err) {
+                            adapter.log.error(adapter.config.type + 'rpc -> setValue ' + JSON.stringify([tmp[3], tmp[4], state.val]) + ' ' + type);
+                            adapter.log.error(err);
+                        }
+                    });
+                } else {
+                    adapter.log.warn('Cannot setValue "' + id + '", because not connected.');
+                }
             } catch (err) {
                 adapter.log.error('Cannot call setValue: :' + err);
             }
@@ -458,16 +462,9 @@ var methods = {
 
 var queueValueParamsets = [];
 
-function _logResult(err, res) {
-    if (!err) {
-        adapter.log.debug('object ' + res.id + ' extended');
-    } else {
-        adapter.log.error('object ' + (res ? res.id : '?') + ' extend ' + err);
-    }
-}
-
-function addParamsetObjects(channel, paramset) {
+function addParamsetObjects(channel, paramset, callback) {
     var channelChildren = [];
+    var count = 0;
     for (var key in paramset) {
         channelChildren.push(channel._id + '.' + key);
         var commonType = {
@@ -508,7 +505,6 @@ function addParamsetObjects(channel, paramset) {
                     obj.common.states[paramset[key].SPECIAL[i].VALUE] = paramset[key].SPECIAL[i].ID;
                 }
             }
-
         }
 
         if (paramset[key].UNIT === '100%') {
@@ -516,9 +512,9 @@ function addParamsetObjects(channel, paramset) {
             obj.common.max = 100 * paramset[key].MAX;
         } else if (paramset[key].UNIT !== '') {
             obj.common.unit = paramset[key].UNIT;
-            if (obj.common.unit == '�C') {
+            if (obj.common.unit == '�C' || obj.common.unit == '&#176;C') {
                 obj.common.unit = '°C';
-            } else if (obj.common.unit == '�F') {
+            } else if (obj.common.unit == '�F' || obj.common.unit == '&#176;F') {
                 obj.common.unit = '°F';
             }
         }
@@ -533,7 +529,6 @@ function addParamsetObjects(channel, paramset) {
             obj.common.role =  metaRoles.dpNAME[key];
         }
 
-
         if (paramset[key].OPERATIONS & 8) {
             obj.common.role = 'indicator.service';
         }
@@ -545,9 +540,18 @@ function addParamsetObjects(channel, paramset) {
         if (key == 'LEVEL' && paramset.WORKING) {
             obj.common.workingID = 'WORKING';
         }
+        count++;
+        adapter.extendObject(channel._id + '.' + key, obj, function (err, res) {
+            if (!err) {
+                adapter.log.debug('object ' + res.id + ' extended');
+            } else {
+                adapter.log.error('object ' + (res ? res.id : '?') + ' extend ' + err);
+            }
 
-        adapter.extendObject(channel._id + '.' + key, obj, _logResult);
+            if (!--count) callback();
+        });
     }
+    if (!count) callback();
 }
 
 function getValueParamsets() {
@@ -568,8 +572,9 @@ function getValueParamsets() {
     if (metaValues[cid]) {
 
         adapter.log.debug('paramset cache hit');
-        addParamsetObjects(obj, metaValues[cid]);
-        setTimeout(getValueParamsets, 50);
+        addParamsetObjects(obj, metaValues[cid], function () {
+            setTimeout(getValueParamsets, 0);
+        });
 
     } else {
 
@@ -579,8 +584,9 @@ function getValueParamsets() {
             if (res && res.native) {
                 adapter.log.debug(key + ' found');
                 metaValues[cid] = res.native;
-                addParamsetObjects(obj, res.native);
-                setTimeout(getValueParamsets, 50);
+                addParamsetObjects(obj, res.native, function () {
+                    setTimeout(getValueParamsets, 0);
+                });
             } else {
                 adapter.log.info(adapter.config.type + 'rpc -> getParamsetDescription ' + JSON.stringify([obj.native.ADDRESS, 'VALUES']));
                 try {
@@ -597,10 +603,12 @@ function getValueParamsets() {
                             'native': res
                         };
                         metaValues[key] = res;
-                        setTimeout(getValueParamsets, 1200); // Slow down
                         adapter.log.info('setObject ' + key);
-                        adapter.objects.setObject(key, paramset);
-                        addParamsetObjects(obj, res);
+                        adapter.objects.setObject(key, paramset, function () {
+                            addParamsetObjects(obj, res, function () {
+                                setTimeout(getValueParamsets, 0);
+                            });
+                        });
                     });
                 } catch (err) {
                     adapter.log.error('Cannot call getParamsetDescription: :' + err);
@@ -723,4 +731,6 @@ function keepAlive() {
         sendPing();
     }
 }
+
+
 
