@@ -632,6 +632,8 @@ function createDevices(deviceArr, callback) {
             role = metaRoles.chTYPE && metaRoles.chTYPE[deviceArr[i].TYPE] ? metaRoles.chTYPE && metaRoles.chTYPE[deviceArr[i].TYPE] : undefined;
         } else {
             type = 'device';
+            if (images[deviceArr[i].TYPE]) adapter.log.warn('No image for "' + deviceArr[i].TYPE + '" found.');
+            
             icon = images[deviceArr[i].TYPE] ? ('/icons/' + images[deviceArr[i].TYPE]) : '';
         }
 
