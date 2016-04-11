@@ -42,7 +42,7 @@ var adapter = utils.adapter({
             }
             adapter.log.info('setValue ' + JSON.stringify([tmp[2] + ':' + tmp[3], tmp[4], val]) + ' ' + type);
             try {
-                if (rpcClient && rpcClient.connected) {
+                if (rpcClient && (rpcClient.connected || adapter.config.type !== 'bin')) {
                     rpcClient.methodCall('setValue', [tmp[2] + ':' + tmp[3], tmp[4], val], function (err, data) {
                         if (err) {
                             adapter.log.error(adapter.config.type + 'rpc -> setValue ' + JSON.stringify([tmp[3], tmp[4], state.val]) + ' ' + type);
