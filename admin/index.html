@@ -153,6 +153,11 @@
                     $('#homematicPort').val('8701');
                     $('#type').val('bin');
                     break;
+
+                case 'HMIP':
+                    $('#homematicPort').val('2010');
+                    $('#type').val('xml');
+                    break;
                 default:
             }
         });
@@ -179,6 +184,7 @@
                     <option>rfd</option>
                     <option>hs485d</option>
                     <option>CUxD</option>
+                    <option value="HMIP">HomeMatic IP</option>
                     <option>Homegear</option>
                 </select>
             </td>

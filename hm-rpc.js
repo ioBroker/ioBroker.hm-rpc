@@ -3,6 +3,8 @@
 "use strict";
 var utils = require(__dirname + '/lib/utils'); // Get common adapter utils
 
+var connected = false;
+
 // the adapter object
 var adapter = utils.adapter({
 
@@ -32,7 +34,7 @@ var adapter = utils.adapter({
 
             switch (type) {
                 case 'BOOL':
-                    val = (state.val === "false" || state.val === "0") ? false : !!state.val;
+                    val = (state.val === 'false' || state.val === '0') ? false : !!state.val;
                     break;
                 case 'FLOAT':
                     val = {explicitDouble: state.val};
@@ -40,19 +42,17 @@ var adapter = utils.adapter({
                 default:
                     val = state.val;
             }
+
             adapter.log.info('setValue ' + JSON.stringify([tmp[2] + ':' + tmp[3], tmp[4], val]) + ' ' + type);
+
             try {
                 if (rpcClient && (rpcClient.connected || adapter.config.type !== 'bin')) {
-                    try {
-                        rpcClient.methodCall('setValue', [tmp[2] + ':' + tmp[3], tmp[4], val], function (err, data) {
-                            if (err) {
-                                adapter.log.error(adapter.config.type + 'rpc -> setValue ' + JSON.stringify([tmp[3], tmp[4], state.val]) + ' ' + type);
-                                adapter.log.error('Cannot setValue "' + id + '", because: ' + err);
-                            }
-                        });
-                    } catch (e) {
-                        adapter.log.error('Cannot setValue "' + id + '", because: ' + e);
-                    }
+                    rpcClient.methodCall('setValue', [tmp[2] + ':' + tmp[3], tmp[4], val], function (err, data) {
+                        if (err) {
+                            adapter.log.error(adapter.config.type + 'rpc -> setValue ' + JSON.stringify([tmp[3], tmp[4], state.val]) + ' ' + type);
+                            adapter.log.error(err);
+                        }
+                    });
                 } else {
                     adapter.log.warn('Cannot setValue "' + id + '", because not connected.');
                 }
@@ -89,13 +89,20 @@ var adapter = utils.adapter({
             }
 
             if (adapter.config) {
-                adapter.log.info(adapter.config.type + "rpc -> " + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + ' init ' + JSON.stringify([daemonURL, '']));
+                adapter.log.info(adapter.config.type + 'rpc -> ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + ' init ' + JSON.stringify([daemonURL, '']));
                 try {
                     rpcClient.methodCall('init', [daemonURL, ''], function (err, data) {
-                        adapter.setState('info.connection', false, true);
+                        if (connected) {
+                            connected = false;
+                            adapter.setState('info.connection', false, true);
+                        }
                         callback();
                     });
                 } catch (err) {
+                    if (connected) {
+                        connected = false;
+                        adapter.setState('info.connection', false, true);
+                    }
                     adapter.log.error('Cannot call init: [' + daemonURL + ', ""]' + err);
                 }
 
@@ -104,7 +111,7 @@ var adapter = utils.adapter({
             }
         } catch (e) {
             if (adapter && adapter.log) {
-                adapter.log.error(e);
+                adapter.log.error('Unload error: ' + e);
             } else {
                 console.log(e);
             }
@@ -307,16 +314,16 @@ function sendInit() {
                 if (adapter.config.daemon === 'CUxD') {
                     getCuxDevices(function handleCuxDevices(err2) {
                         if (!err2) {
-                            connection();
+                            updateConnection();
                         } else {
-                            adapter.log.error(err2);
+                            adapter.log.error('getCuxDevices error: ' + err2);
                         }
                     });
                 } else {
-                    connection();
+                    updateConnection();
                 }
             } else {
-                adapter.log.error(err);
+                adapter.log.error('init error: ' + err);
             }
         });
     } catch (err) {
@@ -332,7 +339,11 @@ function sendPing() {
             if (!err) {
                 adapter.log.debug('no event recieved within keepalive-timeout, so PING sent');
             } else {
-                adapter.log.error(err);
+                adapter.log.error('Ping error: ' + err);
+                if (connected) {
+                    connected = false;
+                    adapter.setState('info.connection', false, true);
+                }
             }
         });
     } catch (err) {
@@ -361,7 +372,7 @@ function initRpcServer() {
         });
 
         rpcServer.on('system.multicall', function (method, params, callback) {
-            connection();
+            updateConnection();
             var response = [];
             for (var i = 0; i < params[0].length; i++) {
                 if (methods[params[0][i].methodName]) {
@@ -380,7 +391,7 @@ function initRpcServer() {
         });
 
         rpcServer.on('event', function (err, params, callback) {
-            connection();
+            updateConnection();
             try {
                 callback(null, methods.event(err, params));
             } catch (err) {
@@ -712,14 +723,14 @@ function getCuxDevices(callback) {
     // Todo delete all in array remaining devices
 }
 
-function connection() {
-    var now = (new Date()).getTime();
-    // do not send more often than 5 seconds
-    if (!lastEvent || now - lastEvent > 5000) {
-        adapter.setState('info.connection', {val: true, expire: 300, ack: true});
-    }
-    
+function updateConnection() {
     lastEvent = (new Date()).getTime();
+
+    // do not send more often than 5 seconds
+    if (!connected) {
+        connected = true;
+        adapter.setState('info.connection', true, true);
+    }
     
     if (!eventInterval) {
         adapter.config.checkInitInterval = parseInt(adapter.config.checkInitInterval, 10);
