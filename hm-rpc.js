@@ -46,7 +46,7 @@ var adapter = utils.adapter({
             adapter.log.info('setValue ' + JSON.stringify([tmp[2] + ':' + tmp[3], tmp[4], val]) + ' ' + type);
 
             try {
-                if (rpcClient && (rpcClient.connected || adapter.config.type !== 'bin')) {
+                if (rpcClient && connected) {
                     rpcClient.methodCall('setValue', [tmp[2] + ':' + tmp[3], tmp[4], val], function (err, data) {
                         if (err) {
                             adapter.log.error(adapter.config.type + 'rpc -> setValue ' + JSON.stringify([tmp[3], tmp[4], state.val]) + ' ' + type);
@@ -86,6 +86,11 @@ var adapter = utils.adapter({
             if (eventInterval) {
                 clearInterval(eventInterval);
                 eventInterval = null;
+            }
+            
+            if (connTimeout) {
+                clearTimeout(connTimeout);
+                connTimeout = null;
             }
 
             if (adapter.config) {
@@ -131,6 +136,7 @@ var dpTypes =       {};
 
 var lastEvent = 0;
 var eventInterval;
+var connTimeout;
 var daemonURL = '';
 var daemonProto = '';
 
@@ -343,6 +349,7 @@ function sendPing() {
                 if (connected) {
                     connected = false;
                     adapter.setState('info.connection', false, true);
+                    connect();
                 }
             }
         });
@@ -365,7 +372,7 @@ function initRpcServer() {
 
         adapter.log.info(adapter.config.type + 'rpc -> ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + ' init ' + JSON.stringify([daemonURL, adapter.namespace]));
 
-        sendInit();
+        connect(true);
 
         rpcServer.on('NotFound', function (method, params) {
             adapter.log.warn(adapter.config.type + 'rpc <- undefined method ' + method + ' ' + JSON.stringify(params).slice(0, 80));
@@ -726,12 +733,16 @@ function getCuxDevices(callback) {
 function updateConnection() {
     lastEvent = (new Date()).getTime();
 
-    // do not send more often than 5 seconds
     if (!connected) {
         connected = true;
         adapter.setState('info.connection', true, true);
     }
-    
+
+    if (connTimeout) {
+        clearTimeout(connTimeout);
+        connTimeout = null;
+    }
+
     if (!eventInterval) {
         adapter.config.checkInitInterval = parseInt(adapter.config.checkInitInterval, 10);
         
@@ -744,11 +755,33 @@ function updateConnection() {
     }
 }
 
+function connect(isFirst) {
+    if (connTimeout) return;
+
+    if (eventInterval) {
+        clearInterval(eventInterval);
+        eventInterval = null;
+    }
+
+    if (isFirst) sendInit();
+
+    connTimeout = setTimeout(function () {
+        connTimeout = null;
+        sendInit();
+        connect();
+    }, 30000);
+}
+
 function keepAlive() {
+    if (connTimeout) {
+        clearTimeout(connTimeout);
+        connTimeout = null;
+    }
+
     var _now = (new Date()).getTime();
     // Check last event time. If timeout => send init again
     if (!lastEvent || ((_now - lastEvent) >= adapter.config.checkInitInterval * 1000)) {
-        sendInit();
+        connect();
     } else
     // Send every half interval ping to CCU
     if (!lastEvent || 1 || ((_now - lastEvent) >= adapter.config.checkInitInterval * 1000 / 2)) {
