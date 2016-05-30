@@ -23,7 +23,9 @@
         "HomeMatic Port":        {"en": "HomeMatic Port",      "de": "HomeMatic Port",      "ru": "Порт HomeMatic"},
         "Adapter Port":          {"en": "Adapter Port",        "de": "Adapter Port",        "ru": "Порт драйвера ioBroker"},
         "Protocol":              {"en": "Protocol",            "de": "Protokoll",           "ru": "Протокол"},
-        "Check communication interval":   {"en": "Check communication interval(sec)", "de": "Verbindungs-Check Interval(sek)", "ru": "Интервал проверки соединения(сек)"},
+        "Check communication interval (sec)":   {"en": "Check communication interval(sec)", "de": "Verbindungs-Check Interval(sek)", "ru": "Интервал проверки соединения(сек)"},
+        "Reconnect interval (sec)": {"en": "Reconnect interval (sec)", "de": "Wiederverbindungs-Interval(sek)", "ru": "Интервал повтора соединения(сек)"},
+        "Listen on all IPs":     {"en": "Invalid",              "de": "Invalid",            "ru": "Неправильно"},
         "Homematic RPC adapter settings": {
             "en": "Homematic RPC adapter settings",
             "de": "Homematic RPC Adapter Einstellungen",
@@ -208,9 +210,13 @@
             <td><input type="number" id="port" class="value number"/></td>
         </tr>
         <tr>
-            <td class="translate">Check communication interval</td>
-            <td><input type="number" id="checkInitInterval" value="true" class="value number"/></td>
-        </tr>        
+            <td class="translate">Check communication interval (sec)</td>
+            <td><input type="number" id="checkInitInterval" class="value number"/></td>
+        </tr>
+        <tr>
+            <td class="translate">Reconnect interval (sec)</td>
+            <td><input type="number" id="reconnectInterval" class="value number"/></td>
+        </tr>
         <tr>
             <td class="translate">Force objects re-init</td>
             <td><input type="checkbox" id="forceReInit" class="value"/></td>

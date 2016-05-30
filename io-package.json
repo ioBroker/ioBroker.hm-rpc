@@ -37,6 +37,7 @@
         "type":                     "bin",
         "daemon":                   "rfd",
         "checkInitInterval":        180,
+        "reconnectInterval":        30,
         "forceReInit":              false
     },
     "objects": [

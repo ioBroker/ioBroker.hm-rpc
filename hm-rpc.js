@@ -87,10 +87,10 @@ var adapter = utils.adapter({
                 clearInterval(eventInterval);
                 eventInterval = null;
             }
-            
-            if (connTimeout) {
-                clearTimeout(connTimeout);
-                connTimeout = null;
+
+            if (connInterval) {
+                clearInterval(connInterval);
+                connInterval = null;
             }
 
             if (adapter.config) {
@@ -98,6 +98,7 @@ var adapter = utils.adapter({
                 try {
                     rpcClient.methodCall('init', [daemonURL, ''], function (err, data) {
                         if (connected) {
+                            adapter.log.info('Disconnected');
                             connected = false;
                             adapter.setState('info.connection', false, true);
                         }
@@ -105,6 +106,7 @@ var adapter = utils.adapter({
                     });
                 } catch (err) {
                     if (connected) {
+                        adapter.log.info('Disconnected');
                         connected = false;
                         adapter.setState('info.connection', false, true);
                     }
@@ -136,7 +138,7 @@ var dpTypes =       {};
 
 var lastEvent = 0;
 var eventInterval;
-var connTimeout;
+var connInterval;
 var daemonURL = '';
 var daemonProto = '';
 
@@ -262,6 +264,18 @@ var images =  {
 };
 
 function main() {
+    adapter.config.reconnectInterval = parseInt(adapter.config.reconnectInterval, 10) || 30;
+    if (adapter.config.reconnectInterval < 10) {
+        adapter.log.error('Reconnect interval is less than 10 seconds. Set reconnect interval to 10 seconds.');
+        adapter.config.reconnectInterval = 10;
+    }
+
+    adapter.config.checkInitInterval = parseInt(adapter.config.checkInitInterval, 10);
+    if (adapter.config.checkInitInterval < 10) {
+        adapter.log.error('Check init interval is less than 10 seconds. Set init interval to 10 seconds.');
+        adapter.config.checkInitInterval = 10;
+    }
+    
     if (adapter.config.type === 'bin') {
         rpc = require('binrpc');
         daemonProto = 'xmlrpc_bin://';
@@ -343,10 +357,11 @@ function sendPing() {
     try {
         rpcClient.methodCall('ping', [adapter.namespace], function (err, data) {
             if (!err) {
-                adapter.log.debug('no event recieved within keepalive-timeout, so PING sent');
+                adapter.log.debug('PING ok');
             } else {
                 adapter.log.error('Ping error: ' + err);
                 if (connected) {
+                    adapter.log.info('Disconnected');
                     connected = false;
                     adapter.setState('info.connection', false, true);
                     connect();
@@ -734,57 +749,52 @@ function updateConnection() {
     lastEvent = (new Date()).getTime();
 
     if (!connected) {
+        adapter.log.info('Connected');
         connected = true;
         adapter.setState('info.connection', true, true);
     }
 
-    if (connTimeout) {
-        clearTimeout(connTimeout);
-        connTimeout = null;
+    if (connInterval) {
+        adapter.log.debug('clear connecting interval');
+        clearInterval(connInterval);
+        connInterval = null;
     }
 
     if (!eventInterval) {
-        adapter.config.checkInitInterval = parseInt(adapter.config.checkInitInterval, 10);
-        
-        if (adapter.config.checkInitInterval < 10) {
-            adapter.log.error('Check init interval is less than 10 seconds. Set init interval to 10 seconds.');
-            adapter.config.checkInitInterval = 10;
-        }
-        
+        adapter.log.debug('start ping interval');
         eventInterval = setInterval(keepAlive, adapter.config.checkInitInterval * 1000 / 2);
     }
 }
 
 function connect(isFirst) {
-    if (connTimeout) return;
-
     if (eventInterval) {
+        adapter.log.debug('clear ping interval');
         clearInterval(eventInterval);
         eventInterval = null;
     }
 
     if (isFirst) sendInit();
 
-    connTimeout = setTimeout(function () {
-        connTimeout = null;
-        sendInit();
-        connect();
-    }, 30000);
+    if (!connInterval) {
+        adapter.log.debug('start connecting interval');
+        connInterval = setInterval(function () {
+            sendInit();
+        }, adapter.config.reconnectInterval * 1000);
+    }
 }
 
 function keepAlive() {
-    if (connTimeout) {
-        clearTimeout(connTimeout);
-        connTimeout = null;
+    if (connInterval) {
+        clearInterval(connInterval);
+        connInterval = null;
     }
 
     var _now = (new Date()).getTime();
     // Check last event time. If timeout => send init again
-    if (!lastEvent || ((_now - lastEvent) >= adapter.config.checkInitInterval * 1000)) {
+    if (!lastEvent || (_now - lastEvent) >= adapter.config.checkInitInterval * 1000) {
         connect();
-    } else
-    // Send every half interval ping to CCU
-    if (!lastEvent || 1 || ((_now - lastEvent) >= adapter.config.checkInitInterval * 1000 / 2)) {
+    } else {
+        // Send every half interval ping to CCU
         sendPing();
     }
 }
