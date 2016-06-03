@@ -65,19 +65,34 @@ var adapter = utils.adapter({
     message: function (obj) {
         if (obj.message.params === undefined || obj.message.params === null) {
             try {
-                rpcClient.methodCall(obj.command, [obj.message.ID, obj.message.paramType], function (err, data) {
-                    if (obj.callback) adapter.sendTo(obj.from, obj.command, {result: data, error: err}, obj.callback);
-                });
+                if (rpcClient && connected) {
+                    rpcClient.methodCall(obj.command, [obj.message.ID, obj.message.paramType], function (err, data) {
+                        if (obj.callback) adapter.sendTo(obj.from, obj.command, {result: data, error: err}, obj.callback);
+                    });
+                } else {
+                    adapter.log.warn('Cannot send "' + obj.command + '" "' + obj.message.ID + '": because not connected');
+                    if (obj.callback) adapter.sendTo(obj.from, obj.command, {error: 'not connected'}, obj.callback);
+                }
             } catch (err) {
                 adapter.log.error('Cannot call ' + obj.command + ': ' + err);
+                adapter.sendTo(obj.from, obj.command, {error: err}, obj.callback);
             }
         } else {
             try {
-                rpcClient.methodCall(obj.command, [obj.message.ID, obj.message.paramType, obj.message.params], function (err, data) {
-                    if (obj.callback) adapter.sendTo(obj.from, obj.command, {result: data, error: err}, obj.callback);
-                });
+                if (rpcClient && connected) {
+                    rpcClient.methodCall(obj.command, [obj.message.ID, obj.message.paramType, obj.message.params], function (err, data) {
+                        if (obj.callback) adapter.sendTo(obj.from, obj.command, {
+                            result: data,
+                            error:  err
+                        }, obj.callback);
+                    });
+                } else {
+                    adapter.log.warn('Cannot send "' + obj.command + '" "' + obj.message.ID + '": because not connected');
+                    if (obj.callback) adapter.sendTo(obj.from, obj.command, {error: 'not connected'}, obj.callback);
+                }
             } catch (err) {
                 adapter.log.error('Cannot call ' + obj.command + ': ' + err);
+                adapter.sendTo(obj.from, obj.command, {error: err}, obj.callback);
             }
         }
     },
@@ -92,8 +107,12 @@ var adapter = utils.adapter({
                 clearInterval(connInterval);
                 connInterval = null;
             }
+            if (connTimeout) {
+                clearTimeout(connTimeout);
+                connTimeout = null;
+            }
 
-            if (adapter.config) {
+            if (adapter.config && rpcClient) {
                 adapter.log.info(adapter.config.type + 'rpc -> ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + ' init ' + JSON.stringify([daemonURL, '']));
                 try {
                     rpcClient.methodCall('init', [daemonURL, ''], function (err, data) {
@@ -102,7 +121,8 @@ var adapter = utils.adapter({
                             connected = false;
                             adapter.setState('info.connection', false, true);
                         }
-                        callback();
+                        if (callback) callback();
+                        callback = null;
                     });
                 } catch (err) {
                     if (connected) {
@@ -111,10 +131,13 @@ var adapter = utils.adapter({
                         adapter.setState('info.connection', false, true);
                     }
                     adapter.log.error('Cannot call init: [' + daemonURL + ', ""]' + err);
+                    if (callback) callback();
+                    callback = null;
                 }
 
             } else {
-                callback();
+                if (callback) callback();
+                callback = null;
             }
         } catch (e) {
             if (adapter && adapter.log) {
@@ -122,7 +145,8 @@ var adapter = utils.adapter({
             } else {
                 console.log(e);
             }
-            callback();
+            if (callback) callback();
+            callback = null;
         }
     }
 });
@@ -139,6 +163,7 @@ var dpTypes =       {};
 var lastEvent = 0;
 var eventInterval;
 var connInterval;
+var connTimeout;
 var daemonURL = '';
 var daemonProto = '';
 
@@ -284,13 +309,53 @@ function main() {
         adapter.config.type = 'xml';
         daemonProto = 'http://';
     }
-    
+
     rpcClient = rpc.createClient({
         host: adapter.config.homematicAddress,
         port: adapter.config.homematicPort,
         path: '/'
     });
-    
+
+    if (rpcClient.connected) connect(true);
+
+    if (rpcClient.on) {
+        rpcClient.on('connect', function (err) {
+            sendInit();
+        });
+
+        rpcClient.on('error', function (err) {
+            adapter.log.error('Socket error: ' + err);
+        });
+
+        rpcClient.on('close', function () {
+            adapter.log.debug('Socket closed.');
+            if (connected) {
+                adapter.log.info('Disconnected');
+                connected = false;
+                adapter.setState('info.connection', false, true);
+            }
+
+            if (eventInterval) {
+                adapter.log.debug('clear ping interval');
+                clearInterval(eventInterval);
+                eventInterval = null;
+            }
+            // clear queue
+            if (rpcClient.queue) {
+                while (rpcClient.queue.length) {
+                    rpcClient.queue.pop();
+                }
+                rpcClient.pending = false;
+            }
+
+            if (!connTimeout) {
+                connTimeout = setTimeout(connect, adapter.config.reconnectInterval * 1000);
+            }
+        });
+    } else {
+        connect(true);
+    }
+
     // Load VALUE paramsetDescriptions (needed to create state objects)
     adapter.objects.getObjectView('hm-rpc', 'paramsetDescription', {startkey: 'hm-rpc.meta.VALUES', endkey: 'hm-rpc.meta.VALUES.\u9999'}, function handleValueParamSetDescriptions(err, doc) {
         // Todo Handle Errors
@@ -327,25 +392,27 @@ function main() {
 }
 
 function sendInit() {
-    adapter.log.debug('Send INIT...');
     try {
-        rpcClient.methodCall('init', [daemonURL, adapter.namespace], function handleInit(err, data) {
-            if (!err) {
-                if (adapter.config.daemon === 'CUxD') {
-                    getCuxDevices(function handleCuxDevices(err2) {
-                        if (!err2) {
-                            updateConnection();
-                        } else {
-                            adapter.log.error('getCuxDevices error: ' + err2);
-                        }
-                    });
+        if (rpcClient && (rpcClient.connected === undefined || rpcClient.connected)) {
+            adapter.log.debug(adapter.config.type + 'rpc -> ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + ' init ' + JSON.stringify([daemonURL, adapter.namespace]));
+            rpcClient.methodCall('init', [daemonURL, adapter.namespace], function handleInit(err, data) {
+                if (!err) {
+                    if (adapter.config.daemon === 'CUxD') {
+                        getCuxDevices(function handleCuxDevices(err2) {
+                            if (!err2) {
+                                updateConnection();
+                            } else {
+                                adapter.log.error('getCuxDevices error: ' + err2);
+                            }
+                        });
+                    } else {
+                        updateConnection();
+                    }
                 } else {
-                    updateConnection();
+                    adapter.log.error('init error: ' + err);
                 }
-            } else {
-                adapter.log.error('init error: ' + err);
-            }
-        });
+            });
+        }
     } catch (err) {
         adapter.log.error('Init not possible, going to stop: ', err);
         adapter.stop();
@@ -353,23 +420,33 @@ function sendInit() {
 }
 
 function sendPing() {
-    adapter.log.debug('Send PING...');
-    try {
-        rpcClient.methodCall('ping', [adapter.namespace], function (err, data) {
-            if (!err) {
-                adapter.log.debug('PING ok');
-            } else {
-                adapter.log.error('Ping error: ' + err);
-                if (connected) {
-                    adapter.log.info('Disconnected');
-                    connected = false;
-                    adapter.setState('info.connection', false, true);
-                    connect();
+    if (rpcClient) {
+        adapter.log.debug('Send PING...');
+        try {
+            rpcClient.methodCall('ping', [adapter.namespace], function (err, data) {
+                if (!err) {
+                    adapter.log.debug('PING ok');
+                } else {
+                    adapter.log.error('Ping error: ' + err);
+                    if (connected) {
+                        adapter.log.info('Disconnected');
+                        connected = false;
+                        adapter.setState('info.connection', false, true);
+                        connect();
+                    }
                 }
-            }
-        });
-    } catch (err) {
-        adapter.log.error('Cannot call ping [' + adapter.namespace + ']: ' + err);
+            });
+        } catch (err) {
+            adapter.log.error('Cannot call ping [' + adapter.namespace + ']: ' + err);
+        }
+    } else {
+        adapter.warn('Called PING, but client does not exist');
+        if (connected) {
+            adapter.log.info('Disconnected');
+            connected = false;
+            adapter.setState('info.connection', false, true);
+            connect();
+        }
     }
 }
 
@@ -384,8 +461,7 @@ function initRpcServer() {
         rpcServer = rpc.createServer({host: adapter.config.adapterAddress, port: port});
 
         adapter.log.info(adapter.config.type + 'rpc server is trying to listen on ' + adapter.config.adapterAddress + ':' + port);
-
-        adapter.log.info(adapter.config.type + 'rpc -> ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + ' init ' + JSON.stringify([daemonURL, adapter.namespace]));
+        adapter.log.info(adapter.config.type + 'rpc client is trying to connect to ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + ' with ' + JSON.stringify([daemonURL, adapter.namespace]));
 
         connect(true);
 
@@ -662,7 +738,7 @@ function getValueParamsets() {
 }
 
 function createDevices(deviceArr, callback) {
-    var objs    = [];
+    var objs = [];
 
     for (var i = 0; i < deviceArr.length; i++) {
         var type;
@@ -732,16 +808,21 @@ function getCuxDevices(callback) {
     // Todo read existing devices from couchdb and put IDs in array
     // var devices = [];
 
-    // request devices from CUxD
-    try {
-        rpcClient.methodCall('listDevices', [], function (err, data) {
-            adapter.log.info(adapter.config.type + 'rpc -> listDevices ' + data.length);
-            // Todo remove device ids from array
-            createDevices(data, callback);
-        });
-    } catch (err) {
-        adapter.log.error('Cannot call listDevices: ' + err);
+    if (rpcClient) {
+        // request devices from CUxD
+        try {
+            rpcClient.methodCall('listDevices', [], function (err, data) {
+                adapter.log.info(adapter.config.type + 'rpc -> listDevices ' + data.length);
+                // Todo remove device ids from array
+                createDevices(data, callback);
+            });
+        } catch (err) {
+            adapter.log.error('Cannot call listDevices: ' + err);
+        }
+    } else {
+        callback && callback();
     }
+
     // Todo delete all in array remaining devices
 }
 
@@ -759,7 +840,11 @@ function updateConnection() {
         clearInterval(connInterval);
         connInterval = null;
     }
-
+    if (connTimeout) {
+        adapter.log.debug('clear connecting timeout');
+        clearTimeout(connTimeout);
+        connTimeout = null;
+    }
     if (!eventInterval) {
         adapter.log.debug('start ping interval');
         eventInterval = setInterval(keepAlive, adapter.config.checkInitInterval * 1000 / 2);
@@ -767,19 +852,25 @@ function updateConnection() {
 }
 
 function connect(isFirst) {
+    connTimeout = null;
+    adapter.log.debug('Connect...');
     if (eventInterval) {
         adapter.log.debug('clear ping interval');
         clearInterval(eventInterval);
         eventInterval = null;
     }
 
-    if (isFirst) sendInit();
+    if (rpcClient.connect) {
+        if (!isFirst) rpcClient.connect();
+    } else {
+        if (isFirst) sendInit();
 
-    if (!connInterval) {
-        adapter.log.debug('start connecting interval');
-        connInterval = setInterval(function () {
-            sendInit();
-        }, adapter.config.reconnectInterval * 1000);
+        if (!connInterval) {
+            adapter.log.debug('start connecting interval');
+            connInterval = setInterval(function () {
+                sendInit();
+            }, adapter.config.reconnectInterval * 1000);
+        }
     }
 }
 
