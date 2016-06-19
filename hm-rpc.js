@@ -264,6 +264,7 @@ var images =  {
     'HM-RC-4-B':         '18_hm-rc-4_thumb.png',
     'HM-Sec-RHS':        '17_hm-sec-rhs_thumb.png',
     'HM-Sec-SC':         '16_hm-sec-sc_thumb.png',
+    'HM-Sec-SC-2':       '16_hm-sec-sc_thumb.png',
     'HM-Sec-Win':        '15_hm-sec-win_thumb.png',
     'HM-Sec-Key':        '14_hm-sec-key_thumb.png',
     'HM-Sec-Key-S':      '14_hm-sec-key_thumb.png',
@@ -285,7 +286,9 @@ var images =  {
     'HM-WDS100-C6-O':    'WeatherCombiSensor_thumb.png',
     'HM-WDS10-TH-O':     'TH_CS_thumb.png',
     'HM-WS550STH-O':     'TH_CS_thumb.png',
-    'HM-WDS30-OT2-SM':   'IP65_G201_thumb.png'
+    'HM-WDS30-OT2-SM':   'IP65_G201_thumb.png',
+    'HM-LC-RGBW-WM':     '111_hm-lc-rgbw-wm_thumb.png',
+    'HM-Sen-MDIR-WM55':  '103_hm-sen-mdir-wm55_thumb.png'
 };
 
 function main() {
