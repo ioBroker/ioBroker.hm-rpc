@@ -22,6 +22,9 @@ native.homematicAddress is the IP of the HomeMatic CCU respectively the Host tha
 
 ## Changelog
 
+### 1.2.1 (2016-06-21)
+* (angelnu) add device icons
+
 ### 1.2.0 (2016-06-04)
 * (bluefox) fix reconnection with binrpc
 
