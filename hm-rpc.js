@@ -328,7 +328,7 @@ function main() {
         adapter.log.error('Check init interval is less than 10 seconds. Set init interval to 10 seconds.');
         adapter.config.checkInitInterval = 10;
     }
-    
+
     if (adapter.config.type === 'bin') {
         rpc = require('binrpc');
         daemonProto = 'xmlrpc_bin://';
@@ -338,55 +338,9 @@ function main() {
         daemonProto = 'http://';
     }
 
-    rpcClient = rpc.createClient({
-        host: adapter.config.homematicAddress,
-        port: adapter.config.homematicPort,
-        path: '/'
-    });
-
-    if (rpcClient.connected) connect(true);
-
-    if (rpcClient.on) {
-        rpcClient.on('connect', function (err) {
-            sendInit();
-        });
-
-        rpcClient.on('error', function (err) {
-            adapter.log.error('Socket error: ' + err);
-        });
-
-        rpcClient.on('close', function () {
-            adapter.log.debug('Socket closed.');
-            if (connected) {
-                adapter.log.info('Disconnected');
-                connected = false;
-                adapter.setState('info.connection', false, true);
-            }
-
-            if (eventInterval) {
-                adapter.log.debug('clear ping interval');
-                clearInterval(eventInterval);
-                eventInterval = null;
-            }
-            // clear queue
-            if (rpcClient.queue) {
-                while (rpcClient.queue.length) {
-                    rpcClient.queue.pop();
-                }
-                rpcClient.pending = false;
-            }
-
-            if (!connTimeout) {
-                connTimeout = setTimeout(connect, adapter.config.reconnectInterval * 1000);
-            }
-        });
-    } else {
-        connect(true);
-    }
-
     // Load VALUE paramsetDescriptions (needed to create state objects)
     adapter.objects.getObjectView('hm-rpc', 'paramsetDescription', {startkey: 'hm-rpc.meta.VALUES', endkey: 'hm-rpc.meta.VALUES.\u9999'}, function handleValueParamSetDescriptions(err, doc) {
-        // Todo Handle Errors
+        if (err) adapter.log.error('getObjectView hm-rpc: ' + err)
         if (doc) {
             for (var i = 0; i < doc.rows.length; i++) {
                 metaValues[doc.rows[i].id.slice(19)] = doc.rows[i].value.native;
@@ -394,16 +348,14 @@ function main() {
         }
         // Load common.role assignments
         adapter.objects.getObject('hm-rpc.meta.roles', function (err, res) {
-            // Todo Handle Errors
-            metaRoles = res.native;
-            
+            if (err) adapter.log.error('hm-rpc.meta.roles: ' + err)
+            if (res) metaRoles = res.native;
+
             // Start Adapter
-            if (adapter.config) {
-                initRpcServer();
-            }
+            if (adapter.config) initRpcServer();
         });
     });
-    
+
     adapter.objects.getObjectView('system', 'state', {startkey: adapter.namespace, endkey: adapter.namespace + '\u9999'}, function handleStateViews(err, res) {
         if (!err && res.rows) {
             for (var i = 0; i < res.rows.length; i++) {
@@ -535,15 +487,15 @@ function initRpcServer() {
             adapter.objects.getObjectView('hm-rpc', 'listDevices', {startkey: 'hm-rpc.' + adapter.instance + '.', endkey: 'hm-rpc.' + adapter.instance + '.\u9999'}, function (err, doc) {
                 var response = [];
                 if (!adapter.config.forceReInit) {
-                     for (var i = 0; i < doc.rows.length; i++) {
-                         if (doc.rows[i].id == adapter.namespace + '.updated') continue;
-                         var val = doc.rows[i].value;
+                    for (var i = 0; i < doc.rows.length; i++) {
+                        if (doc.rows[i].id == adapter.namespace + '.updated') continue;
+                        var val = doc.rows[i].value;
 
-                         /*if (val.PARENT_TYPE) {
-                            channelParams[val.ADDRESS] = val.PARENT_TYPE + '.' + val.TYPE + '.' + val.VERSION;
+                        /*if (val.PARENT_TYPE) {
+                         channelParams[val.ADDRESS] = val.PARENT_TYPE + '.' + val.TYPE + '.' + val.VERSION;
                          }*/
-                         if (val.ADDRESS) response.push({ADDRESS: val.ADDRESS, VERSION: val.VERSION});
-                     }
+                        if (val.ADDRESS) response.push({ADDRESS: val.ADDRESS, VERSION: val.VERSION});
+                    }
                 }
                 adapter.log.info(adapter.config.type + 'rpc -> ' + response.length + ' devices');
                 //log.info(JSON.stringify(response));
@@ -748,7 +700,7 @@ function getValueParamsets() {
                             'native': res
                         };
                         metaValues[key] = res;
-                        adapter.log.info('setObject ' + key);
+                        adapter.log.info('Send this info to developer: setObject ' + key);
                         adapter.log.warn('Send this info to developer: ' + JSON.stringify(paramset));
                         adapter.objects.setObject(key, paramset, function () {
                             addParamsetObjects(obj, res, function () {
@@ -880,6 +832,53 @@ function updateConnection() {
 }
 
 function connect(isFirst) {
+    if (!rpcClient) {
+        rpcClient = rpc.createClient({
+            host: adapter.config.homematicAddress,
+            port: adapter.config.homematicPort,
+            path: '/'
+        });
+
+        // if bin-rpc
+        if (rpcClient.on) {
+            adapter.log.info('1 Init binrc...');
+            rpcClient.on('connect', function (err) {
+                adapter.log.info('Connected. Send init...');
+                sendInit();
+            });
+
+            rpcClient.on('error', function (err) {
+                adapter.log.error('Socket error: ' + err);
+            });
+
+            rpcClient.on('close', function () {
+                adapter.log.debug('Socket closed.');
+                if (connected) {
+                    adapter.log.info('Disconnected');
+                    connected = false;
+                    adapter.setState('info.connection', false, true);
+                }
+
+                if (eventInterval) {
+                    adapter.log.debug('clear ping interval');
+                    clearInterval(eventInterval);
+                    eventInterval = null;
+                }
+                // clear queue
+                if (rpcClient.queue) {
+                    while (rpcClient.queue.length) {
+                        rpcClient.queue.pop();
+                    }
+                    rpcClient.pending = false;
+                }
+
+                if (!connTimeout) {
+                    connTimeout = setTimeout(connect, adapter.config.reconnectInterval * 1000);
+                }
+            });
+        }
+    }
+
     connTimeout = null;
     adapter.log.debug('Connect...');
     if (eventInterval) {
@@ -888,6 +887,7 @@ function connect(isFirst) {
         eventInterval = null;
     }
 
+    // if bin rpc
     if (rpcClient.connect) {
         if (!isFirst) rpcClient.connect();
     } else {
@@ -917,6 +917,3 @@ function keepAlive() {
         sendPing();
     }
 }
-
-
-
