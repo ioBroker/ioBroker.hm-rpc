@@ -841,7 +841,6 @@ function connect(isFirst) {
 
         // if bin-rpc
         if (rpcClient.on) {
-            adapter.log.info('1 Init binrc...');
             rpcClient.on('connect', function (err) {
                 adapter.log.info('Connected. Send init...');
                 sendInit();
