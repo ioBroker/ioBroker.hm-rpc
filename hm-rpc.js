@@ -190,7 +190,7 @@ var images =  {
     //'xxx':             '113_hmip-psm_thumb.png',
     //'xxx':             '112_hmip-wrc2_thumb.png',
     'HM-LC-RGBW-WM':     '111_hm-lc-rgbw-wm_thumb.png',
-    'HM-ES-PMSw1-DR':    '110_hm-es-pmsw1-dr_thump.png'
+    'HM-ES-PMSw1-DR':    '110_hm-es-pmsw1-dr_thump.png',
     'HM-LC-Sw1-Pl-CT-R1':'109_hm-lc-sw1-pl-ct_thump.png',
     'HM-RC-Dis-H-x-EU':  '108_hm-rc-dis-h-x-eu_thump.png',
     'HM-ES-PMSw1-Pl-DN-R5': '107_hm-es-pmsw1-pl-R5_thumb.png',
@@ -203,7 +203,7 @@ var images =  {
     'HM-ES-TX-WM':       '102_hm-es-tx-wm_thumb.png',
     'HM-Sen-DB-PCB':     '101_hm-sen-db-pcb_thumb.png',
     'HM-RC-8':           '100_hm-rc-8_thumb.png',
-    'HM-MOD-EM-8'        '99_hm-mod-em-8_thumb.png',
+    'HM-MOD-EM-8':       '99_hm-mod-em-8_thumb.png',
     'HM-Sec-SCo':        '98_hm-sec-sco_thumb.png',
     'HM-Dis-WM55':       '97_hm-dis-wm55_thumb.png',
     'HM-TC-IT-WM-W-EU':  '96_hm-tc-it-wm-w-eu_thumb.png',
