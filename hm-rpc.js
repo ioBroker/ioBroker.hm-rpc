@@ -1,11 +1,9 @@
 /* jshint -W097 */// jshint strict:false
 /*jslint node: true */
-"use strict";
+'use strict';
 var utils = require(__dirname + '/lib/utils'); // Get common adapter utils
-var tools = require(utils.controllerDir + '/lib/tools');
 
 var connected = false;
-var hostname = tools.getHostName() || require('os').hostname();
 
 // the adapter object
 var adapter = utils.adapter({
@@ -376,8 +374,8 @@ function main() {
 function sendInit() {
     try {
         if (rpcClient && (rpcClient.connected === undefined || rpcClient.connected)) {
-            adapter.log.debug(adapter.config.type + 'rpc -> ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + ' init ' + JSON.stringify([daemonURL, hostname + '.' + adapter.namespace]));
-            rpcClient.methodCall('init', [daemonURL, hostname + '.' + adapter.namespace], function handleInit(err, data) {
+            adapter.log.debug(adapter.config.type + 'rpc -> ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + ' init ' + JSON.stringify([daemonURL, adapter.namespace]));
+            rpcClient.methodCall('init', [daemonURL, adapter.namespace], function handleInit(err, data) {
                 if (!err) {
                     if (adapter.config.daemon === 'CUxD') {
                         getCuxDevices(function handleCuxDevices(err2) {
@@ -405,7 +403,7 @@ function sendPing() {
     if (rpcClient) {
         adapter.log.debug('Send PING...');
         try {
-            rpcClient.methodCall('ping', [hostname + '.' + adapter.namespace], function (err, data) {
+            rpcClient.methodCall('ping', [adapter.namespace], function (err, data) {
                 if (!err) {
                     adapter.log.debug('PING ok');
                 } else {
@@ -419,7 +417,7 @@ function sendPing() {
                 }
             });
         } catch (err) {
-            adapter.log.error('Cannot call ping [' + hostname + '.' + adapter.namespace + ']: ' + err);
+            adapter.log.error('Cannot call ping [' + adapter.namespace + ']: ' + err);
         }
     } else {
         adapter.warn('Called PING, but client does not exist');
@@ -443,7 +441,7 @@ function initRpcServer() {
         rpcServer = rpc.createServer({host: adapter.config.adapterAddress, port: port});
 
         adapter.log.info(adapter.config.type + 'rpc server is trying to listen on ' + adapter.config.adapterAddress + ':' + port);
-        adapter.log.info(adapter.config.type + 'rpc client is trying to connect to ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + ' with ' + JSON.stringify([daemonURL, hostname + '.' + adapter.namespace]));
+        adapter.log.info(adapter.config.type + 'rpc client is trying to connect to ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + ' with ' + JSON.stringify([daemonURL, adapter.namespace]));
 
         connect(true);
 
