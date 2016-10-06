@@ -340,7 +340,7 @@ function main() {
 
     // Load VALUE paramsetDescriptions (needed to create state objects)
     adapter.objects.getObjectView('hm-rpc', 'paramsetDescription', {startkey: 'hm-rpc.meta.VALUES', endkey: 'hm-rpc.meta.VALUES.\u9999'}, function handleValueParamSetDescriptions(err, doc) {
-        if (err) adapter.log.error('getObjectView hm-rpc: ' + err)
+        if (err) adapter.log.error('getObjectView hm-rpc: ' + err);
         if (doc) {
             for (var i = 0; i < doc.rows.length; i++) {
                 metaValues[doc.rows[i].id.slice(19)] = doc.rows[i].value.native;
@@ -348,7 +348,7 @@ function main() {
         }
         // Load common.role assignments
         adapter.objects.getObject('hm-rpc.meta.roles', function (err, res) {
-            if (err) adapter.log.error('hm-rpc.meta.roles: ' + err)
+            if (err) adapter.log.error('hm-rpc.meta.roles: ' + err);
             if (res) metaRoles = res.native;
 
             // Start Adapter
@@ -700,8 +700,17 @@ function getValueParamsets() {
                             'native': res
                         };
                         metaValues[key] = res;
-                        adapter.log.info('Send this info to developer: setObject ' + key);
-                        adapter.log.warn('Send this info to developer: ' + JSON.stringify(paramset));
+                        if (res) {
+                            // if not empty
+                            for (var attr in res) {
+                                if (res.hasOwnProperty(attr)) {
+                                    adapter.log.warn('Send this info to developer: _id: "' + key + '"');
+                                    adapter.log.warn('Send this info to developer: ' + JSON.stringify(paramset));
+                                    break;
+                                }
+                            }
+                        }
+
                         adapter.objects.setObject(key, paramset, function () {
                             addParamsetObjects(obj, res, function () {
                                 setTimeout(getValueParamsets, 0);

@@ -9,10 +9,6 @@
 
 Connects HomeMatic Interface-Processes (BidCos-Services, Homegear and CUxD) via XML-RPC or BIN-RPC to ioBroker
 
-## Install
-
-```iobroker add hm-rpc```
-
 ### Configuration
 
 native.adapterAddress has to be the ip under which the host that is running the adapter itself is reachable.
@@ -22,9 +18,11 @@ native.homematicAddress is the IP of the HomeMatic CCU respectively the Host tha
 
 ## Changelog
 
+### 1.3.2 (2016-10-06)
+* (bluefox) Very small changes for debug output
+
 ### 1.3.1 (2016-06-23)
 * (bluefox) add new devices to meta info
-* (bluefox) fix xml-rpc
 
 ### 1.2.1 (2016-06-21)
 * (angelnu) add device icons
