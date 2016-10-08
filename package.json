@@ -1,6 +1,6 @@
 {
   "name": "iobroker.hm-rpc",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "description": "Connects HomeMatic Interface-Processes (BidCos-Services, Homegear and CUxD) via XML-RPC or BIN-RPC to ioBroker",
   "author": {
     "name": "hobbyquaker",

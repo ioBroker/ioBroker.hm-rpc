@@ -329,6 +329,8 @@ function main() {
         adapter.config.checkInitInterval = 10;
     }
 
+    adapter.setState('info.connection', false, true);
+
     if (adapter.config.type === 'bin') {
         rpc = require('binrpc');
         daemonProto = 'xmlrpc_bin://';
