@@ -766,7 +766,7 @@ function addParamsetObjects(channel, paramset, callback) {
 function getValueParamsets() {
     if (queueValueParamsets.length === 0) {
         // Inform hm-rega about new devices
-        adapter.setState('updated', true, true);
+        adapter.setState('updated', true, false);
         // Inform hm-rega about new devices
         if (adapter.config.forceReInit) {
             adapter.extendForeignObject('system.adapter.' + adapter.namespace, {native: {forceReInit: false}});
