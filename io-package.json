@@ -7,8 +7,13 @@
             "de": "Verbindet HomeMatic Interface-Prozesse (BidCos-Services, Homegear und CUxD) via XML-RPC oder BIN-RPC mit ioBroker",
             "ru": "Подключает HomeMatic интерфейсы (BidCos-сервисы, Homegear и CUxD) через XML-RPC или BIN-RPC к ioBroker"
         },
-        "version": "1.3.3",
+        "version": "1.3.4",
         "news": {
+            "1.3.4": {
+                "en": "Update device icons",
+                "de": "Gerätebilder aktualisiert",
+                "ru": "Update device icons"
+            },
             "1.3.3": {
                 "en": "Better connection indication",
                 "de": "Bessere Verbindungsanzeige",
