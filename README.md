@@ -18,8 +18,11 @@ native.homematicAddress is the IP of the HomeMatic CCU respectively the Host tha
 
 ## Changelog
 
+### 1.3.5 (2017-01-15)
+* (jens-maus) Fix notify of hm-rega to update names too on force-reload
+
 ### 1.3.4 (2017-01-15)
-* (jens-maus) Update device images to latest CCU 2.25.15
+* (jens-maus) Update device images to latest CCU 2.25.15. Fix notify of hm-rega to update names too on force-reload  
 
 ### 1.3.3 (2016-10-08)
 * (bluefox) Better connection indication
