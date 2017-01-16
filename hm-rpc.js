@@ -968,16 +968,66 @@ function createDevices(deviceArr, callback) {
 }
 
 function getCuxDevices(callback) {
-    // Todo read existing devices from couchdb and put IDs in array
-    // var devices = [];
 
     if (rpcClient) {
         // request devices from CUxD
         try {
-            rpcClient.methodCall('listDevices', [], function (err, data) {
-                adapter.log.info(adapter.config.type + 'rpc -> listDevices ' + data.length);
-                // Todo remove device ids from array
-                createDevices(data, callback);
+            rpcClient.methodCall('listDevices', [], function (err, newDevices) {
+
+              adapter.log.info(adapter.config.type + 'rpc -> listDevices ' + newDevices.length);
+
+              if(adapter.config.forceReInit === false)
+              {
+                adapter.objects.getObjectView('hm-rpc', 'listDevices', {startkey: 'hm-rpc.' + adapter.instance + '.', endkey: 'hm-rpc.' + adapter.instance + '.\u9999'}, function (err, doc)
+                {
+                  for(var i = 0; i < doc.rows.length; i++)
+                  {
+                    if(doc.rows[i].id == adapter.namespace + '.updated')
+                      continue;
+
+                    // lets get the device description
+                    var val = doc.rows[i].value;
+
+                    if(typeof val.ADDRESS === 'undefined')
+                      continue;
+
+                    // lets find the current device in the newDevices array
+                    // and if it doesn't exist we can delete it
+                    var index = newDevices.findIndex(function(value) {
+                      return value.ADDRESS === val.ADDRESS && value.VERSION === val.VERSION;
+                    });
+
+                    // if index is -1 than the newDevices doesn't have the
+                    // device with address val.ADDRESS anymore, thus we can delete it
+                    if(index === -1)
+                    {
+                      if(val.ADDRESS)
+                      {
+                        if(val.ADDRESS.indexOf(':') != -1) {
+                          var address = val.ADDRESS.replace(':', '.');
+                          var parts = address.split('.');
+                          adapter.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
+                          adapter.log.info('obsolete channel ' + address + ' ' + JSON.stringify(address) + ' deleted');
+                        } else {
+                          adapter.deleteDevice(val.ADDRESS);
+                          adapter.log.info('obsolete device ' + val.ADDRESS + ' deleted');
+                        }
+                      }
+                    }
+                    else
+                    {
+                      // we can remove the item at index because it is already registered
+                      // to ioBroker
+                      newDevices.splice(index, 1);
+                    }
+                  }
+
+                  adapter.log.info('new CUxD devices/channels after filter: ' + newDevices.length);
+                  createDevices(newDevices, callback);
+                });
+              }
+              else
+                createDevices(newDevices, callback);
             });
         } catch (err) {
             adapter.log.error('Cannot call listDevices: ' + err);
@@ -985,8 +1035,6 @@ function getCuxDevices(callback) {
     } else {
         callback && callback();
     }
-
-    // Todo delete all in array remaining devices
 }
 
 function updateConnection() {
