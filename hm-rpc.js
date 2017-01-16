@@ -18,9 +18,11 @@ var adapter = utils.adapter({
         if (state && state.ack !== true) {
             var tmp = id.split('.');
             var val;
-            adapter.log.debug(adapter.config.type + 'rpc -> setValue ' + tmp[3] + ' ' + tmp[4] + ': ' + state.val);
 
             if (id == adapter.namespace + '.updated') return;
+
+            adapter.log.debug(adapter.config.type + 'rpc -> setValue ' + tmp[3] + ' ' + tmp[4] + ': ' + state.val);
+
             if (!dpTypes[id]) {
                 adapter.log.error(adapter.config.type + 'rpc -> setValue: no dpType for ' + id + '!');
                 return;
@@ -590,15 +592,75 @@ function initRpcServer() {
         });
 
         rpcServer.on('newDevices', function (err, params, callback) {
-            adapter.log.info(adapter.config.type + 'rpc <- newDevices ' + params[1].length);
-            createDevices(params[1], callback);
+
+            var newDevices = params[1];
+
+            adapter.log.info(adapter.config.type + 'rpc <- newDevices ' + newDevices.length);
+
+            // for a HmIP-adapter we have to filter out the devices that
+            // are already present if forceReinit is not set
+            if(adapter.config.forceReInit === false && adapter.config.daemon === "HMIP")
+            {
+              adapter.objects.getObjectView('hm-rpc', 'listDevices', {startkey: 'hm-rpc.' + adapter.instance + '.', endkey: 'hm-rpc.' + adapter.instance + '.\u9999'}, function (err, doc)
+              {
+                for(var i = 0; i < doc.rows.length; i++)
+                {
+                  if(doc.rows[i].id == adapter.namespace + '.updated')
+                    continue;
+
+                  // lets get the device description
+                  var val = doc.rows[i].value;
+
+                  if(typeof val.ADDRESS === 'undefined')
+                    continue;
+
+                  // lets find the current device in the newDevices array
+                  // and if it doesn't exist we can delete it
+                  var index = newDevices.findIndex(function(value) {
+                    return value.ADDRESS === val.ADDRESS && value.VERSION === val.VERSION;
+                  });
+
+                  // if index is -1 than the newDevices doesn't have the
+                  // device with address val.ADDRESS anymore, thus we can delete it
+                  if(index === -1)
+                  {
+                    if(val.ADDRESS)
+                    {
+                      if(val.ADDRESS.indexOf(':') != -1) {
+                          var address = val.ADDRESS.replace(':', '.');
+                          var parts = address.split('.');
+                          adapter.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
+                          adapter.log.info('obsolete channel ' + address + ' ' + JSON.stringify(address) + ' deleted');
+                      } else {
+                          adapter.deleteDevice(val.ADDRESS);
+                          adapter.log.info('obsolete device ' + val.ADDRESS + ' deleted');
+                      }
+                    }
+                  }
+                  else
+                  {
+                    // we can remove the item at index because it is already registered
+                    // to ioBroker
+                    newDevices.splice(index, 1);
+                  }
+                }
+
+                adapter.log.info('new HmIP devices/channels after filter: ' + newDevices.length);
+                createDevices(newDevices, callback);
+              });
+            }
+            else
+              createDevices(newDevices, callback);
         });
 
         rpcServer.on('listDevices', function (err, params, callback) {
             adapter.log.info(adapter.config.type + 'rpc <- listDevices ' + JSON.stringify(params));
             adapter.objects.getObjectView('hm-rpc', 'listDevices', {startkey: 'hm-rpc.' + adapter.instance + '.', endkey: 'hm-rpc.' + adapter.instance + '.\u9999'}, function (err, doc) {
                 var response = [];
-                if (!adapter.config.forceReInit) {
+
+                // we only fill the response if this isn't a force reinit and
+                // if the adapter instance is not bothering with HmIP (which seems to work slightly different in terms of XMLRPC)
+                if (!adapter.config.forceReInit && adapter.config.daemon !== "HMIP") {
                     for (var i = 0; i < doc.rows.length; i++) {
                         if (doc.rows[i].id == adapter.namespace + '.updated') continue;
                         var val = doc.rows[i].value;
@@ -906,16 +968,66 @@ function createDevices(deviceArr, callback) {
 }
 
 function getCuxDevices(callback) {
-    // Todo read existing devices from couchdb and put IDs in array
-    // var devices = [];
 
     if (rpcClient) {
         // request devices from CUxD
         try {
-            rpcClient.methodCall('listDevices', [], function (err, data) {
-                adapter.log.info(adapter.config.type + 'rpc -> listDevices ' + data.length);
-                // Todo remove device ids from array
-                createDevices(data, callback);
+            rpcClient.methodCall('listDevices', [], function (err, newDevices) {
+
+              adapter.log.info(adapter.config.type + 'rpc -> listDevices ' + newDevices.length);
+
+              if(adapter.config.forceReInit === false)
+              {
+                adapter.objects.getObjectView('hm-rpc', 'listDevices', {startkey: 'hm-rpc.' + adapter.instance + '.', endkey: 'hm-rpc.' + adapter.instance + '.\u9999'}, function (err, doc)
+                {
+                  for(var i = 0; i < doc.rows.length; i++)
+                  {
+                    if(doc.rows[i].id == adapter.namespace + '.updated')
+                      continue;
+
+                    // lets get the device description
+                    var val = doc.rows[i].value;
+
+                    if(typeof val.ADDRESS === 'undefined')
+                      continue;
+
+                    // lets find the current device in the newDevices array
+                    // and if it doesn't exist we can delete it
+                    var index = newDevices.findIndex(function(value) {
+                      return value.ADDRESS === val.ADDRESS && value.VERSION === val.VERSION;
+                    });
+
+                    // if index is -1 than the newDevices doesn't have the
+                    // device with address val.ADDRESS anymore, thus we can delete it
+                    if(index === -1)
+                    {
+                      if(val.ADDRESS)
+                      {
+                        if(val.ADDRESS.indexOf(':') != -1) {
+                          var address = val.ADDRESS.replace(':', '.');
+                          var parts = address.split('.');
+                          adapter.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
+                          adapter.log.info('obsolete channel ' + address + ' ' + JSON.stringify(address) + ' deleted');
+                        } else {
+                          adapter.deleteDevice(val.ADDRESS);
+                          adapter.log.info('obsolete device ' + val.ADDRESS + ' deleted');
+                        }
+                      }
+                    }
+                    else
+                    {
+                      // we can remove the item at index because it is already registered
+                      // to ioBroker
+                      newDevices.splice(index, 1);
+                    }
+                  }
+
+                  adapter.log.info('new CUxD devices/channels after filter: ' + newDevices.length);
+                  createDevices(newDevices, callback);
+                });
+              }
+              else
+                createDevices(newDevices, callback);
             });
         } catch (err) {
             adapter.log.error('Cannot call listDevices: ' + err);
@@ -923,8 +1035,6 @@ function getCuxDevices(callback) {
     } else {
         callback && callback();
     }
-
-    // Todo delete all in array remaining devices
 }
 
 function updateConnection() {
