@@ -18,6 +18,9 @@ native.homematicAddress is the IP of the HomeMatic CCU respectively the Host tha
 
 ## Changelog
 
+### 1.4.0 (2017-01-16)
+* (jens-maus) fixes/changes for listDevices/newDevices RPC calls for HmIP and CUxD variants of hm-rpc
+
 ### 1.3.5 (2017-01-15)
 * (jens-maus) Fix notify of hm-rega to update names too on force-reload
 
