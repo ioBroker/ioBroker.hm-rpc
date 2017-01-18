@@ -614,10 +614,13 @@ function initRpcServer() {
 
                         // lets find the current device in the newDevices array
                         // and if it doesn't exist we can delete it
-                        var index = newDevices.findIndex(function (value) {
-                            //noinspection JSReferencingMutableVariableFromClosure
-                            return value.ADDRESS === val.ADDRESS && value.VERSION === val.VERSION;
-                        });
+                        var index = -1;
+                        for (var j = 0; j < newDevices.length; j++) {
+                            if (newDevices[j].ADDRESS === val.ADDRESS && newDevices[j].VERSION === val.VERSION) {
+                                index = j;
+                                break;
+                            }
+                        }
 
                         // if index is -1 than the newDevices doesn't have the
                         // device with address val.ADDRESS anymore, thus we can delete it
@@ -985,10 +988,13 @@ function getCuxDevices(callback) {
 
                             // lets find the current device in the newDevices array
                             // and if it doesn't exist we can delete it
-                            var index = newDevices.findIndex(function (value) {
-                                //noinspection JSReferencingMutableVariableFromClosure
-                                return value.ADDRESS === val.ADDRESS && value.VERSION === val.VERSION;
-                            });
+                            var index = -1;
+                            for (var j = 0; j < newDevices.length; j++) {
+                                if (newDevices[j].ADDRESS === val.ADDRESS && newDevices[j].VERSION === val.VERSION) {
+                                    index = j;
+                                    break;
+                                }
+                            }
 
                             // if index is -1 than the newDevices doesn't have the
                             // device with address val.ADDRESS anymore, thus we can delete it
