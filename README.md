@@ -19,7 +19,7 @@ native.homematicAddress is the IP of the HomeMatic CCU respectively the Host tha
 ## Changelog
 
 ### 1.4.1 (2017-01-18)
-* (Apollon77) make it compatible with node 9.x again
+* (Apollon77) make it compatible with node 0.x again
 
 ### 1.4.0 (2017-01-16)
 * (jens-maus) fixes/changes for listDevices/newDevices RPC calls for HmIP and CUxD variants of hm-rpc
