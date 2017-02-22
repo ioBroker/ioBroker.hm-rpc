@@ -19,7 +19,7 @@ var adapter = utils.adapter({
             var tmp = id.split('.');
             var val;
 
-            if (id == adapter.namespace + '.updated') return;
+            if (id === adapter.namespace + '.updated') return;
 
             adapter.log.debug(adapter.config.type + 'rpc -> setValue ' + tmp[3] + ' ' + tmp[4] + ': ' + state.val);
 
@@ -455,7 +455,7 @@ function main() {
     // Load VALUE paramsetDescriptions (needed to create state objects)
     adapter.objects.getObjectView('hm-rpc', 'paramsetDescription', {startkey: 'hm-rpc.meta.VALUES', endkey: 'hm-rpc.meta.VALUES.\u9999'}, function handleValueParamSetDescriptions(err, doc) {
         if (err) adapter.log.error('getObjectView hm-rpc: ' + err);
-        if (doc) {
+        if (doc && doc.rows) {
             for (var i = 0; i < doc.rows.length; i++) {
                 metaValues[doc.rows[i].id.slice(19)] = doc.rows[i].value.native;
             }
@@ -473,7 +473,7 @@ function main() {
     adapter.objects.getObjectView('system', 'state', {startkey: adapter.namespace, endkey: adapter.namespace + '\u9999'}, function handleStateViews(err, res) {
         if (!err && res.rows) {
             for (var i = 0; i < res.rows.length; i++) {
-                if (res.rows[i].id == adapter.namespace + '.updated') continue;
+                if (res.rows[i].id === adapter.namespace + '.updated') continue;
                 if (!res.rows[i].value.native) {
                     adapter.log.warn('State ' + res.rows[i].id + ' does not have native.');
                     dpTypes[res.rows[i].id] = {UNIT: '', TYPE: ''};
@@ -604,44 +604,47 @@ function initRpcServer() {
                     startkey: 'hm-rpc.' + adapter.instance + '.',
                     endkey: 'hm-rpc.' + adapter.instance + '.\u9999'
                 }, function (err, doc) {
-                    for (var i = 0; i < doc.rows.length; i++) {
-                        if (doc.rows[i].id === adapter.namespace + '.updated') continue;
+                    if (doc && doc.rows) {
+                        for (var i = 0; i < doc.rows.length; i++) {
+                            if (doc.rows[i].id === adapter.namespace + '.updated') continue;
 
-                        // lets get the device description
-                        var val = doc.rows[i].value;
+                            // lets get the device description
+                            var val = doc.rows[i].value;
 
-                        if (typeof val.ADDRESS === 'undefined') continue;
+                            if (typeof val.ADDRESS === 'undefined') continue;
 
-                        // lets find the current device in the newDevices array
-                        // and if it doesn't exist we can delete it
-                        var index = -1;
-                        for (var j = 0; j < newDevices.length; j++) {
-                            if (newDevices[j].ADDRESS === val.ADDRESS && newDevices[j].VERSION === val.VERSION) {
-                                index = j;
-                                break;
-                            }
-                        }
-
-                        // if index is -1 than the newDevices doesn't have the
-                        // device with address val.ADDRESS anymore, thus we can delete it
-                        if (index === -1) {
-                            if (val.ADDRESS) {
-                                if (val.ADDRESS.indexOf(':') !== -1) {
-                                    var address = val.ADDRESS.replace(':', '.');
-                                    var parts = address.split('.');
-                                    adapter.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
-                                    adapter.log.info('obsolete channel ' + address + ' ' + JSON.stringify(address) + ' deleted');
-                                } else {
-                                    adapter.deleteDevice(val.ADDRESS);
-                                    adapter.log.info('obsolete device ' + val.ADDRESS + ' deleted');
+                            // lets find the current device in the newDevices array
+                            // and if it doesn't exist we can delete it
+                            var index = -1;
+                            for (var j = 0; j < newDevices.length; j++) {
+                                if (newDevices[j].ADDRESS === val.ADDRESS && newDevices[j].VERSION === val.VERSION) {
+                                    index = j;
+                                    break;
                                 }
                             }
-                        } else {
-                            // we can remove the item at index because it is already registered
-                            // to ioBroker
-                            newDevices.splice(index, 1);
+
+                            // if index is -1 than the newDevices doesn't have the
+                            // device with address val.ADDRESS anymore, thus we can delete it
+                            if (index === -1) {
+                                if (val.ADDRESS) {
+                                    if (val.ADDRESS.indexOf(':') !== -1) {
+                                        var address = val.ADDRESS.replace(':', '.');
+                                        var parts = address.split('.');
+                                        adapter.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
+                                        adapter.log.info('obsolete channel ' + address + ' ' + JSON.stringify(address) + ' deleted');
+                                    } else {
+                                        adapter.deleteDevice(val.ADDRESS);
+                                        adapter.log.info('obsolete device ' + val.ADDRESS + ' deleted');
+                                    }
+                                }
+                            } else {
+                                // we can remove the item at index because it is already registered
+                                // to ioBroker
+                                newDevices.splice(index, 1);
+                            }
                         }
                     }
+
 
                     adapter.log.info('new HmIP devices/channels after filter: ' + newDevices.length);
                     createDevices(newDevices, callback);
@@ -658,9 +661,9 @@ function initRpcServer() {
 
                 // we only fill the response if this isn't a force reinit and
                 // if the adapter instance is not bothering with HmIP (which seems to work slightly different in terms of XMLRPC)
-                if (!adapter.config.forceReInit && adapter.config.daemon !== "HMIP") {
+                if (!adapter.config.forceReInit && adapter.config.daemon !== 'HMIP' && doc && doc.rows) {
                     for (var i = 0; i < doc.rows.length; i++) {
-                        if (doc.rows[i].id == adapter.namespace + '.updated') continue;
+                        if (doc.rows[i].id === adapter.namespace + '.updated') continue;
                         var val = doc.rows[i].value;
 
                         /*if (val.PARENT_TYPE) {
@@ -690,7 +693,7 @@ function initRpcServer() {
         rpcServer.on('deleteDevices', function (err, params, callback) {
             adapter.log.info(adapter.config.type + 'rpc <- deleteDevices ' + params[1].length);
             for (var i = 0; i < params[1].length; i++) {
-                if (params[1][i].indexOf(':') != -1) {
+                if (params[1][i].indexOf(':') !== -1) {
                     params[1][i] = params[1][i].replace(':', '.');
                     adapter.log.info('channel ' + params[1][i] + ' ' + JSON.stringify(params[1][i]) + ' deleted');
                     var parts = params[1][i].split('.');
@@ -781,9 +784,9 @@ function addParamsetObjects(channel, paramset, callback) {
             obj.common.max = 100 * paramset[key].MAX;
         } else if (paramset[key].UNIT !== '') {
             obj.common.unit = paramset[key].UNIT;
-            if (obj.common.unit == '�C' || obj.common.unit == '&#176;C') {
+            if (obj.common.unit === '�C' || obj.common.unit === '&#176;C') {
                 obj.common.unit = '°C';
-            } else if (obj.common.unit == '�F' || obj.common.unit == '&#176;F') {
+            } else if (obj.common.unit === '�F' || obj.common.unit === '&#176;F') {
                 obj.common.unit = '°F';
             }
         }
@@ -806,7 +809,7 @@ function addParamsetObjects(channel, paramset, callback) {
             throw 'typeof obj.common.role ' + typeof obj.common.role;
         }
         dpTypes[adapter.namespace + '.' + channel._id + '.' + key] = {UNIT: paramset[key].UNIT, TYPE: paramset[key].TYPE};
-        if (key == 'LEVEL' && paramset.WORKING) {
+        if (key === 'LEVEL' && paramset.WORKING) {
             obj.common.workingID = 'WORKING';
         }
         count++;
@@ -978,42 +981,44 @@ function getCuxDevices(callback) {
                         startkey: 'hm-rpc.' + adapter.instance + '.',
                         endkey:   'hm-rpc.' + adapter.instance + '.\u9999'
                     }, function (err, doc) {
-                        for (var i = 0; i < doc.rows.length; i++) {
-                            if (doc.rows[i].id === adapter.namespace + '.updated') continue;
+                        if (doc && doc.rows) {
+                            for (var i = 0; i < doc.rows.length; i++) {
+                                if (doc.rows[i].id === adapter.namespace + '.updated') continue;
 
-                            // lets get the device description
-                            var val = doc.rows[i].value;
+                                // lets get the device description
+                                var val = doc.rows[i].value;
 
-                            if (typeof val.ADDRESS === 'undefined') continue;
+                                if (typeof val.ADDRESS === 'undefined') continue;
 
-                            // lets find the current device in the newDevices array
-                            // and if it doesn't exist we can delete it
-                            var index = -1;
-                            for (var j = 0; j < newDevices.length; j++) {
-                                if (newDevices[j].ADDRESS === val.ADDRESS && newDevices[j].VERSION === val.VERSION) {
-                                    index = j;
-                                    break;
-                                }
-                            }
-
-                            // if index is -1 than the newDevices doesn't have the
-                            // device with address val.ADDRESS anymore, thus we can delete it
-                            if (index === -1) {
-                                if (val.ADDRESS) {
-                                    if (val.ADDRESS.indexOf(':') !== -1) {
-                                        var address = val.ADDRESS.replace(':', '.');
-                                        var parts = address.split('.');
-                                        adapter.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
-                                        adapter.log.info('obsolete channel ' + address + ' ' + JSON.stringify(address) + ' deleted');
-                                    } else {
-                                        adapter.deleteDevice(val.ADDRESS);
-                                        adapter.log.info('obsolete device ' + val.ADDRESS + ' deleted');
+                                // lets find the current device in the newDevices array
+                                // and if it doesn't exist we can delete it
+                                var index = -1;
+                                for (var j = 0; j < newDevices.length; j++) {
+                                    if (newDevices[j].ADDRESS === val.ADDRESS && newDevices[j].VERSION === val.VERSION) {
+                                        index = j;
+                                        break;
                                     }
                                 }
-                            } else {
-                                // we can remove the item at index because it is already registered
-                                // to ioBroker
-                                newDevices.splice(index, 1);
+
+                                // if index is -1 than the newDevices doesn't have the
+                                // device with address val.ADDRESS anymore, thus we can delete it
+                                if (index === -1) {
+                                    if (val.ADDRESS) {
+                                        if (val.ADDRESS.indexOf(':') !== -1) {
+                                            var address = val.ADDRESS.replace(':', '.');
+                                            var parts = address.split('.');
+                                            adapter.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
+                                            adapter.log.info('obsolete channel ' + address + ' ' + JSON.stringify(address) + ' deleted');
+                                        } else {
+                                            adapter.deleteDevice(val.ADDRESS);
+                                            adapter.log.info('obsolete device ' + val.ADDRESS + ' deleted');
+                                        }
+                                    }
+                                } else {
+                                    // we can remove the item at index because it is already registered
+                                    // to ioBroker
+                                    newDevices.splice(index, 1);
+                                }
                             }
                         }
 

@@ -7,8 +7,13 @@
             "de": "Verbindet HomeMatic Interface-Prozesse (BidCos-Services, Homegear und CUxD) via XML-RPC oder BIN-RPC mit ioBroker",
             "ru": "Подключает HomeMatic интерфейсы (BidCos-сервисы, Homegear и CUxD) через XML-RPC или BIN-RPC к ioBroker"
         },
-        "version": "1.4.1",
+        "version": "1.4.2",
         "news": {
+            "1.4.2": {
+                "en": "fixes small errors",
+                "de": "Korrigiere kleine Fehler",
+                "ru": "Исправлены небольшие ошибки"
+            },
             "1.4.1": {
                 "en": "fixes/changes for listDevices/newDevices RPC calls for HmIP and CUxD variants of hm-rpc",
                 "de": "Korrigiere dass HMIP Geräte nicht jedes mal neu angelegt werden",

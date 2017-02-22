@@ -18,6 +18,9 @@ native.homematicAddress is the IP of the HomeMatic CCU respectively the Host tha
 
 ## Changelog
 
+### 1.4.2 (2017-02-22)
+* (bluefox) fixes small errors
+
 ### 1.4.1 (2017-01-18)
 * (Apollon77) make it compatible with node 0.x again
 
