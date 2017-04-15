@@ -791,6 +791,11 @@ function addParamsetObjects(channel, paramset, callback) {
             }
         }
 
+        // specify which value is LOCK
+        if (obj.native.CONTROL === 'LOCK.STATE') {
+            obj.native.LOCK_VALUE = false;
+        }
+
         if (metaRoles.dpCONTROL && metaRoles.dpCONTROL[obj.native.CONTROL]) {
             obj.common.role = metaRoles.dpCONTROL[obj.native.CONTROL];
 

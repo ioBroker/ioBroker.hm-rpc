@@ -7,8 +7,13 @@
             "de": "Verbindet HomeMatic Interface-Prozesse (BidCos-Services, Homegear und CUxD) via XML-RPC oder BIN-RPC mit ioBroker",
             "ru": "Подключает HomeMatic интерфейсы (BidCos-сервисы, Homegear и CUxD) через XML-RPC или BIN-RPC к ioBroker"
         },
-        "version": "1.4.2",
+        "version": "1.4.3",
         "news": {
+		    "1.4.3": {
+                "en": "add Lock Value for KeyMatic",
+                "de": "Lock Wert ist zu Keymaitc hinzugefügt",
+                "ru": "Добавлено значение Lock для KeyMatic"
+            },
             "1.4.2": {
                 "en": "fixes small errors",
                 "de": "Korrigiere kleine Fehler",
