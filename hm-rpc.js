@@ -738,6 +738,7 @@ function addParamsetObjects(channel, paramset, callback) {
     var channelChildren = [];
     var count = 0;
     for (var key in paramset) {
+        if (!paramset.hasOwnProperty(key)) continue;
         channelChildren.push(channel._id + '.' + key);
         var commonType = {
             'ACTION':  'boolean',
@@ -791,11 +792,6 @@ function addParamsetObjects(channel, paramset, callback) {
             }
         }
 
-        // specify which value is LOCK
-        if (obj.native.CONTROL === 'LOCK.STATE') {
-            obj.native.LOCK_VALUE = false;
-        }
-
         if (metaRoles.dpCONTROL && metaRoles.dpCONTROL[obj.native.CONTROL]) {
             obj.common.role = metaRoles.dpCONTROL[obj.native.CONTROL];
 
@@ -808,6 +804,12 @@ function addParamsetObjects(channel, paramset, callback) {
 
         if (paramset[key].OPERATIONS & 8) {
             obj.common.role = 'indicator.service';
+        }
+
+        // specify which value is LOCK
+        if (obj.native.CONTROL === 'LOCK.STATE') {
+            obj.native.LOCK_VALUE = false;
+            obj.common.role = 'switch.lock';
         }
 
         if (typeof obj.common.role !== 'string' && typeof obj.common.role !== 'undefined') {

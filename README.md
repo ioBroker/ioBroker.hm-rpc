@@ -18,7 +18,7 @@ native.homematicAddress is the IP of the HomeMatic CCU respectively the Host tha
 
 ## Changelog
 
-### 1.4.3 (2017-04-15)
+### 1.4.4 (2017-04-17)
 * (bluefox) add Lock Value for KeyMatic
 
 ### 1.4.2 (2017-02-22)
