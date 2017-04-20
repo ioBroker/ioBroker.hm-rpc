@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "homematic-xmlrpc": "^1.0.2",
-    "binrpc": "^1.2.0"
+    "binrpc": "^1.1.0"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
