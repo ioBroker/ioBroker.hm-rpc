@@ -28,6 +28,10 @@ var adapter = utils.adapter({
                 return;
             }
 
+            if (dpTypes[id].UNIT === '%' && dpTypes[id].MIN !== undefined) {
+                state.val = (state.val / 100) * (dpTypes[id].MAX - dpTypes[id].MIN) + dpTypes[id].MIN;
+                state.val = Math.round(state.val * 1000) / 1000;
+            } else
             if (dpTypes[id].UNIT === '100%') {
                 state.val = state.val / 100;
             }
@@ -45,7 +49,7 @@ var adapter = utils.adapter({
                     val = state.val;
             }
 
-            adapter.log.info('setValue ' + JSON.stringify([tmp[2] + ':' + tmp[3], tmp[4], val]) + ' ' + type);
+            adapter.log.debug('setValue ' + JSON.stringify([tmp[2] + ':' + tmp[3], tmp[4], val]) + ' ' + type);
 
             try {
                 if (rpcClient && connected) {
@@ -478,7 +482,15 @@ function main() {
                     adapter.log.warn('State ' + res.rows[i].id + ' does not have native.');
                     dpTypes[res.rows[i].id] = {UNIT: '', TYPE: ''};
                 } else {
-                    dpTypes[res.rows[i].id] = {UNIT: res.rows[i].value.native.UNIT, TYPE: res.rows[i].value.native.TYPE};
+                    dpTypes[res.rows[i].id] = {UNIT: res.rows[i].value.native.UNIT, TYPE: res.rows[i].value.native.TYPE, MIN: res.rows[i].value.native.MIN, MAX: res.rows[i].value.native.MAX};
+
+                    if (dpTypes[res.rows[i].id].MIN !== undefined) {
+                        dpTypes[res.rows[i].id].MIN = parseFloat(dpTypes[res.rows[i].id].MIN);
+                        dpTypes[res.rows[i].id].MAX = parseFloat(dpTypes[res.rows[i].id].MAX);
+                        if (dpTypes[res.rows[i].id].UNIT === '100%') {
+                            dpTypes[res.rows[i].id].UNIT = '%';
+                        }
+                    }
                 }
             }
         }
@@ -720,8 +732,15 @@ var methods = {
         var channel = params[1].replace(':', '.');
         var name = params[0] + '.' + channel + '.' + params[2];
 
-        if (dpTypes[name] && dpTypes[name].UNIT === '100%') {
-            val = (params[3] * 100);
+        if (dpTypes[name]) {
+            if (dpTypes[name].MIN !== undefined && dpTypes[name].UNIT === '%') {
+                val = Math.round(((parseFloat(params[3]) - dpTypes[name].MIN) / (dpTypes[name].MAX - dpTypes[name].MIN)) * 10000) / 100;
+            } else if (dpTypes[name].UNIT === '100%') {
+                val = (params[3] * 100);
+            } else {
+                val = params[3];
+            }
+
         } else {
             val = params[3];
         }
@@ -815,7 +834,18 @@ function addParamsetObjects(channel, paramset, callback) {
         if (typeof obj.common.role !== 'string' && typeof obj.common.role !== 'undefined') {
             throw 'typeof obj.common.role ' + typeof obj.common.role;
         }
-        dpTypes[adapter.namespace + '.' + channel._id + '.' + key] = {UNIT: paramset[key].UNIT, TYPE: paramset[key].TYPE};
+        var dpID = adapter.namespace + '.' + channel._id + '.' + key;
+
+        dpTypes[dpID] = {UNIT: paramset[key].UNIT, TYPE: paramset[key].TYPE, MIN: paramset[key].MIN, MAX: paramset[key].MAX};
+
+        if (dpTypes[dpID].MIN !== undefined) {
+            dpTypes[dpID].MIN = parseFloat(dpTypes[dpID]);
+            dpTypes[dpID].MAX = parseFloat(dpTypes[dpID]);
+            if (dpTypes[dpID].UNIT === '100%') {
+                dpTypes[dpID].UNIT = '%';
+            }
+        }
+
         if (key === 'LEVEL' && paramset.WORKING) {
             obj.common.workingID = 'WORKING';
         }
@@ -941,7 +971,15 @@ function createDevices(deviceArr, callback) {
 
         if (icon) obj.common.icon = icon;
 
-        dpTypes[adapter.namespace + '.' + obj._id] = {UNIT: deviceArr[i].UNIT, TYPE: deviceArr[i].TYPE};
+        var dpID = adapter.namespace + '.' + obj._id;
+        dpTypes[dpID] = {UNIT: deviceArr[i].UNIT, TYPE: deviceArr[i].TYPE, MAX: deviceArr[i].MAX, MIN: deviceArr[i].MIN};
+        if (dpTypes[dpID].MIN !== undefined) {
+            dpTypes[dpID].MIN = parseFloat(dpTypes[dpID]);
+            dpTypes[dpID].MAX = parseFloat(dpTypes[dpID]);
+            if (dpTypes[dpID].UNIT === '100%') {
+                dpTypes[dpID].UNIT = '%';
+            }
+        }
         objs.push(obj);
     }
 

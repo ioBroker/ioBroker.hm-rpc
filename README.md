@@ -18,6 +18,10 @@ native.homematicAddress is the IP of the HomeMatic CCU respectively the Host tha
 
 ## Changelog
 
+### 1.4.7 (2017-05-17)
+* (bluefox) Remove log entry
+* (bluefox) Fix values convert for CUxD
+
 ### 1.4.6 (2017-04-22)
 * (bluefox) use right version of rpc-bin lib
 

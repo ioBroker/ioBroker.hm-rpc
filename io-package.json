@@ -7,8 +7,13 @@
             "de": "Verbindet HomeMatic Interface-Prozesse (BidCos-Services, Homegear und CUxD) via XML-RPC oder BIN-RPC mit ioBroker",
             "ru": "Подключает HomeMatic интерфейсы (BidCos-сервисы, Homegear и CUxD) через XML-RPC или BIN-RPC к ioBroker"
         },
-        "version": "1.4.6",
+        "version": "1.4.7",
         "news": {
+            "1.4.7": {
+                "en": "Remove log entry\nFix values conversion for CUxD",
+                "de": "Dektiviere info log bei Steuerung\nKorrigiere die Kalkulation von CUxD Werten",
+                "ru": "Remove log entry\nFix values conversion for CUxD"
+            },
 			"1.4.6": {
                 "en": "use right version of rpc-bin lib",
                 "de": "Benutze die richtige Version für rpc-bin lib",
