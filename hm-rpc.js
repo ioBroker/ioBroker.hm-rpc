@@ -484,7 +484,7 @@ function main() {
                 } else {
                     dpTypes[res.rows[i].id] = {UNIT: res.rows[i].value.native.UNIT, TYPE: res.rows[i].value.native.TYPE, MIN: res.rows[i].value.native.MIN, MAX: res.rows[i].value.native.MAX};
 
-                    if (dpTypes[res.rows[i].id].MIN !== undefined) {
+                    if (dpTypes[res.rows[i].id].MIN !== undefined && typeof dpTypes[res.rows[i].id].MIN === 'number') {
                         dpTypes[res.rows[i].id].MIN = parseFloat(dpTypes[res.rows[i].id].MIN);
                         dpTypes[res.rows[i].id].MAX = parseFloat(dpTypes[res.rows[i].id].MAX);
                         if (dpTypes[res.rows[i].id].UNIT === '100%') {
@@ -838,9 +838,9 @@ function addParamsetObjects(channel, paramset, callback) {
 
         dpTypes[dpID] = {UNIT: paramset[key].UNIT, TYPE: paramset[key].TYPE, MIN: paramset[key].MIN, MAX: paramset[key].MAX};
 
-        if (dpTypes[dpID].MIN !== undefined) {
-            dpTypes[dpID].MIN = parseFloat(dpTypes[dpID]);
-            dpTypes[dpID].MAX = parseFloat(dpTypes[dpID]);
+        if (dpTypes[dpID].MIN !== undefined && typeof dpTypes[dpID].MIN === 'number') {
+            dpTypes[dpID].MIN = parseFloat(dpTypes[dpID].MIN);
+            dpTypes[dpID].MAX = parseFloat(dpTypes[dpID].MAX);
             if (dpTypes[dpID].UNIT === '100%') {
                 dpTypes[dpID].UNIT = '%';
             }
@@ -973,9 +973,9 @@ function createDevices(deviceArr, callback) {
 
         var dpID = adapter.namespace + '.' + obj._id;
         dpTypes[dpID] = {UNIT: deviceArr[i].UNIT, TYPE: deviceArr[i].TYPE, MAX: deviceArr[i].MAX, MIN: deviceArr[i].MIN};
-        if (dpTypes[dpID].MIN !== undefined) {
-            dpTypes[dpID].MIN = parseFloat(dpTypes[dpID]);
-            dpTypes[dpID].MAX = parseFloat(dpTypes[dpID]);
+        if (dpTypes[dpID].MIN !== undefined && typeof dpTypes[dpID].MIN === 'number') {
+            dpTypes[dpID].MIN = parseFloat(dpTypes[dpID].MIN);
+            dpTypes[dpID].MAX = parseFloat(dpTypes[dpID].MAX);
             if (dpTypes[dpID].UNIT === '100%') {
                 dpTypes[dpID].UNIT = '%';
             }
