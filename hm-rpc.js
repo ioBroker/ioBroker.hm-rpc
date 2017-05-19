@@ -727,7 +727,7 @@ function initRpcServer() {
 var methods = {
 
     event: function (err, params) {
-        adapter.log.debug(adapter.config.type + 'rpc <- event ' + JSON.stringify(params));
+        adapter.log.info(adapter.config.type + 'rpc <- event ' + JSON.stringify(params));
         var val;
         var channel = params[1].replace(':', '.');
         var name = params[0] + '.' + channel + '.' + params[2];
@@ -740,10 +740,10 @@ var methods = {
             } else {
                 val = params[3];
             }
-
         } else {
             val = params[3];
         }
+        adapter.log.info(name + ' ==> UNIT: "' + (dpTypes[name] ? dpTypes[name].UNIT : 'none')  + '" (min: ' + (dpTypes[name] ? dpTypes[name].MIN : 'none')  + ', max: ' + (dpTypes[name] ? dpTypes[name].MAX : 'none') + ') From "' + params[3] + '" => "' + val + '"');
 
         adapter.setState(channel + '.' + params[2], {val: val, ack: true});
         return '';
@@ -760,12 +760,12 @@ function addParamsetObjects(channel, paramset, callback) {
         if (!paramset.hasOwnProperty(key)) continue;
         channelChildren.push(channel._id + '.' + key);
         var commonType = {
-            'ACTION':  'boolean',
-            'BOOL':    'boolean',
-            'FLOAT':   'number',
-            'ENUM':    'number',
-            'INTEGER': 'number',
-            'STRING':  'string'
+            ACTION:  'boolean',
+            BOOL:    'boolean',
+            FLOAT:   'number',
+            ENUM:    'number',
+            INTEGER: 'number',
+            STRING:  'string'
         };
 
         var obj = {
@@ -773,8 +773,8 @@ function addParamsetObjects(channel, paramset, callback) {
             common: {
                 def:   paramset[key].DEFAULT,
                 type:  commonType[paramset[key].TYPE] || paramset[key].TYPE || '',
-                read:  (paramset[key].OPERATIONS & 1 ? true : false),
-                write: (paramset[key].OPERATIONS & 2 ? true : false)
+                read:  !!(paramset[key].OPERATIONS & 1),
+                write: !!(paramset[key].OPERATIONS & 2)
             },
             native: paramset[key]
         };
