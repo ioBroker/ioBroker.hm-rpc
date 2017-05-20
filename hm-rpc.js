@@ -482,7 +482,12 @@ function main() {
                     adapter.log.warn('State ' + res.rows[i].id + ' does not have native.');
                     dpTypes[res.rows[i].id] = {UNIT: '', TYPE: ''};
                 } else {
-                    dpTypes[res.rows[i].id] = {UNIT: res.rows[i].value.native.UNIT, TYPE: res.rows[i].value.native.TYPE, MIN: res.rows[i].value.native.MIN, MAX: res.rows[i].value.native.MAX};
+                    dpTypes[res.rows[i].id] = {
+                        UNIT: res.rows[i].value.native.UNIT,
+                        TYPE: res.rows[i].value.native.TYPE,
+                        MIN:  res.rows[i].value.native.MIN,
+                        MAX:  res.rows[i].value.native.MAX
+                    };
 
                     if (dpTypes[res.rows[i].id].MIN !== undefined && typeof dpTypes[res.rows[i].id].MIN === 'number') {
                         dpTypes[res.rows[i].id].MIN = parseFloat(dpTypes[res.rows[i].id].MIN);
@@ -727,8 +732,12 @@ function initRpcServer() {
 var methods = {
 
     event: function (err, params) {
-        adapter.log.info(adapter.config.type + 'rpc <- event ' + JSON.stringify(params));
+        adapter.log.debug(adapter.config.type + 'rpc <- event ' + JSON.stringify(params));
         var val;
+        // CUxD ignores all prefixes!!
+        if (params[0] === 'CUxD' || params[0].indexOf(adapter.name) === -1) {
+            params[0] = adapter.namespace;
+        }
         var channel = params[1].replace(':', '.');
         var name = params[0] + '.' + channel + '.' + params[2];
 
@@ -743,7 +752,7 @@ var methods = {
         } else {
             val = params[3];
         }
-        adapter.log.info(name + ' ==> UNIT: "' + (dpTypes[name] ? dpTypes[name].UNIT : 'none')  + '" (min: ' + (dpTypes[name] ? dpTypes[name].MIN : 'none')  + ', max: ' + (dpTypes[name] ? dpTypes[name].MAX : 'none') + ') From "' + params[3] + '" => "' + val + '"');
+        adapter.log.debug(name + ' ==> UNIT: "' + (dpTypes[name] ? dpTypes[name].UNIT : 'none')  + '" (min: ' + (dpTypes[name] ? dpTypes[name].MIN : 'none')  + ', max: ' + (dpTypes[name] ? dpTypes[name].MAX : 'none') + ') From "' + params[3] + '" => "' + val + '"');
 
         adapter.setState(channel + '.' + params[2], {val: val, ack: true});
         return '';
