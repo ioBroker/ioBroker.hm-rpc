@@ -232,11 +232,14 @@ function main() {
                         MAX:  res.rows[i].value.native.MAX
                     };
 
-                    if (dpTypes[res.rows[i].id].MIN !== undefined && typeof dpTypes[res.rows[i].id].MIN === 'number') {
+                    if (typeof dpTypes[res.rows[i].id].MIN === 'number') {
                         dpTypes[res.rows[i].id].MIN = parseFloat(dpTypes[res.rows[i].id].MIN);
                         dpTypes[res.rows[i].id].MAX = parseFloat(dpTypes[res.rows[i].id].MAX);
                         if (dpTypes[res.rows[i].id].UNIT === '100%') {
                             dpTypes[res.rows[i].id].UNIT = '%';
+                        }
+                        if (dpTypes[res.rows[i].id].MAX === 99) {
+                            dpTypes[res.rows[i].id].MAX = 100;
                         }
                     }
                 }
@@ -486,9 +489,10 @@ var methods = {
 
         if (dpTypes[name]) {
             if (dpTypes[name].MIN !== undefined && dpTypes[name].UNIT === '%') {
-                val = Math.round(((parseFloat(params[3]) - dpTypes[name].MIN) / (dpTypes[name].MAX - dpTypes[name].MIN)) * 10000) / 100;
-            } else if (dpTypes[name].UNIT === '100%') {
-                val = (params[3] * 100);
+                val = ((parseFloat(params[3]) - dpTypes[name].MIN) / (dpTypes[name].MAX - dpTypes[name].MIN)) * 100;
+                val = Math.round(val * 100) / 100;
+            } else if (dpTypes[name].UNIT === '100%' || (dpTypes[name].UNIT === '%' && dpTypes[name].MAX === 1)) {
+                val = params[3] * 100;
             } else {
                 val = params[3];
             }
@@ -590,11 +594,13 @@ function addParamsetObjects(channel, paramset, callback) {
 
         dpTypes[dpID] = {UNIT: paramset[key].UNIT, TYPE: paramset[key].TYPE, MIN: paramset[key].MIN, MAX: paramset[key].MAX};
 
-        if (dpTypes[dpID].MIN !== undefined && typeof dpTypes[dpID].MIN === 'number') {
+        if (typeof dpTypes[dpID].MIN === 'number') {
             dpTypes[dpID].MIN = parseFloat(dpTypes[dpID].MIN);
             dpTypes[dpID].MAX = parseFloat(dpTypes[dpID].MAX);
             // Humidity is from 0 to 99. It is wrong.
-            if (dpTypes[dpID].MAX === 99) dpTypes[dpID].MAX = 100;
+            if (dpTypes[dpID].MAX === 99) {
+                dpTypes[dpID].MAX = 100;
+            }
             if (dpTypes[dpID].UNIT === '100%') {
                 dpTypes[dpID].UNIT = '%';
             }
@@ -727,12 +733,14 @@ function createDevices(deviceArr, callback) {
 
         var dpID = adapter.namespace + '.' + obj._id;
         dpTypes[dpID] = {UNIT: deviceArr[i].UNIT, TYPE: deviceArr[i].TYPE, MAX: deviceArr[i].MAX, MIN: deviceArr[i].MIN};
-        if (dpTypes[dpID].MIN !== undefined && typeof dpTypes[dpID].MIN === 'number') {
+        if (typeof dpTypes[dpID].MIN === 'number') {
             dpTypes[dpID].MIN = parseFloat(dpTypes[dpID].MIN);
             dpTypes[dpID].MAX = parseFloat(dpTypes[dpID].MAX);
 
             // Humidity is from 0 to 99. It is wrong.
-            if (dpTypes[dpID].MAX === 99) dpTypes[dpID].MAX = 100;
+            if (dpTypes[dpID].MAX === 99) {
+                dpTypes[dpID].MAX = 100;
+            }
 
             if (dpTypes[dpID].UNIT === '100%') {
                 dpTypes[dpID].UNIT = '%';

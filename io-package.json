@@ -7,9 +7,9 @@
             "de": "Verbindet HomeMatic Interface-Prozesse (BidCos-Services, Homegear und CUxD) via XML-RPC oder BIN-RPC mit ioBroker",
             "ru": "Подключает HomeMatic интерфейсы (BidCos-сервисы, Homegear и CUxD) через XML-RPC или BIN-RPC к ioBroker"
         },
-        "version": "1.4.10",
+        "version": "1.4.11",
         "news": {
-            "1.4.10": {
+            "1.4.11": {
                 "en": "Fix humidity calculation",
                 "de": "Feuchtigkeitsberechnung korrigieren",
                 "ru": "Исправить расчет влажности"
