@@ -37,18 +37,18 @@
     var onChange = null;
 
     function setValue(id, value) {
-        // example: select elements with id=key and class=value and insert value
-        if ($('#' + id + '.value').attr('type') == 'checkbox') {
-            $('#' + id + '.value').prop('checked', value).change(function() {
+        var $value = $('#' + id + '.value');
+        if ($value.attr('type') === 'checkbox') {
+            $value.prop('checked', value).change(function() {
                 onChange();
             });
         } else {
-            $('#' + id + '.value').val(value).change(function() {
-                if (id == 'homematicAddress' || id == 'adapterAddress') {
+            $value.val(value).change(function() {
+                if (id === 'homematicAddress' || id === 'adapterAddress') {
                     var ip1 = $('#homematicAddress').val();
                     var ip2 = $('#adapterAddress').val();
 
-                    if (id == 'homematicAddress' && ip2 == '0.0.0.0') {
+                    if (id === 'homematicAddress' && ip2 === '0.0.0.0') {
                         var max = 0;
                         var ip = '';
                         $('#adapterAddress option').each(function () {
@@ -62,7 +62,7 @@
 
                     }
 
-                    if (!ip2 || ip2 == '0.0.0.0' || !checkIPs(ip1, ip2)) {
+                    if (!ip2 || ip2 === '0.0.0.0' || !checkIPs(ip1, ip2)) {
                         $('#adapterAddress').addClass('invalid').attr('title', _('This IP is unreachable from %s', $('#homematicAddress').val()));
                     } else {
                         $('#adapterAddress').removeClass('invalid').attr('title', '');
@@ -98,7 +98,9 @@
 		settings.port = settings.port || 0;
 		
         for (var key in settings) {
-            setValue(key, settings[key]);
+            if (settings.hasOwnProperty(key)) {
+                setValue(key, settings[key]);
+            }
         }
 
         onChange(false);
@@ -110,7 +112,7 @@
             var $this = $(this);
             var id = $this.attr('id');
 
-            if ($this.attr('type') == 'checkbox') {
+            if ($this.attr('type') === 'checkbox') {
                 obj[$this.attr('id')] = $this.prop('checked');
             } else {
                 obj[$this.attr('id')] = $this.val();
@@ -130,7 +132,7 @@
         var i2 = ip2.split('.');
 
         // If ipv6 or DNS name
-        if (i1.length != i2.length || i1.length != 4) return 1;
+        if (i1.length !== i2.length || i1.length !== 4) return 1;
 
         if (i1[0] != i2[0]) return 0;
         if (i1[1] != i2[1]) return 1;
