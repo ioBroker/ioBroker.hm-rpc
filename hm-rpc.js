@@ -45,8 +45,8 @@ function number2hex(num) {
 }
 
 function combineEPaperCommand(lines, signal, ton, repeats, offset) {
-    signal = signal || '0xF0';
-    ton    = ton    || '0xC0';
+    signal = number2hex(signal || '0xF0');
+    ton    = number2hex(ton    || '0xC0');
     var substitutions = {
         'A': '0x41',
         'B': '0x42',
@@ -261,6 +261,7 @@ function controlEPaper(id, data) {
 }
 
 function readSignals(id) {
+    displays[id] = null;
     var data = {
         lines:  [{}, {}, {}],
         signal: '0xF0',
@@ -294,7 +295,7 @@ function readSignals(id) {
     });
     count++;
     adapter.getForeignState(id + '.0.EPAPER_ICON4', function (err, state) {
-        data.lines[2].icon = state ? state.val || '': '';
+        data.lines[2].icon = state ? state.val || '' : '';
         if (!--count) controlEPaper(id, data);
     });
     count++;
@@ -310,6 +311,7 @@ function readSignals(id) {
 }
 
 function readSettings(id) {
+    displays[id] = null;
     var data = {
         lines:  [{}, {}, {}],
         signal: '0xF0',
@@ -383,9 +385,23 @@ var adapter = utils.adapter({
             var type = dpTypes[id].TYPE;
 
             if (type === 'EPAPER_LINE' || type === 'EPAPER_ICON') {
-                return setTimeout(readSettings, 0, tmp[0] + '.' + tmp[1] + '.' + tmp[2]);
-            } else if(type === 'EPAPER_SIGNAL' || type === 'EPAPER_TONE') {
-                return setTimeout(readSignals, 0, tmp[0] + '.' + tmp[1] + '.' + tmp[2]);
+                var _id = tmp[0] + '.' + tmp[1] + '.' + tmp[2];
+                if (displays[_id] && displays[_id].timer) {
+                    clearTimeout(displays[_id].timer);
+                    if (displays[_id].withTone) {
+                        displays[_id] = {timer: setTimeout(readSignals, 300, _id), withTone: true};
+                        return;
+                    }
+                }
+                displays[_id] = {timer: setTimeout(readSettings, 300, _id), withTone: false};
+                return;
+            } else if (type === 'EPAPER_SIGNAL' || type === 'EPAPER_TONE') {
+                var __id = tmp[0] + '.' + tmp[1] + '.' + tmp[2];
+                if (displays[_id] && displays[_id].timer) {
+                    clearTimeout(displays[_id].timer);
+                }
+                displays[__id] = {timer: setTimeout(readSignals, 300, __id), withTone: true};
+                return;
             } else {
                 switch (type) {
                     case 'BOOL':
