@@ -1004,6 +1004,10 @@ function getValueParamsets() {
     var obj = queueValueParamsets.pop();
     var cid = obj.native.PARENT_TYPE + '.' + obj.native.TYPE + '.' + obj.native.VERSION;
 
+    if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
+        addEPaperToMeta();
+    }
+
     adapter.log.debug('getValueParamsets ' + cid);
 
     if (metaValues[cid]) {
@@ -1021,6 +1025,11 @@ function getValueParamsets() {
             if (res && res.native) {
                 adapter.log.debug(key + ' found');
                 metaValues[cid] = res.native;
+
+                if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
+                    addEPaperToMeta();
+                }
+
                 addParamsetObjects(obj, res.native, function () {
                     setTimeout(getValueParamsets, 0);
                 });
@@ -1040,6 +1049,11 @@ function getValueParamsets() {
                             'native': res
                         };
                         metaValues[key] = res;
+
+                        if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
+                            addEPaperToMeta();
+                        }
+
                         if (res) {
                             // if not empty
                             for (var attr in res) {
@@ -1061,8 +1075,107 @@ function getValueParamsets() {
                     adapter.log.error('Cannot call getParamsetDescription: :' + err);
                 }
             }
-
         });
+    }
+}
+
+function addEPaperToMeta() {
+    if (!metaValues['HM-Dis-EP-WM55.MAINTENANCE.9'] || !metaValues['HM-Dis-EP-WM55.MAINTENANCE.9'].EPAPER_LINE2) {
+        metaValues['HM-Dis-EP-WM55.MAINTENANCE.9'] = metaValues['HM-Dis-EP-WM55.MAINTENANCE.9'] || {};
+        metaValues['HM-Dis-EP-WM55.MAINTENANCE.9'].EPAPER_LINE2  = {
+            TYPE: 'EPAPER_LINE',
+            ID: 'LINE2',
+            OPERATIONS: 2
+        };
+        metaValues['HM-Dis-EP-WM55.MAINTENANCE.9'].EPAPER_ICON2  = {
+            TYPE: 'EPAPER_ICON',
+            ID: 'ICON2',
+            STATES: {
+                '': 'Empty',
+                '0x80': 'OFF',
+                '0x81': 'ON',
+                '0x82': 'Opened',
+                '0x83': 'Closed',
+                '0x84': 'error',
+                '0x85': 'All OK',
+                '0x86': 'Information',
+                '0x87': 'New message',
+                '0x88': 'Service message'
+            },
+            OPERATIONS: 2
+        };
+        metaValues['HM-Dis-EP-WM55.MAINTENANCE.9'].EPAPER_LINE3  = {
+            TYPE: 'EPAPER_LINE',
+            ID: 'LINE3',
+            OPERATIONS: 2
+        };
+        metaValues['HM-Dis-EP-WM55.MAINTENANCE.9'].EPAPER_ICON3  = {
+            TYPE: 'EPAPER_ICON',
+            ID: 'ICON3',
+            STATES: {
+                '': 'Empty',
+                '0x80': 'OFF',
+                '0x81': 'ON',
+                '0x82': 'Opened',
+                '0x83': 'Closed',
+                '0x84': 'error',
+                '0x85': 'All OK',
+                '0x86': 'Information',
+                '0x87': 'New message',
+                '0x88': 'Service message'
+            },
+            OPERATIONS: 2
+        };
+        metaValues['HM-Dis-EP-WM55.MAINTENANCE.9'].EPAPER_LINE4  = {
+            TYPE: 'EPAPER_LINE',
+            ID: 'LINE4',
+            OPERATIONS: 2
+        };
+        metaValues['HM-Dis-EP-WM55.MAINTENANCE.9'].EPAPER_ICON4  = {
+            TYPE: 'EPAPER_ICON',
+            ID: 'ICON4',
+            STATES: {
+                '': 'Empty',
+                '0x80': 'OFF',
+                '0x81': 'ON',
+                '0x82': 'Opened',
+                '0x83': 'Closed',
+                '0x84': 'error',
+                '0x85': 'All OK',
+                '0x86': 'Information',
+                '0x87': 'New message',
+                '0x88': 'Service message'
+            },
+            OPERATIONS: 2
+        };
+        metaValues['HM-Dis-EP-WM55.MAINTENANCE.9'].EPAPER_SIGNAL = {
+            TYPE: 'EPAPER_SIGNAL',
+            ID: 'EPAPER_SIGNAL',
+            STATES: {
+                '0xF0': 'OFF',
+                '0xF1': 'Red blink',
+                '0xF2': 'Green blink',
+                '0xF3': 'Orange blink'
+            },
+            OPERATIONS: 2
+        };
+        metaValues['HM-Dis-EP-WM55.MAINTENANCE.9'].EPAPER_TONE   = {
+            TYPE: 'EPAPER_TONE',
+            ID: 'EPAPER_TONE',
+            STATES: {
+                '0xC0': 'Off',
+                '0xC1': 'Long Long',
+                '0xC2': 'Long Short',
+                '0xC3': 'Long Short Short',
+                '0xC4': 'Short',
+                '0xC5': 'Short Short',
+                '0xC6': 'Long',
+                '0xC7': '7',
+                '0xC9': '9',
+                '0xCA': 'A'
+            },
+            OPERATIONS: 2
+        };
     }
 }
 
@@ -1131,104 +1244,10 @@ function createDevices(deviceArr, callback) {
             });
 
             if (obj.type === 'channel') {
-                var cid = obj.native.PARENT_TYPE + '.' + obj.native.TYPE + '.' + obj.native.VERSION;
+                // var cid = obj.native.PARENT_TYPE + '.' + obj.native.TYPE + '.' + obj.native.VERSION;
                 //channelParams[obj._id] = cid;
-                if (obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE' && !metaValues['HM-Dis-EP-WM55.MAINTENANCE.9'].EPAPER_LINE2) {
-                    console.log('aaa');
-                    metaValues['HM-Dis-EP-WM55.MAINTENANCE.9'].EPAPER_LINE2 = {
-                        TYPE: 'EPAPER_LINE',
-                        ID: 'LINE2',
-                        OPERATIONS: 2
-                    };
-                    metaValues['HM-Dis-EP-WM55.MAINTENANCE.9'].EPAPER_ICON2 = {
-                        TYPE: 'EPAPER_ICON',
-                        ID: 'ICON2',
-                        STATES: {
-                            '': 'Empty',
-                            '0x80': 'OFF',
-                            '0x81': 'ON',
-                            '0x82': 'Opened',
-                            '0x83': 'Closed',
-                            '0x84': 'error',
-                            '0x85': 'All OK',
-                            '0x86': 'Information',
-                            '0x87': 'New message',
-                            '0x88': 'Service message'
-                        },
-                        OPERATIONS: 2
-                    };
-                    metaValues['HM-Dis-EP-WM55.MAINTENANCE.9'].EPAPER_LINE3 = {
-                        TYPE: 'EPAPER_LINE',
-                        ID: 'LINE3',
-                        OPERATIONS: 2
-                    };
-                    metaValues['HM-Dis-EP-WM55.MAINTENANCE.9'].EPAPER_ICON3 = {
-                        TYPE: 'EPAPER_ICON',
-                        ID: 'ICON3',
-                        STATES: {
-                            '': 'Empty',
-                            '0x80': 'OFF',
-                            '0x81': 'ON',
-                            '0x82': 'Opened',
-                            '0x83': 'Closed',
-                            '0x84': 'error',
-                            '0x85': 'All OK',
-                            '0x86': 'Information',
-                            '0x87': 'New message',
-                            '0x88': 'Service message'
-                        },
-                        OPERATIONS: 2
-                    };
-                    metaValues['HM-Dis-EP-WM55.MAINTENANCE.9'].EPAPER_LINE4 = {
-                        TYPE: 'EPAPER_LINE',
-                        ID: 'LINE4',
-                        OPERATIONS: 2
-                    };
-                    metaValues['HM-Dis-EP-WM55.MAINTENANCE.9'].EPAPER_ICON4 = {
-                        TYPE: 'EPAPER_ICON',
-                        ID: 'ICON4',
-                        STATES: {
-                            '': 'Empty',
-                            '0x80': 'OFF',
-                            '0x81': 'ON',
-                            '0x82': 'Opened',
-                            '0x83': 'Closed',
-                            '0x84': 'error',
-                            '0x85': 'All OK',
-                            '0x86': 'Information',
-                            '0x87': 'New message',
-                            '0x88': 'Service message'
-                        },
-                        OPERATIONS: 2
-                    };
-                    metaValues['HM-Dis-EP-WM55.MAINTENANCE.9'].EPAPER_SIGNAL = {
-                        TYPE: 'EPAPER_SIGNAL',
-                        ID: 'EPAPER_SIGNAL',
-                        STATES: {
-                            '0xF0': 'OFF',
-                            '0xF1': 'Red blink',
-                            '0xF2': 'Green blink',
-                            '0xF3': 'Orange blink'
-                        },
-                        OPERATIONS: 2
-                    };
-                    metaValues['HM-Dis-EP-WM55.MAINTENANCE.9'].EPAPER_TONE = {
-                        TYPE: 'EPAPER_TONE',
-                        ID: 'EPAPER_TONE',
-                        STATES: {
-                            '0xC0': 'Off',
-                            '0xC1': 'Long Long',
-                            '0xC2': 'Long Short',
-                            '0xC3': 'Long Short Short',
-                            '0xC4': 'Short',
-                            '0xC5': 'Short Short',
-                            '0xC6': 'Long',
-                            '0xC7': '7',
-                            '0xC9': '9',
-                            '0xCA': 'A'
-                        },
-                        OPERATIONS: 2
-                    };
+                if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
+                    addEPaperToMeta();
                 }
                 queueValueParamsets.push(obj);
             }
