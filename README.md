@@ -9,10 +9,6 @@
 
 Connects HomeMatic Interface-Processes (BidCos-Services, Homegear and CUxD) via XML-RPC or BIN-RPC to ioBroker
 
-## Install
-
-```iobroker add hm-rpc```
-
 ### Configuration
 
 native.adapterAddress has to be the ip under which the host that is running the adapter itself is reachable.
@@ -21,6 +17,48 @@ This address is used by the CCU to connect to the adapter.
 native.homematicAddress is the IP of the HomeMatic CCU respectively the Host that is running the BidCos-Service(s)
 
 ## Changelog
+### 1.4.12 (2017-06-08)
+* (bluefox) Add ePaper control
+
+### 1.4.11 (2017-05-25)
+* (bluefox) Fix humidity calculation
+
+### 1.4.8 (2017-05-20)
+* (bluefox) Remove log entry
+* (bluefox) Fix values convert for CUxD
+
+### 1.4.6 (2017-04-22)
+* (bluefox) use right version of rpc-bin lib
+
+### 1.4.4 (2017-04-17)
+* (bluefox) add Lock Value for KeyMatic
+
+### 1.4.2 (2017-02-22)
+* (bluefox) fixes small errors
+
+### 1.4.1 (2017-01-18)
+* (Apollon77) make it compatible with node 0.x again
+
+### 1.4.0 (2017-01-16)
+* (jens-maus) fixes/changes for listDevices/newDevices RPC calls for HmIP and CUxD variants of hm-rpc
+
+### 1.3.5 (2017-01-15)
+* (jens-maus) Fix notify of hm-rega to update names too on force-reload
+
+### 1.3.4 (2017-01-15)
+* (jens-maus) Update device images to latest CCU 2.25.15. Fix notify of hm-rega to update names too on force-reload  
+
+### 1.3.3 (2016-10-08)
+* (bluefox) Better connection indication
+
+### 1.3.2 (2016-10-06)
+* (bluefox) Very small changes for debug output
+
+### 1.3.1 (2016-06-23)
+* (bluefox) add new devices to meta info
+
+### 1.2.1 (2016-06-21)
+* (angelnu) add device icons
 
 ### 1.2.0 (2016-06-04)
 * (bluefox) fix reconnection with binrpc
@@ -194,7 +232,7 @@ native.homematicAddress is the IP of the HomeMatic CCU respectively the Host tha
 
 The MIT License (MIT)
 
-Copyright (c) 2014-2016 bluefox, hobbyquaker
+Copyright (c) 2014-2017 bluefox, hobbyquaker
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -213,4 +251,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
-

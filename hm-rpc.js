@@ -1,9 +1,355 @@
 /* jshint -W097 */// jshint strict:false
 /*jslint node: true */
-"use strict";
-var utils = require(__dirname + '/lib/utils'); // Get common adapter utils
-
+'use strict';
+var utils     = require(__dirname + '/lib/utils'); // Get common adapter utils
+var images    = require(__dirname + '/lib/images');
 var connected = false;
+var displays  = {};
+// msgBuffer = [{line: line2, icon: icon2}, {line: line3, icon: icon3}, {line: '', icon: ''}];
+// Icons:
+//      0x80 AUS
+//      0x81 EIN
+//      0x82 OFFEN
+//      0x83 geschlossen
+//      0x84 fehler
+//      0x85 alles ok
+//      0x86 information
+//      0x87 neue nachricht
+//      0x88 servicemeldung
+
+// Tonfolgen
+//      0xC0 AUS
+//      0xC1 LANG LANG
+//      0xC2 LANG KURZ
+//      0xC3 LANG KURZ KURZ
+//      0xC4 KURZ
+//      0xC5 KURZ KURZ
+//      0xC6 LANG
+//      0xC7
+//      0xC9
+//      0xCA
+
+// Signale
+//      0xF0 AUS
+//      0xF1 Rotes Blitzen
+//      0xF2 Grünes Blitzen
+//      0xF3 Orangenes Blitzen
+
+function number2hex(num) {
+    if (typeof num === 'number') {
+        num = num.toString(16).toUpperCase();
+        if (num.length < 2) num = '0' + num;
+        num = '0x' + num;
+    }
+    return num;
+}
+
+function combineEPaperCommand(lines, signal, ton, repeats, offset) {
+    signal = number2hex(signal || '0xF0');
+    ton    = number2hex(ton    || '0xC0');
+    var substitutions = {
+        'A': '0x41',
+        'B': '0x42',
+        'C': '0x43',
+        'D': '0x44',
+        'E': '0x45',
+        'F': '0x46',
+        'G': '0x47',
+        'H': '0x48',
+        'I': '0x49',
+        'J': '0x4A',
+        'K': '0x4B',
+        'L': '0x4C',
+        'M': '0x4D',
+        'N': '0x4E',
+        'O': '0x4F',
+        'P': '0x50',
+        'Q': '0x51',
+        'R': '0x52',
+        'S': '0x53',
+        'T': '0x54',
+        'U': '0x55',
+        'V': '0x56',
+        'W': '0x57',
+        'X': '0x58',
+        'Y': '0x59',
+        'Z': '0x5A',
+        'a': '0x61',
+        'b': '0x62',
+        'c': '0x63',
+        'd': '0x64',
+        'e': '0x65',
+        'f': '0x66',
+        'g': '0x67',
+        'h': '0x68',
+        'i': '0x69',
+        'j': '0x6A',
+        'k': '0x6B',
+        'l': '0x6C',
+        'm': '0x6D',
+        'n': '0x6E',
+        'o': '0x6F',
+        'p': '0x70',
+        'q': '0x71',
+        'r': '0x72',
+        's': '0x73',
+        't': '0x74',
+        'u': '0x75',
+        'v': '0x76',
+        'w': '0x77',
+        'x': '0x78',
+        'y': '0x79',
+        'z': '0x7A',
+        '0': '0x30',
+        '1': '0x31',
+        '2': '0x32',
+        '3': '0x33',
+        '4': '0x34',
+        '5': '0x35',
+        '6': '0x36',
+        '7': '0x37',
+        '8': '0x38',
+        '9': '0x39',
+        ' ': '0x20',
+        '!': '0x21',
+        '"': '0x22',
+        '%': '0x25',
+        '&': '0x26',
+        '=': '0x27',
+        '(': '0x28',
+        ')': '0x29',
+        '*': '0x2A',
+        '+': '0x2B',
+        ',': '0x2C',
+        '-': '0x2D',
+        '.': '0x2E',
+        '/': '0x2F',
+        'Ä': '0x5B',
+        'Ö': '0x23',
+        'Ü': '0x24',
+        'ä': '0x7B',
+        'ö': '0x7C',
+        'ü': '0x7D',
+        'ß': '0x5F',
+        ':': '0x3A',
+        ';': '0x3B',
+        '@': '0x40',
+        '>': '0x3E'
+    };
+
+    offset  = 10;
+    repeats = 1;
+
+    var command = '0x02,0x0A';
+    for (var m = 0; m < lines.length; m++) {
+        var line = lines[m].line;
+        var icon = lines[m].icon;
+        if (line || icon) {
+            command = command + ',0x12';
+            var i;
+            if ((line.substring(0, 2) === '0x') && (line.length === 4)) {
+                command = command + ',' + line;
+                i = 12;
+            }
+            else {
+                i = 0;
+            }
+            while ((i < line.length) && (i < 12)) {
+                command += ',' + substitutions[line[i]] || '0x2A';
+                i++;
+            }
+            if (icon) {
+                command += ',0x13,' + number2hex(icon);
+            }
+        }
+        command = command + ',0x0A';
+    }
+
+    command = command + ',0x14,' + ton + ',0x1C,';
+
+    if (repeats < 1) {
+        command = command + '0xDF,0x1D,';
+    }
+    else {
+        if (repeats < 11) {
+            command = command + '0xD' + (repeats - 1) + ',0x1D,';
+        }
+        else {
+            if (repeats === 11) {
+                command = command + '0xDA,0x1D,';
+            }
+            else {
+                if (repeats === 12) {
+                    command = command + '0xDB,0x1D,';
+                }
+                else {
+                    if (repeats === 13) {
+                        command = command + '0xDC,0x1D,';
+                    }
+                    else {
+                        if (repeats === 14) {
+                            command = command + '0xDD,0x1D,';
+                        }
+                        else {
+                            command = command + '0xDE,0x1D,';
+                        }
+                    }
+                }
+            }
+        }
+    }
+    if (offset <= 10) {
+        command = command + '0xE0,0x16,';
+    }
+    else {
+        if (offset <= 100) {
+            command = command + '0xE' + (offset - 1 / 10) + ',0x16,';
+        }
+        else {
+            if (offset <= 110) {
+                command = command + '0xEA,0x16,';
+            }
+            else {
+                if (offset <= 120) {
+                    command = command + '0xEB,0x16,';
+                }
+                else {
+                    if (offset <= 130) {
+                        command = command + '0xEC,0x16,';
+                    }
+                    else {
+                        if (offset <= 140) {
+                            command = command + '0xED,0x16,';
+                        }
+                        else {
+                            if (offset <= 150) {
+                                command = command + '0xEE,0x16,';
+                            }
+                            else {
+                                command = command + '0xEF,0x16,';
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    command = command + signal + ',0x03';
+    return command;
+}
+
+function controlEPaper(id, data) {
+    var tmp = id.split('.');
+    tmp[3] = '3';
+    tmp[4] = 'SUBMIT';
+    var val = combineEPaperCommand(data.lines, data.signal || '0xF0', data.tone || '0xC0');
+
+    try {
+        if (rpcClient && connected) {
+            rpcClient.methodCall('setValue', [tmp[2] + ':' + tmp[3], tmp[4], val], function (err) {
+                if (err) {
+                    adapter.log.error(adapter.config.type + 'rpc -> setValue ' + JSON.stringify([tmp[3], tmp[4], val]));
+                    adapter.log.error(err);
+                }
+            });
+        } else {
+            adapter.log.warn('Cannot setValue "' + id + '", because not connected.');
+        }
+    } catch (err) {
+        adapter.log.error('Cannot call setValue: :' + err);
+    }
+}
+
+function readSignals(id) {
+    displays[id] = null;
+    var data = {
+        lines:  [{}, {}, {}],
+        signal: '0xF0',
+        tone:   '0xC0'
+    };
+    var count = 0;
+    count++;
+    adapter.getForeignState(id + '.0.EPAPER_LINE2', function (err, state) {
+        data.lines[0].line = state ? state.val || '' : '';
+        if (!--count) controlEPaper(id, data);
+    });
+    count++;
+    adapter.getForeignState(id + '.0.EPAPER_ICON2', function (err, state) {
+        data.lines[0].icon = state ? state.val || '' : '';
+        if (!--count) controlEPaper(id, data);
+    });
+    count++;
+    adapter.getForeignState(id + '.0.EPAPER_LINE3', function (err, state) {
+        data.lines[1].line = state ? state.val || '' : '';
+        if (!--count) controlEPaper(id, data);
+    });
+    count++;
+    adapter.getForeignState(id + '.0.EPAPER_ICON3', function (err, state) {
+        data.lines[1].icon = state ? state.val || '' : '';
+        if (!--count) controlEPaper(id, data);
+    });
+    count++;
+    adapter.getForeignState(id + '.0.EPAPER_LINE4', function (err, state) {
+        data.lines[2].line = state ? state.val || '' : '';
+        if (!--count) controlEPaper(id, data);
+    });
+    count++;
+    adapter.getForeignState(id + '.0.EPAPER_ICON4', function (err, state) {
+        data.lines[2].icon = state ? state.val || '' : '';
+        if (!--count) controlEPaper(id, data);
+    });
+    count++;
+    adapter.getForeignState(id + '.0.EPAPER_SIGNAL', function (err, state) {
+        data.signal = state ? state.val || '0xF0' : '0xF0';
+        if (!--count) controlEPaper(id, data);
+    });
+    count++;
+    adapter.getForeignState(id + '.0.EPAPER_TONE', function (err, state) {
+        data.tone = state ? state.val || '0xC0' : '0xC0';
+        if (!--count) controlEPaper(id, data);
+    });
+}
+
+function readSettings(id) {
+    displays[id] = null;
+    var data = {
+        lines:  [{}, {}, {}],
+        signal: '0xF0',
+        tone:   '0xC0'
+    };
+    var count = 0;
+    count++;
+    adapter.getForeignState(id + '.0.EPAPER_LINE2', function (err, state) {
+        data.lines[0].line = state ? state.val || '' : '';
+        if (!--count) controlEPaper(id, data);
+    });
+    count++;
+    adapter.getForeignState(id + '.0.EPAPER_ICON2', function (err, state) {
+        data.lines[0].icon = state ? state.val || '' : '';
+        if (!--count) controlEPaper(id, data);
+    });
+    count++;
+    adapter.getForeignState(id + '.0.EPAPER_LINE3', function (err, state) {
+        data.lines[1].line = state ? state.val || '' : '';
+        if (!--count) controlEPaper(id, data);
+    });
+    count++;
+    adapter.getForeignState(id + '.0.EPAPER_ICON3', function (err, state) {
+        data.lines[1].icon = state ? state.val || '' : '';
+        if (!--count) controlEPaper(id, data);
+    });
+    count++;
+    adapter.getForeignState(id + '.0.EPAPER_LINE4', function (err, state) {
+        data.lines[2].line = state ? state.val || '' : '';
+        if (!--count) controlEPaper(id, data);
+    });
+    count++;
+    adapter.getForeignState(id + '.0.EPAPER_ICON4', function (err, state) {
+        data.lines[2].icon = state ? state.val || '': '';
+        if (!--count) controlEPaper(id, data);
+    });
+
+}
 
 // the adapter object
 var adapter = utils.adapter({
@@ -18,32 +364,58 @@ var adapter = utils.adapter({
         if (state && state.ack !== true) {
             var tmp = id.split('.');
             var val;
+
+            if (id === adapter.namespace + '.updated') return;
+
             adapter.log.debug(adapter.config.type + 'rpc -> setValue ' + tmp[3] + ' ' + tmp[4] + ': ' + state.val);
 
-            if (id == adapter.namespace + '.updated') return;
             if (!dpTypes[id]) {
                 adapter.log.error(adapter.config.type + 'rpc -> setValue: no dpType for ' + id + '!');
                 return;
             }
 
+            if (dpTypes[id].UNIT === '%' && dpTypes[id].MIN !== undefined) {
+                state.val = (state.val / 100) * (dpTypes[id].MAX - dpTypes[id].MIN) + dpTypes[id].MIN;
+                state.val = Math.round(state.val * 1000) / 1000;
+            } else
             if (dpTypes[id].UNIT === '100%') {
                 state.val = state.val / 100;
             }
 
             var type = dpTypes[id].TYPE;
 
-            switch (type) {
-                case 'BOOL':
-                    val = (state.val === 'false' || state.val === '0') ? false : !!state.val;
-                    break;
-                case 'FLOAT':
-                    val = {explicitDouble: state.val};
-                    break;
-                default:
-                    val = state.val;
+            if (type === 'EPAPER_LINE' || type === 'EPAPER_ICON') {
+                var _id = tmp[0] + '.' + tmp[1] + '.' + tmp[2];
+                if (displays[_id] && displays[_id].timer) {
+                    clearTimeout(displays[_id].timer);
+                    if (displays[_id].withTone) {
+                        displays[_id] = {timer: setTimeout(readSignals, 300, _id), withTone: true};
+                        return;
+                    }
+                }
+                displays[_id] = {timer: setTimeout(readSettings, 300, _id), withTone: false};
+                return;
+            } else if (type === 'EPAPER_SIGNAL' || type === 'EPAPER_TONE') {
+                var __id = tmp[0] + '.' + tmp[1] + '.' + tmp[2];
+                if (displays[_id] && displays[_id].timer) {
+                    clearTimeout(displays[_id].timer);
+                }
+                displays[__id] = {timer: setTimeout(readSignals, 300, __id), withTone: true};
+                return;
+            } else {
+                switch (type) {
+                    case 'BOOL':
+                        val = (state.val === 'false' || state.val === '0') ? false : !!state.val;
+                        break;
+                    case 'FLOAT':
+                        val = {explicitDouble: state.val};
+                        break;
+                    default:
+                        val = state.val;
+                }
             }
 
-            adapter.log.info('setValue ' + JSON.stringify([tmp[2] + ':' + tmp[3], tmp[4], val]) + ' ' + type);
+            adapter.log.debug('setValue ' + JSON.stringify([tmp[2] + ':' + tmp[3], tmp[4], val]) + ' ' + type);
 
             try {
                 if (rpcClient && connected) {
@@ -167,155 +539,6 @@ var connTimeout;
 var daemonURL = '';
 var daemonProto = '';
 
-var images =  {
-    'HM-LC-Dim1TPBU-FM': 'PushButton-2ch-wm_thumb.png',
-    'HM-LC-Sw1PBU-FM':   'PushButton-2ch-wm_thumb.png',
-    'HM-LC-Bl1PBU-FM':   'PushButton-2ch-wm_thumb.png',
-    'HM-LC-Sw1-PB-FM':   'PushButton-2ch-wm_thumb.png',
-    'HM-PB-2-WM':        'PushButton-2ch-wm_thumb.png',
-    'HM-LC-Sw2-PB-FM':   'PushButton-4ch-wm_thumb.png',
-    'HM-PB-4-WM':        'PushButton-4ch-wm_thumb.png',
-    'HM-LC-Dim1L-Pl':    'OM55_DimmerSwitch_thumb.png',
-    'HM-LC-Dim1T-Pl':    'OM55_DimmerSwitch_thumb.png',
-    'HM-LC-Sw1-Pl':      'OM55_DimmerSwitch_thumb.png',
-    'HM-LC-Dim1L-Pl-2':  'OM55_DimmerSwitch_thumb.png',
-    'HM-LC-Sw1-Pl-OM54': 'OM55_DimmerSwitch_thumb.png',
-    'HM-Sys-sRP-Pl':     'OM55_DimmerSwitch_thumb.png',
-    'HM-LC-Dim1T-Pl-2':  'OM55_DimmerSwitch_thumb.png',
-    'HM-LC-Sw1-Pl-2':    'OM55_DimmerSwitch_thumb.png',
-    'HM-ES-PMSw1-SM':    '115_hm-es-pmsw1-sm_thumb.png',
-    'HM-LC-Dim1T-FM-LF': '114_hm-lc-dim1t-fm-lf_thumb_3.png',
-    //'xxx':             '114_hm-lc-dim1t-fm-lf_thumb_2.png',
-    //'xxx':             '114_hm-lc-dim1t-fm-lf_thumb.png',
-    //'xxx':             '113_hmip-psm_thumb.png',
-    //'xxx':             '112_hmip-wrc2_thumb.png',
-    'HM-LC-RGBW-WM':     '111_hm-lc-rgbw-wm_thumb.png',
-    'HM-ES-PMSw1-DR':    '110_hm-es-pmsw1-dr_thump.png'
-    'HM-LC-Sw1-Pl-CT-R1':'109_hm-lc-sw1-pl-ct_thump.png',
-    'HM-RC-Dis-H-x-EU':  '108_hm-rc-dis-h-x-eu_thump.png',
-    'HM-ES-PMSw1-Pl-DN-R5': '107_hm-es-pmsw1-pl-R5_thumb.png',
-    'HM-ES-PMSw1-Pl-DN-R4': '107_hm-es-pmsw1-pl-R4_thumb.png',
-    'HM-ES-PMSw1-Pl-DN-R3': '107_hm-es-pmsw1-pl-R3_thumb.png',
-    'HM-ES-PMSw1-Pl-DN-R2': '107_hm-es-pmsw1-pl-R2_thumb.png',
-    'HM-Sec-SD-2-Team':  '105_hm-sec-sd-2-team_thumb.png',
-    'HM-Sec-SD-2':       '104_hm-sec-sd-2_thumb.png',
-    'HM-Sen-MDIR-WM55':  '103_hm-sen-mdir-wm55_thumb.png',
-    'HM-ES-TX-WM':       '102_hm-es-tx-wm_thumb.png',
-    'HM-Sen-DB-PCB':     '101_hm-sen-db-pcb_thumb.png',
-    'HM-RC-8':           '100_hm-rc-8_thumb.png',
-    'HM-MOD-EM-8'        '99_hm-mod-em-8_thumb.png',
-    'HM-Sec-SCo':        '98_hm-sec-sco_thumb.png',
-    'HM-Dis-WM55':       '97_hm-dis-wm55_thumb.png',
-    'HM-TC-IT-WM-W-EU':  '96_hm-tc-it-wm-w-eu_thumb.png',
-    'HM-CC-VG-1':        '95_group_hm-cc-vg-1_thumb.png',
-    'HM-MOD-Re-8':       '94_hm-mod-re-8_thumb.png',
-    'HM-ES-PMSw1-Pl':    '93_hm-es-pmsw1-pl_thumb.png',
-    'HM-OU-CM-PCB':      '92_hm-ou-cm-pcb_thumb.png',
-    'HM-LC-Sw4-Ba-PCB':  '88_hm-lc-sw4-ba-pcb_thumb.png',
-    'HM-Sen-RD-O':       '87_hm-sen-rd-o_thumb.png',
-    'HM-RC-Sec4-2':      '86_hm-rc-sec4-2_thumb.png',
-    'HM-PB-6-WM55':      '86_hm-pb-6-wm55_thumb.png',
-    'HM-RC-Key4-2':      '85_hm-rc-key4-2_thumb.png',
-    'HM-RC-Key4-3':      '84_hm-rc-4-x_thumb.png',
-    'HM-RC-4-2':         '84_hm-rc-4-2_thumb.png',
-    'HM-CC-RT-DN':       '83_hm-cc-rt-dn_thumb.png',
-    'HM-Sen-Wa-Od':      '82_hm-sen-wa-od_thumb.png',
-    'HM-Sen-WA-OD':      '82_hm-sen-wa-od_thumb.png',
-    'HM-Dis-TD-T':       '81_hm-dis-td-t_thumb.png',
-    'HM-Sen-MDIR-O':     '80_hm-sen-mdir-o_thumb.png',
-    'HM-OU-LED16':       '78_hm-ou-led16_thumb.png',
-    'HM-LC-Sw1-Ba-PCB':  '77_hm-lc-sw1-ba-pcb_thumb.png',
-    'HM-LC-Sw4-WM':      '76_hm-lc-sw4-wm_thumb.png',
-    'HM-PB-2-WM55':      '75_hm-pb-2-wm55_thumb.png',
-    'atent':             '73_hm-atent_thumb.png',
-    'HM-RC-BRC-H':       '72_hm-rc-brc-h_thumb.png',
-    'HMW-IO-12-Sw14-DR': '71_hmw-io-12-sw14-dr_thumb.png',
-    'HM-PB-4Dis-WM':     '70_hm-pb-4dis-wm_thumb.png',
-    'HM-LC-Sw2-DR':      '69_hm-lc-sw2-dr_thumb.png',
-    'HM-LC-Sw4-DR':      '68_hm-lc-sw4-dr_thumb.png',
-    'HM-SCI-3-FM':       '67_hm-sci-3-fm_thumb.png',
-    'HM-LC-Dim1T-CV':    '66_hm-lc-dim1t-cv_thumb.png',
-    'HM-LC-Dim1T-FM':    '65_hm-lc-dim1t-fm_thumb.png',
-    'HM-LC-Dim2T-SM':    '64_hm-lc-dim2T-sm_thumb.png',
-    'HM-LC-Bl1-pb-FM':   '61_hm-lc-bl1-pb-fm_thumb.png',
-    'HM-LC-Bi1-pb-FM':   '61_hm-lc-bi1-pb-fm_thumb.png',
-    'HM-OU-CF-Pl':       '60_hm-ou-cf-pl_thumb.png',
-    'HM-OU-CFM-Pl':      '60_hm-ou-cf-pl_thumb.png',
-    'HMW-IO-12-FM':      '59_hmw-io-12-fm_thumb.png',
-    'HMW-Sen-SC-12-FM':  '58_hmw-sen-sc-12-fm_thumb.png',
-    'HM-CC-SCD':         '57_hm-cc-scd_thumb.png',
-    'HMW-Sen-SC-12-DR':  '56_hmw-sen-sc-12-dr_thumb.png',
-    'HM-Sec-SFA-SM':     '55_hm-sec-sfa-sm_thumb.png',
-    'HM-LC-ddc1':        '54a_lc-ddc1_thumb.png',
-    'HM-LC-ddc1-PCB':    '54_hm-lc-ddc1-pcb_thumb.png',
-    'HM-Sen-MDIR-SM':    '53_hm-sen-mdir-sm_thumb.png',
-    'HM-Sec-SD-Team':    '52_hm-sec-sd-team_thumb.png',
-    'HM-Sec-SD':         '51_hm-sec-sd_thumb.png',
-    'HM-Sec-MDIR':       '50_hm-sec-mdir_thumb.png',
-    'HM-Sec-WDS':        '49_hm-sec-wds_thumb.png',
-    'HM-Sen-EP':         '48_hm-sen-ep_thumb.png',
-    'HM-Sec-TiS':        '47_hm-sec-tis_thumb.png',
-    'HM-LC-Sw4-PCB':     '46_hm-lc-sw4-pcb_thumb.png',
-    'HM-LC-Dim2L-SM':    '45_hm-lc-dim2l-sm_thumb.png',
-    'HM-EM-CCM':         '44_hm-em-ccm_thumb.png',
-    'HM-CC-VD':          '43_hm-cc-vd_thumb.png',
-    'HM-CC-TC':          '42_hm-cc-tc_thumb.png',
-    'HM-Swi-3-FM':       '39_hm-swi-3-fm_thumb.png',
-    'HM-PBI-4-FM':       '38_hm-pbi-4-fm_thumb.png',
-    'HMW-Sys-PS7-DR':    '36_hmw-sys-ps7-dr_thumb.png',
-    'HMW-Sys-TM-DR':     '35_hmw-sys-tm-dr_thumb.png',
-    'HMW-Sys-TM':        '34_hmw-sys-tm_thumb.png',
-    'HMW-Sec-TR-FM':     '33_hmw-sec-tr-fm_thumb.png',
-    'HMW-WSTH-SM':       '32_hmw-wsth-sm_thumb.png',
-    'HMW-WSE-SM':        '31_hmw-wse-sm_thumb.png',
-    'HMW-IO-12-Sw7-DR':  '30_hmw-io-12-sw7-dr_thumb.png',
-    'HMW-IO-4-FM':       '29_hmw-io-4-fm_thumb.png',
-    'HMW-LC-Dim1L-DR':   '28_hmw-lc-dim1l-dr_thumb.png',
-    'HMW-LC-Bl1-DR':     '27_hmw-lc-bl1-dr_thumb.png',
-    'HMW-LC-Sw2-DR':     '26_hmw-lc-sw2-dr_thumb.png',
-    'HM-EM-CMM':         '25_hm-em-cmm_thumb.png',
-    'HM-CCU-1':          '24_hm-cen-3-1_thumb.png',
-    'HM-RCV-50':         '24_hm-cen-3-1_thumb.png',
-    'HMW-RCV-50':        '24_hm-cen-3-1_thumb.png',
-    'HM-RC-Key3':        '23_hm-rc-key3-b_thumb.png',
-    'HM-RC-Key3-B':      '23_hm-rc-key3-b_thumb.png',
-    'HM-RC-Sec3':        '22_hm-rc-sec3-b_thumb.png',
-    'HM-RC-Sec3-B':      '22_hm-rc-sec3-b_thumb.png',
-    'HM-RC-P1':          '21_hm-rc-p1_thumb.png',
-    'HM-RC-19':          '20_hm-rc-19_thumb.png',
-    'HM-RC-19-B':        '20_hm-rc-19_thumb.png',
-    'HM-RC-19-SW':       '20_hm-rc-19_thumb.png',
-    'HM-RC-12':          '19_hm-rc-12_thumb.png',
-    'HM-RC-12-B':        '19_hm-rc-12_thumb.png',
-    'HM-RC-4':           '18_hm-rc-4_thumb.png',
-    'HM-RC-4-B':         '18_hm-rc-4_thumb.png',
-    'HM-Sec-RHS':        '17_hm-sec-rhs_thumb.png',
-    'HM-Sec-SC':         '16_hm-sec-sc_thumb.png',
-    'HM-Sec-SC-2':       '16_hm-sec-sc_thumb.png',
-    'HM-Sec-Win':        '15_hm-sec-win_thumb.png',
-    'HM-Sec-Key':        '14_hm-sec-key_thumb.png',
-    'HM-Sec-Key-S':      '14_hm-sec-key_thumb.png',
-    'HM-WS550STH-I':     '13_hm-ws550sth-i_thumb.png',
-    'HM-WDS40-TH-I':     '13_hm-ws550sth-i_thumb.png',
-    'HM-WS550-US':       '9_hm-ws550-us_thumb.png',
-    'WS550':             '9_hm-ws550-us_thumb.png',
-    'HM-WDC7000':        '9_hm-ws550-us_thumb.png',
-    'HM-LC-Sw1-SM':      '8_hm-lc-sw1-sm_thumb.png',
-    'HM-LC-Bl1-FM':      '7_hm-lc-bl1-fm_thumb.png',
-    'HM-LC-Bl1-SM':      '6_hm-lc-bl1-sm_thumb.png',
-    'HM-LC-Sw2-FM':      '5_hm-lc-sw2-fm_thumb.png',
-    'HM-LC-Sw1-FM':      '4_hm-lc-sw1-fm_thumb.png',
-    'HM-LC-Sw4-SM':      '3_hm-lc-sw4-sm_thumb.png',
-    'HM-LC-Dim1L-CV':    '2_hm-lc-dim1l-cv_thumb.png',
-    'HM-LC-Dim1PWM-CV':  '2_hm-lc-dim1l-cv_thumb.png',
-    'HM-WS550ST-IO':     'IP65_G201_thumb.png',
-    'HM-WDS30-T-O':      'IP65_G201_thumb.png',
-    'HM-WDS100-C6-O':    'WeatherCombiSensor_thumb.png',
-    'HM-WDS10-TH-O':     'TH_CS_thumb.png',
-    'HM-WS550STH-O':     'TH_CS_thumb.png',
-    'HM-WDS30-OT2-SM':   'IP65_G201_thumb.png'
-};
-
 function main() {
     adapter.config.reconnectInterval = parseInt(adapter.config.reconnectInterval, 10) || 30;
     if (adapter.config.reconnectInterval < 10) {
@@ -328,7 +551,9 @@ function main() {
         adapter.log.error('Check init interval is less than 10 seconds. Set init interval to 10 seconds.');
         adapter.config.checkInitInterval = 10;
     }
-    
+
+    adapter.setState('info.connection', false, true);
+
     if (adapter.config.type === 'bin') {
         rpc = require('binrpc');
         daemonProto = 'xmlrpc_bin://';
@@ -338,81 +563,49 @@ function main() {
         daemonProto = 'http://';
     }
 
-    rpcClient = rpc.createClient({
-        host: adapter.config.homematicAddress,
-        port: adapter.config.homematicPort,
-        path: '/'
-    });
-
-    if (rpcClient.connected) connect(true);
-
-    if (rpcClient.on) {
-        rpcClient.on('connect', function (err) {
-            sendInit();
-        });
-
-        rpcClient.on('error', function (err) {
-            adapter.log.error('Socket error: ' + err);
-        });
-
-        rpcClient.on('close', function () {
-            adapter.log.debug('Socket closed.');
-            if (connected) {
-                adapter.log.info('Disconnected');
-                connected = false;
-                adapter.setState('info.connection', false, true);
-            }
-
-            if (eventInterval) {
-                adapter.log.debug('clear ping interval');
-                clearInterval(eventInterval);
-                eventInterval = null;
-            }
-            // clear queue
-            if (rpcClient.queue) {
-                while (rpcClient.queue.length) {
-                    rpcClient.queue.pop();
-                }
-                rpcClient.pending = false;
-            }
-
-            if (!connTimeout) {
-                connTimeout = setTimeout(connect, adapter.config.reconnectInterval * 1000);
-            }
-        });
-    } else {
-        connect(true);
-    }
-
     // Load VALUE paramsetDescriptions (needed to create state objects)
     adapter.objects.getObjectView('hm-rpc', 'paramsetDescription', {startkey: 'hm-rpc.meta.VALUES', endkey: 'hm-rpc.meta.VALUES.\u9999'}, function handleValueParamSetDescriptions(err, doc) {
-        // Todo Handle Errors
-        if (doc) {
+        if (err) adapter.log.error('getObjectView hm-rpc: ' + err);
+        if (doc && doc.rows) {
             for (var i = 0; i < doc.rows.length; i++) {
                 metaValues[doc.rows[i].id.slice(19)] = doc.rows[i].value.native;
             }
         }
         // Load common.role assignments
         adapter.objects.getObject('hm-rpc.meta.roles', function (err, res) {
-            // Todo Handle Errors
-            metaRoles = res.native;
-            
+            if (err) adapter.log.error('hm-rpc.meta.roles: ' + err);
+            if (res) metaRoles = res.native;
+
             // Start Adapter
-            if (adapter.config) {
-                initRpcServer();
-            }
+            if (adapter.config) initRpcServer();
         });
     });
-    
+
     adapter.objects.getObjectView('system', 'state', {startkey: adapter.namespace, endkey: adapter.namespace + '\u9999'}, function handleStateViews(err, res) {
         if (!err && res.rows) {
             for (var i = 0; i < res.rows.length; i++) {
-                if (res.rows[i].id == adapter.namespace + '.updated') continue;
+                if (res.rows[i].id === adapter.namespace + '.updated') continue;
                 if (!res.rows[i].value.native) {
                     adapter.log.warn('State ' + res.rows[i].id + ' does not have native.');
                     dpTypes[res.rows[i].id] = {UNIT: '', TYPE: ''};
                 } else {
-                    dpTypes[res.rows[i].id] = {UNIT: res.rows[i].value.native.UNIT, TYPE: res.rows[i].value.native.TYPE};
+                    dpTypes[res.rows[i].id] = {
+                        UNIT: res.rows[i].value.native.UNIT,
+                        TYPE: res.rows[i].value.native.TYPE,
+                        MIN:  res.rows[i].value.native.MIN,
+                        MAX:  res.rows[i].value.native.MAX
+                    };
+
+                    if (typeof dpTypes[res.rows[i].id].MIN === 'number') {
+                        dpTypes[res.rows[i].id].MIN = parseFloat(dpTypes[res.rows[i].id].MIN);
+                        dpTypes[res.rows[i].id].MAX = parseFloat(dpTypes[res.rows[i].id].MAX);
+                        if (dpTypes[res.rows[i].id].UNIT === '100%') {
+                            dpTypes[res.rows[i].id].UNIT = '%';
+                        }
+                        if (dpTypes[res.rows[i].id].MAX === 99) {
+                            dpTypes[res.rows[i].id].MAX = 100;
+                        }
+                    }
                 }
             }
         }
@@ -526,24 +719,84 @@ function initRpcServer() {
         });
 
         rpcServer.on('newDevices', function (err, params, callback) {
-            adapter.log.info(adapter.config.type + 'rpc <- newDevices ' + params[1].length);
-            createDevices(params[1], callback);
+
+            var newDevices = params[1];
+
+            adapter.log.info(adapter.config.type + 'rpc <- newDevices ' + newDevices.length);
+
+            // for a HmIP-adapter we have to filter out the devices that
+            // are already present if forceReinit is not set
+            if (adapter.config.forceReInit === false && adapter.config.daemon === 'HMIP') {
+                adapter.objects.getObjectView('hm-rpc', 'listDevices', {
+                    startkey: 'hm-rpc.' + adapter.instance + '.',
+                    endkey: 'hm-rpc.' + adapter.instance + '.\u9999'
+                }, function (err, doc) {
+                    if (doc && doc.rows) {
+                        for (var i = 0; i < doc.rows.length; i++) {
+                            if (doc.rows[i].id === adapter.namespace + '.updated') continue;
+
+                            // lets get the device description
+                            var val = doc.rows[i].value;
+
+                            if (typeof val.ADDRESS === 'undefined') continue;
+
+                            // lets find the current device in the newDevices array
+                            // and if it doesn't exist we can delete it
+                            var index = -1;
+                            for (var j = 0; j < newDevices.length; j++) {
+                                if (newDevices[j].ADDRESS === val.ADDRESS && newDevices[j].VERSION === val.VERSION) {
+                                    index = j;
+                                    break;
+                                }
+                            }
+
+                            // if index is -1 than the newDevices doesn't have the
+                            // device with address val.ADDRESS anymore, thus we can delete it
+                            if (index === -1) {
+                                if (val.ADDRESS) {
+                                    if (val.ADDRESS.indexOf(':') !== -1) {
+                                        var address = val.ADDRESS.replace(':', '.');
+                                        var parts = address.split('.');
+                                        adapter.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
+                                        adapter.log.info('obsolete channel ' + address + ' ' + JSON.stringify(address) + ' deleted');
+                                    } else {
+                                        adapter.deleteDevice(val.ADDRESS);
+                                        adapter.log.info('obsolete device ' + val.ADDRESS + ' deleted');
+                                    }
+                                }
+                            } else {
+                                // we can remove the item at index because it is already registered
+                                // to ioBroker
+                                newDevices.splice(index, 1);
+                            }
+                        }
+                    }
+
+                    adapter.log.info('new HmIP devices/channels after filter: ' + newDevices.length);
+                    createDevices(newDevices, callback);
+                });
+            } else {
+                createDevices(newDevices, callback);
+            }
         });
 
         rpcServer.on('listDevices', function (err, params, callback) {
             adapter.log.info(adapter.config.type + 'rpc <- listDevices ' + JSON.stringify(params));
             adapter.objects.getObjectView('hm-rpc', 'listDevices', {startkey: 'hm-rpc.' + adapter.instance + '.', endkey: 'hm-rpc.' + adapter.instance + '.\u9999'}, function (err, doc) {
                 var response = [];
-                if (!adapter.config.forceReInit) {
-                     for (var i = 0; i < doc.rows.length; i++) {
-                         if (doc.rows[i].id == adapter.namespace + '.updated') continue;
-                         var val = doc.rows[i].value;
 
-                         /*if (val.PARENT_TYPE) {
-                            channelParams[val.ADDRESS] = val.PARENT_TYPE + '.' + val.TYPE + '.' + val.VERSION;
+                // we only fill the response if this isn't a force reinit and
+                // if the adapter instance is not bothering with HmIP (which seems to work slightly different in terms of XMLRPC)
+                if (!adapter.config.forceReInit && adapter.config.daemon !== 'HMIP' && doc && doc.rows) {
+                    for (var i = 0; i < doc.rows.length; i++) {
+                        if (doc.rows[i].id === adapter.namespace + '.updated') continue;
+                        var val = doc.rows[i].value;
+
+                        /*if (val.PARENT_TYPE) {
+                         channelParams[val.ADDRESS] = val.PARENT_TYPE + '.' + val.TYPE + '.' + val.VERSION;
                          }*/
-                         if (val.ADDRESS) response.push({ADDRESS: val.ADDRESS, VERSION: val.VERSION});
-                     }
+                        if (val.ADDRESS) response.push({ADDRESS: val.ADDRESS, VERSION: val.VERSION});
+                    }
                 }
                 adapter.log.info(adapter.config.type + 'rpc -> ' + response.length + ' devices');
                 //log.info(JSON.stringify(response));
@@ -566,7 +819,7 @@ function initRpcServer() {
         rpcServer.on('deleteDevices', function (err, params, callback) {
             adapter.log.info(adapter.config.type + 'rpc <- deleteDevices ' + params[1].length);
             for (var i = 0; i < params[1].length; i++) {
-                if (params[1][i].indexOf(':') != -1) {
+                if (params[1][i].indexOf(':') !== -1) {
                     params[1][i] = params[1][i].replace(':', '.');
                     adapter.log.info('channel ' + params[1][i] + ' ' + JSON.stringify(params[1][i]) + ' deleted');
                     var parts = params[1][i].split('.');
@@ -590,14 +843,26 @@ var methods = {
     event: function (err, params) {
         adapter.log.debug(adapter.config.type + 'rpc <- event ' + JSON.stringify(params));
         var val;
+        // CUxD ignores all prefixes!!
+        if (params[0] === 'CUxD' || params[0].indexOf(adapter.name) === -1) {
+            params[0] = adapter.namespace;
+        }
         var channel = params[1].replace(':', '.');
         var name = params[0] + '.' + channel + '.' + params[2];
 
-        if (dpTypes[name] && dpTypes[name].UNIT === '100%') {
-            val = (params[3] * 100);
+        if (dpTypes[name]) {
+            if (dpTypes[name].MIN !== undefined && dpTypes[name].UNIT === '%') {
+                val = ((parseFloat(params[3]) - dpTypes[name].MIN) / (dpTypes[name].MAX - dpTypes[name].MIN)) * 100;
+                val = Math.round(val * 100) / 100;
+            } else if (dpTypes[name].UNIT === '100%' || (dpTypes[name].UNIT === '%' && dpTypes[name].MAX === 1)) {
+                val = params[3] * 100;
+            } else {
+                val = params[3];
+            }
         } else {
             val = params[3];
         }
+        adapter.log.debug(name + ' ==> UNIT: "' + (dpTypes[name] ? dpTypes[name].UNIT : 'none')  + '" (min: ' + (dpTypes[name] ? dpTypes[name].MIN : 'none')  + ', max: ' + (dpTypes[name] ? dpTypes[name].MAX : 'none') + ') From "' + params[3] + '" => "' + val + '"');
 
         adapter.setState(channel + '.' + params[2], {val: val, ack: true});
         return '';
@@ -611,14 +876,15 @@ function addParamsetObjects(channel, paramset, callback) {
     var channelChildren = [];
     var count = 0;
     for (var key in paramset) {
+        if (!paramset.hasOwnProperty(key)) continue;
         channelChildren.push(channel._id + '.' + key);
         var commonType = {
-            'ACTION':  'boolean',
-            'BOOL':    'boolean',
-            'FLOAT':   'number',
-            'ENUM':    'number',
-            'INTEGER': 'number',
-            'STRING':  'string'
+            ACTION:  'boolean',
+            BOOL:    'boolean',
+            FLOAT:   'number',
+            ENUM:    'number',
+            INTEGER: 'number',
+            STRING:  'string'
         };
 
         var obj = {
@@ -626,8 +892,8 @@ function addParamsetObjects(channel, paramset, callback) {
             common: {
                 def:   paramset[key].DEFAULT,
                 type:  commonType[paramset[key].TYPE] || paramset[key].TYPE || '',
-                read:  (paramset[key].OPERATIONS & 1 ? true : false),
-                write: (paramset[key].OPERATIONS & 2 ? true : false)
+                read:  !!(paramset[key].OPERATIONS & 1),
+                write: !!(paramset[key].OPERATIONS & 2)
             },
             native: paramset[key]
         };
@@ -652,14 +918,19 @@ function addParamsetObjects(channel, paramset, callback) {
             }
         }
 
+        if (paramset[key].STATES) {
+            obj.common.states = paramset[key].STATES;
+        }
+
+
         if (paramset[key].UNIT === '100%') {
             obj.common.unit = '%';
             obj.common.max = 100 * paramset[key].MAX;
         } else if (paramset[key].UNIT !== '') {
             obj.common.unit = paramset[key].UNIT;
-            if (obj.common.unit == '�C' || obj.common.unit == '&#176;C') {
+            if (obj.common.unit === '�C' || obj.common.unit === '&#176;C') {
                 obj.common.unit = '°C';
-            } else if (obj.common.unit == '�F' || obj.common.unit == '&#176;F') {
+            } else if (obj.common.unit === '�F' || obj.common.unit === '&#176;F') {
                 obj.common.unit = '°F';
             }
         }
@@ -678,11 +949,32 @@ function addParamsetObjects(channel, paramset, callback) {
             obj.common.role = 'indicator.service';
         }
 
+        // specify which value is LOCK
+        if (obj.native.CONTROL === 'LOCK.STATE') {
+            obj.native.LOCK_VALUE = false;
+            obj.common.role = 'switch.lock';
+        }
+
         if (typeof obj.common.role !== 'string' && typeof obj.common.role !== 'undefined') {
             throw 'typeof obj.common.role ' + typeof obj.common.role;
         }
-        dpTypes[adapter.namespace + '.' + channel._id + '.' + key] = {UNIT: paramset[key].UNIT, TYPE: paramset[key].TYPE};
-        if (key == 'LEVEL' && paramset.WORKING) {
+        var dpID = adapter.namespace + '.' + channel._id + '.' + key;
+
+        dpTypes[dpID] = {UNIT: paramset[key].UNIT, TYPE: paramset[key].TYPE, MIN: paramset[key].MIN, MAX: paramset[key].MAX};
+
+        if (typeof dpTypes[dpID].MIN === 'number') {
+            dpTypes[dpID].MIN = parseFloat(dpTypes[dpID].MIN);
+            dpTypes[dpID].MAX = parseFloat(dpTypes[dpID].MAX);
+            // Humidity is from 0 to 99. It is wrong.
+            if (dpTypes[dpID].MAX === 99) {
+                dpTypes[dpID].MAX = 100;
+            }
+            if (dpTypes[dpID].UNIT === '100%') {
+                dpTypes[dpID].UNIT = '%';
+            }
+        }
+
+        if (key === 'LEVEL' && paramset.WORKING) {
             obj.common.workingID = 'WORKING';
         }
         count++;
@@ -702,7 +994,7 @@ function addParamsetObjects(channel, paramset, callback) {
 function getValueParamsets() {
     if (queueValueParamsets.length === 0) {
         // Inform hm-rega about new devices
-        adapter.setState('updated', true, true);
+        adapter.setState('updated', true, false);
         // Inform hm-rega about new devices
         if (adapter.config.forceReInit) {
             adapter.extendForeignObject('system.adapter.' + adapter.namespace, {native: {forceReInit: false}});
@@ -711,6 +1003,10 @@ function getValueParamsets() {
     }
     var obj = queueValueParamsets.pop();
     var cid = obj.native.PARENT_TYPE + '.' + obj.native.TYPE + '.' + obj.native.VERSION;
+
+    if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
+        addEPaperToMeta();
+    }
 
     adapter.log.debug('getValueParamsets ' + cid);
 
@@ -729,6 +1025,11 @@ function getValueParamsets() {
             if (res && res.native) {
                 adapter.log.debug(key + ' found');
                 metaValues[cid] = res.native;
+
+                if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
+                    addEPaperToMeta();
+                }
+
                 addParamsetObjects(obj, res.native, function () {
                     setTimeout(getValueParamsets, 0);
                 });
@@ -748,8 +1049,22 @@ function getValueParamsets() {
                             'native': res
                         };
                         metaValues[key] = res;
-                        adapter.log.info('setObject ' + key);
-                        adapter.log.warn('Send this info to developer: ' + JSON.stringify(paramset));
+
+                        if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
+                            addEPaperToMeta();
+                        }
+
+                        if (res) {
+                            // if not empty
+                            for (var attr in res) {
+                                if (res.hasOwnProperty(attr)) {
+                                    adapter.log.warn('Send this info to developer: _id: "' + key + '"');
+                                    adapter.log.warn('Send this info to developer: ' + JSON.stringify(paramset));
+                                    break;
+                                }
+                            }
+                        }
+
                         adapter.objects.setObject(key, paramset, function () {
                             addParamsetObjects(obj, res, function () {
                                 setTimeout(getValueParamsets, 0);
@@ -760,8 +1075,107 @@ function getValueParamsets() {
                     adapter.log.error('Cannot call getParamsetDescription: :' + err);
                 }
             }
-
         });
+    }
+}
+
+function addEPaperToMeta() {
+    if (!metaValues['HM-Dis-EP-WM55.MAINTENANCE.9'] || !metaValues['HM-Dis-EP-WM55.MAINTENANCE.9'].EPAPER_LINE2) {
+        metaValues['HM-Dis-EP-WM55.MAINTENANCE.9'] = metaValues['HM-Dis-EP-WM55.MAINTENANCE.9'] || {};
+        metaValues['HM-Dis-EP-WM55.MAINTENANCE.9'].EPAPER_LINE2  = {
+            TYPE: 'EPAPER_LINE',
+            ID: 'LINE2',
+            OPERATIONS: 2
+        };
+        metaValues['HM-Dis-EP-WM55.MAINTENANCE.9'].EPAPER_ICON2  = {
+            TYPE: 'EPAPER_ICON',
+            ID: 'ICON2',
+            STATES: {
+                '': 'Empty',
+                '0x80': 'OFF',
+                '0x81': 'ON',
+                '0x82': 'Opened',
+                '0x83': 'Closed',
+                '0x84': 'error',
+                '0x85': 'All OK',
+                '0x86': 'Information',
+                '0x87': 'New message',
+                '0x88': 'Service message'
+            },
+            OPERATIONS: 2
+        };
+        metaValues['HM-Dis-EP-WM55.MAINTENANCE.9'].EPAPER_LINE3  = {
+            TYPE: 'EPAPER_LINE',
+            ID: 'LINE3',
+            OPERATIONS: 2
+        };
+        metaValues['HM-Dis-EP-WM55.MAINTENANCE.9'].EPAPER_ICON3  = {
+            TYPE: 'EPAPER_ICON',
+            ID: 'ICON3',
+            STATES: {
+                '': 'Empty',
+                '0x80': 'OFF',
+                '0x81': 'ON',
+                '0x82': 'Opened',
+                '0x83': 'Closed',
+                '0x84': 'error',
+                '0x85': 'All OK',
+                '0x86': 'Information',
+                '0x87': 'New message',
+                '0x88': 'Service message'
+            },
+            OPERATIONS: 2
+        };
+        metaValues['HM-Dis-EP-WM55.MAINTENANCE.9'].EPAPER_LINE4  = {
+            TYPE: 'EPAPER_LINE',
+            ID: 'LINE4',
+            OPERATIONS: 2
+        };
+        metaValues['HM-Dis-EP-WM55.MAINTENANCE.9'].EPAPER_ICON4  = {
+            TYPE: 'EPAPER_ICON',
+            ID: 'ICON4',
+            STATES: {
+                '': 'Empty',
+                '0x80': 'OFF',
+                '0x81': 'ON',
+                '0x82': 'Opened',
+                '0x83': 'Closed',
+                '0x84': 'error',
+                '0x85': 'All OK',
+                '0x86': 'Information',
+                '0x87': 'New message',
+                '0x88': 'Service message'
+            },
+            OPERATIONS: 2
+        };
+        metaValues['HM-Dis-EP-WM55.MAINTENANCE.9'].EPAPER_SIGNAL = {
+            TYPE: 'EPAPER_SIGNAL',
+            ID: 'EPAPER_SIGNAL',
+            STATES: {
+                '0xF0': 'OFF',
+                '0xF1': 'Red blink',
+                '0xF2': 'Green blink',
+                '0xF3': 'Orange blink'
+            },
+            OPERATIONS: 2
+        };
+        metaValues['HM-Dis-EP-WM55.MAINTENANCE.9'].EPAPER_TONE   = {
+            TYPE: 'EPAPER_TONE',
+            ID: 'EPAPER_TONE',
+            STATES: {
+                '0xC0': 'Off',
+                '0xC1': 'Long Long',
+                '0xC2': 'Long Short',
+                '0xC3': 'Long Short Short',
+                '0xC4': 'Short',
+                '0xC5': 'Short Short',
+                '0xC6': 'Long',
+                '0xC7': '7',
+                '0xC9': '9',
+                '0xCA': 'A'
+            },
+            OPERATIONS: 2
+        };
     }
 }
 
@@ -798,7 +1212,21 @@ function createDevices(deviceArr, callback) {
 
         if (icon) obj.common.icon = icon;
 
-        dpTypes[adapter.namespace + '.' + obj._id] = {UNIT: deviceArr[i].UNIT, TYPE: deviceArr[i].TYPE};
+        var dpID = adapter.namespace + '.' + obj._id;
+        dpTypes[dpID] = {UNIT: deviceArr[i].UNIT, TYPE: deviceArr[i].TYPE, MAX: deviceArr[i].MAX, MIN: deviceArr[i].MIN};
+        if (typeof dpTypes[dpID].MIN === 'number') {
+            dpTypes[dpID].MIN = parseFloat(dpTypes[dpID].MIN);
+            dpTypes[dpID].MAX = parseFloat(dpTypes[dpID].MAX);
+
+            // Humidity is from 0 to 99. It is wrong.
+            if (dpTypes[dpID].MAX === 99) {
+                dpTypes[dpID].MAX = 100;
+            }
+
+            if (dpTypes[dpID].UNIT === '100%') {
+                dpTypes[dpID].UNIT = '%';
+            }
+        }
         objs.push(obj);
     }
 
@@ -816,11 +1244,12 @@ function createDevices(deviceArr, callback) {
             });
 
             if (obj.type === 'channel') {
-                var cid = obj.PARENT_TYPE + '.' + obj.TYPE + '.' + obj.VERSION;
+                // var cid = obj.native.PARENT_TYPE + '.' + obj.native.TYPE + '.' + obj.native.VERSION;
                 //channelParams[obj._id] = cid;
-                if (!metaValues[cid]) {
-                    queueValueParamsets.push(obj);
+                if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
+                    addEPaperToMeta();
                 }
+                queueValueParamsets.push(obj);
             }
 
         } else {
@@ -833,16 +1262,65 @@ function createDevices(deviceArr, callback) {
 }
 
 function getCuxDevices(callback) {
-    // Todo read existing devices from couchdb and put IDs in array
-    // var devices = [];
-
     if (rpcClient) {
         // request devices from CUxD
         try {
-            rpcClient.methodCall('listDevices', [], function (err, data) {
-                adapter.log.info(adapter.config.type + 'rpc -> listDevices ' + data.length);
-                // Todo remove device ids from array
-                createDevices(data, callback);
+            rpcClient.methodCall('listDevices', [], function (err, newDevices) {
+
+                adapter.log.info(adapter.config.type + 'rpc -> listDevices ' + newDevices.length);
+
+                if (adapter.config.forceReInit === false) {
+                    adapter.objects.getObjectView('hm-rpc', 'listDevices', {
+                        startkey: 'hm-rpc.' + adapter.instance + '.',
+                        endkey:   'hm-rpc.' + adapter.instance + '.\u9999'
+                    }, function (err, doc) {
+                        if (doc && doc.rows) {
+                            for (var i = 0; i < doc.rows.length; i++) {
+                                if (doc.rows[i].id === adapter.namespace + '.updated') continue;
+
+                                // lets get the device description
+                                var val = doc.rows[i].value;
+
+                                if (typeof val.ADDRESS === 'undefined') continue;
+
+                                // lets find the current device in the newDevices array
+                                // and if it doesn't exist we can delete it
+                                var index = -1;
+                                for (var j = 0; j < newDevices.length; j++) {
+                                    if (newDevices[j].ADDRESS === val.ADDRESS && newDevices[j].VERSION === val.VERSION) {
+                                        index = j;
+                                        break;
+                                    }
+                                }
+
+                                // if index is -1 than the newDevices doesn't have the
+                                // device with address val.ADDRESS anymore, thus we can delete it
+                                if (index === -1) {
+                                    if (val.ADDRESS) {
+                                        if (val.ADDRESS.indexOf(':') !== -1) {
+                                            var address = val.ADDRESS.replace(':', '.');
+                                            var parts = address.split('.');
+                                            adapter.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
+                                            adapter.log.info('obsolete channel ' + address + ' ' + JSON.stringify(address) + ' deleted');
+                                        } else {
+                                            adapter.deleteDevice(val.ADDRESS);
+                                            adapter.log.info('obsolete device ' + val.ADDRESS + ' deleted');
+                                        }
+                                    }
+                                } else {
+                                    // we can remove the item at index because it is already registered
+                                    // to ioBroker
+                                    newDevices.splice(index, 1);
+                                }
+                            }
+                        }
+
+                        adapter.log.info('new CUxD devices/channels after filter: ' + newDevices.length);
+                        createDevices(newDevices, callback);
+                    });
+                } else {
+                    createDevices(newDevices, callback);
+                }
             });
         } catch (err) {
             adapter.log.error('Cannot call listDevices: ' + err);
@@ -850,8 +1328,6 @@ function getCuxDevices(callback) {
     } else {
         callback && callback();
     }
-
-    // Todo delete all in array remaining devices
 }
 
 function updateConnection() {
@@ -880,6 +1356,51 @@ function updateConnection() {
 }
 
 function connect(isFirst) {
+    if (!rpcClient) {
+        rpcClient = rpc.createClient({
+            host: adapter.config.homematicAddress,
+            port: adapter.config.homematicPort,
+            path: '/'
+        });
+
+        // if bin-rpc
+        if (rpcClient.on) {
+            rpcClient.on('connect', function (err) {
+                sendInit();
+            });
+
+            rpcClient.on('error', function (err) {
+                adapter.log.error('Socket error: ' + err);
+            });
+
+            rpcClient.on('close', function () {
+                adapter.log.debug('Socket closed.');
+                if (connected) {
+                    adapter.log.info('Disconnected');
+                    connected = false;
+                    adapter.setState('info.connection', false, true);
+                }
+
+                if (eventInterval) {
+                    adapter.log.debug('clear ping interval');
+                    clearInterval(eventInterval);
+                    eventInterval = null;
+                }
+                // clear queue
+                if (rpcClient.queue) {
+                    while (rpcClient.queue.length) {
+                        rpcClient.queue.pop();
+                    }
+                    rpcClient.pending = false;
+                }
+
+                if (!connTimeout) {
+                    connTimeout = setTimeout(connect, adapter.config.reconnectInterval * 1000);
+                }
+            });
+        }
+    }
+
     connTimeout = null;
     adapter.log.debug('Connect...');
     if (eventInterval) {
@@ -888,6 +1409,7 @@ function connect(isFirst) {
         eventInterval = null;
     }
 
+    // if bin rpc
     if (rpcClient.connect) {
         if (!isFirst) rpcClient.connect();
     } else {
@@ -917,6 +1439,3 @@ function keepAlive() {
         sendPing();
     }
 }
-
-
-
