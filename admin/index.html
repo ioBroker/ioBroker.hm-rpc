@@ -8,6 +8,7 @@
 <link rel="stylesheet" type="text/css" href="../../css/adapter.css"/>
 <script type="text/javascript" src="../../js/translate.js"></script>
 <script type="text/javascript" src="../../js/adapter-settings.js"></script>
+<script type="text/javascript" src="words.js"></script>
 
 <style>
     .invalid {
@@ -16,25 +17,6 @@
 </style>
 
 <script type="text/javascript">
-    systemDictionary = {
-        "HomeMatic Address":        {"en": "HomeMatic Address",        "de": "HomeMatic Adresse",        "ru": "Адрес HomeMatic"},
-        "Adapter Address":          {"en": "Adapter Address",          "de": "Adapter Adresse",          "ru": "Собственный адрес"},
-        "Daemon":                   {"en": "Daemon",                   "de": "Daemon",                   "ru": "Служба"},
-        "HomeMatic Port":           {"en": "HomeMatic Port",           "de": "HomeMatic Port",           "ru": "Порт HomeMatic"},
-        "Adapter Callback Address": {"en": "Adapter Callback Address", "de": "Adapter Callback Adresse", "ru": "Собственный Callback адрес"},
-        "Adapter Port":             {"en": "Adapter Port",             "de": "Adapter Port",             "ru": "Порт драйвера ioBroker"},
-        "Protocol":                 {"en": "Protocol",                 "de": "Protokoll",                "ru": "Протокол"},
-        "Check communication interval (sec)":   {"en": "Check communication interval(sec)", "de": "Verbindungs-Check Interval(sek)", "ru": "Интервал проверки соединения(сек)"},
-        "Reconnect interval (sec)": {"en": "Reconnect interval (sec)", "de": "Wiederverbindungs-Interval(sek)", "ru": "Интервал повтора соединения(сек)"},
-        "Listen on all IPs":        {"en": "Listen on all IPs",        "de": "Auf alle IPs hören",       "ru": "Listen on all IP"},
-        "Homematic RPC adapter settings": {
-            "en": "Homematic RPC adapter settings",
-            "de": "Homematic RPC Adapter Einstellungen",
-            "ru": "Настройки Homematic RPC драйвера"
-        },
-        "Force objects re-init": {"en": "Synchronize objects (once)", "de": "Synchronisiere Geräte neu (einmalig)",  "ru": "Синхронизировать объекты (один раз)"}
-    };
-
     var onChange = null;
 
     function setValue(id, value) {
@@ -60,16 +42,24 @@
                                 ip = $(this).attr('value');
                             }
                         });
-                        if (ip) $('#adapterAddress').val(ip);
-
+                        if (ip) {
+                            $('#adapterAddress').val(ip);
+                        }
                     }
-
-                    if (id === 'adapterAddress') $('#callbackAddress').val(ip2);
-
-                    if (!ip3 || ip3 === '0.0.0.0' || !checkIPs(ip1, ip3)){
+                    if (ip3 || ip3 === '0.0.0.0' || !checkIPs(ip1, ip3)) {
+                        $('#callbackAddress').addClass('invalid').attr('title', _('This IP is unreachable from %s', $('#homematicAddress').val()));
+                    } else {
+                        $('#callbackAddress').removeClass('invalid').attr('title', '');
+                    }
+                    if (!ip2 || (ip2 !== '0.0.0.0' && !checkIPs(ip1, ip2))) {
                         $('#adapterAddress').addClass('invalid').attr('title', _('This IP is unreachable from %s', $('#homematicAddress').val()));
                     } else {
                         $('#adapterAddress').removeClass('invalid').attr('title', '');
+                    }
+                    if (ip2 === '0.0.0.0' && !ip3) {
+                        $('#callbackAddress').addClass('invalid').attr('title', _('Please specify callback address'));
+                    } else {
+                        $('#callbackAddress').removeClass('invalid').attr('title', '');
                     }
                 }
 
@@ -99,7 +89,7 @@
         onChange = _onChange;
         fillSelectIPs('#adapterAddress', settings.adapterAddress, false, true);
 
-        settings.callbackAddress = settings.callbackAddress || settings.adapterAddress;
+        settings.callbackAddress = settings.callbackAddress || '';
         settings.port = settings.port || 0;
 		
         for (var key in settings) {
@@ -127,6 +117,14 @@
     }
 
     function save(callback) {
+        var settings = getSettings();
+
+        if (settings.adapterAddress === '0.0.0.0' && (!settings.callbackAddress.trim() || settings.callbackAddress.trim() === '0.0.0.0')) {
+            showMessage(_('Please specify callback address'));
+            $('#callbackAddress').focus();
+            return;
+        }
+
         callback(getSettings());
     }
 
@@ -139,10 +137,15 @@
         // If ipv6 or DNS name
         if (i1.length !== i2.length || i1.length !== 4) return 1;
 
-        if (i1[0] != i2[0]) return 0;
-        if (i1[1] != i2[1]) return 1;
-        if (i1[2] != i2[2]) return 2;
-        if (i1[3] != i2[3]) return 3;
+        if (i1[0] !== i2[0]) return 0;
+        if ((i1[0] === '192' && i1[1] === '168') || (i2[0] === '192' && i2[1] === '168')) {
+            if (i1[1] !== i2[1]) return 0;
+        } else {
+            if (i1[1] !== i2[1]) return 1;
+        }
+
+        if (i1[2] !== i2[2]) return 2;
+        if (i1[3] !== i2[3]) return 3;
 
         return 4;
     }
