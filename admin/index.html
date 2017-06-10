@@ -17,15 +17,16 @@
 
 <script type="text/javascript">
     systemDictionary = {
-        "HomeMatic Address":     {"en": "HomeMatic Address",   "de": "HomeMatic Adresse",   "ru": "Адрес HomeMatic"},
-        "Adapter Address":       {"en": "Adapter Address",     "de": "Adapter Adresse",     "ru": "Собственный адрес"},
-        "Daemon":                {"en": "Daemon",              "de": "Daemon",              "ru": "Служба"},
-        "HomeMatic Port":        {"en": "HomeMatic Port",      "de": "HomeMatic Port",      "ru": "Порт HomeMatic"},
-        "Adapter Port":          {"en": "Adapter Port",        "de": "Adapter Port",        "ru": "Порт драйвера ioBroker"},
-        "Protocol":              {"en": "Protocol",            "de": "Protokoll",           "ru": "Протокол"},
+        "HomeMatic Address":        {"en": "HomeMatic Address",        "de": "HomeMatic Adresse",        "ru": "Адрес HomeMatic"},
+        "Adapter Address":          {"en": "Adapter Address",          "de": "Adapter Adresse",          "ru": "Собственный адрес"},
+        "Daemon":                   {"en": "Daemon",                   "de": "Daemon",                   "ru": "Служба"},
+        "HomeMatic Port":           {"en": "HomeMatic Port",           "de": "HomeMatic Port",           "ru": "Порт HomeMatic"},
+        "Adapter Callback Address": {"en": "Adapter Callback Address", "de": "Adapter Callback Adresse", "ru": "Собственный Callback адрес"},
+        "Adapter Port":             {"en": "Adapter Port",             "de": "Adapter Port",             "ru": "Порт драйвера ioBroker"},
+        "Protocol":                 {"en": "Protocol",                 "de": "Protokoll",                "ru": "Протокол"},
         "Check communication interval (sec)":   {"en": "Check communication interval(sec)", "de": "Verbindungs-Check Interval(sek)", "ru": "Интервал проверки соединения(сек)"},
         "Reconnect interval (sec)": {"en": "Reconnect interval (sec)", "de": "Wiederverbindungs-Interval(sek)", "ru": "Интервал повтора соединения(сек)"},
-        "Listen on all IPs":     {"en": "Invalid",              "de": "Invalid",            "ru": "Неправильно"},
+        "Listen on all IPs":        {"en": "Listen on all IPs",        "de": "Auf alle IPs hören",       "ru": "Listen on all IP"},
         "Homematic RPC adapter settings": {
             "en": "Homematic RPC adapter settings",
             "de": "Homematic RPC Adapter Einstellungen",
@@ -44,9 +45,10 @@
             });
         } else {
             $value.val(value).change(function() {
-                if (id === 'homematicAddress' || id === 'adapterAddress') {
+                if (id === 'homematicAddress' || id === 'adapterAddress' || id === 'callbackAddress') {
                     var ip1 = $('#homematicAddress').val();
                     var ip2 = $('#adapterAddress').val();
+                    var ip3 = $('#callbackAddress').val();
 
                     if (id === 'homematicAddress' && ip2 === '0.0.0.0') {
                         var max = 0;
@@ -62,7 +64,9 @@
 
                     }
 
-                    if (!ip2 || ip2 === '0.0.0.0' || !checkIPs(ip1, ip2)) {
+                    if (id === 'adapterAddress') $('#callbackAddress').val(ip2);
+
+                    if (!ip3 || ip3 === '0.0.0.0' || !checkIPs(ip1, ip3)){
                         $('#adapterAddress').addClass('invalid').attr('title', _('This IP is unreachable from %s', $('#homematicAddress').val()));
                     } else {
                         $('#adapterAddress').removeClass('invalid').attr('title', '');
@@ -95,7 +99,8 @@
         onChange = _onChange;
         fillSelectIPs('#adapterAddress', settings.adapterAddress, false, true);
 
-		settings.port = settings.port || 0;
+        settings.callbackAddress = settings.callbackAddress || settings.adapterAddress;
+        settings.port = settings.port || 0;
 		
         for (var key in settings) {
             if (settings.hasOwnProperty(key)) {
@@ -182,6 +187,10 @@
             <td><select id="adapterAddress" class="value"></select></td>
         </tr>
         <tr>
+            <td class="translate">Adapter Callback Address</td>
+            <td><input type="text" id="callbackAddress" class="value"/></td>
+        </tr>
+        <tr>
             <td class="translate">Daemon</td>
             <td>
                 <select id="daemon" class="value">
@@ -206,7 +215,8 @@
                     <option value="bin">BIN-RPC</option>
                 </select>
             </td>
-        </tr>              
+        </tr>
+        <tr>             
         <tr>
             <td class="translate">Adapter Port</td>
             <td><input type="number" id="port" class="value number"/></td>
