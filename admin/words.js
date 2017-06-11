@@ -8,7 +8,7 @@ systemDictionary = {
     "Protocol":                 {"en": "Protocol",                 "de": "Protokoll",                "ru": "Протокол"},
     "Check communication interval (sec)":   {"en": "Check communication interval(sec)", "de": "Verbindungs-Check Interval(sek)", "ru": "Интервал проверки соединения(сек)"},
     "Reconnect interval (sec)": {"en": "Reconnect interval (sec)", "de": "Wiederverbindungs-Interval(sek)", "ru": "Интервал повтора соединения(сек)"},
-    "Listen on all IPs":        {"en": "Listen on all IPs",        "de": "Auf alle IPs hören",       "ru": "Listen on all IP"},
+    "Listen on all IPs":        {"en": "Listen on all IPs",        "de": "Auf alle IPs hören",       "ru": "Слушать на всех IP адресах"},
     "Homematic RPC adapter settings": {
         "en": "Homematic RPC adapter settings",
         "de": "Homematic RPC Adapter Einstellungen",
