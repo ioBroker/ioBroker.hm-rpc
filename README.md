@@ -17,6 +17,9 @@ This address is used by the CCU to connect to the adapter.
 native.homematicAddress is the IP of the HomeMatic CCU respectively the Host that is running the BidCos-Service(s)
 
 ## Changelog
+### 1.4.14 (2017-06-19)
+* (bluefox) Fix images
+
 ### 1.4.13 (2017-06-10)
 * (vegetto) Added Callback address - needed for Docker
 

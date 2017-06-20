@@ -7,8 +7,13 @@
             "de": "Verbindet HomeMatic Interface-Prozesse (BidCos-Services, Homegear und CUxD) via XML-RPC oder BIN-RPC mit ioBroker",
             "ru": "Подключает HomeMatic интерфейсы (BidCos-сервисы, Homegear и CUxD) через XML-RPC или BIN-RPC к ioBroker"
         },
-        "version": "1.4.13",
+        "version": "1.4.14",
         "news": {
+            "1.4.14": {
+                "en": "Fix images",
+                "de": "Korrigiere Bilder",
+                "ru": "Исправлены картинки"
+            },
             "1.4.13": {
                 "en": "Added Callback address - needed for Docker",
                 "de": "Callback Adresse addiert - nutzlich für Docker",
