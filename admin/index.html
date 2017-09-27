@@ -93,8 +93,9 @@
         fillSelectIPs('#adapterAddress', settings.adapterAddress, false, true);
 
         settings.callbackAddress = settings.callbackAddress || '';
-        settings.port = settings.port || 0;
-		
+        settings.port            = settings.port || 0;
+        settings.dontDelete      = settings.dontDelete || false;
+
         for (var key in settings) {
             if (settings.hasOwnProperty(key)) {
                 setValue(key, settings[key]);
@@ -240,6 +241,10 @@
         <tr>
             <td><label for="forceReInit" class="translate">Force objects re-init</label></td>
             <td><input type="checkbox" id="forceReInit" class="value"/></td>
+        </tr>
+        <tr>
+            <td><label for="dontDelete"  class="translate">Don't delete devices</label></td>
+            <td><input type="checkbox" id="dontDelete" class="value"/></td>
         </tr>
     </table>
 
