@@ -27,15 +27,18 @@
             });
         } else {
             $value.val(value).change(function() {
+                var $adapterAddress   = $('#adapterAddress');
+                var $homematicAddress = $('#homematicAddress');
+                var $callbackAddress  = $('#callbackAddress');
                 if (id === 'homematicAddress' || id === 'adapterAddress' || id === 'callbackAddress') {
-                    var ip1 = $('#homematicAddress').val();
-                    var ip2 = $('#adapterAddress').val();
-                    var ip3 = $('#callbackAddress').val();
+                    var ip1 = $homematicAddress.val();
+                    var ip2 = $adapterAddress.val();
+                    var ip3 = $callbackAddress.val();
 
                     if (id === 'homematicAddress' && ip2 === '0.0.0.0') {
                         var max = 0;
                         var ip = '';
-                        $('#adapterAddress option').each(function () {
+                        $adapterAddress.find('option').each(function () {
                             var c = checkIPs(ip1, $(this).attr('value'));
                             if (c > max) {
                                 max = c;
@@ -43,23 +46,23 @@
                             }
                         });
                         if (ip) {
-                            $('#adapterAddress').val(ip);
+                            $adapterAddress.val(ip);
                         }
                     }
                     if (ip3 || ip3 === '0.0.0.0' || !checkIPs(ip1, ip3)) {
-                        $('#callbackAddress').addClass('invalid').attr('title', _('This IP is unreachable from %s', $('#homematicAddress').val()));
+                        $callbackAddress.addClass('invalid').attr('title', _('This IP is unreachable from %s', $homematicAddress.val()));
                     } else {
-                        $('#callbackAddress').removeClass('invalid').attr('title', '');
+                        $callbackAddress.removeClass('invalid').attr('title', '');
                     }
                     if (!ip2 || (ip2 !== '0.0.0.0' && !checkIPs(ip1, ip2))) {
-                        $('#adapterAddress').addClass('invalid').attr('title', _('This IP is unreachable from %s', $('#homematicAddress').val()));
+                        $adapterAddress.addClass('invalid').attr('title', _('This IP is unreachable from %s', $homematicAddress.val()));
                     } else {
-                        $('#adapterAddress').removeClass('invalid').attr('title', '');
+                        $adapterAddress.removeClass('invalid').attr('title', '');
                     }
                     if (ip2 === '0.0.0.0' && !ip3) {
-                        $('#callbackAddress').addClass('invalid').attr('title', _('Please specify callback address'));
+                        $callbackAddress.addClass('invalid').attr('title', _('Please specify callback address'));
                     } else {
-                        $('#callbackAddress').removeClass('invalid').attr('title', '');
+                        $callbackAddress.removeClass('invalid').attr('title', '');
                     }
                 }
 
@@ -90,8 +93,9 @@
         fillSelectIPs('#adapterAddress', settings.adapterAddress, false, true);
 
         settings.callbackAddress = settings.callbackAddress || '';
-        settings.port = settings.port || 0;
-		
+        settings.port            = settings.port || 0;
+        settings.dontDelete      = settings.dontDelete || false;
+
         for (var key in settings) {
             if (settings.hasOwnProperty(key)) {
                 setValue(key, settings[key]);
@@ -152,23 +156,25 @@
 
     $(document).ready(function () {
         $('#daemon').change(function () {
+            var $port = $('#homematicPort');
+            var $type = $('#type');
             switch ($(this).val()) {
                 case 'rfd':
-                    $('#homematicPort').val('2001');
+                    $port.val('2001');
                     break;
 
                 case 'hs485d':
-                    $('#homematicPort').val('2000');
+                    $port.val('2000');
                     break;
 
                 case 'CUxD':
-                    $('#homematicPort').val('8701');
-                    $('#type').val('bin');
+                    $port.val('8701');
+                    $type.val('bin');
                     break;
 
                 case 'HMIP':
-                    $('#homematicPort').val('2010');
-                    $('#type').val('xml');
+                    $port.val('2010');
+                    $type.val('xml');
                     break;
                 default:
             }
@@ -182,19 +188,19 @@
 
     <table>
         <tr>
-            <td class="translate">HomeMatic Address</td>
+            <td><label for="homematicAddress" class="translate">HomeMatic Address</label></td>
             <td><input type="text" id="homematicAddress" class="value"/></td>
         </tr>
         <tr>
-            <td class="translate">Adapter Address</td>
+            <td><label for="adapterAddress" class="translate">Adapter Address</label></td>
             <td><select id="adapterAddress" class="value"></select></td>
         </tr>
         <tr>
-            <td class="translate">Adapter Callback Address</td>
+            <td><label for="callbackAddress" class="translate">Adapter Callback Address</label></td>
             <td><input type="text" id="callbackAddress" class="value"/></td>
         </tr>
         <tr>
-            <td class="translate">Daemon</td>
+            <td><label for="daemon" class="translate">Daemon</label></td>
             <td>
                 <select id="daemon" class="value">
                     <option>rfd</option>
@@ -207,11 +213,11 @@
         </tr>
         <tr><td colspan="2">&nbsp;</td></tr>
         <tr>
-            <td class="translate">HomeMatic Port</td>
+            <td><label for="homematicPort" class="translate">HomeMatic Port</label></td>
             <td><input type="number" id="homematicPort" class="value number"/></td>
         </tr>
         <tr>
-            <td class="translate">Protocol</td>
+            <td><label for="type" class="translate">Protocol</label></td>
             <td>
                 <select id="type" class="value">
                     <option value="xml">XML-RPC</option>
@@ -221,20 +227,24 @@
         </tr>
         <tr>             
         <tr>
-            <td class="translate">Adapter Port</td>
+            <td><label for="port" class="translate">Adapter Port</label></td>
             <td><input type="number" id="port" class="value number"/></td>
         </tr>
         <tr>
-            <td class="translate">Check communication interval (sec)</td>
+            <td><label for="checkInitInterval" class="translate">Check communication interval (sec)</label></td>
             <td><input type="number" id="checkInitInterval" class="value number"/></td>
         </tr>
         <tr>
-            <td class="translate">Reconnect interval (sec)</td>
+            <td><label for="reconnectInterval" class="translate">Reconnect interval (sec)</label></td>
             <td><input type="number" id="reconnectInterval" class="value number"/></td>
         </tr>
         <tr>
-            <td class="translate">Force objects re-init</td>
+            <td><label for="forceReInit" class="translate">Force objects re-init</label></td>
             <td><input type="checkbox" id="forceReInit" class="value"/></td>
+        </tr>
+        <tr>
+            <td><label for="dontDelete"  class="translate">Don't delete devices</label></td>
+            <td><input type="checkbox" id="dontDelete" class="value"/></td>
         </tr>
     </table>
 

@@ -754,7 +754,7 @@ function initRpcServer() {
                             // if index is -1 than the newDevices doesn't have the
                             // device with address val.ADDRESS anymore, thus we can delete it
                             if (index === -1) {
-                                if (val.ADDRESS) {
+                                if (val.ADDRESS && !adapter.config.dontDelete) {
                                     if (val.ADDRESS.indexOf(':') !== -1) {
                                         var address = val.ADDRESS.replace(':', '.');
                                         var parts = address.split('.');
@@ -1302,7 +1302,7 @@ function getCuxDevices(callback) {
                                 // if index is -1 than the newDevices doesn't have the
                                 // device with address val.ADDRESS anymore, thus we can delete it
                                 if (index === -1) {
-                                    if (val.ADDRESS) {
+                                    if (val.ADDRESS && !adapter.config.dontDelete) {
                                         if (val.ADDRESS.indexOf(':') !== -1) {
                                             var address = val.ADDRESS.replace(':', '.');
                                             var parts = address.split('.');
