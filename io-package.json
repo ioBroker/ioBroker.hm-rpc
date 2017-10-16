@@ -1,8 +1,8 @@
 {
     "common": {
-        "name":                     "hm-rpc",
-        "title":                    "HomeMatic RPC",
-        "desc":                     {
+        "name": "hm-rpc",
+        "title": "HomeMatic RPC",
+        "desc": {
             "en": "Connects HomeMatic Interface-Processes (BidCos-Services, Homegear and CUxD) via XML-RPC or BIN-RPC to ioBroker",
             "de": "Verbindet HomeMatic Interface-Prozesse (BidCos-Services, Homegear und CUxD) via XML-RPC oder BIN-RPC mit ioBroker",
             "ru": "Подключает HomeMatic интерфейсы (BidCos-сервисы, Homegear и CUxD) через XML-RPC или BIN-RPC к ioBroker"
@@ -39,12 +39,12 @@
                 "de": "Dektiviere info log bei Steuerung\nKorrigiere die Kalkulation von CUxD Werten",
                 "ru": "Remove log entry\nFix values conversion for CUxD"
             },
-			"1.4.6": {
+            "1.4.6": {
                 "en": "use right version of rpc-bin lib",
                 "de": "Benutze die richtige Version für rpc-bin lib",
                 "ru": "Используется правильная версия для rpc-bin"
             },
-		    "1.4.4": {
+            "1.4.4": {
                 "en": "add Lock Value for KeyMatic",
                 "de": "Lock Wert ist zu Keymaitc hinzugefügt",
                 "ru": "Добавлено значение Lock для KeyMatic"
@@ -103,28 +103,45 @@
         "authors": [
             "hobbyquaker <hq@ccu.io>"
         ],
-        "license":                  "MIT",
-        "mode":                     "daemon",
-        "platform":                 "Javascript/Node.js",
-        "loglevel":                 "info",
-        "readme":                   "https://github.com/ioBroker/ioBroker.hm-rpc/blob/master/README.md",
-        "icon":                     "homematic.png",
-        "extIcon":                  "https://raw.githubusercontent.com/ioBroker/ioBroker.hm-rpc/master/admin/homematic.png",
-        "keywords":                 ["homematic", "bidcos", "eq3", "ELV", "CCU", "CCU1", "CCU2", "rpc", "xmlrpc", "homegear", "binrpc", "CUxD", "FS20", "FHT", "HMS", "EnOcean"],
-        "type":                     "hardware",
-        "messagebox":               true
+        "license": "MIT",
+        "mode": "daemon",
+        "platform": "Javascript/Node.js",
+        "loglevel": "info",
+        "readme": "https://github.com/ioBroker/ioBroker.hm-rpc/blob/master/README.md",
+        "icon": "homematic.png",
+        "extIcon": "https://raw.githubusercontent.com/ioBroker/ioBroker.hm-rpc/master/admin/homematic.png",
+        "keywords": [
+            "homematic",
+            "bidcos",
+            "eq3",
+            "ELV",
+            "CCU",
+            "CCU1",
+            "CCU2",
+            "rpc",
+            "xmlrpc",
+            "homegear",
+            "binrpc",
+            "CUxD",
+            "FS20",
+            "FHT",
+            "HMS",
+            "EnOcean"
+        ],
+        "type": "iot-systems",
+        "messagebox": true
     },
     "native": {
-        "homematicAddress":         "192.168.0.100",
-        "adapterAddress":           "0.0.0.0",
-        "homematicPort":            "2001",
-        "callbackAddress":          "",
-        "port":                     "0",
-        "type":                     "bin",
-        "daemon":                   "rfd",
-        "checkInitInterval":        180,
-        "reconnectInterval":        30,
-        "forceReInit":              false
+        "homematicAddress": "192.168.0.100",
+        "adapterAddress": "0.0.0.0",
+        "homematicPort": "2001",
+        "callbackAddress": "",
+        "port": "0",
+        "type": "bin",
+        "daemon": "rfd",
+        "checkInitInterval": 180,
+        "reconnectInterval": 30,
+        "forceReInit": false
     },
     "objects": [
         {
@@ -138,7 +155,6 @@
                     "map": "function(doc) {\n  if (doc._id.match(/^hm-rpc\\.meta/) && doc.meta.type === 'paramsetDescription') {\n   emit(doc._id, doc);\n  }\n}"
                 }
             }
-
         },
         {
             "_id": "hm-rpc.meta.roles",
@@ -148,74 +164,72 @@
                 "type": "roles",
                 "adapter": "hm-rpc"
             },
-            "common": {
-
-            },
+            "common": {},
             "native": {
                 "chTYPE": {
-                    "DIMMER":                       "light.dimmer",
-                    "BLIND":                        "blind",
-                    "SWITCH":                       "switch",
-                    "KEY":                          "button",
-                    "SHUTTER_CONTACT":              "sensor"
+                    "DIMMER": "light.dimmer",
+                    "BLIND": "blind",
+                    "SWITCH": "switch",
+                    "KEY": "button",
+                    "SHUTTER_CONTACT": "sensor"
                 },
                 "dpCONTROL": {
-                    "DIMMER.LEVEL":                 "level.dimmer",
-                    "BLIND.LEVEL":                  "level.blind"
+                    "DIMMER.LEVEL": "level.dimmer",
+                    "BLIND.LEVEL": "level.blind"
                 },
                 "chTYPE_dpNAME": {
-                    "DIMMER.LEVEL":                 "level.dimmer",
-                    "DIMMER.OLD_LEVEL":             "value.dimmer",
-                    "DIMMER.LEVEL_REAL":            "value.dimmer",
-                    "VIRTUAL_DIMMER.LEVEL":         "level.dimmer",
-                    "VIRTUAL_DIMMER.OLD_LEVEL":     "value.dimmer",
-                    "VIRTUAL_DIMMER.LEVEL_REAL":    "value.dimmer"
+                    "DIMMER.LEVEL": "level.dimmer",
+                    "DIMMER.OLD_LEVEL": "value.dimmer",
+                    "DIMMER.LEVEL_REAL": "value.dimmer",
+                    "VIRTUAL_DIMMER.LEVEL": "level.dimmer",
+                    "VIRTUAL_DIMMER.OLD_LEVEL": "value.dimmer",
+                    "VIRTUAL_DIMMER.LEVEL_REAL": "value.dimmer"
                 },
                 "dpNAME": {
-                    "AUTO_MODE":                    "state",
-                    "BATTERY_STATE":                "value.voltage",
-                    "BOOST_MODE":                   "action",
-                    "BOOST_STATE":                  "level.temperature",
-                    "COMFORT_MODE":                 "action",
-                    "CONTROL_MODE":                 "indicator",
-                    "FAULT_REPORTING":              "indicator",
-                    "LOWERING_MODE":                "action",
-                    "MANU_MODE":                    "level.temperature",
-                    "ACTUAL_TEMPERATURE":           "value.temperature",
-                    "TEMPERATURE":                  "value.temperature",
-                    "SETPOINT":                     "level.temperature",
-                    "SET_TEMPERATURE":              "level.temperature",
-                    "HUMIDITY":                     "value.humidity",
-                    "STATE":                        "state",
-                    "PRESS_SHORT":                  "button",
-                    "PRESS_LONG":                   "button.long",
-                    "PRESS_LONG_RELEASE":           "button.release",
-                    "PRESS_CONT":                   "button.continuous",
-                    "LEVEL":                        "level",
-                    "LOWBAT":                       "indicator.battery",
-                    "INSTALL_TEST":                 "indicator",
-                    "UNREACH":                      "indicator.unreach",
-                    "WORKING":                      "indicator.working",
-                    "DIRECTION":                    "indicator.direction",
-                    "CONFIG_PENDING":               "indicator",
-                    "INSTALL_MODE":                 "indicator",
-                    "RSSI_PEER":                    "value.rssi",
-                    "RSSI_DEVICE":                  "value",
-                    "AES_KEY":                      "value",
-                    "STICKY_UNREACH":               "indicator.unreach",
-                    "ERROR":                        "indicator.error",
-                    "ERROR_OVERHEAT":               "indicator.error.overheat",
-                    "ERROR_OVERLOAD":               "indicator.error.overload",
-                    "ERROR_REDUCED":                "indicator.error",
-                    "MOTION":                       "indicator.motion",
-                    "INHIBIT":                      "state.inhibit",
-                    "VALVE_STATE":                  "value.valve",
-                    "BRIGHTNESS":                   "value.brightness",
-                    "RAMP_TIME":                    "timer.ramp",
-                    "RAMP_STOP":                    "action.cancel",
-                    "STOP":                         "action.stop",
-                    "ON_TIME":                      "timer.off",
-                    "DUTYCYCLE":                    "value"
+                    "AUTO_MODE": "state",
+                    "BATTERY_STATE": "value.voltage",
+                    "BOOST_MODE": "action",
+                    "BOOST_STATE": "level.temperature",
+                    "COMFORT_MODE": "action",
+                    "CONTROL_MODE": "indicator",
+                    "FAULT_REPORTING": "indicator",
+                    "LOWERING_MODE": "action",
+                    "MANU_MODE": "level.temperature",
+                    "ACTUAL_TEMPERATURE": "value.temperature",
+                    "TEMPERATURE": "value.temperature",
+                    "SETPOINT": "level.temperature",
+                    "SET_TEMPERATURE": "level.temperature",
+                    "HUMIDITY": "value.humidity",
+                    "STATE": "state",
+                    "PRESS_SHORT": "button",
+                    "PRESS_LONG": "button.long",
+                    "PRESS_LONG_RELEASE": "button.release",
+                    "PRESS_CONT": "button.continuous",
+                    "LEVEL": "level",
+                    "LOWBAT": "indicator.battery",
+                    "INSTALL_TEST": "indicator",
+                    "UNREACH": "indicator.unreach",
+                    "WORKING": "indicator.working",
+                    "DIRECTION": "indicator.direction",
+                    "CONFIG_PENDING": "indicator",
+                    "INSTALL_MODE": "indicator",
+                    "RSSI_PEER": "value.rssi",
+                    "RSSI_DEVICE": "value",
+                    "AES_KEY": "value",
+                    "STICKY_UNREACH": "indicator.unreach",
+                    "ERROR": "indicator.error",
+                    "ERROR_OVERHEAT": "indicator.error.overheat",
+                    "ERROR_OVERLOAD": "indicator.error.overload",
+                    "ERROR_REDUCED": "indicator.error",
+                    "MOTION": "indicator.motion",
+                    "INHIBIT": "state.inhibit",
+                    "VALVE_STATE": "value.valve",
+                    "BRIGHTNESS": "value.brightness",
+                    "RAMP_TIME": "timer.ramp",
+                    "RAMP_STOP": "action.cancel",
+                    "STOP": "action.stop",
+                    "ON_TIME": "timer.off",
+                    "DUTYCYCLE": "value"
                 }
             }
         },
@@ -583,456 +597,465 @@
             "native": {}
         },
         {
-            "_id" : "hm-rpc.meta.VALUES.HM-CC-RT-DN.REMOTECONTROL_RECEIVER.27",
-            "type" : "meta",
-            "meta" : {
-                "adapter" : "hm-rpc",
-                "type" : "paramsetDescription"
+            "_id": "hm-rpc.meta.VALUES.HM-CC-RT-DN.REMOTECONTROL_RECEIVER.27",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
             },
-            "common" : {},
-            "native" : {}
-
+            "common": {},
+            "native": {}
         },
         {
-            "_id" : "hm-rpc.meta.VALUES.HM-CC-RT-DN.CLIMATECONTROL_RT_RECEIVER.27",
-            "type" : "meta",
-            "meta" : {
-                "adapter" : "hm-rpc",
-                "type" : "paramsetDescription"
+            "_id": "hm-rpc.meta.VALUES.HM-CC-RT-DN.CLIMATECONTROL_RT_RECEIVER.27",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
             },
-            "common" : {},
-            "native" : {}
-
+            "common": {},
+            "native": {}
         },
         {
-            "_id" : "hm-rpc.meta.VALUES.HM-CC-RT-DN.CLIMATECONTROL_RT_TRANSCEIVER.27",
-            "type" : "meta",
-            "meta" : {
-                "adapter" : "hm-rpc",
-                "type" : "paramsetDescription"
+            "_id": "hm-rpc.meta.VALUES.HM-CC-RT-DN.CLIMATECONTROL_RT_TRANSCEIVER.27",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
             },
-            "common" : {},
-            "native" : {
-                "ACTUAL_TEMPERATURE" : {
-                    "CONTROL" : "HEATING_CONTROL.TEMPERATURE",
-                    "DEFAULT" : 0,
-                    "FLAGS" : 1,
-                    "ID" : "ACTUAL_TEMPERATURE",
-                    "MAX" : 56,
-                    "MIN" : -10,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 5,
-                    "TYPE" : "FLOAT",
-                    "UNIT" : "�C"
+            "common": {},
+            "native": {
+                "ACTUAL_TEMPERATURE": {
+                    "CONTROL": "HEATING_CONTROL.TEMPERATURE",
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "ACTUAL_TEMPERATURE",
+                    "MAX": 56,
+                    "MIN": -10,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 5,
+                    "TYPE": "FLOAT",
+                    "UNIT": "�C"
                 },
-                "AUTO_MODE" : {
-                    "CONTROL" : "HEATING_CONTROL.AUTO",
-                    "DEFAULT" : false,
-                    "FLAGS" : 1,
-                    "ID" : "AUTO_MODE",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 2,
-                    "TAB_ORDER" : 7,
-                    "TYPE" : "ACTION",
-                    "UNIT" : ""
+                "AUTO_MODE": {
+                    "CONTROL": "HEATING_CONTROL.AUTO",
+                    "DEFAULT": false,
+                    "FLAGS": 1,
+                    "ID": "AUTO_MODE",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 2,
+                    "TAB_ORDER": 7,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
                 },
-                "BATTERY_STATE" : {
-                    "CONTROL" : "NONE",
-                    "DEFAULT" : 0,
-                    "FLAGS" : 1,
-                    "ID" : "BATTERY_STATE",
-                    "MAX" : 4.6,
-                    "MIN" : 1.5,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 2,
-                    "TYPE" : "FLOAT",
-                    "UNIT" : "V"
+                "BATTERY_STATE": {
+                    "CONTROL": "NONE",
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "BATTERY_STATE",
+                    "MAX": 4.6,
+                    "MIN": 1.5,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 2,
+                    "TYPE": "FLOAT",
+                    "UNIT": "V"
                 },
-                "BOOST_MODE" : {
-                    "CONTROL" : "HEATING_CONTROL.BOOST",
-                    "DEFAULT" : false,
-                    "FLAGS" : 1,
-                    "ID" : "BOOST_MODE",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 2,
-                    "TAB_ORDER" : 9,
-                    "TYPE" : "ACTION",
-                    "UNIT" : ""
+                "BOOST_MODE": {
+                    "CONTROL": "HEATING_CONTROL.BOOST",
+                    "DEFAULT": false,
+                    "FLAGS": 1,
+                    "ID": "BOOST_MODE",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 2,
+                    "TAB_ORDER": 9,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
                 },
-                "BOOST_STATE" : {
-                    "CONTROL" : "NONE",
-                    "DEFAULT" : 0,
-                    "FLAGS" : 1,
-                    "ID" : "BOOST_STATE",
-                    "MAX" : 30,
-                    "MIN" : 0,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 4,
-                    "TYPE" : "INTEGER",
-                    "UNIT" : "min"
+                "BOOST_STATE": {
+                    "CONTROL": "NONE",
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "BOOST_STATE",
+                    "MAX": 30,
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 4,
+                    "TYPE": "INTEGER",
+                    "UNIT": "min"
                 },
-                "COMFORT_MODE" : {
-                    "CONTROL" : "HEATING_CONTROL.COMFORT",
-                    "DEFAULT" : false,
-                    "FLAGS" : 1,
-                    "ID" : "COMFORT_MODE",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 2,
-                    "TAB_ORDER" : 10,
-                    "TYPE" : "ACTION",
-                    "UNIT" : ""
+                "COMFORT_MODE": {
+                    "CONTROL": "HEATING_CONTROL.COMFORT",
+                    "DEFAULT": false,
+                    "FLAGS": 1,
+                    "ID": "COMFORT_MODE",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 2,
+                    "TAB_ORDER": 10,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
                 },
-                "CONTROL_MODE" : {
-                    "CONTROL" : "HEATING_CONTROL.CONTROL_MODE",
-                    "DEFAULT" : 0,
-                    "FLAGS" : 1,
-                    "ID" : "CONTROL_MODE",
-                    "MAX" : 3,
-                    "MIN" : 0,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 0,
-                    "TYPE" : "ENUM",
-                    "UNIT" : "",
-                    "VALUE_LIST" : ["AUTO-MODE", "MANU-MODE", "PARTY-MODE", "BOOST-MODE"]
+                "CONTROL_MODE": {
+                    "CONTROL": "HEATING_CONTROL.CONTROL_MODE",
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "CONTROL_MODE",
+                    "MAX": 3,
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 0,
+                    "TYPE": "ENUM",
+                    "UNIT": "",
+                    "VALUE_LIST": [
+                        "AUTO-MODE",
+                        "MANU-MODE",
+                        "PARTY-MODE",
+                        "BOOST-MODE"
+                    ]
                 },
-                "FAULT_REPORTING" : {
-                    "CONTROL" : "NONE",
-                    "DEFAULT" : 0,
-                    "FLAGS" : 9,
-                    "ID" : "FAULT_REPORTING",
-                    "MAX" : 7,
-                    "MIN" : 0,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 1,
-                    "TYPE" : "ENUM",
-                    "UNIT" : "",
-                    "VALUE_LIST" : ["NO_FAULT", "VALVE_TIGHT", "ADJUSTING_RANGE_TOO_LARGE", "ADJUSTING_RANGE_TOO_SMALL", "COMMUNICATION_ERROR", "", "LOWBAT", "VALVE_ERROR_POSITION"]
+                "FAULT_REPORTING": {
+                    "CONTROL": "NONE",
+                    "DEFAULT": 0,
+                    "FLAGS": 9,
+                    "ID": "FAULT_REPORTING",
+                    "MAX": 7,
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 1,
+                    "TYPE": "ENUM",
+                    "UNIT": "",
+                    "VALUE_LIST": [
+                        "NO_FAULT",
+                        "VALVE_TIGHT",
+                        "ADJUSTING_RANGE_TOO_LARGE",
+                        "ADJUSTING_RANGE_TOO_SMALL",
+                        "COMMUNICATION_ERROR",
+                        "",
+                        "LOWBAT",
+                        "VALVE_ERROR_POSITION"
+                    ]
                 },
-                "LOWERING_MODE" : {
-                    "CONTROL" : "HEATING_CONTROL.LOWERING",
-                    "DEFAULT" : false,
-                    "FLAGS" : 1,
-                    "ID" : "LOWERING_MODE",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 2,
-                    "TAB_ORDER" : 11,
-                    "TYPE" : "ACTION",
-                    "UNIT" : ""
+                "LOWERING_MODE": {
+                    "CONTROL": "HEATING_CONTROL.LOWERING",
+                    "DEFAULT": false,
+                    "FLAGS": 1,
+                    "ID": "LOWERING_MODE",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 2,
+                    "TAB_ORDER": 11,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
                 },
-                "MANU_MODE" : {
-                    "CONTROL" : "HEATING_CONTROL.MANU",
-                    "DEFAULT" : 20,
-                    "FLAGS" : 1,
-                    "ID" : "MANU_MODE",
-                    "MAX" : 30.5,
-                    "MIN" : 4.5,
-                    "OPERATIONS" : 2,
-                    "TAB_ORDER" : 8,
-                    "TYPE" : "FLOAT",
-                    "UNIT" : "�C"
+                "MANU_MODE": {
+                    "CONTROL": "HEATING_CONTROL.MANU",
+                    "DEFAULT": 20,
+                    "FLAGS": 1,
+                    "ID": "MANU_MODE",
+                    "MAX": 30.5,
+                    "MIN": 4.5,
+                    "OPERATIONS": 2,
+                    "TAB_ORDER": 8,
+                    "TYPE": "FLOAT",
+                    "UNIT": "�C"
                 },
-                "PARTY_MODE_SUBMIT" : {
-                    "CONTROL" : "NONE",
-                    "DEFAULT" : "",
-                    "FLAGS" : 1,
-                    "ID" : "PARTY_MODE_SUBMIT",
-                    "MAX" : "",
-                    "MIN" : "",
-                    "OPERATIONS" : 2,
-                    "TAB_ORDER" : 12,
-                    "TYPE" : "STRING",
-                    "UNIT" : ""
+                "PARTY_MODE_SUBMIT": {
+                    "CONTROL": "NONE",
+                    "DEFAULT": "",
+                    "FLAGS": 1,
+                    "ID": "PARTY_MODE_SUBMIT",
+                    "MAX": "",
+                    "MIN": "",
+                    "OPERATIONS": 2,
+                    "TAB_ORDER": 12,
+                    "TYPE": "STRING",
+                    "UNIT": ""
                 },
-                "PARTY_START_DAY" : {
-                    "CONTROL" : "HEATING_CONTROL.PARTY_START_DAY",
-                    "DEFAULT" : 1,
-                    "FLAGS" : 1,
-                    "ID" : "PARTY_START_DAY",
-                    "MAX" : 31,
-                    "MIN" : 1,
-                    "OPERATIONS" : 3,
-                    "TAB_ORDER" : 15,
-                    "TYPE" : "INTEGER",
-                    "UNIT" : "day"
+                "PARTY_START_DAY": {
+                    "CONTROL": "HEATING_CONTROL.PARTY_START_DAY",
+                    "DEFAULT": 1,
+                    "FLAGS": 1,
+                    "ID": "PARTY_START_DAY",
+                    "MAX": 31,
+                    "MIN": 1,
+                    "OPERATIONS": 3,
+                    "TAB_ORDER": 15,
+                    "TYPE": "INTEGER",
+                    "UNIT": "day"
                 },
-                "PARTY_START_MONTH" : {
-                    "CONTROL" : "HEATING_CONTROL.PARTY_START_MONTH",
-                    "DEFAULT" : 1,
-                    "FLAGS" : 1,
-                    "ID" : "PARTY_START_MONTH",
-                    "MAX" : 12,
-                    "MIN" : 1,
-                    "OPERATIONS" : 3,
-                    "TAB_ORDER" : 16,
-                    "TYPE" : "INTEGER",
-                    "UNIT" : "month"
+                "PARTY_START_MONTH": {
+                    "CONTROL": "HEATING_CONTROL.PARTY_START_MONTH",
+                    "DEFAULT": 1,
+                    "FLAGS": 1,
+                    "ID": "PARTY_START_MONTH",
+                    "MAX": 12,
+                    "MIN": 1,
+                    "OPERATIONS": 3,
+                    "TAB_ORDER": 16,
+                    "TYPE": "INTEGER",
+                    "UNIT": "month"
                 },
-                "PARTY_START_TIME" : {
-                    "CONTROL" : "HEATING_CONTROL.PARTY_START_TIME",
-                    "DEFAULT" : 0,
-                    "FLAGS" : 1,
-                    "ID" : "PARTY_START_TIME",
-                    "MAX" : 1410,
-                    "MIN" : 0,
-                    "OPERATIONS" : 3,
-                    "TAB_ORDER" : 14,
-                    "TYPE" : "INTEGER",
-                    "UNIT" : "minutes"
+                "PARTY_START_TIME": {
+                    "CONTROL": "HEATING_CONTROL.PARTY_START_TIME",
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "PARTY_START_TIME",
+                    "MAX": 1410,
+                    "MIN": 0,
+                    "OPERATIONS": 3,
+                    "TAB_ORDER": 14,
+                    "TYPE": "INTEGER",
+                    "UNIT": "minutes"
                 },
-                "PARTY_START_YEAR" : {
-                    "CONTROL" : "HEATING_CONTROL.PARTY_START_YEAR",
-                    "DEFAULT" : 12,
-                    "FLAGS" : 1,
-                    "ID" : "PARTY_START_YEAR",
-                    "MAX" : 99,
-                    "MIN" : 0,
-                    "OPERATIONS" : 3,
-                    "TAB_ORDER" : 17,
-                    "TYPE" : "INTEGER",
-                    "UNIT" : "year"
+                "PARTY_START_YEAR": {
+                    "CONTROL": "HEATING_CONTROL.PARTY_START_YEAR",
+                    "DEFAULT": 12,
+                    "FLAGS": 1,
+                    "ID": "PARTY_START_YEAR",
+                    "MAX": 99,
+                    "MIN": 0,
+                    "OPERATIONS": 3,
+                    "TAB_ORDER": 17,
+                    "TYPE": "INTEGER",
+                    "UNIT": "year"
                 },
-                "PARTY_STOP_DAY" : {
-                    "CONTROL" : "HEATING_CONTROL.PARTY_STOP_DAY",
-                    "DEFAULT" : 1,
-                    "FLAGS" : 1,
-                    "ID" : "PARTY_STOP_DAY",
-                    "MAX" : 31,
-                    "MIN" : 1,
-                    "OPERATIONS" : 3,
-                    "TAB_ORDER" : 19,
-                    "TYPE" : "INTEGER",
-                    "UNIT" : "day"
+                "PARTY_STOP_DAY": {
+                    "CONTROL": "HEATING_CONTROL.PARTY_STOP_DAY",
+                    "DEFAULT": 1,
+                    "FLAGS": 1,
+                    "ID": "PARTY_STOP_DAY",
+                    "MAX": 31,
+                    "MIN": 1,
+                    "OPERATIONS": 3,
+                    "TAB_ORDER": 19,
+                    "TYPE": "INTEGER",
+                    "UNIT": "day"
                 },
-                "PARTY_STOP_MONTH" : {
-                    "CONTROL" : "HEATING_CONTROL.PARTY_STOP_MONTH",
-                    "DEFAULT" : 1,
-                    "FLAGS" : 1,
-                    "ID" : "PARTY_STOP_MONTH",
-                    "MAX" : 12,
-                    "MIN" : 1,
-                    "OPERATIONS" : 3,
-                    "TAB_ORDER" : 20,
-                    "TYPE" : "INTEGER",
-                    "UNIT" : "month"
+                "PARTY_STOP_MONTH": {
+                    "CONTROL": "HEATING_CONTROL.PARTY_STOP_MONTH",
+                    "DEFAULT": 1,
+                    "FLAGS": 1,
+                    "ID": "PARTY_STOP_MONTH",
+                    "MAX": 12,
+                    "MIN": 1,
+                    "OPERATIONS": 3,
+                    "TAB_ORDER": 20,
+                    "TYPE": "INTEGER",
+                    "UNIT": "month"
                 },
-                "PARTY_STOP_TIME" : {
-                    "CONTROL" : "HEATING_CONTROL.PARTY_STOP_TIME",
-                    "DEFAULT" : 0,
-                    "FLAGS" : 1,
-                    "ID" : "PARTY_STOP_TIME",
-                    "MAX" : 1410,
-                    "MIN" : 0,
-                    "OPERATIONS" : 3,
-                    "TAB_ORDER" : 18,
-                    "TYPE" : "INTEGER",
-                    "UNIT" : "minutes"
+                "PARTY_STOP_TIME": {
+                    "CONTROL": "HEATING_CONTROL.PARTY_STOP_TIME",
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "PARTY_STOP_TIME",
+                    "MAX": 1410,
+                    "MIN": 0,
+                    "OPERATIONS": 3,
+                    "TAB_ORDER": 18,
+                    "TYPE": "INTEGER",
+                    "UNIT": "minutes"
                 },
-                "PARTY_STOP_YEAR" : {
-                    "CONTROL" : "HEATING_CONTROL.PARTY_STOP_YEAR",
-                    "DEFAULT" : 12,
-                    "FLAGS" : 1,
-                    "ID" : "PARTY_STOP_YEAR",
-                    "MAX" : 99,
-                    "MIN" : 0,
-                    "OPERATIONS" : 3,
-                    "TAB_ORDER" : 21,
-                    "TYPE" : "INTEGER",
-                    "UNIT" : "year"
+                "PARTY_STOP_YEAR": {
+                    "CONTROL": "HEATING_CONTROL.PARTY_STOP_YEAR",
+                    "DEFAULT": 12,
+                    "FLAGS": 1,
+                    "ID": "PARTY_STOP_YEAR",
+                    "MAX": 99,
+                    "MIN": 0,
+                    "OPERATIONS": 3,
+                    "TAB_ORDER": 21,
+                    "TYPE": "INTEGER",
+                    "UNIT": "year"
                 },
-                "PARTY_TEMPERATURE" : {
-                    "CONTROL" : "HEATING_CONTROL.PARTY_TEMP",
-                    "DEFAULT" : 20,
-                    "FLAGS" : 1,
-                    "ID" : "PARTY_TEMPERATURE",
-                    "MAX" : 30,
-                    "MIN" : 5,
-                    "OPERATIONS" : 3,
-                    "TAB_ORDER" : 13,
-                    "TYPE" : "FLOAT",
-                    "UNIT" : "�C"
+                "PARTY_TEMPERATURE": {
+                    "CONTROL": "HEATING_CONTROL.PARTY_TEMP",
+                    "DEFAULT": 20,
+                    "FLAGS": 1,
+                    "ID": "PARTY_TEMPERATURE",
+                    "MAX": 30,
+                    "MIN": 5,
+                    "OPERATIONS": 3,
+                    "TAB_ORDER": 13,
+                    "TYPE": "FLOAT",
+                    "UNIT": "�C"
                 },
-                "SET_TEMPERATURE" : {
-                    "CONTROL" : "HEATING_CONTROL.SETPOINT",
-                    "DEFAULT" : 20,
-                    "FLAGS" : 1,
-                    "ID" : "SET_TEMPERATURE",
-                    "MAX" : 30.5,
-                    "MIN" : 4.5,
-                    "OPERATIONS" : 7,
-                    "TAB_ORDER" : 6,
-                    "TYPE" : "FLOAT",
-                    "UNIT" : "�C"
+                "SET_TEMPERATURE": {
+                    "CONTROL": "HEATING_CONTROL.SETPOINT",
+                    "DEFAULT": 20,
+                    "FLAGS": 1,
+                    "ID": "SET_TEMPERATURE",
+                    "MAX": 30.5,
+                    "MIN": 4.5,
+                    "OPERATIONS": 7,
+                    "TAB_ORDER": 6,
+                    "TYPE": "FLOAT",
+                    "UNIT": "�C"
                 },
-                "VALVE_STATE" : {
-                    "CONTROL" : "NONE",
-                    "DEFAULT" : 0,
-                    "FLAGS" : 1,
-                    "ID" : "VALVE_STATE",
-                    "MAX" : 99,
-                    "MIN" : 0,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 3,
-                    "TYPE" : "INTEGER",
-                    "UNIT" : "%"
+                "VALVE_STATE": {
+                    "CONTROL": "NONE",
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "VALVE_STATE",
+                    "MAX": 99,
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 3,
+                    "TYPE": "INTEGER",
+                    "UNIT": "%"
                 }
             }
         },
         {
-            "_id" : "hm-rpc.meta.VALUES.HM-CC-RT-DN.WINDOW_SWITCH_RECEIVER.27",
-            "type" : "meta",
-            "meta" : {
-                "adapter" : "hm-rpc",
-                "type" : "paramsetDescription"
+            "_id": "hm-rpc.meta.VALUES.HM-CC-RT-DN.WINDOW_SWITCH_RECEIVER.27",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
             },
-            "common" : {},
-            "native" : {}
-
+            "common": {},
+            "native": {}
         },
         {
-            "_id" : "hm-rpc.meta.VALUES.HM-CC-RT-DN.CLIMATECONTROL_RECEIVER.27",
-            "type" : "meta",
-            "meta" : {
-                "adapter" : "hm-rpc",
-                "type" : "paramsetDescription"
+            "_id": "hm-rpc.meta.VALUES.HM-CC-RT-DN.CLIMATECONTROL_RECEIVER.27",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
             },
-            "common" : {},
-            "native" : {}
-
+            "common": {},
+            "native": {}
         },
         {
-            "_id" : "hm-rpc.meta.VALUES.HM-CC-RT-DN.WEATHER_RECEIVER.27",
-            "type" : "meta",
-            "meta" : {
-                "adapter" : "hm-rpc",
-                "type" : "paramsetDescription"
+            "_id": "hm-rpc.meta.VALUES.HM-CC-RT-DN.WEATHER_RECEIVER.27",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
             },
-            "common" : {},
-            "native" : {}
-
+            "common": {},
+            "native": {}
         },
         {
-            "_id" : "hm-rpc.meta.VALUES.HM-CC-RT-DN.MAINTENANCE.27",
-            "type" : "meta",
-            "meta" : {
-                "adapter" : "hm-rpc",
-                "type" : "paramsetDescription"
+            "_id": "hm-rpc.meta.VALUES.HM-CC-RT-DN.MAINTENANCE.27",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
             },
-            "common" : {},
-            "native" : {
-                "AES_KEY" : {
-                    "DEFAULT" : 0,
-                    "FLAGS" : 0,
-                    "ID" : "AES_KEY",
-                    "MAX" : 127,
-                    "MIN" : 0,
-                    "OPERATIONS" : 1,
-                    "TAB_ORDER" : 9,
-                    "TYPE" : "INTEGER",
-                    "UNIT" : ""
+            "common": {},
+            "native": {
+                "AES_KEY": {
+                    "DEFAULT": 0,
+                    "FLAGS": 0,
+                    "ID": "AES_KEY",
+                    "MAX": 127,
+                    "MIN": 0,
+                    "OPERATIONS": 1,
+                    "TAB_ORDER": 9,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
                 },
-                "CONFIG_PENDING" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "CONFIG_PENDING",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 2,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "CONFIG_PENDING": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "CONFIG_PENDING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 2,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "DEVICE_IN_BOOTLOADER" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "DEVICE_IN_BOOTLOADER",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 7,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "DEVICE_IN_BOOTLOADER": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "DEVICE_IN_BOOTLOADER",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 7,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "INHIBIT" : {
-                    "CONTROL" : "NONE",
-                    "DEFAULT" : false,
-                    "FLAGS" : 1,
-                    "ID" : "INHIBIT",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 7,
-                    "TAB_ORDER" : 6,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "INHIBIT": {
+                    "CONTROL": "NONE",
+                    "DEFAULT": false,
+                    "FLAGS": 1,
+                    "ID": "INHIBIT",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 7,
+                    "TAB_ORDER": 6,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "LOWBAT" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "LOWBAT",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 3,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "LOWBAT": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "LOWBAT",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 3,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "RSSI_DEVICE" : {
-                    "DEFAULT" : 0,
-                    "FLAGS" : 1,
-                    "ID" : "RSSI_DEVICE",
-                    "MAX" : 2147483647,
-                    "MIN" : -2147483648,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 4,
-                    "TYPE" : "INTEGER",
-                    "UNIT" : ""
+                "RSSI_DEVICE": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "RSSI_DEVICE",
+                    "MAX": 2147483647,
+                    "MIN": -2147483648,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 4,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
                 },
-                "RSSI_PEER" : {
-                    "DEFAULT" : 0,
-                    "FLAGS" : 1,
-                    "ID" : "RSSI_PEER",
-                    "MAX" : 2147483647,
-                    "MIN" : -2147483648,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 5,
-                    "TYPE" : "INTEGER",
-                    "UNIT" : ""
+                "RSSI_PEER": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "RSSI_PEER",
+                    "MAX": 2147483647,
+                    "MIN": -2147483648,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 5,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
                 },
-                "STICKY_UNREACH" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 25,
-                    "ID" : "STICKY_UNREACH",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 7,
-                    "TAB_ORDER" : 1,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "STICKY_UNREACH": {
+                    "DEFAULT": false,
+                    "FLAGS": 25,
+                    "ID": "STICKY_UNREACH",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 7,
+                    "TAB_ORDER": 1,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "UNREACH" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "UNREACH",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 0,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "UNREACH": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "UNREACH",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 0,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "UPDATE_PENDING" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "UPDATE_PENDING",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 8,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "UPDATE_PENDING": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "UPDATE_PENDING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 8,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 }
             }
         },
@@ -1537,158 +1560,158 @@
             }
         },
         {
-            "_id" : "hm-rpc.meta.VALUES.HM-ES-PMSw1-Pl.CONDITION_FREQUENCY.1",
-            "type" : "meta",
-            "meta" : {
-                "adapter" : "hm-rpc",
-                "type" : "paramsetDescription"
+            "_id": "hm-rpc.meta.VALUES.HM-ES-PMSw1-Pl.CONDITION_FREQUENCY.1",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
             },
-            "common" : {},
-            "native" : {
-                "DECISION_VALUE" : {
-                    "CONTROL" : "NONE",
-                    "DEFAULT" : 0,
-                    "FLAGS" : 1,
-                    "ID" : "DECISION_VALUE",
-                    "MAX" : 255,
-                    "MIN" : 0,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 0,
-                    "TYPE" : "INTEGER",
-                    "UNIT" : ""
+            "common": {},
+            "native": {
+                "DECISION_VALUE": {
+                    "CONTROL": "NONE",
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "DECISION_VALUE",
+                    "MAX": 255,
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 0,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
                 }
             }
         },
         {
-            "_id" : "hm-rpc.meta.VALUES.HM-ES-PMSw1-Pl.CONDITION_VOLTAGE.1",
-            "type" : "meta",
-            "meta" : {
-                "adapter" : "hm-rpc",
-                "type" : "paramsetDescription"
+            "_id": "hm-rpc.meta.VALUES.HM-ES-PMSw1-Pl.CONDITION_VOLTAGE.1",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
             },
-            "common" : {},
-            "native" : {
-                "DECISION_VALUE" : {
-                    "CONTROL" : "NONE",
-                    "DEFAULT" : 0,
-                    "FLAGS" : 1,
-                    "ID" : "DECISION_VALUE",
-                    "MAX" : 255,
-                    "MIN" : 0,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 0,
-                    "TYPE" : "INTEGER",
-                    "UNIT" : ""
+            "common": {},
+            "native": {
+                "DECISION_VALUE": {
+                    "CONTROL": "NONE",
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "DECISION_VALUE",
+                    "MAX": 255,
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 0,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
                 }
             }
         },
         {
             "_id": "hm-rpc.meta.VALUES.HM-ES-PMSw1-Pl.MAINTENANCE.1",
-            "type" : "meta",
-            "meta" : {
-                "adapter" : "hm-rpc",
-                "type" : "paramsetDescription"
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
             },
-            "common" : {},
-            "native" : {
-                "AES_KEY" : {
-                    "DEFAULT" : 0,
-                    "FLAGS" : 0,
-                    "ID" : "AES_KEY",
-                    "MAX" : 127,
-                    "MIN" : 0,
-                    "OPERATIONS" : 1,
-                    "TAB_ORDER" : 8,
-                    "TYPE" : "INTEGER",
-                    "UNIT" : ""
+            "common": {},
+            "native": {
+                "AES_KEY": {
+                    "DEFAULT": 0,
+                    "FLAGS": 0,
+                    "ID": "AES_KEY",
+                    "MAX": 127,
+                    "MIN": 0,
+                    "OPERATIONS": 1,
+                    "TAB_ORDER": 8,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
                 },
-                "CONFIG_PENDING" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "CONFIG_PENDING",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 2,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "CONFIG_PENDING": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "CONFIG_PENDING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 2,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "DEVICE_IN_BOOTLOADER" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "DEVICE_IN_BOOTLOADER",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 6,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "DEVICE_IN_BOOTLOADER": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "DEVICE_IN_BOOTLOADER",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 6,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "DUTYCYCLE" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "DUTYCYCLE",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 3,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "DUTYCYCLE": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "DUTYCYCLE",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 3,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "RSSI_DEVICE" : {
-                    "DEFAULT" : 0,
-                    "FLAGS" : 1,
-                    "ID" : "RSSI_DEVICE",
-                    "MAX" : 2147483647,
-                    "MIN" : -2147483648,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 4,
-                    "TYPE" : "INTEGER",
-                    "UNIT" : ""
+                "RSSI_DEVICE": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "RSSI_DEVICE",
+                    "MAX": 2147483647,
+                    "MIN": -2147483648,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 4,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
                 },
-                "RSSI_PEER" : {
-                    "DEFAULT" : 0,
-                    "FLAGS" : 1,
-                    "ID" : "RSSI_PEER",
-                    "MAX" : 2147483647,
-                    "MIN" : -2147483648,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 5,
-                    "TYPE" : "INTEGER",
-                    "UNIT" : ""
+                "RSSI_PEER": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "RSSI_PEER",
+                    "MAX": 2147483647,
+                    "MIN": -2147483648,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 5,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
                 },
-                "STICKY_UNREACH" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 25,
-                    "ID" : "STICKY_UNREACH",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 7,
-                    "TAB_ORDER" : 1,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "STICKY_UNREACH": {
+                    "DEFAULT": false,
+                    "FLAGS": 25,
+                    "ID": "STICKY_UNREACH",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 7,
+                    "TAB_ORDER": 1,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "UNREACH" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "UNREACH",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 0,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "UNREACH": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "UNREACH",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 0,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "UPDATE_PENDING" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "UPDATE_PENDING",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 7,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "UPDATE_PENDING": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "UPDATE_PENDING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 7,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 }
             }
         },
@@ -2806,170 +2829,170 @@
             }
         },
         {
-            "_id" : "hm-rpc.meta.VALUES.HM-LC-Sw1-FM.SWITCH.25",
-            "type" : "meta",
-            "meta" : {
-                "adapter" : "hm-rpc",
-                "type" : "paramsetDescription"
+            "_id": "hm-rpc.meta.VALUES.HM-LC-Sw1-FM.SWITCH.25",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
             },
-            "common" : {},
-            "native" : {
-                "INHIBIT" : {
-                    "CONTROL" : "NONE",
-                    "DEFAULT" : false,
-                    "FLAGS" : 1,
-                    "ID" : "INHIBIT",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 7,
-                    "TAB_ORDER" : 2,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+            "common": {},
+            "native": {
+                "INHIBIT": {
+                    "CONTROL": "NONE",
+                    "DEFAULT": false,
+                    "FLAGS": 1,
+                    "ID": "INHIBIT",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 7,
+                    "TAB_ORDER": 2,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "INSTALL_TEST" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 3,
-                    "ID" : "INSTALL_TEST",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 2,
-                    "TAB_ORDER" : 3,
-                    "TYPE" : "ACTION",
-                    "UNIT" : ""
+                "INSTALL_TEST": {
+                    "DEFAULT": false,
+                    "FLAGS": 3,
+                    "ID": "INSTALL_TEST",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 2,
+                    "TAB_ORDER": 3,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
                 },
-                "ON_TIME" : {
-                    "CONTROL" : "NONE",
-                    "DEFAULT" : 0,
-                    "FLAGS" : 1,
-                    "ID" : "ON_TIME",
-                    "MAX" : 85825945.5,
-                    "MIN" : 0,
-                    "OPERATIONS" : 2,
-                    "TAB_ORDER" : 1,
-                    "TYPE" : "FLOAT",
-                    "UNIT" : "s"
+                "ON_TIME": {
+                    "CONTROL": "NONE",
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "ON_TIME",
+                    "MAX": 85825945.5,
+                    "MIN": 0,
+                    "OPERATIONS": 2,
+                    "TAB_ORDER": 1,
+                    "TYPE": "FLOAT",
+                    "UNIT": "s"
                 },
-                "STATE" : {
-                    "CONTROL" : "SWITCH.STATE",
-                    "DEFAULT" : false,
-                    "FLAGS" : 1,
-                    "ID" : "STATE",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 7,
-                    "TAB_ORDER" : 0,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "STATE": {
+                    "CONTROL": "SWITCH.STATE",
+                    "DEFAULT": false,
+                    "FLAGS": 1,
+                    "ID": "STATE",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 7,
+                    "TAB_ORDER": 0,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "WORKING" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 3,
-                    "ID" : "WORKING",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 4,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "WORKING": {
+                    "DEFAULT": false,
+                    "FLAGS": 3,
+                    "ID": "WORKING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 4,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 }
             }
         },
         {
-            "_id" : "hm-rpc.meta.VALUES.HM-LC-Sw1-FM.MAINTENANCE.25",
-            "type" : "meta",
-            "meta" : {
-                "adapter" : "hm-rpc",
-                "type" : "paramsetDescription"
+            "_id": "hm-rpc.meta.VALUES.HM-LC-Sw1-FM.MAINTENANCE.25",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
             },
-            "common" : {},
-            "native" : {
-                "AES_KEY" : {
-                    "DEFAULT" : 0,
-                    "FLAGS" : 0,
-                    "ID" : "AES_KEY",
-                    "MAX" : 127,
-                    "MIN" : 0,
-                    "OPERATIONS" : 1,
-                    "TAB_ORDER" : 7,
-                    "TYPE" : "INTEGER",
-                    "UNIT" : ""
+            "common": {},
+            "native": {
+                "AES_KEY": {
+                    "DEFAULT": 0,
+                    "FLAGS": 0,
+                    "ID": "AES_KEY",
+                    "MAX": 127,
+                    "MIN": 0,
+                    "OPERATIONS": 1,
+                    "TAB_ORDER": 7,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
                 },
-                "CONFIG_PENDING" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "CONFIG_PENDING",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 2,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "CONFIG_PENDING": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "CONFIG_PENDING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 2,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "DUTYCYCLE" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "DUTYCYCLE",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 4,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "DUTYCYCLE": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "DUTYCYCLE",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 4,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "LOWBAT" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "LOWBAT",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 3,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "LOWBAT": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "LOWBAT",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 3,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "RSSI_DEVICE" : {
-                    "DEFAULT" : 0,
-                    "FLAGS" : 1,
-                    "ID" : "RSSI_DEVICE",
-                    "MAX" : 2147483647,
-                    "MIN" : -2147483648,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 5,
-                    "TYPE" : "INTEGER",
-                    "UNIT" : ""
+                "RSSI_DEVICE": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "RSSI_DEVICE",
+                    "MAX": 2147483647,
+                    "MIN": -2147483648,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 5,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
                 },
-                "RSSI_PEER" : {
-                    "DEFAULT" : 0,
-                    "FLAGS" : 1,
-                    "ID" : "RSSI_PEER",
-                    "MAX" : 2147483647,
-                    "MIN" : -2147483648,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 6,
-                    "TYPE" : "INTEGER",
-                    "UNIT" : ""
+                "RSSI_PEER": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "RSSI_PEER",
+                    "MAX": 2147483647,
+                    "MIN": -2147483648,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 6,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
                 },
-                "STICKY_UNREACH" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 25,
-                    "ID" : "STICKY_UNREACH",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 7,
-                    "TAB_ORDER" : 1,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "STICKY_UNREACH": {
+                    "DEFAULT": false,
+                    "FLAGS": 25,
+                    "ID": "STICKY_UNREACH",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 7,
+                    "TAB_ORDER": 1,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "UNREACH" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "UNREACH",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 0,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "UNREACH": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "UNREACH",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 0,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 }
             }
         },
@@ -3643,158 +3666,158 @@
             }
         },
         {
-            "_id" : "hm-rpc.meta.VALUES.HM-PB-2-WM55-2.MAINTENANCE.8",
-            "type" : "meta",
-            "meta" : {
-                "adapter" : "hm-rpc",
-                "type" : "paramsetDescription"
+            "_id": "hm-rpc.meta.VALUES.HM-PB-2-WM55-2.MAINTENANCE.8",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
             },
-            "common" : {},
-            "native" : {
-                "AES_KEY" : {
-                    "DEFAULT" : 0,
-                    "FLAGS" : 0,
-                    "ID" : "AES_KEY",
-                    "MAX" : 127,
-                    "MIN" : 0,
-                    "OPERATIONS" : 1,
-                    "TAB_ORDER" : 6,
-                    "TYPE" : "INTEGER",
-                    "UNIT" : ""
+            "common": {},
+            "native": {
+                "AES_KEY": {
+                    "DEFAULT": 0,
+                    "FLAGS": 0,
+                    "ID": "AES_KEY",
+                    "MAX": 127,
+                    "MIN": 0,
+                    "OPERATIONS": 1,
+                    "TAB_ORDER": 6,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
                 },
-                "CONFIG_PENDING" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "CONFIG_PENDING",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 2,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "CONFIG_PENDING": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "CONFIG_PENDING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 2,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "LOWBAT" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "LOWBAT",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 3,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "LOWBAT": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "LOWBAT",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 3,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "RSSI_DEVICE" : {
-                    "DEFAULT" : 0,
-                    "FLAGS" : 1,
-                    "ID" : "RSSI_DEVICE",
-                    "MAX" : 2147483647,
-                    "MIN" : -2147483648,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 4,
-                    "TYPE" : "INTEGER",
-                    "UNIT" : ""
+                "RSSI_DEVICE": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "RSSI_DEVICE",
+                    "MAX": 2147483647,
+                    "MIN": -2147483648,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 4,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
                 },
-                "RSSI_PEER" : {
-                    "DEFAULT" : 0,
-                    "FLAGS" : 1,
-                    "ID" : "RSSI_PEER",
-                    "MAX" : 2147483647,
-                    "MIN" : -2147483648,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 5,
-                    "TYPE" : "INTEGER",
-                    "UNIT" : ""
+                "RSSI_PEER": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "RSSI_PEER",
+                    "MAX": 2147483647,
+                    "MIN": -2147483648,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 5,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
                 },
-                "STICKY_UNREACH" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 25,
-                    "ID" : "STICKY_UNREACH",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 7,
-                    "TAB_ORDER" : 1,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "STICKY_UNREACH": {
+                    "DEFAULT": false,
+                    "FLAGS": 25,
+                    "ID": "STICKY_UNREACH",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 7,
+                    "TAB_ORDER": 1,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "UNREACH" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "UNREACH",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 0,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "UNREACH": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "UNREACH",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 0,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 }
             }
         },
         {
-            "_id" : "hm-rpc.meta.VALUES.HM-PB-2-WM55-2.KEY.8",
-            "type" : "meta",
-            "meta" : {
-                "adapter" : "hm-rpc",
-                "type" : "paramsetDescription"
+            "_id": "hm-rpc.meta.VALUES.HM-PB-2-WM55-2.KEY.8",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
             },
-            "common" : {},
-            "native" : {
-                "INSTALL_TEST" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 3,
-                    "ID" : "INSTALL_TEST",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 4,
-                    "TAB_ORDER" : 2,
-                    "TYPE" : "ACTION",
-                    "UNIT" : ""
+            "common": {},
+            "native": {
+                "INSTALL_TEST": {
+                    "DEFAULT": false,
+                    "FLAGS": 3,
+                    "ID": "INSTALL_TEST",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 4,
+                    "TAB_ORDER": 2,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
                 },
-                "PRESS_CONT" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 3,
-                    "ID" : "PRESS_CONT",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 4,
-                    "TAB_ORDER" : 3,
-                    "TYPE" : "ACTION",
-                    "UNIT" : ""
+                "PRESS_CONT": {
+                    "DEFAULT": false,
+                    "FLAGS": 3,
+                    "ID": "PRESS_CONT",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 4,
+                    "TAB_ORDER": 3,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
                 },
-                "PRESS_LONG" : {
-                    "CONTROL" : "BUTTON.LONG",
-                    "DEFAULT" : false,
-                    "FLAGS" : 1,
-                    "ID" : "PRESS_LONG",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 6,
-                    "TAB_ORDER" : 1,
-                    "TYPE" : "ACTION",
-                    "UNIT" : ""
+                "PRESS_LONG": {
+                    "CONTROL": "BUTTON.LONG",
+                    "DEFAULT": false,
+                    "FLAGS": 1,
+                    "ID": "PRESS_LONG",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 6,
+                    "TAB_ORDER": 1,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
                 },
-                "PRESS_LONG_RELEASE" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 3,
-                    "ID" : "PRESS_LONG_RELEASE",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 4,
-                    "TAB_ORDER" : 4,
-                    "TYPE" : "ACTION",
-                    "UNIT" : ""
+                "PRESS_LONG_RELEASE": {
+                    "DEFAULT": false,
+                    "FLAGS": 3,
+                    "ID": "PRESS_LONG_RELEASE",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 4,
+                    "TAB_ORDER": 4,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
                 },
-                "PRESS_SHORT" : {
-                    "CONTROL" : "BUTTON.SHORT",
-                    "DEFAULT" : false,
-                    "FLAGS" : 1,
-                    "ID" : "PRESS_SHORT",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 6,
-                    "TAB_ORDER" : 0,
-                    "TYPE" : "ACTION",
-                    "UNIT" : ""
+                "PRESS_SHORT": {
+                    "CONTROL": "BUTTON.SHORT",
+                    "DEFAULT": false,
+                    "FLAGS": 1,
+                    "ID": "PRESS_SHORT",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 6,
+                    "TAB_ORDER": 0,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
                 }
             }
         },
@@ -3955,180 +3978,180 @@
             }
         },
         {
-            "_id" : "hm-rpc.meta.VALUES.HM-RC-8.KEY.7",
-            "type" : "meta",
-            "meta" : {
-                "adapter" : "hm-rpc",
-                "type" : "paramsetDescription"
+            "_id": "hm-rpc.meta.VALUES.HM-RC-8.KEY.7",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
             },
-            "common" : {},
-            "native" : {
-                "INSTALL_TEST" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 3,
-                    "ID" : "INSTALL_TEST",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 4,
-                    "TAB_ORDER" : 2,
-                    "TYPE" : "ACTION",
-                    "UNIT" : ""
+            "common": {},
+            "native": {
+                "INSTALL_TEST": {
+                    "DEFAULT": false,
+                    "FLAGS": 3,
+                    "ID": "INSTALL_TEST",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 4,
+                    "TAB_ORDER": 2,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
                 },
-                "PRESS_CONT" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 3,
-                    "ID" : "PRESS_CONT",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 4,
-                    "TAB_ORDER" : 3,
-                    "TYPE" : "ACTION",
-                    "UNIT" : ""
+                "PRESS_CONT": {
+                    "DEFAULT": false,
+                    "FLAGS": 3,
+                    "ID": "PRESS_CONT",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 4,
+                    "TAB_ORDER": 3,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
                 },
-                "PRESS_LONG" : {
-                    "CONTROL" : "BUTTON.LONG",
-                    "DEFAULT" : false,
-                    "FLAGS" : 1,
-                    "ID" : "PRESS_LONG",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 6,
-                    "TAB_ORDER" : 1,
-                    "TYPE" : "ACTION",
-                    "UNIT" : ""
+                "PRESS_LONG": {
+                    "CONTROL": "BUTTON.LONG",
+                    "DEFAULT": false,
+                    "FLAGS": 1,
+                    "ID": "PRESS_LONG",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 6,
+                    "TAB_ORDER": 1,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
                 },
-                "PRESS_LONG_RELEASE" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 3,
-                    "ID" : "PRESS_LONG_RELEASE",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 4,
-                    "TAB_ORDER" : 4,
-                    "TYPE" : "ACTION",
-                    "UNIT" : ""
+                "PRESS_LONG_RELEASE": {
+                    "DEFAULT": false,
+                    "FLAGS": 3,
+                    "ID": "PRESS_LONG_RELEASE",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 4,
+                    "TAB_ORDER": 4,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
                 },
-                "PRESS_SHORT" : {
-                    "CONTROL" : "BUTTON.SHORT",
-                    "DEFAULT" : false,
-                    "FLAGS" : 1,
-                    "ID" : "PRESS_SHORT",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 6,
-                    "TAB_ORDER" : 0,
-                    "TYPE" : "ACTION",
-                    "UNIT" : ""
+                "PRESS_SHORT": {
+                    "CONTROL": "BUTTON.SHORT",
+                    "DEFAULT": false,
+                    "FLAGS": 1,
+                    "ID": "PRESS_SHORT",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 6,
+                    "TAB_ORDER": 0,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
                 }
             }
         },
         {
-            "_id" : "hm-rpc.meta.VALUES.HM-RC-8.MAINTENANCE.7",
-            "type" : "meta",
-            "meta" : {
-                "adapter" : "hm-rpc",
-                "type" : "paramsetDescription"
+            "_id": "hm-rpc.meta.VALUES.HM-RC-8.MAINTENANCE.7",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
             },
-            "common" : {},
-            "native" : {
-                "AES_KEY" : {
-                    "DEFAULT" : 0,
-                    "FLAGS" : 0,
-                    "ID" : "AES_KEY",
-                    "MAX" : 127,
-                    "MIN" : 0,
-                    "OPERATIONS" : 1,
-                    "TAB_ORDER" : 8,
-                    "TYPE" : "INTEGER",
-                    "UNIT" : ""
+            "common": {},
+            "native": {
+                "AES_KEY": {
+                    "DEFAULT": 0,
+                    "FLAGS": 0,
+                    "ID": "AES_KEY",
+                    "MAX": 127,
+                    "MIN": 0,
+                    "OPERATIONS": 1,
+                    "TAB_ORDER": 8,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
                 },
-                "CONFIG_PENDING" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "CONFIG_PENDING",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 2,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "CONFIG_PENDING": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "CONFIG_PENDING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 2,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "DEVICE_IN_BOOTLOADER" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "DEVICE_IN_BOOTLOADER",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 6,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "DEVICE_IN_BOOTLOADER": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "DEVICE_IN_BOOTLOADER",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 6,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "LOWBAT" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "LOWBAT",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 3,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "LOWBAT": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "LOWBAT",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 3,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "RSSI_DEVICE" : {
-                    "DEFAULT" : 0,
-                    "FLAGS" : 1,
-                    "ID" : "RSSI_DEVICE",
-                    "MAX" : 2147483647,
-                    "MIN" : -2147483648,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 4,
-                    "TYPE" : "INTEGER",
-                    "UNIT" : ""
+                "RSSI_DEVICE": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "RSSI_DEVICE",
+                    "MAX": 2147483647,
+                    "MIN": -2147483648,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 4,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
                 },
-                "RSSI_PEER" : {
-                    "DEFAULT" : 0,
-                    "FLAGS" : 1,
-                    "ID" : "RSSI_PEER",
-                    "MAX" : 2147483647,
-                    "MIN" : -2147483648,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 5,
-                    "TYPE" : "INTEGER",
-                    "UNIT" : ""
+                "RSSI_PEER": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "RSSI_PEER",
+                    "MAX": 2147483647,
+                    "MIN": -2147483648,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 5,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
                 },
-                "STICKY_UNREACH" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 25,
-                    "ID" : "STICKY_UNREACH",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 7,
-                    "TAB_ORDER" : 1,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "STICKY_UNREACH": {
+                    "DEFAULT": false,
+                    "FLAGS": 25,
+                    "ID": "STICKY_UNREACH",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 7,
+                    "TAB_ORDER": 1,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "UNREACH" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "UNREACH",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 0,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "UNREACH": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "UNREACH",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 0,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "UPDATE_PENDING" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "UPDATE_PENDING",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 7,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "UPDATE_PENDING": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "UPDATE_PENDING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 7,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 }
             }
         },
@@ -4592,180 +4615,189 @@
             }
         },
         {
-            "_id" : "hm-rpc.meta.VALUES.HM-Sec-MDIR-2.MOTION_DETECTOR.11",
-            "type" : "meta",
-            "meta" : {
-                "adapter" : "hm-rpc",
-                "type" : "paramsetDescription"
+            "_id": "hm-rpc.meta.VALUES.HM-Sec-MDIR-2.MOTION_DETECTOR.11",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
             },
-            "common" : {},
-            "native" : {
-                "BRIGHTNESS" : {
-                    "DEFAULT" : 0,
-                    "FLAGS" : 1,
-                    "ID" : "BRIGHTNESS",
-                    "MAX" : 255,
-                    "MIN" : 0,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 0,
-                    "TYPE" : "INTEGER",
-                    "UNIT" : ""
+            "common": {},
+            "native": {
+                "BRIGHTNESS": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "BRIGHTNESS",
+                    "MAX": 255,
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 0,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
                 },
-                "ERROR" : {
-                    "CONTROL" : "NONE",
-                    "DEFAULT" : 0,
-                    "FLAGS" : 9,
-                    "ID" : "ERROR",
-                    "MAX" : 7,
-                    "MIN" : 0,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 3,
-                    "TYPE" : "ENUM",
-                    "UNIT" : "",
-                    "VALUE_LIST" : ["NO_ERROR", "", "", "", "", "", "", "SABOTAGE"]
+                "ERROR": {
+                    "CONTROL": "NONE",
+                    "DEFAULT": 0,
+                    "FLAGS": 9,
+                    "ID": "ERROR",
+                    "MAX": 7,
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 3,
+                    "TYPE": "ENUM",
+                    "UNIT": "",
+                    "VALUE_LIST": [
+                        "NO_ERROR",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "SABOTAGE"
+                    ]
                 },
-                "INSTALL_TEST" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 3,
-                    "ID" : "INSTALL_TEST",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 4,
-                    "TAB_ORDER" : 4,
-                    "TYPE" : "ACTION",
-                    "UNIT" : ""
+                "INSTALL_TEST": {
+                    "DEFAULT": false,
+                    "FLAGS": 3,
+                    "ID": "INSTALL_TEST",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 4,
+                    "TAB_ORDER": 4,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
                 },
-                "MOTION" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 1,
-                    "ID" : "MOTION",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 2,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "MOTION": {
+                    "DEFAULT": false,
+                    "FLAGS": 1,
+                    "ID": "MOTION",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 2,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 }
             }
         },
         {
-            "_id" : "hm-rpc.meta.VALUES.HM-Sec-MDIR-2.MAINTENANCE.11",
-            "type" : "meta",
-            "meta" : {
-                "adapter" : "hm-rpc",
-                "type" : "paramsetDescription"
+            "_id": "hm-rpc.meta.VALUES.HM-Sec-MDIR-2.MAINTENANCE.11",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
             },
-            "common" : {},
-            "native" : {
-                "AES_KEY" : {
-                    "DEFAULT" : 0,
-                    "FLAGS" : 0,
-                    "ID" : "AES_KEY",
-                    "MAX" : 127,
-                    "MIN" : 0,
-                    "OPERATIONS" : 1,
-                    "TAB_ORDER" : 8,
-                    "TYPE" : "INTEGER",
-                    "UNIT" : ""
+            "common": {},
+            "native": {
+                "AES_KEY": {
+                    "DEFAULT": 0,
+                    "FLAGS": 0,
+                    "ID": "AES_KEY",
+                    "MAX": 127,
+                    "MIN": 0,
+                    "OPERATIONS": 1,
+                    "TAB_ORDER": 8,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
                 },
-                "CONFIG_PENDING" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "CONFIG_PENDING",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 2,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "CONFIG_PENDING": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "CONFIG_PENDING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 2,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "DEVICE_IN_BOOTLOADER" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "DEVICE_IN_BOOTLOADER",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 6,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "DEVICE_IN_BOOTLOADER": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "DEVICE_IN_BOOTLOADER",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 6,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "ENTER_BOOTLOADER" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 3,
-                    "ID" : "ENTER_BOOTLOADER",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 2,
-                    "TAB_ORDER" : 9,
-                    "TYPE" : "ACTION",
-                    "UNIT" : ""
+                "ENTER_BOOTLOADER": {
+                    "DEFAULT": false,
+                    "FLAGS": 3,
+                    "ID": "ENTER_BOOTLOADER",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 2,
+                    "TAB_ORDER": 9,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
                 },
-                "LOWBAT" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "LOWBAT",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 3,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "LOWBAT": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "LOWBAT",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 3,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "RSSI_DEVICE" : {
-                    "DEFAULT" : 0,
-                    "FLAGS" : 1,
-                    "ID" : "RSSI_DEVICE",
-                    "MAX" : 2147483647,
-                    "MIN" : -2147483648,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 4,
-                    "TYPE" : "INTEGER",
-                    "UNIT" : ""
+                "RSSI_DEVICE": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "RSSI_DEVICE",
+                    "MAX": 2147483647,
+                    "MIN": -2147483648,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 4,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
                 },
-                "RSSI_PEER" : {
-                    "DEFAULT" : 0,
-                    "FLAGS" : 1,
-                    "ID" : "RSSI_PEER",
-                    "MAX" : 2147483647,
-                    "MIN" : -2147483648,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 5,
-                    "TYPE" : "INTEGER",
-                    "UNIT" : ""
+                "RSSI_PEER": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "RSSI_PEER",
+                    "MAX": 2147483647,
+                    "MIN": -2147483648,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 5,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
                 },
-                "STICKY_UNREACH" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 25,
-                    "ID" : "STICKY_UNREACH",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 7,
-                    "TAB_ORDER" : 1,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "STICKY_UNREACH": {
+                    "DEFAULT": false,
+                    "FLAGS": 25,
+                    "ID": "STICKY_UNREACH",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 7,
+                    "TAB_ORDER": 1,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "UNREACH" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "UNREACH",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 0,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "UNREACH": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "UNREACH",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 0,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "UPDATE_PENDING" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "UPDATE_PENDING",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 7,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "UPDATE_PENDING": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "UPDATE_PENDING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 7,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 }
             }
         },
@@ -5243,171 +5275,180 @@
             }
         },
         {
-            "_id" : "hm-rpc.meta.VALUES.HM-Sec-SCo.SHUTTER_CONTACT.2",
-            "type" : "meta",
-            "meta" : {
-                "adapter" : "hm-rpc",
-                "type" : "paramsetDescription"
+            "_id": "hm-rpc.meta.VALUES.HM-Sec-SCo.SHUTTER_CONTACT.2",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
             },
-            "common" : {},
-            "native" : {
-                "ERROR" : {
-                    "CONTROL" : "NONE",
-                    "DEFAULT" : 0,
-                    "FLAGS" : 9,
-                    "ID" : "ERROR",
-                    "MAX" : 7,
-                    "MIN" : 0,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 1,
-                    "TYPE" : "ENUM",
-                    "UNIT" : "",
-                    "VALUE_LIST" : ["NO_ERROR", "", "", "", "", "", "", "SABOTAGE"]
+            "common": {},
+            "native": {
+                "ERROR": {
+                    "CONTROL": "NONE",
+                    "DEFAULT": 0,
+                    "FLAGS": 9,
+                    "ID": "ERROR",
+                    "MAX": 7,
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 1,
+                    "TYPE": "ENUM",
+                    "UNIT": "",
+                    "VALUE_LIST": [
+                        "NO_ERROR",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "SABOTAGE"
+                    ]
                 },
-                "INSTALL_TEST" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 3,
-                    "ID" : "INSTALL_TEST",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 4,
-                    "TAB_ORDER" : 3,
-                    "TYPE" : "ACTION",
-                    "UNIT" : ""
+                "INSTALL_TEST": {
+                    "DEFAULT": false,
+                    "FLAGS": 3,
+                    "ID": "INSTALL_TEST",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 4,
+                    "TAB_ORDER": 3,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
                 },
-                "LOWBAT" : {
-                    "CONTROL" : "NONE",
-                    "DEFAULT" : false,
-                    "FLAGS" : 1,
-                    "ID" : "LOWBAT",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 2,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "LOWBAT": {
+                    "CONTROL": "NONE",
+                    "DEFAULT": false,
+                    "FLAGS": 1,
+                    "ID": "LOWBAT",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 2,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "STATE" : {
-                    "CONTROL" : "DOOR_SENSOR.STATE",
-                    "DEFAULT" : false,
-                    "FLAGS" : 1,
-                    "ID" : "STATE",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 0,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "STATE": {
+                    "CONTROL": "DOOR_SENSOR.STATE",
+                    "DEFAULT": false,
+                    "FLAGS": 1,
+                    "ID": "STATE",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 0,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 }
             }
         },
         {
-            "_id" : "hm-rpc.meta.VALUES.HM-Sec-SCo.MAINTENANCE.2",
-            "type" : "meta",
-            "meta" : {
-                "adapter" : "hm-rpc",
-                "type" : "paramsetDescription"
+            "_id": "hm-rpc.meta.VALUES.HM-Sec-SCo.MAINTENANCE.2",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
             },
-            "common" : {},
-            "native" : {
-                "AES_KEY" : {
-                    "DEFAULT" : 0,
-                    "FLAGS" : 0,
-                    "ID" : "AES_KEY",
-                    "MAX" : 127,
-                    "MIN" : 0,
-                    "OPERATIONS" : 1,
-                    "TAB_ORDER" : 8,
-                    "TYPE" : "INTEGER",
-                    "UNIT" : ""
+            "common": {},
+            "native": {
+                "AES_KEY": {
+                    "DEFAULT": 0,
+                    "FLAGS": 0,
+                    "ID": "AES_KEY",
+                    "MAX": 127,
+                    "MIN": 0,
+                    "OPERATIONS": 1,
+                    "TAB_ORDER": 8,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
                 },
-                "CONFIG_PENDING" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "CONFIG_PENDING",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 2,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "CONFIG_PENDING": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "CONFIG_PENDING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 2,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "DEVICE_IN_BOOTLOADER" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "DEVICE_IN_BOOTLOADER",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 6,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "DEVICE_IN_BOOTLOADER": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "DEVICE_IN_BOOTLOADER",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 6,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "LOWBAT" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "LOWBAT",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 3,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "LOWBAT": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "LOWBAT",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 3,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "RSSI_DEVICE" : {
-                    "DEFAULT" : 0,
-                    "FLAGS" : 1,
-                    "ID" : "RSSI_DEVICE",
-                    "MAX" : 2147483647,
-                    "MIN" : -2147483648,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 4,
-                    "TYPE" : "INTEGER",
-                    "UNIT" : ""
+                "RSSI_DEVICE": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "RSSI_DEVICE",
+                    "MAX": 2147483647,
+                    "MIN": -2147483648,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 4,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
                 },
-                "RSSI_PEER" : {
-                    "DEFAULT" : 0,
-                    "FLAGS" : 1,
-                    "ID" : "RSSI_PEER",
-                    "MAX" : 2147483647,
-                    "MIN" : -2147483648,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 5,
-                    "TYPE" : "INTEGER",
-                    "UNIT" : ""
+                "RSSI_PEER": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "RSSI_PEER",
+                    "MAX": 2147483647,
+                    "MIN": -2147483648,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 5,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
                 },
-                "STICKY_UNREACH" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 25,
-                    "ID" : "STICKY_UNREACH",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 7,
-                    "TAB_ORDER" : 1,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "STICKY_UNREACH": {
+                    "DEFAULT": false,
+                    "FLAGS": 25,
+                    "ID": "STICKY_UNREACH",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 7,
+                    "TAB_ORDER": 1,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "UNREACH" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "UNREACH",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 0,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "UNREACH": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "UNREACH",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 0,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "UPDATE_PENDING" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "UPDATE_PENDING",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 7,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "UPDATE_PENDING": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "UPDATE_PENDING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 7,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 }
             }
         },
@@ -5577,145 +5618,145 @@
             }
         },
         {
-            "_id" : "hm-rpc.meta.VALUES.HM-Sec-SD.SMOKE_DETECTOR.9",
-            "type" : "meta",
-            "meta" : {
-                "adapter" : "hm-rpc",
-                "type" : "paramsetDescription"
+            "_id": "hm-rpc.meta.VALUES.HM-Sec-SD.SMOKE_DETECTOR.9",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
             },
-            "common" : {},
-            "native" : {
-                "INSTALL_TEST" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 3,
-                    "ID" : "INSTALL_TEST",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 4,
-                    "TAB_ORDER" : 0,
-                    "TYPE" : "ACTION",
-                    "UNIT" : ""
+            "common": {},
+            "native": {
+                "INSTALL_TEST": {
+                    "DEFAULT": false,
+                    "FLAGS": 3,
+                    "ID": "INSTALL_TEST",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 4,
+                    "TAB_ORDER": 0,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
                 },
-                "STATE" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 3,
-                    "ID" : "STATE",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 1,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "STATE": {
+                    "DEFAULT": false,
+                    "FLAGS": 3,
+                    "ID": "STATE",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 1,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 }
             }
         },
         {
-            "_id" : "hm-rpc.meta.VALUES.HM-Sec-SD.MAINTENANCE.9",
-            "type" : "meta",
-            "meta" : {
-                "adapter" : "hm-rpc",
-                "type" : "paramsetDescription"
+            "_id": "hm-rpc.meta.VALUES.HM-Sec-SD.MAINTENANCE.9",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
             },
-            "common" : {},
-            "native" : {
-                "CONFIG_PENDING" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "CONFIG_PENDING",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 2,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+            "common": {},
+            "native": {
+                "CONFIG_PENDING": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "CONFIG_PENDING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 2,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "DEVICE_IN_BOOTLOADER" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "DEVICE_IN_BOOTLOADER",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 7,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "DEVICE_IN_BOOTLOADER": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "DEVICE_IN_BOOTLOADER",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 7,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "DUTYCYCLE" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "DUTYCYCLE",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 4,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "DUTYCYCLE": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "DUTYCYCLE",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 4,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "LOWBAT" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "LOWBAT",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 3,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "LOWBAT": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "LOWBAT",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 3,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "RSSI_DEVICE" : {
-                    "DEFAULT" : 0,
-                    "FLAGS" : 1,
-                    "ID" : "RSSI_DEVICE",
-                    "MAX" : 2147483647,
-                    "MIN" : -2147483648,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 5,
-                    "TYPE" : "INTEGER",
-                    "UNIT" : ""
+                "RSSI_DEVICE": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "RSSI_DEVICE",
+                    "MAX": 2147483647,
+                    "MIN": -2147483648,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 5,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
                 },
-                "RSSI_PEER" : {
-                    "DEFAULT" : 0,
-                    "FLAGS" : 1,
-                    "ID" : "RSSI_PEER",
-                    "MAX" : 2147483647,
-                    "MIN" : -2147483648,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 6,
-                    "TYPE" : "INTEGER",
-                    "UNIT" : ""
+                "RSSI_PEER": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "RSSI_PEER",
+                    "MAX": 2147483647,
+                    "MIN": -2147483648,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 6,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
                 },
-                "STICKY_UNREACH" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 25,
-                    "ID" : "STICKY_UNREACH",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 7,
-                    "TAB_ORDER" : 1,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "STICKY_UNREACH": {
+                    "DEFAULT": false,
+                    "FLAGS": 25,
+                    "ID": "STICKY_UNREACH",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 7,
+                    "TAB_ORDER": 1,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "UNREACH" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "UNREACH",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 0,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "UNREACH": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "UNREACH",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 0,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "UPDATE_PENDING" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "UPDATE_PENDING",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 8,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "UPDATE_PENDING": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "UPDATE_PENDING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 8,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 }
             }
         },
@@ -7030,192 +7071,192 @@
             }
         },
         {
-            "_id" : "hm-rpc.meta.VALUES.HM-LC-Sw1PBU-FM.SWITCH.7",
-            "type" : "meta",
-            "meta" : {
-                "adapter" : "hm-rpc",
-                "type" : "paramsetDescription"
+            "_id": "hm-rpc.meta.VALUES.HM-LC-Sw1PBU-FM.SWITCH.7",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
             },
-            "common" : {},
-            "native" : {
-                "INHIBIT" : {
-                    "CONTROL" : "NONE",
-                    "DEFAULT" : false,
-                    "FLAGS" : 1,
-                    "ID" : "INHIBIT",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 7,
-                    "TAB_ORDER" : 2,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+            "common": {},
+            "native": {
+                "INHIBIT": {
+                    "CONTROL": "NONE",
+                    "DEFAULT": false,
+                    "FLAGS": 1,
+                    "ID": "INHIBIT",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 7,
+                    "TAB_ORDER": 2,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "INSTALL_TEST" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 3,
-                    "ID" : "INSTALL_TEST",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 2,
-                    "TAB_ORDER" : 3,
-                    "TYPE" : "ACTION",
-                    "UNIT" : ""
+                "INSTALL_TEST": {
+                    "DEFAULT": false,
+                    "FLAGS": 3,
+                    "ID": "INSTALL_TEST",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 2,
+                    "TAB_ORDER": 3,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
                 },
-                "ON_TIME" : {
-                    "CONTROL" : "NONE",
-                    "DEFAULT" : 0,
-                    "FLAGS" : 1,
-                    "ID" : "ON_TIME",
-                    "MAX" : 85825945.5,
-                    "MIN" : 0,
-                    "OPERATIONS" : 2,
-                    "TAB_ORDER" : 1,
-                    "TYPE" : "FLOAT",
-                    "UNIT" : "s"
+                "ON_TIME": {
+                    "CONTROL": "NONE",
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "ON_TIME",
+                    "MAX": 85825945.5,
+                    "MIN": 0,
+                    "OPERATIONS": 2,
+                    "TAB_ORDER": 1,
+                    "TYPE": "FLOAT",
+                    "UNIT": "s"
                 },
-                "STATE" : {
-                    "CONTROL" : "SWITCH.STATE",
-                    "DEFAULT" : false,
-                    "FLAGS" : 1,
-                    "ID" : "STATE",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 7,
-                    "TAB_ORDER" : 0,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "STATE": {
+                    "CONTROL": "SWITCH.STATE",
+                    "DEFAULT": false,
+                    "FLAGS": 1,
+                    "ID": "STATE",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 7,
+                    "TAB_ORDER": 0,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "WORKING" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 3,
-                    "ID" : "WORKING",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 4,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "WORKING": {
+                    "DEFAULT": false,
+                    "FLAGS": 3,
+                    "ID": "WORKING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 4,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 }
             }
         },
         {
-            "_id" : "hm-rpc.meta.VALUES.HM-LC-Sw1PBU-FM.MAINTENANCE.7",
-            "type" : "meta",
-            "meta" : {
-                "adapter" : "hm-rpc",
-                "type" : "paramsetDescription"
+            "_id": "hm-rpc.meta.VALUES.HM-LC-Sw1PBU-FM.MAINTENANCE.7",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
             },
-            "common" : {},
-            "native" : {
-                "AES_KEY" : {
-                    "DEFAULT" : 0,
-                    "FLAGS" : 0,
-                    "ID" : "AES_KEY",
-                    "MAX" : 127,
-                    "MIN" : 0,
-                    "OPERATIONS" : 1,
-                    "TAB_ORDER" : 9,
-                    "TYPE" : "INTEGER",
-                    "UNIT" : ""
+            "common": {},
+            "native": {
+                "AES_KEY": {
+                    "DEFAULT": 0,
+                    "FLAGS": 0,
+                    "ID": "AES_KEY",
+                    "MAX": 127,
+                    "MIN": 0,
+                    "OPERATIONS": 1,
+                    "TAB_ORDER": 9,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
                 },
-                "CONFIG_PENDING" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "CONFIG_PENDING",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 2,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "CONFIG_PENDING": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "CONFIG_PENDING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 2,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "DEVICE_IN_BOOTLOADER" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "DEVICE_IN_BOOTLOADER",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 7,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "DEVICE_IN_BOOTLOADER": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "DEVICE_IN_BOOTLOADER",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 7,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "DUTYCYCLE" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "DUTYCYCLE",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 4,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "DUTYCYCLE": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "DUTYCYCLE",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 4,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "LOWBAT" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "LOWBAT",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 3,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "LOWBAT": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "LOWBAT",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 3,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "RSSI_DEVICE" : {
-                    "DEFAULT" : 0,
-                    "FLAGS" : 1,
-                    "ID" : "RSSI_DEVICE",
-                    "MAX" : 2147483647,
-                    "MIN" : -2147483648,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 5,
-                    "TYPE" : "INTEGER",
-                    "UNIT" : ""
+                "RSSI_DEVICE": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "RSSI_DEVICE",
+                    "MAX": 2147483647,
+                    "MIN": -2147483648,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 5,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
                 },
-                "RSSI_PEER" : {
-                    "DEFAULT" : 0,
-                    "FLAGS" : 1,
-                    "ID" : "RSSI_PEER",
-                    "MAX" : 2147483647,
-                    "MIN" : -2147483648,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 6,
-                    "TYPE" : "INTEGER",
-                    "UNIT" : ""
+                "RSSI_PEER": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "RSSI_PEER",
+                    "MAX": 2147483647,
+                    "MIN": -2147483648,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 6,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
                 },
-                "STICKY_UNREACH" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 25,
-                    "ID" : "STICKY_UNREACH",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 7,
-                    "TAB_ORDER" : 1,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "STICKY_UNREACH": {
+                    "DEFAULT": false,
+                    "FLAGS": 25,
+                    "ID": "STICKY_UNREACH",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 7,
+                    "TAB_ORDER": 1,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "UNREACH" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "UNREACH",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 0,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "UNREACH": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "UNREACH",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 0,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 },
-                "UPDATE_PENDING" : {
-                    "DEFAULT" : false,
-                    "FLAGS" : 9,
-                    "ID" : "UPDATE_PENDING",
-                    "MAX" : true,
-                    "MIN" : false,
-                    "OPERATIONS" : 5,
-                    "TAB_ORDER" : 8,
-                    "TYPE" : "BOOL",
-                    "UNIT" : ""
+                "UPDATE_PENDING": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "UPDATE_PENDING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 8,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
                 }
             }
         },
@@ -7411,8 +7452,6 @@
                 }
             }
         }
-
-
     ],
     "instanceObjects": [
         {
@@ -7421,13 +7460,12 @@
             "common": {
                 "name": "Some new devices added",
                 "type": "boolean",
-                "read":  true,
+                "read": true,
                 "write": true
-
             }
         },
         {
-            "_id":  "info",
+            "_id": "info",
             "type": "channel",
             "common": {
                 "name": "Information"
@@ -7435,15 +7473,15 @@
             "native": {}
         },
         {
-            "_id":  "info.connection",
+            "_id": "info.connection",
             "type": "state",
             "common": {
-                "role":  "indicator.connected",
-                "name":  "If connected to CCU",
-                "type":  "boolean",
-                "read":  true,
+                "role": "indicator.connected",
+                "name": "If connected to CCU",
+                "type": "boolean",
+                "read": true,
                 "write": false,
-                "def":   false
+                "def": false
             },
             "native": {}
         }
