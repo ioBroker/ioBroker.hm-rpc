@@ -7,8 +7,13 @@
             "de": "Verbindet HomeMatic Interface-Prozesse (BidCos-Services, Homegear und CUxD) via XML-RPC oder BIN-RPC mit ioBroker",
             "ru": "Подключает HomeMatic интерфейсы (BidCos-сервисы, Homegear и CUxD) через XML-RPC или BIN-RPC к ioBroker"
         },
-        "version": "1.4.15",
+        "version": "1.5.0",
         "news": {
+            "1.5.0": {
+            "en": "Add new devices in the meta information\nForce stop of adapter",
+            "de": "Neue Meta-Information ist hinzugefügt\nForsiere Beendung vom Adapter",
+            "ru": "Добавлена информация о новых устройства\nФорсировать завершение драйвера"
+          },
             "1.4.15": {
                 "en": "Added option to not delete the devices",
                 "de": "Added option to not delete the devices",
@@ -129,6 +134,7 @@
             "EnOcean"
         ],
         "type": "iot-systems",
+        "supportStopInstance": true,
         "messagebox": true
     },
     "native": {
@@ -1822,6 +1828,77 @@
                     "TAB_ORDER": 7,
                     "TYPE": "BOOL",
                     "UNIT": ""
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HM-ES-TX-WM.POWERMETER_IGL.1",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "BOOT": {
+                    "CONTROL": "POWERMETER_IGL.BOOT",
+                    "DEFAULT": false,
+                    "FLAGS": 3,
+                    "ID": "BOOT",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 4,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "ENERGY_COUNTER": {
+                    "CONTROL": "POWERMETER_IGL.ENERGY_COUNTER",
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "ENERGY_COUNTER",
+                    "MAX": 838860.699219,
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 2,
+                    "TYPE": "FLOAT",
+                    "UNIT": "Wh"
+                },
+                "GAS_ENERGY_COUNTER": {
+                    "CONTROL": "POWERMETER_IGL.GAS_ENERGY_COUNTER",
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "GAS_ENERGY_COUNTER",
+                    "MAX": 2147483.644531,
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 0,
+                    "TYPE": "FLOAT",
+                    "UNIT": "m3"
+                },
+                "GAS_POWER": {
+                    "CONTROL": "POWERMETER_IGL.GAS_POWER",
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "GAS_POWER",
+                    "MAX": 16777.214996,
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 1,
+                    "TYPE": "FLOAT",
+                    "UNIT": "m3"
+                },
+                "POWER": {
+                    "CONTROL": "POWERMETER_IGL.POWER",
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "POWER",
+                    "MAX": 167772.149902,
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 3,
+                    "TYPE": "FLOAT",
+                    "UNIT": "W"
                 }
             }
         },
@@ -5755,6 +5832,217 @@
                     "MIN": false,
                     "OPERATIONS": 5,
                     "TAB_ORDER": 8,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HM-Sec-SD-2.MAINTENANCE.5",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "AES_KEY": {
+                    "DEFAULT": 0,
+                    "FLAGS": 0,
+                    "ID": "AES_KEY",
+                    "MAX": 127,
+                    "MIN": 0,
+                    "OPERATIONS": 1,
+                    "TAB_ORDER": 7,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
+                },
+                "CONFIG_PENDING": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "CONFIG_PENDING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 2,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "DUTYCYCLE": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "DUTYCYCLE",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 4,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "LOWBAT": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "LOWBAT",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 3,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "RSSI_DEVICE": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "RSSI_DEVICE",
+                    "MAX": 2147483647,
+                    "MIN": -2147483648,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 5,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
+                },
+                "RSSI_PEER": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "RSSI_PEER",
+                    "MAX": 2147483647,
+                    "MIN": -2147483648,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 6,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
+                },
+                "STICKY_UNREACH": {
+                    "DEFAULT": false,
+                    "FLAGS": 25,
+                    "ID": "STICKY_UNREACH",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 7,
+                    "TAB_ORDER": 1,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "UNREACH": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "UNREACH",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 0,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HM-Sec-SD-2.SMOKE_DETECTOR.5",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "ERROR_ALARM_TEST": {
+                    "CONTROL": "NONE",
+                    "DEFAULT": 0,
+                    "FLAGS": 9,
+                    "ID": "ERROR_ALARM_TEST",
+                    "MAX": 1,
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 0,
+                    "TYPE": "ENUM",
+                    "UNIT": "",
+                    "VALUE_LIST": [
+                        "NO_ERROR",
+                        "ALARM_TEST_FAILED"
+                    ]
+                },
+                "ERROR_SMOKE_CHAMBER": {
+                    "CONTROL": "NONE",
+                    "DEFAULT": 0,
+                    "FLAGS": 9,
+                    "ID": "ERROR_SMOKE_CHAMBER",
+                    "MAX": 1,
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 1,
+                    "TYPE": "ENUM",
+                    "UNIT": "",
+                    "VALUE_LIST": [
+                        "NO_ERROR",
+                        "DEGRADED_SMOKE_CHAMBER"
+                    ]
+                },
+                "INSTALL_TEST": {
+                    "DEFAULT": false,
+                    "FLAGS": 3,
+                    "ID": "INSTALL_TEST",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 4,
+                    "TAB_ORDER": 4,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
+                },
+                "LOWBAT": {
+                    "CONTROL": "NONE",
+                    "DEFAULT": false,
+                    "FLAGS": 1,
+                    "ID": "LOWBAT",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 3,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "STATE": {
+                    "CONTROL": "DANGER.STATE",
+                    "DEFAULT": false,
+                    "FLAGS": 1,
+                    "ID": "STATE",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 2,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HM-Sec-SD-2-Team.SMOKE_DETECTOR_TEAM_V2.3",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "INSTALL_TEST": {
+                    "DEFAULT": false,
+                    "FLAGS": 3,
+                    "ID": "INSTALL_TEST",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 4,
+                    "TAB_ORDER": 1,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
+                },
+                "STATE": {
+                    "CONTROL": "DANGER.STATE",
+                    "DEFAULT": false,
+                    "FLAGS": 1,
+                    "ID": "STATE",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 0,
                     "TYPE": "BOOL",
                     "UNIT": ""
                 }

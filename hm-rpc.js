@@ -435,6 +435,30 @@ var adapter = utils.adapter({
     },
     // Add messagebox Function for ioBroker.occ
     message: function (obj) {
+        if (obj.command === 'stopInstance') {
+            if (rpcServer && rpcServer.server) {
+                try {
+                    rpcServer.server.close();
+                    rpcServer.server.close(function () {
+                        console.log('server closed.');
+                        rpcServer.server.unref();
+                    });
+                } catch (e) {
+
+                }
+            }
+            if (rpcClient && rpcClient.socket) {
+                try {
+                    rpcClient.socket.destroy();
+                } catch (e) {
+
+                }
+            }
+            // force close
+            setTimeout(function () {
+                process.exit();
+            }, 3000);
+        } else
         if (obj.message.params === undefined || obj.message.params === null) {
             try {
                 if (rpcClient && connected) {
@@ -1337,7 +1361,7 @@ function getCuxDevices(callback) {
 }
 
 function updateConnection() {
-    lastEvent = (new Date()).getTime();
+    lastEvent = new Date().getTime();
 
     if (!connected) {
         adapter.log.info('Connected');
@@ -1436,7 +1460,7 @@ function keepAlive() {
         connInterval = null;
     }
 
-    var _now = (new Date()).getTime();
+    var _now = new Date().getTime();
     // Check last event time. If timeout => send init again
     if (!lastEvent || (_now - lastEvent) >= adapter.config.checkInitInterval * 1000) {
         connect();
