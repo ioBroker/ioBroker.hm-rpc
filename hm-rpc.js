@@ -352,7 +352,7 @@ function readSettings(id) {
 }
 
 // the adapter object
-var adapter = utils.adapter({
+var adapter = utils.Adapter({
 
     name: 'hm-rpc',
 
