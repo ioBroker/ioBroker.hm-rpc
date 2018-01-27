@@ -9,14 +9,63 @@
 
 Connects HomeMatic Interface-Processes (BidCos-Services, Homegear and CUxD) via XML-RPC or BIN-RPC to ioBroker
 
-### Configuration
+## Configuration
 
-native.adapterAddress has to be the ip under which the host that is running the adapter itself is reachable.
+### HomeMatic Address
+*Homematic Address* is the IP of the HomeMatic CCU respectively the Host that is running the BidCos-Service(s).
+CCU IP address.
+
+### HomeMatic Port
+CCU Port.
+
+Usually:
+- 2001 for wireless devices,
+- 2000 for wired devices,
+- 8701 for CUxD daemon,
+- 2010 for Homematic IP devices
+
+### Daemon
+CCU/Homematic can support different types of devices (wired, wireless, hmip, CUxD) and for every type you should create the instance of adapter separately.
+
+### Protocol
+There are two protocols for communication XML-RPC and BIN-RPC. BIN-RPC is faster, but it can be, that the end device do not support it or supports it incorrect. In this case switch the protocol to XML.
+
+*Notice:* CUxD can only communicate with BIN-RPC and HMPI only via XML-rpc protocol.
+
+### Synchronize objects (once)
+After very first start the instance read *all* devices from CCU/Homematic.
+If you changed the configuration (rename devices, add or removed devices) you can synchronise the configuration in ioBroker by enabling this option.
+
+The instance will be restarted immediately, synchronize all devices anew and deactivate this option itself.
+
+### Adapter Address
+This address has to be the IP under which the host that is running the adapter itself is reachable.
 This address is used by the CCU to connect to the adapter.
+This address cannot be "0.0.0.0", because CCU/Homematic cannot reach ioBroker under "0.0.0.0" IP address.
 
-native.homematicAddress is the IP of the HomeMatic CCU respectively the Host that is running the BidCos-Service(s)
+### Adapter port
+The port number on which the ioBroker will run. Let it 0 for automatically selection.
+
+### Adapter Callback Address
+Sometimes the ioBroker server runs behind the router, to solve this problem, that inboud and outbound addresses are different, this option can be used.
+Here you can define the IP address of the router and the router will according to the port route the traffic to ioBroker.
+
+Used if ioBroker runs in Docker.
+
+### Check communication interval(sec)
+Send pings to CCU/Homematic with such intervall.
+
+### Reconnect interval (sec)
+How many seconds will be waited before connect attempts.
+
+### Don't delete devices
+If this flag is not activated, the ioBroker will remove devices from configuration of device is removed in CCU/Homematic.
+Activate this flag to do *not* delete such a devices, e.g. if some devices was temporary removed on CCU/Homematic.
 
 ## Changelog
+### 1.5.1 (2018-01-26)
+* (bluefox) Ready for Admin3
+
 ### 1.5.0 (2017-10-27)
 * (bluefox) Add new devices in the meta information
 * (bluefox) Force stop of adapter
@@ -237,15 +286,13 @@ native.homematicAddress is the IP of the HomeMatic CCU respectively the Host tha
 
 * (hobbyquaker) First Release
 
-## Roadmap
-
-* PING/PONG implementation when possible (CCU Firmware >= 2.9) - check via system.listMethods
-
 ## License
 
 The MIT License (MIT)
 
-Copyright (c) 2014-2017 bluefox, hobbyquaker
+Copyright (c) 2014-2018 bluefox <dogafox@gmail.com>
+
+Copyright (c) 2014 hobbyquaker
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

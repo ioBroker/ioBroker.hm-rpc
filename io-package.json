@@ -5,15 +5,32 @@
         "desc": {
             "en": "Connects HomeMatic Interface-Processes (BidCos-Services, Homegear and CUxD) via XML-RPC or BIN-RPC to ioBroker",
             "de": "Verbindet HomeMatic Interface-Prozesse (BidCos-Services, Homegear und CUxD) via XML-RPC oder BIN-RPC mit ioBroker",
-            "ru": "Подключает HomeMatic интерфейсы (BidCos-сервисы, Homegear и CUxD) через XML-RPC или BIN-RPC к ioBroker"
+            "ru": "Подключает HomeMatic интерфейсы (BidCos-сервисы, Homegear и CUxD) через XML-RPC или BIN-RPC к ioBroker",
+            "pt": "Conecta HomeMatic Interface-Processes (BidCos-Services, Homegear e CUxD) via XML-RPC ou BIN-RPC para ioBroker",
+            "nl": "Verbindt HomeMatic Interface-processen (BidCos-Services, Homegear en CUxD) via XML-RPC of BIN-RPC met ioBroker",
+            "fr": "Connecte les processus d'interface HomeMatic (BidCos-Services, Homegear et CUxD) via XML-RPC ou BIN-RPC à ioBroker",
+            "it": "Collega l'interfaccia HomeMatic: i processi (BidCos-Services, Homegear e CUxD) tramite XML-RPC o BIN-RPC su ioBroker",
+            "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
+            "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.5.0",
+        "version": "1.5.1",
         "news": {
+            "1.5.1": {
+                "en": "Ready for Admin3",
+                "de": "Bereit für Admin3",
+                "ru": "Готово для Admin3",
+                "pt": "Pronto para Admin3",
+                "nl": "Klaar voor Admin3",
+                "fr": "Prêt pour Admin3",
+                "it": "Pronto per Admin3",
+                "es": "Listo para Admin3",
+                "pl": "Gotowy na Admin3"
+              },
             "1.5.0": {
-            "en": "Add new devices in the meta information\nForce stop of adapter",
-            "de": "Neue Meta-Information ist hinzugefügt\nForsiere Beendung vom Adapter",
-            "ru": "Добавлена информация о новых устройства\nФорсировать завершение драйвера"
-          },
+                "en": "Add new devices in the meta information\nForce stop of adapter",
+                "de": "Neue Meta-Information ist hinzugefügt\nForsiere Beendung vom Adapter",
+                "ru": "Добавлена информация о новых устройства\nФорсировать завершение драйвера"
+            },
             "1.4.15": {
                 "en": "Added option to not delete the devices",
                 "de": "Added option to not delete the devices",
@@ -114,6 +131,7 @@
         "loglevel": "info",
         "readme": "https://github.com/ioBroker/ioBroker.hm-rpc/blob/master/README.md",
         "icon": "homematic.png",
+        "materialize": true,
         "extIcon": "https://raw.githubusercontent.com/ioBroker/ioBroker.hm-rpc/master/admin/homematic.png",
         "keywords": [
             "homematic",

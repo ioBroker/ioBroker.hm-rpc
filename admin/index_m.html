@@ -1,0 +1,281 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<!-- Materialze style -->
+<link rel="stylesheet" type="text/css" href="../../css/adapter.css"/>
+<link rel="stylesheet" type="text/css" href="../../lib/css/materialize.css">
+
+<script type="text/javascript" src="../../lib/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="../../socket.io/socket.io.js"></script>
+
+<script type="text/javascript" src="../../js/translate.js"></script>
+<script type="text/javascript" src="../../lib/js/materialize.js"></script>
+<script type="text/javascript" src="../../js/adapter-settings.js"></script>
+<script type="text/javascript" src="words.js"></script>
+
+<style>
+    .invalid {
+        border: 3px solid red;
+    }
+</style>
+
+<script type="text/javascript">
+    var onChange = null;
+
+    function setValue(id, value) {
+        var $value = $('#' + id + '.value');
+        if ($value.attr('type') === 'checkbox') {
+            $value.prop('checked', value).change(function() {
+                onChange();
+            });
+        } else {
+            $value.val(value).change(function() {
+                var $adapterAddress   = $('#adapterAddress');
+                var $homematicAddress = $('#homematicAddress');
+                var $callbackAddress  = $('#callbackAddress');
+                if (id === 'homematicAddress' || id === 'adapterAddress' || id === 'callbackAddress') {
+                    var ip1 = $homematicAddress.val();
+                    var ip2 = $adapterAddress.val();
+                    var ip3 = $callbackAddress.val();
+
+                    if (id === 'homematicAddress' && ip2 === '0.0.0.0') {
+                        var max = 0;
+                        var ip = '';
+                        $adapterAddress.find('option').each(function () {
+                            var c = checkIPs(ip1, $(this).attr('value'));
+                            if (c > max) {
+                                max = c;
+                                ip = $(this).attr('value');
+                            }
+                        });
+                        if (ip) {
+                            $adapterAddress.val(ip);
+                        }
+                    }
+                    if (ip3 || ip3 === '0.0.0.0' || !checkIPs(ip1, ip3)) {
+                        $callbackAddress.addClass('invalid').attr('title', _('This IP is unreachable from %s', $homematicAddress.val()));
+                    } else {
+                        $callbackAddress.removeClass('invalid').attr('title', '');
+                    }
+                    if (!ip2 || (ip2 !== '0.0.0.0' && !checkIPs(ip1, ip2))) {
+                        $adapterAddress.addClass('invalid').attr('title', _('This IP is unreachable from %s', $homematicAddress.val()));
+                        $adapterAddress.parent().find('input').addClass('invalid').attr('title', _('This IP is unreachable from %s', $homematicAddress.val()));
+                    } else {
+                        $adapterAddress.removeClass('invalid').attr('title', '');
+                        $adapterAddress.parent().find('input').removeClass('invalid').attr('title', '');
+                    }
+                    if (ip2 === '0.0.0.0' && !ip3) {
+                        $callbackAddress.addClass('invalid').attr('title', _('Please specify callback address'));
+                    } else {
+                        $callbackAddress.removeClass('invalid').attr('title', '');
+                    }
+                }
+
+                onChange();
+            }).keyup(function() {
+                // Check that only numbers entered
+                if ($(this).hasClass('number')) {
+                    var val = $(this).val();
+                    if (val) {
+                        var newVal = '';
+                        for (var i = 0; i < val.length; i++) {
+                            if (val[i] >= '0' && val[i] <= '9') {
+                                newVal += val[i];
+                            }
+                        }
+
+                        if (val != newVal) $(this).val(newVal);
+                    }
+                }
+
+                $(this).trigger('change');
+            });
+        }
+    }
+
+    function load(settings, _onChange) {
+        onChange = _onChange;
+        fillSelectIPs('#adapterAddress', settings.adapterAddress, false, true, function () {
+            $('#adapterAddress').select();
+        });
+
+        settings.callbackAddress = settings.callbackAddress || '';
+        settings.port            = settings.port || 0;
+        settings.dontDelete      = settings.dontDelete || false;
+
+        for (var key in settings) {
+            if (settings.hasOwnProperty(key)) {
+                setValue(key, settings[key]);
+            }
+        }
+
+        $('#daemon').change(function () {
+            var $port = $('#homematicPort');
+            var $type = $('#type');
+            switch ($(this).val()) {
+                case 'rfd':
+                    $port.val('2001');
+                    break;
+
+                case 'hs485d':
+                    $port.val('2000');
+                    break;
+
+                case 'CUxD':
+                    $port.val('8701');
+                    $type.val('bin');
+                    break;
+
+                case 'HMIP':
+                    $port.val('2010');
+                    $type.val('xml');
+                    break;
+                default:
+            }
+        });
+
+        onChange(false);
+    }
+
+    function getSettings() {
+        var obj = {};
+        $('.value').each(function () {
+            var $this = $(this);
+            var id = $this.attr('id');
+
+            if ($this.attr('type') === 'checkbox') {
+                obj[$this.attr('id')] = $this.prop('checked');
+            } else {
+                obj[$this.attr('id')] = $this.val();
+            }
+        });
+        return obj;
+    }
+
+    function save(callback) {
+        var settings = getSettings();
+
+        settings.adapterAddress  = settings.adapterAddress.trim();
+        settings.callbackAddress = settings.callbackAddress.trim();
+
+        if (settings.adapterAddress === '0.0.0.0' && (!settings.callbackAddress || settings.callbackAddress === '0.0.0.0')) {
+            showMessage(_('Please specify callback address'));
+            $('#callbackAddress').focus();
+            return;
+        }
+
+        callback(getSettings());
+    }
+
+    function checkIPs(ip1, ip2) {
+        // normally it must be calculated the common subnet mask and applyed to both ip addresses, if result is the same => ok
+        // I will check only 2 first numbers of ipV4
+        var i1 = ip1.split('.');
+        var i2 = ip2.split('.');
+
+        // If ipv6 or DNS name
+        if (i1.length !== i2.length || i1.length !== 4) return 1;
+
+        if (i1[0] !== i2[0]) return 0;
+        if ((i1[0] === '192' && i1[1] === '168') || (i2[0] === '192' && i2[1] === '168')) {
+            if (i1[1] !== i2[1]) return 0;
+        } else {
+            if (i1[1] !== i2[1]) return 1;
+        }
+
+        if (i1[2] !== i2[2]) return 2;
+        if (i1[3] !== i2[3]) return 3;
+
+        return 4;
+    }
+</script>
+</head>
+<body>
+<div class="m adapter-container">
+    <div class="row">
+        <div class="col s12">
+            <ul class="tabs">
+                <li class="tab col s5 m4"><a href="#tab-main"    class="translate active">Main settings</a></li>
+                <li class="tab col s5 m4"><a href="#tab-advanced" class="translate">Additional settings</a></li>
+            </ul>
+        </div>
+        <div id="tab-main"    class="col s12 page">
+            <div class="row">
+                <div class="col s12 m4 l2">
+                    <img src="homematic.png" class="logo">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12 m8">
+                    <input type="text" id="homematicAddress" class="value"/>
+                    <label for="homematicAddress" class="translate">HomeMatic Address</label>
+                </div>
+                <div class="col s12 m4">
+                    <input type="number" id="homematicPort" class="value number"/>
+                    <label for="homematicPort" class="translate">HomeMatic Port</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12 m8">
+                    <select id="adapterAddress" class="value"></select>
+                    <label for="adapterAddress" class="translate">Adapter Address</label>
+                </div>
+                <div class="col s12 m4">
+                    <input type="number" id="port" class="value number"/>
+                    <label for="port" class="translate">Adapter Port</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12 m4">
+                    <select id="daemon" class="value">
+                        <option>rfd</option>
+                        <option>hs485d</option>
+                        <option>CUxD</option>
+                        <option value="HMIP">HomeMatic IP</option>
+                        <option>Homegear</option>
+                    </select>
+                    <label for="daemon" class="translate">Daemon</label>
+                </div>
+                <div class="col s12 m4">
+                    <select id="type" class="value">
+                        <option value="xml">XML-RPC</option>
+                        <option value="bin">BIN-RPC</option>
+                    </select>
+                    <label for="type" class="translate">Protocol</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12">
+                    <input type="checkbox" id="forceReInit" class="value"/>
+                    <span for="forceReInit" class="translate">Force objects re-init</span>
+                </div>
+            </div>
+        </div>
+        <div id="tab-advanced"    class="col s12 page">
+            <div class="row">
+                <div class="col s12">
+                    <input type="text" id="callbackAddress" class="value"/>
+                    <label for="callbackAddress" class="translate">Adapter Callback Address</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12 m6">
+                    <input id="checkInitInterval" class="value" type="number" min="10"/>
+                    <label for="checkInitInterval" class="translate">Check communication interval (sec)</label>
+                </div>
+                <div class="col s12 m6">
+                    <input type="number" id="reconnectInterval" class="value" min="10"/>
+                    <label for="reconnectInterval" class="translate">Reconnect interval (sec)</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12">
+                    <input type="checkbox" id="dontDelete" class="value"/>
+                    <span for="dontDelete"  class="translate">Don't delete devices</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
