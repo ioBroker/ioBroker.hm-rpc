@@ -512,9 +512,6 @@ var adapter = utils.Adapter({
                 adapter.log.info(adapter.config.type + 'rpc -> ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + ' init ' + JSON.stringify([daemonURL, '']));
                 try {
                     rpcClient.methodCall('init', [daemonURL, ''], function (err, data) {
-                        if (err) {
-                            adapter.log.error('Error on init: ' + err);
-                        }
                         if (connected) {
                             adapter.log.info('Disconnected');
                             connected = false;
@@ -1469,7 +1466,8 @@ function connect(isFirst) {
     // if bin rpc
     if (rpcClient.connect) {
 //        if (!isFirst) rpcClient.connect();
-        if (!isFirst) sendInit();
+//        if (!isFirst) sendInit();
+        if (isFirst) sendInit();
     } else {
         if (isFirst) sendInit();
 
