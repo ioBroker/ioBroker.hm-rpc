@@ -512,6 +512,9 @@ var adapter = utils.Adapter({
                 adapter.log.info(adapter.config.type + 'rpc -> ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + ' init ' + JSON.stringify([daemonURL, '']));
                 try {
                     rpcClient.methodCall('init', [daemonURL, ''], function (err, data) {
+                        if (err) {
+                            adapter.log.error('Error on init: ' + err);
+                        }
                         if (connected) {
                             adapter.log.info('Disconnected');
                             connected = false;
@@ -730,11 +733,17 @@ function initRpcServer() {
         });
 
         rpcServer.on('system.listMethods', function (err, params, callback) {
+            if (err) {
+                adapter.log.warn(' Error on system.listMethods: ' + err);
+            }
             adapter.log.info(adapter.config.type + 'rpc <- system.listMethods ' + JSON.stringify(params));
             callback(null, ['event', 'deleteDevices', 'listDevices', 'newDevices', 'system.listMethods', 'system.multicall']);
         });
 
         rpcServer.on('event', function (err, params, callback) {
+            if (err) {
+                adapter.log.warn(' Error on system.listMethods: ' + err);
+            }
             updateConnection();
             try {
                 callback(null, methods.event(err, params));
@@ -744,6 +753,9 @@ function initRpcServer() {
         });
 
         rpcServer.on('newDevices', function (err, params, callback) {
+            if (err) {
+                adapter.log.warn(' Error on system.listMethods: ' + err);
+            }
 
             var newDevices = params[1];
 
@@ -806,6 +818,9 @@ function initRpcServer() {
         });
 
         rpcServer.on('listDevices', function (err, params, callback) {
+            if (err) {
+                adapter.log.warn(' Error on system.listMethods: ' + err);
+            }
             adapter.log.info(adapter.config.type + 'rpc <- listDevices ' + JSON.stringify(params));
             adapter.objects.getObjectView('hm-rpc', 'listDevices', {startkey: 'hm-rpc.' + adapter.instance + '.', endkey: 'hm-rpc.' + adapter.instance + '.\u9999'}, function (err, doc) {
                 var response = [];
@@ -842,6 +857,9 @@ function initRpcServer() {
         });
 
         rpcServer.on('deleteDevices', function (err, params, callback) {
+            if (err) {
+                adapter.log.warn(' Error on system.listMethods: ' + err);
+            }
             adapter.log.info(adapter.config.type + 'rpc <- deleteDevices ' + params[1].length);
             for (var i = 0; i < params[1].length; i++) {
                 if (params[1][i].indexOf(':') !== -1) {
@@ -1062,39 +1080,44 @@ function getValueParamsets() {
                 adapter.log.info(adapter.config.type + 'rpc -> getParamsetDescription ' + JSON.stringify([obj.native.ADDRESS, 'VALUES']));
                 try {
                     rpcClient.methodCall('getParamsetDescription', [obj.native.ADDRESS, 'VALUES'], function (err, res) {
-                        var paramset = {
-                            'type': 'meta',
-                            'meta': {
-                                adapter: 'hm-rpc',
-                                type: 'paramsetDescription'
-                            },
-                            'common': {
-
-                            },
-                            'native': res
-                        };
-                        metaValues[key] = res;
-
-                        if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
-                            addEPaperToMeta();
+                        if (err) {
+                            adapter.log.error('Error on getParamsetDescription: ' + err);
                         }
+                        else {
+                            var paramset = {
+                                'type': 'meta',
+                                'meta': {
+                                    adapter: 'hm-rpc',
+                                    type: 'paramsetDescription'
+                                },
+                                'common': {
 
-                        if (res) {
-                            // if not empty
-                            for (var attr in res) {
-                                if (res.hasOwnProperty(attr)) {
-                                    adapter.log.warn('Send this info to developer: _id: "' + key + '"');
-                                    adapter.log.warn('Send this info to developer: ' + JSON.stringify(paramset));
-                                    break;
+                                },
+                                'native': res
+                            };
+                            metaValues[key] = res;
+
+                            if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
+                                addEPaperToMeta();
+                            }
+
+                            if (res) {
+                                // if not empty
+                                for (var attr in res) {
+                                    if (res.hasOwnProperty(attr)) {
+                                        adapter.log.warn('Send this info to developer: _id: "' + key + '"');
+                                        adapter.log.warn('Send this info to developer: ' + JSON.stringify(paramset));
+                                        break;
+                                    }
                                 }
                             }
-                        }
 
-                        adapter.objects.setObject(key, paramset, function () {
-                            addParamsetObjects(obj, res, function () {
-                                setTimeout(getValueParamsets, 0);
+                            adapter.objects.setObject(key, paramset, function () {
+                                addParamsetObjects(obj, res, function () {
+                                    setTimeout(getValueParamsets, 0);
+                                });
                             });
-                        });
+                        }
                     });
                 } catch (err) {
                     adapter.log.error('Cannot call getParamsetDescription: :' + err);
@@ -1296,7 +1319,10 @@ function getCuxDevices(callback) {
         // request devices from CUxD
         try {
             rpcClient.methodCall('listDevices', [], function (err, newDevices) {
-
+                if (err) {
+                    adapter.log.error('Error on listDevices: ' + err);
+                    return;
+                }
                 adapter.log.info(adapter.config.type + 'rpc -> listDevices ' + newDevices.length);
 
                 if (adapter.config.forceReInit === false) {
@@ -1390,11 +1416,12 @@ function connect(isFirst) {
         rpcClient = rpc.createClient({
             host: adapter.config.homematicAddress,
             port: adapter.config.homematicPort,
-            path: '/'
+            path: '/',
+            reconnectTimeout: adapter.config.reconnectInterval*1000
         });
 
         // if bin-rpc
-        if (rpcClient.on) {
+/*        if (rpcClient.on) {
             rpcClient.on('connect', function (err) {
                 sendInit();
             });
@@ -1428,7 +1455,7 @@ function connect(isFirst) {
                     connTimeout = setTimeout(connect, adapter.config.reconnectInterval * 1000);
                 }
             });
-        }
+        }*/
     }
 
     connTimeout = null;
@@ -1441,7 +1468,8 @@ function connect(isFirst) {
 
     // if bin rpc
     if (rpcClient.connect) {
-        if (!isFirst) rpcClient.connect();
+//        if (!isFirst) rpcClient.connect();
+        if (!isFirst) sendInit();
     } else {
         if (isFirst) sendInit();
 

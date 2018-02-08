@@ -63,6 +63,9 @@ If this flag is not activated, the ioBroker will remove devices from configurati
 Activate this flag to do *not* delete such a devices, e.g. if some devices was temporary removed on CCU/Homematic.
 
 ## Changelog
+### 1.6.0 (2018-02-xx)
+* (Apollon77) Upgrade binrpc library
+
 ### 1.5.1 (2018-01-26)
 * (bluefox) Ready for Admin3
 
