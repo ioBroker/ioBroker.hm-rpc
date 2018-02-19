@@ -15,6 +15,17 @@
         },
         "version": "1.6.0",
         "news": {
+            "1.6.0": {
+                "en": "Update dependencies",
+                "de": "Abhängigkeiten aktualisieren",
+                "ru": "Обновить зависимости",
+                "pt": "Atualizações de atualização",
+                "nl": "Werk afhankelijkheden bij",
+                "fr": "Mettre à jour les dépendances",
+                "it": "Aggiorna dipendenze",
+                "es": "Actualizar dependencias",
+                "pl": "Zaktualizuj zależności"
+            },
             "1.5.1": {
                 "en": "Ready for Admin3",
                 "de": "Bereit für Admin3",
@@ -25,7 +36,7 @@
                 "it": "Pronto per Admin3",
                 "es": "Listo para Admin3",
                 "pl": "Gotowy na Admin3"
-              },
+            },
             "1.5.0": {
                 "en": "Add new devices in the meta information\nForce stop of adapter",
                 "de": "Neue Meta-Information ist hinzugefügt\nForsiere Beendung vom Adapter",
