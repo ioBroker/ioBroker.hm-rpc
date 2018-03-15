@@ -13,8 +13,19 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.6.0",
+        "version": "1.6.1",
         "news": {
+            "1.6.1": {
+                "en": "The binrpc packet 2was updated\nThe ping for CUxD was disabled",
+                "de": "Das binrpc-Paket 2 wurde aktualisiert\nDer Ping für CUxD wurde deaktiviert",
+                "ru": "Обновлен пакет binrpc 2\nПинг для CUxD был отключен",
+                "pt": "O pacote binrpc 2 foi atualizado\nO ping para CUxD foi desativado",
+                "nl": "Het binrpc-pakket 2 is bijgewerkt\nDe ping voor CUxD is uitgeschakeld",
+                "fr": "Le paquet binrpc 2a été mis à jour\nLe ping pour CUxD a été désactivé",
+                "it": "Il pacchetto binrpc 2 è stato aggiornato\nIl ping per CUxD è stato disabilitato",
+                "es": "El paquete binrpc 2 fue actualizado\nEl ping para CUxD estaba deshabilitado",
+                "pl": "Pakiet binrpc 2 został zaktualizowany\nPing dla CUxD został wyłączony"
+            },
             "1.6.0": {
                 "en": "Update dependencies",
                 "de": "Abhängigkeiten aktualisieren",
