@@ -552,9 +552,9 @@ var rpcClient;
 
 var rpcServer;
 
-var metaValues =    {};
-var metaRoles =     {};
-var dpTypes =       {};
+var metaValues = {};
+var metaRoles =  {};
+var dpTypes =    {};
 
 var lastEvent = 0;
 var eventInterval;
@@ -1079,8 +1079,7 @@ function getValueParamsets() {
                     rpcClient.methodCall('getParamsetDescription', [obj.native.ADDRESS, 'VALUES'], function (err, res) {
                         if (err) {
                             adapter.log.error('Error on getParamsetDescription: ' + err);
-                        }
-                        else {
+                        } else {
                             var paramset = {
                                 'type': 'meta',
                                 'meta': {
@@ -1402,7 +1401,9 @@ function updateConnection() {
         clearTimeout(connTimeout);
         connTimeout = null;
     }
-    if (!eventInterval) {
+
+    // CUxD does not support ping
+    if (!eventInterval && adapter.config.daemon !== 'CUxD') {
         adapter.log.debug('start ping interval');
         eventInterval = setInterval(keepAlive, adapter.config.checkInitInterval * 1000 / 2);
     }
@@ -1414,7 +1415,7 @@ function connect(isFirst) {
             host: adapter.config.homematicAddress,
             port: adapter.config.homematicPort,
             path: '/',
-            reconnectTimeout: adapter.config.reconnectInterval*1000
+            reconnectTimeout: adapter.config.reconnectInterval * 1000
         });
 
         // if bin-rpc
@@ -1463,14 +1464,10 @@ function connect(isFirst) {
         eventInterval = null;
     }
 
-    // if bin rpc
-    if (rpcClient.connect) {
-//        if (!isFirst) rpcClient.connect();
-//        if (!isFirst) sendInit();
-        if (isFirst) sendInit();
-    } else {
-        if (isFirst) sendInit();
+    if (isFirst) sendInit();
 
+    // if not bin rpc
+    if (!rpcClient.connect) {
         if (!connInterval) {
             adapter.log.debug('start connecting interval');
             connInterval = setInterval(function () {
