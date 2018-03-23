@@ -8343,6 +8343,360 @@
                     "UNIT": ""
                 }
             }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HM-ES-PMSw1-DR.MAINTENANCE.16",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "AES_KEY": {
+                    "DEFAULT": 0,
+                    "FLAGS": 0,
+                    "ID": "AES_KEY",
+                    "MAX": 127,
+                    "MIN": 0,
+                    "OPERATIONS": 1,
+                    "TAB_ORDER": 8,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
+                },
+                "CONFIG_PENDING": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "CONFIG_PENDING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 2,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "DEVICE_IN_BOOTLOADER": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "DEVICE_IN_BOOTLOADER",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 6,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "DUTYCYCLE": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "DUTYCYCLE",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 3,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "RSSI_DEVICE": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "RSSI_DEVICE",
+                    "MAX": 2147483647,
+                    "MIN": -2147483648,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 4,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
+                },
+                "RSSI_PEER": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "RSSI_PEER",
+                    "MAX": 2147483647,
+                    "MIN": -2147483648,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 5,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
+                },
+                "STICKY_UNREACH": {
+                    "DEFAULT": false,
+                    "FLAGS": 25,
+                    "ID": "STICKY_UNREACH",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 7,
+                    "TAB_ORDER": 1,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "UNREACH": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "UNREACH",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 0,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "UPDATE_PENDING": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "UPDATE_PENDING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 7,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HM-ES-PMSw1-DR.SWITCH.16",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "INHIBIT": {
+                    "CONTROL": "NONE",
+                    "DEFAULT": false,
+                    "FLAGS": 1,
+                    "ID": "INHIBIT",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 7,
+                    "TAB_ORDER": 2,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "INSTALL_TEST": {
+                    "DEFAULT": false,
+                    "FLAGS": 3,
+                    "ID": "INSTALL_TEST",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 2,
+                    "TAB_ORDER": 3,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
+                },
+                "ON_TIME": {
+                    "CONTROL": "NONE",
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "ON_TIME",
+                    "MAX": 85825945.5,
+                    "MIN": 0,
+                    "OPERATIONS": 2,
+                    "TAB_ORDER": 1,
+                    "TYPE": "FLOAT",
+                    "UNIT": "s"
+                },
+                "STATE": {
+                    "CONTROL": "SWITCH.STATE",
+                    "DEFAULT": false,
+                    "FLAGS": 1,
+                    "ID": "STATE",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 7,
+                    "TAB_ORDER": 0,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "WORKING": {
+                    "DEFAULT": false,
+                    "FLAGS": 3,
+                    "ID": "WORKING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 4,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HM-ES-PMSw1-DR.POWERMETER.16",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "BOOT": {
+                    "CONTROL": "POWERMETER.BOOT",
+                    "DEFAULT": false,
+                    "FLAGS": 3,
+                    "ID": "BOOT",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 5,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "CURRENT": {
+                    "CONTROL": "POWERMETER.CURRENT",
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "CURRENT",
+                    "MAX": 65535,
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 2,
+                    "TYPE": "FLOAT",
+                    "UNIT": "mA"
+                },
+                "ENERGY_COUNTER": {
+                    "CONTROL": "POWERMETER.ENERGY_COUNTER",
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "ENERGY_COUNTER",
+                    "MAX": 838860.699219,
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 0,
+                    "TYPE": "FLOAT",
+                    "UNIT": "Wh"
+                },
+                "FREQUENCY": {
+                    "CONTROL": "POWERMETER.FREQUENCY",
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "FREQUENCY",
+                    "MAX": 51.27,
+                    "MIN": 48.72,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 4,
+                    "TYPE": "FLOAT",
+                    "UNIT": "Hz"
+                },
+                "POWER": {
+                    "CONTROL": "POWERMETER.POWER",
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "POWER",
+                    "MAX": 167772.149902,
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 1,
+                    "TYPE": "FLOAT",
+                    "UNIT": "W"
+                },
+                "VOLTAGE": {
+                    "CONTROL": "POWERMETER.VOLTAGE",
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "VOLTAGE",
+                    "MAX": 6553.5,
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 3,
+                    "TYPE": "FLOAT",
+                    "UNIT": "V"
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HM-ES-PMSw1-DR.CONDITION_POWER.16",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "DECISION_VALUE": {
+                    "CONTROL": "NONE",
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "DECISION_VALUE",
+                    "MAX": 255,
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 0,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HM-ES-PMSw1-DR.CONDITION_CURRENT.16",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "DECISION_VALUE": {
+                    "CONTROL": "NONE",
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "DECISION_VALUE",
+                    "MAX": 255,
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 0,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HM-ES-PMSw1-DR.CONDITION_VOLTAGE.16",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "DECISION_VALUE": {
+                    "CONTROL": "NONE",
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "DECISION_VALUE",
+                    "MAX": 255,
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 0,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HM-ES-PMSw1-DR.CONDITION_FREQUENCY.16",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "DECISION_VALUE": {
+                    "CONTROL": "NONE",
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "DECISION_VALUE",
+                    "MAX": 255,
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 0,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
+                }
+            }
         }
     ],
     "instanceObjects": [
