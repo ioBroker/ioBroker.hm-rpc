@@ -8798,7 +8798,7 @@
                 }
             }
         },
-		{
+        {
             "_id": "hm-rpc.meta.VALUES.HB-UNI-Sen-TEMP-DS18B20.WEATHER.2",
             "type": "meta",
             "meta": {
