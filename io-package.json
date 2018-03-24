@@ -8697,6 +8697,129 @@
                     "UNIT": ""
                 }
             }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HB-UNI-Sen-TEMP-DS18B20.MAINTENANCE.2",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "CONFIG_PENDING": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "CONFIG_PENDING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 2,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "DEVICE_IN_BOOTLOADER": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "DEVICE_IN_BOOTLOADER",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 6,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "LOWBAT": {
+                    "CONTROL": "NONE",
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "LOWBAT",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 3,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "RSSI_DEVICE": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "RSSI_DEVICE",
+                    "MAX": 2147483647,
+                    "MIN": -2147483648,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 4,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
+                },
+                "RSSI_PEER": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "RSSI_PEER",
+                    "MAX": 2147483647,
+                    "MIN": -2147483648,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 5,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
+                },
+                "STICKY_UNREACH": {
+                    "DEFAULT": false,
+                    "FLAGS": 25,
+                    "ID": "STICKY_UNREACH",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 7,
+                    "TAB_ORDER": 1,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "UNREACH": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "UNREACH",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 0,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "UPDATE_PENDING": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "UPDATE_PENDING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 7,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                }
+            }
+        },
+		{
+            "_id": "hm-rpc.meta.VALUES.HB-UNI-Sen-TEMP-DS18B20.WEATHER.2",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "TEMPERATURE": {
+                    "AutoconfRoles": "WEATHER",
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "TEMPERATURE",
+                    "MAX": 150,
+                    "MIN": -150,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 0,
+                    "TYPE": "FLOAT",
+                    "UNIT": "°C"
+                }
+            }
         }
     ],
     "instanceObjects": [
