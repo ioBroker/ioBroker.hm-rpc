@@ -13,8 +13,19 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.6.1",
+        "version": "1.6.2",
         "news": {
+            "1.6.2": {
+                "en": "Added some missing metas for HM-IP Devices",
+                "de": "Einige fehlende Metas für HM-IP-Geräte hinzugefügt",
+                "ru": "Добавлены недостающие мета для устройств HM-IP",
+                "pt": "Adicionadas algumas metas ausentes para dispositivos HM-IP",
+                "nl": "Enkele ontbrekende metas toegevoegd voor HM-IP-apparaten",
+                "fr": "Ajout de métas manquants pour les appareils HM-IP",
+                "it": "Aggiunti alcuni metadomi mancanti per i dispositivi HM-IP",
+                "es": "Se agregaron algunas metas faltantes para dispositivos HM-IP",
+                "pl": "Dodano brakujące meta dla urządzeń HM-IP"
+            },
             "1.6.1": {
                 "en": "The binrpc packet 2was updated\nThe ping for CUxD was disabled",
                 "de": "Das binrpc-Paket 2 wurde aktualisiert\nDer Ping für CUxD wurde deaktiviert",
