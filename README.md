@@ -63,6 +63,9 @@ If this flag is not activated, the ioBroker will remove devices from configurati
 Activate this flag to do *not* delete such a devices, e.g. if some devices was temporary removed on CCU/Homematic.
 
 ## Changelog
+### 1.6.2 (2018-04-27)
+* (BuZZy1337) Added some missing metas for HM-IP Devices
+
 ### 1.6.1 (2018-03-15)
 * (bluefox) The binrpc packet 2was updated
 * (bluefox) The ping for CUxD was disabled

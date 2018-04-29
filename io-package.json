@@ -13,8 +13,19 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.6.1",
+        "version": "1.6.2",
         "news": {
+            "1.6.2": {
+                "en": "Added some missing metas for HM-IP Devices",
+                "de": "Einige fehlende Metas für HM-IP-Geräte hinzugefügt",
+                "ru": "Добавлены недостающие мета для устройств HM-IP",
+                "pt": "Adicionadas algumas metas ausentes para dispositivos HM-IP",
+                "nl": "Enkele ontbrekende metas toegevoegd voor HM-IP-apparaten",
+                "fr": "Ajout de métas manquants pour les appareils HM-IP",
+                "it": "Aggiunti alcuni metadomi mancanti per i dispositivi HM-IP",
+                "es": "Se agregaron algunas metas faltantes para dispositivos HM-IP",
+                "pl": "Dodano brakujące meta dla urządzeń HM-IP"
+            },
             "1.6.1": {
                 "en": "The binrpc packet 2was updated\nThe ping for CUxD was disabled",
                 "de": "Das binrpc-Paket 2 wurde aktualisiert\nDer Ping für CUxD wurde deaktiviert",
@@ -10411,6 +10422,319 @@
                     "TAB_ORDER": 0,
                     "TYPE": "INTEGER",
                     "UNIT": ""
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HmIP-SPDR.MAINTENANCE.1",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "SABOTAGE": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 9,
+                    "ID": "SABOTAGE",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "CONFIG_PENDING": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 9,
+                    "ID": "CONFIG_PENDING",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "DUTY_CYCLE": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 1,
+                    "ID": "DUTY_CYCLE",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "LOW_BAT": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 9,
+                    "ID": "LOW_BAT",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "UNREACH": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 25,
+                    "ID": "UNREACH",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "RSSI_DEVICE": {
+                    "MIN": -128,
+                    "OPERATIONS": 5,
+                    "MAX": 127,
+                    "FLAGS": 1,
+                    "ID": "RSSI_DEVICE",
+                    "TYPE": "INTEGER",
+                    "DEFAULT": 0
+                },
+                "OPERATING_VOLTAGE": {
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "MAX": 25.2,
+                    "FLAGS": 1,
+                    "ID": "OPERATING_VOLTAGE",
+                    "TYPE": "FLOAT",
+                    "DEFAULT": 0
+                },
+                "RSSI_PEER": {
+                    "MIN": -128,
+                    "OPERATIONS": 5,
+                    "MAX": 127,
+                    "FLAGS": 1,
+                    "ID": "RSSI_PEER",
+                    "TYPE": "INTEGER",
+                    "DEFAULT": 0
+                },
+                "ERROR_CODE": {
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "MAX": 255,
+                    "FLAGS": 9,
+                    "ID": "ERROR_CODE",
+                    "TYPE": "INTEGER",
+                    "DEFAULT": 0
+                },
+                "UPDATE_PENDING": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 9,
+                    "ID": "UPDATE_PENDING",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HmIP-SPDR.PASSAGE_DETECTOR_DIRECTION_TRANSMITTER.1",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "PASSAGE_COUNTER_VALUE": {
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "MAX": 127,
+                    "FLAGS": 1,
+                    "ID": "PASSAGE_COUNTER_VALUE",
+                    "TYPE": "INTEGER",
+                    "DEFAULT": 0,
+                    "CONTROL": "PASSAGE_DETECTOR_DIRECTION_TRANSMITTER.PASSAGE_COUNTER_VALUE"
+                },
+                "PASSAGE_COUNTER_OVERFLOW": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 1,
+                    "ID": "PASSAGE_COUNTER_OVERFLOW",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false,
+                    "CONTROL": "PASSAGE_DETECTOR_DIRECTION_TRANSMITTER.PASSAGE_COUNTER_OVERFLOW"
+                },
+                "LAST_PASSAGE_DIRECTION": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 1,
+                    "ID": "LAST_PASSAGE_DIRECTION",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false,
+                    "CONTROL": "PASSAGE_DETECTOR_DIRECTION_TRANSMITTER.LAST_PASSAGE_DIRECTION"
+                },
+                "CURRENT_PASSAGE_DIRECTION": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 1,
+                    "ID": "CURRENT_PASSAGE_DIRECTION",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false,
+                    "CONTROL": "PASSAGE_DETECTOR_DIRECTION_TRANSMITTER.CURRENT_PASSAGE_DIRECTION"
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HmIP-SPI.PRESENCEDETECTOR_TRANSCEIVER.1",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "PRESENCE_DETECTION_STATE": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 1,
+                    "ID": "PRESENCE_DETECTION_STATE",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false,
+                    "CONTROL": "MOTIONDETECTOR_TRANSCEIVER.MOTION_DETECTION_STATE"
+                },
+                "ILLUMINATION": {
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "MAX": 163830,
+                    "FLAGS": 1,
+                    "ID": "ILLUMINATION",
+                    "TYPE": "FLOAT",
+                    "DEFAULT": 0,
+                    "CONTROL": "MOTIONDETECTOR_TRANSCEIVER.ILLUMINATION"
+                },
+                "RESET_PRESENCE": {
+                    "MIN": false,
+                    "OPERATIONS": 2,
+                    "MAX": true,
+                    "FLAGS": 1,
+                    "ID": "RESET_PRESENCE",
+                    "TYPE": "ACTION",
+                    "DEFAULT": false,
+                    "CONTROL": "MOTIONDETECTOR_TRANSCEIVER.RESET_MOTION"
+                },
+                "CURRENT_ILLUMINATION": {
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "MAX": 163830,
+                    "FLAGS": 1,
+                    "ID": "CURRENT_ILLUMINATION",
+                    "TYPE": "FLOAT",
+                    "DEFAULT": 0
+                },
+                "PRESENCE_DETECTION_ACTIVE": {
+                    "MIN": false,
+                    "OPERATIONS": 7,
+                    "MAX": true,
+                    "FLAGS": 1,
+                    "ID": "PRESENCE_DETECTION_ACTIVE",
+                    "TYPE": "BOOL",
+                    "DEFAULT": true,
+                    "CONTROL": "MOTIONDETECTOR_TRANSCEIVER.MOTION_DETECTION_ACTIVE"
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HmIP-SPI.MAINTENANCE.1",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "SABOTAGE": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 9,
+                    "ID": "SABOTAGE",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "CONFIG_PENDING": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 9,
+                    "ID": "CONFIG_PENDING",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "DUTY_CYCLE": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 1,
+                    "ID": "DUTY_CYCLE",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "LOW_BAT": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 9,
+                    "ID": "LOW_BAT",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "UNREACH": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 25,
+                    "ID": "UNREACH",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "RSSI_DEVICE": {
+                    "MIN": -128,
+                    "OPERATIONS": 5,
+                    "MAX": 127,
+                    "FLAGS": 1,
+                    "ID": "RSSI_DEVICE",
+                    "TYPE": "INTEGER",
+                    "DEFAULT": 0
+                },
+                "OPERATING_VOLTAGE": {
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "MAX": 25.2,
+                    "FLAGS": 1,
+                    "ID": "OPERATING_VOLTAGE",
+                    "TYPE": "FLOAT",
+                    "DEFAULT": 0
+                },
+                "RSSI_PEER": {
+                    "MIN": -128,
+                    "OPERATIONS": 5,
+                    "MAX": 127,
+                    "FLAGS": 1,
+                    "ID": "RSSI_PEER",
+                    "TYPE": "INTEGER",
+                    "DEFAULT": 0
+                },
+                "ERROR_CODE": {
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "MAX": 255,
+                    "FLAGS": 9,
+                    "ID": "ERROR_CODE",
+                    "TYPE": "INTEGER",
+                    "DEFAULT": 0
+                },
+                "UPDATE_PENDING": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 9,
+                    "ID": "UPDATE_PENDING",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
                 }
             }
         }
