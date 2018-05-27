@@ -1464,10 +1464,8 @@ function connect(isFirst) {
         eventInterval = null;
     }
 
-    if (isFirst) sendInit();
-
     // if not bin rpc
-    if (!rpcClient.connect) {
+    if (!rpcClient.connected) {
         if (!connInterval) {
             adapter.log.debug('start connecting interval');
             connInterval = setInterval(function () {
