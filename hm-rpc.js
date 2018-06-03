@@ -1,10 +1,12 @@
-/* jshint -W097 */// jshint strict:false
+/* jshint -W097 */
+/* jshint strict: false */
 /*jslint node: true */
 'use strict';
-var utils     = require(__dirname + '/lib/utils'); // Get common adapter utils
-var images    = require(__dirname + '/lib/images');
-var connected = false;
-var displays  = {};
+
+const utils     = require(__dirname + '/lib/utils'); // Get common adapter utils
+const images    = require(__dirname + '/lib/images');
+let connected = false;
+let displays  = {};
 // msgBuffer = [{line: line2, icon: icon2}, {line: line3, icon: icon3}, {line: '', icon: ''}];
 // Icons:
 //      0x80 AUS
@@ -47,7 +49,7 @@ function number2hex(num) {
 function combineEPaperCommand(lines, signal, ton, repeats, offset) {
     signal = number2hex(signal || '0xF0');
     ton    = number2hex(ton    || '0xC0');
-    var substitutions = {
+    const substitutions = {
         'A': '0x41',
         'B': '0x42',
         'C': '0x43',
@@ -140,13 +142,13 @@ function combineEPaperCommand(lines, signal, ton, repeats, offset) {
     offset  = 10;
     repeats = 1;
 
-    var command = '0x02,0x0A';
-    for (var m = 0; m < lines.length; m++) {
-        var line = lines[m].line;
-        var icon = lines[m].icon;
+    let command = '0x02,0x0A';
+    for (let m = 0; m < lines.length; m++) {
+        let line = lines[m].line;
+        let icon = lines[m].icon;
         if (line || icon) {
             command = command + ',0x12';
-            var i;
+            let i;
             if ((line.substring(0, 2) === '0x') && (line.length === 4)) {
                 command = command + ',' + line;
                 i = 12;
@@ -239,10 +241,10 @@ function combineEPaperCommand(lines, signal, ton, repeats, offset) {
 }
 
 function controlEPaper(id, data) {
-    var tmp = id.split('.');
+    let tmp = id.split('.');
     tmp[3] = '3';
     tmp[4] = 'SUBMIT';
-    var val = combineEPaperCommand(data.lines, data.signal || '0xF0', data.tone || '0xC0');
+    const val = combineEPaperCommand(data.lines, data.signal || '0xF0', data.tone || '0xC0');
 
     try {
         if (rpcClient && connected) {
@@ -262,12 +264,12 @@ function controlEPaper(id, data) {
 
 function readSignals(id) {
     displays[id] = null;
-    var data = {
+    let data = {
         lines:  [{}, {}, {}],
         signal: '0xF0',
         tone:   '0xC0'
     };
-    var count = 0;
+    let count = 0;
     count++;
     adapter.getForeignState(id + '.0.EPAPER_LINE2', function (err, state) {
         data.lines[0].line = state ? state.val || '' : '';
@@ -312,12 +314,12 @@ function readSignals(id) {
 
 function readSettings(id) {
     displays[id] = null;
-    var data = {
+    let data = {
         lines:  [{}, {}, {}],
         signal: '0xF0',
         tone:   '0xC0'
     };
-    var count = 0;
+    let count = 0;
     count++;
     adapter.getForeignState(id + '.0.EPAPER_LINE2', function (err, state) {
         data.lines[0].line = state ? state.val || '' : '';
@@ -352,7 +354,7 @@ function readSettings(id) {
 }
 
 // the adapter object
-var adapter = utils.Adapter({
+const adapter = utils.Adapter({
 
     name: 'hm-rpc',
 
@@ -362,8 +364,8 @@ var adapter = utils.Adapter({
     },
     stateChange: function (id, state) {
         if (state && state.ack !== true) {
-            var tmp = id.split('.');
-            var val;
+            const tmp = id.split('.');
+            let val;
 
             if (id === adapter.namespace + '.updated') return;
 
@@ -382,10 +384,10 @@ var adapter = utils.Adapter({
                 state.val = state.val / 100;
             }
 
-            var type = dpTypes[id].TYPE;
+            const type = dpTypes[id].TYPE;
 
             if (type === 'EPAPER_LINE' || type === 'EPAPER_ICON') {
-                var _id = tmp[0] + '.' + tmp[1] + '.' + tmp[2];
+                const _id = tmp[0] + '.' + tmp[1] + '.' + tmp[2];
                 if (displays[_id] && displays[_id].timer) {
                     clearTimeout(displays[_id].timer);
                     if (displays[_id].withTone) {
@@ -396,7 +398,7 @@ var adapter = utils.Adapter({
                 displays[_id] = {timer: setTimeout(readSettings, 300, _id), withTone: false};
                 return;
             } else if (type === 'EPAPER_SIGNAL' || type === 'EPAPER_TONE') {
-                var __id = tmp[0] + '.' + tmp[1] + '.' + tmp[2];
+                const __id = tmp[0] + '.' + tmp[1] + '.' + tmp[2];
                 if (displays[_id] && displays[_id].timer) {
                     clearTimeout(displays[_id].timer);
                 }
@@ -547,21 +549,21 @@ var adapter = utils.Adapter({
     }
 });
 
-var rpc;
-var rpcClient;
+let rpc;
+let rpcClient;
 
-var rpcServer;
+let rpcServer;
 
-var metaValues = {};
-var metaRoles =  {};
-var dpTypes =    {};
+let metaValues = {};
+let metaRoles =  {};
+let dpTypes =    {};
 
-var lastEvent = 0;
-var eventInterval;
-var connInterval;
-var connTimeout;
-var daemonURL = '';
-var daemonProto = '';
+let lastEvent = 0;
+let eventInterval;
+let connInterval;
+let connTimeout;
+let daemonURL = '';
+let daemonProto = '';
 
 function main() {
     adapter.config.reconnectInterval = parseInt(adapter.config.reconnectInterval, 10) || 30;
@@ -591,8 +593,9 @@ function main() {
     adapter.objects.getObjectView('hm-rpc', 'paramsetDescription', {startkey: 'hm-rpc.meta.VALUES', endkey: 'hm-rpc.meta.VALUES.\u9999'}, function handleValueParamSetDescriptions(err, doc) {
         if (err) adapter.log.error('getObjectView hm-rpc: ' + err);
         if (doc && doc.rows) {
-            for (var i = 0; i < doc.rows.length; i++) {
-                metaValues[doc.rows[i].id.slice(19)] = doc.rows[i].value.native;
+            for (let i = 0; i < doc.rows.length; i++) {
+                const channel = doc.rows[i].id.slice(19);
+                metaValues[channel] = doc.rows[i].value.native;
             }
         }
         // Load common.role assignments
@@ -607,7 +610,7 @@ function main() {
 
     adapter.objects.getObjectView('system', 'state', {startkey: adapter.namespace, endkey: adapter.namespace + '\u9999'}, function handleStateViews(err, res) {
         if (!err && res.rows) {
-            for (var i = 0; i < res.rows.length; i++) {
+            for (let i = 0; i < res.rows.length; i++) {
                 if (res.rows[i].id === adapter.namespace + '.updated') continue;
                 if (!res.rows[i].value.native) {
                     adapter.log.warn('State ' + res.rows[i].id + ' does not have native.');
@@ -700,8 +703,8 @@ function initRpcServer() {
     adapter.config.port          = parseInt(adapter.config.port, 10);
 
     //adapterPort was introduced in v1.0.1. If not set yet then try 2000
-    var adapterPort = parseInt(adapter.config.port || adapter.config.homematicPort, 10) || 2000;
-    var callbackAddress = adapter.config.callbackAddress || adapter.config.adapterAddress;
+    const adapterPort = parseInt(adapter.config.port || adapter.config.homematicPort, 10) || 2000;
+    const callbackAddress = adapter.config.callbackAddress || adapter.config.adapterAddress;
     adapter.getPort(adapterPort, function (port) {
         daemonURL = daemonProto + callbackAddress + ':' + port;
         rpcServer = rpc.createServer({host: adapter.config.adapterAddress, port: port});
@@ -717,8 +720,8 @@ function initRpcServer() {
 
         rpcServer.on('system.multicall', function (method, params, callback) {
             updateConnection();
-            var response = [];
-            for (var i = 0; i < params[0].length; i++) {
+            let response = [];
+            for (let i = 0; i < params[0].length; i++) {
                 if (methods[params[0][i].methodName]) {
                     adapter.log.debug(adapter.config.type + ' multicall <' + params[0][i].methodName + '>: ' + params[0][i].params);
                     response.push(methods[params[0][i].methodName](null, params[0][i].params));
@@ -754,7 +757,7 @@ function initRpcServer() {
                 adapter.log.warn(' Error on system.listMethods: ' + err);
             }
 
-            var newDevices = params[1];
+            const newDevices = params[1];
 
             adapter.log.info(adapter.config.type + 'rpc <- newDevices ' + newDevices.length);
 
@@ -766,18 +769,18 @@ function initRpcServer() {
                     endkey: 'hm-rpc.' + adapter.instance + '.\u9999'
                 }, function (err, doc) {
                     if (doc && doc.rows) {
-                        for (var i = 0; i < doc.rows.length; i++) {
+                        for (let i = 0; i < doc.rows.length; i++) {
                             if (doc.rows[i].id === adapter.namespace + '.updated') continue;
 
                             // lets get the device description
-                            var val = doc.rows[i].value;
+                            const val = doc.rows[i].value;
 
                             if (typeof val.ADDRESS === 'undefined') continue;
 
                             // lets find the current device in the newDevices array
                             // and if it doesn't exist we can delete it
-                            var index = -1;
-                            for (var j = 0; j < newDevices.length; j++) {
+                            let index = -1;
+                            for (let j = 0; j < newDevices.length; j++) {
                                 if (newDevices[j].ADDRESS === val.ADDRESS && newDevices[j].VERSION === val.VERSION) {
                                     index = j;
                                     break;
@@ -789,8 +792,8 @@ function initRpcServer() {
                             if (index === -1) {
                                 if (val.ADDRESS && !adapter.config.dontDelete) {
                                     if (val.ADDRESS.indexOf(':') !== -1) {
-                                        var address = val.ADDRESS.replace(':', '.');
-                                        var parts = address.split('.');
+                                        const address = val.ADDRESS.replace(':', '.').replace(/[*,;'"`<>\\\s?]/, '_');
+                                        const parts = address.split('.');
                                         adapter.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
                                         adapter.log.info('obsolete channel ' + address + ' ' + JSON.stringify(address) + ' deleted');
                                     } else {
@@ -820,14 +823,14 @@ function initRpcServer() {
             }
             adapter.log.info(adapter.config.type + 'rpc <- listDevices ' + JSON.stringify(params));
             adapter.objects.getObjectView('hm-rpc', 'listDevices', {startkey: 'hm-rpc.' + adapter.instance + '.', endkey: 'hm-rpc.' + adapter.instance + '.\u9999'}, function (err, doc) {
-                var response = [];
+                let response = [];
 
                 // we only fill the response if this isn't a force reinit and
                 // if the adapter instance is not bothering with HmIP (which seems to work slightly different in terms of XMLRPC)
                 if (!adapter.config.forceReInit && adapter.config.daemon !== 'HMIP' && doc && doc.rows) {
-                    for (var i = 0; i < doc.rows.length; i++) {
+                    for (let i = 0; i < doc.rows.length; i++) {
                         if (doc.rows[i].id === adapter.namespace + '.updated') continue;
-                        var val = doc.rows[i].value;
+                        const val = doc.rows[i].value;
 
                         /*if (val.PARENT_TYPE) {
                          channelParams[val.ADDRESS] = val.PARENT_TYPE + '.' + val.TYPE + '.' + val.VERSION;
@@ -838,7 +841,7 @@ function initRpcServer() {
                 adapter.log.info(adapter.config.type + 'rpc -> ' + response.length + ' devices');
                 //log.info(JSON.stringify(response));
                 try {
-                    for (var r = response.length - 1; r >= 0; r--) {
+                    for (let r = response.length - 1; r >= 0; r--) {
                         if (!response[r].ADDRESS) {
                             adapter.log.warn(adapter.config.type + 'rpc -> found empty entry at position ' + r + ' !');
                             response.splice(r, 1);
@@ -858,11 +861,11 @@ function initRpcServer() {
                 adapter.log.warn(' Error on system.listMethods: ' + err);
             }
             adapter.log.info(adapter.config.type + 'rpc <- deleteDevices ' + params[1].length);
-            for (var i = 0; i < params[1].length; i++) {
+            for (let i = 0; i < params[1].length; i++) {
                 if (params[1][i].indexOf(':') !== -1) {
-                    params[1][i] = params[1][i].replace(':', '.');
+                    params[1][i] = params[1][i].replace(':', '.').replace(/[*,;'"`<>\\\s?]/, '_');
                     adapter.log.info('channel ' + params[1][i] + ' ' + JSON.stringify(params[1][i]) + ' deleted');
-                    var parts = params[1][i].split('.');
+                    const parts = params[1][i].split('.');
                     adapter.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
                 } else {
                     adapter.log.info('device ' + params[1][i] + ' deleted');
@@ -878,17 +881,17 @@ function initRpcServer() {
     });
 }
 
-var methods = {
+const methods = {
 
     event: function (err, params) {
         adapter.log.debug(adapter.config.type + 'rpc <- event ' + JSON.stringify(params));
-        var val;
+        let val;
         // CUxD ignores all prefixes!!
         if (params[0] === 'CUxD' || params[0].indexOf(adapter.name) === -1) {
             params[0] = adapter.namespace;
         }
-        var channel = params[1].replace(':', '.');
-        var name = params[0] + '.' + channel + '.' + params[2];
+        const channel = params[1].replace(':', '.').replace(/[*,;'"`<>\\\s?]/, '_');
+        const name = params[0] + '.' + channel + '.' + params[2];
 
         if (dpTypes[name]) {
             if (dpTypes[name].MIN !== undefined && dpTypes[name].UNIT === '%') {
@@ -910,15 +913,20 @@ var methods = {
 
 };
 
-var queueValueParamsets = [];
+let queueValueParamsets = [];
 
 function addParamsetObjects(channel, paramset, callback) {
-    var channelChildren = [];
-    var count = 0;
-    for (var key in paramset) {
+    let channelChildren = [];
+    let count = 0;
+
+    if (metaRoles.dvTYPE && metaRoles.dvTYPE[channel.native.PARENT_TYPE]) {
+        channel.common.role = metaRoles.dvTYPE[channel.native.PARENT_TYPE];
+    }
+
+    for (const key in paramset) {
         if (!paramset.hasOwnProperty(key)) continue;
         channelChildren.push(channel._id + '.' + key);
-        var commonType = {
+        let commonType = {
             ACTION:  'boolean',
             BOOL:    'boolean',
             FLOAT:   'number',
@@ -927,7 +935,7 @@ function addParamsetObjects(channel, paramset, callback) {
             STRING:  'string'
         };
 
-        var obj = {
+        const obj = {
             type:   'state',
             common: {
                 def:   paramset[key].DEFAULT,
@@ -939,7 +947,7 @@ function addParamsetObjects(channel, paramset, callback) {
         };
 
         if (obj.common.type === 'number') {
-            var i;
+            let i;
             obj.common.min = paramset[key].MIN;
             obj.common.max = paramset[key].MAX;
 
@@ -998,7 +1006,7 @@ function addParamsetObjects(channel, paramset, callback) {
         if (typeof obj.common.role !== 'string' && typeof obj.common.role !== 'undefined') {
             throw 'typeof obj.common.role ' + typeof obj.common.role;
         }
-        var dpID = adapter.namespace + '.' + channel._id + '.' + key;
+        const dpID = adapter.namespace + '.' + channel._id + '.' + key;
 
         dpTypes[dpID] = {UNIT: paramset[key].UNIT, TYPE: paramset[key].TYPE, MIN: paramset[key].MIN, MAX: paramset[key].MAX};
 
@@ -1041,8 +1049,8 @@ function getValueParamsets() {
         }
         return;
     }
-    var obj = queueValueParamsets.pop();
-    var cid = obj.native.PARENT_TYPE + '.' + obj.native.TYPE + '.' + obj.native.VERSION;
+    const obj = queueValueParamsets.pop();
+    const cid = obj.native.PARENT_TYPE + '.' + obj.native.TYPE + '.' + obj.native.VERSION;
 
     if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
         addEPaperToMeta();
@@ -1059,7 +1067,7 @@ function getValueParamsets() {
 
     } else {
 
-        var key = 'hm-rpc.meta.VALUES.' + cid;
+        const key = 'hm-rpc.meta.VALUES.' + cid;
         adapter.objects.getObject(key, function (err, res) {
 
             if (res && res.native) {
@@ -1076,11 +1084,11 @@ function getValueParamsets() {
             } else {
                 adapter.log.info(adapter.config.type + 'rpc -> getParamsetDescription ' + JSON.stringify([obj.native.ADDRESS, 'VALUES']));
                 try {
-                    rpcClient.methodCall('getParamsetDescription', [obj.native.ADDRESS, 'VALUES'], function (err, res) {
+                    rpcClient.methodCall('getParamsetDescription', [obj.native.ADDRESS, 'VALUES'], (err, res) => {
                         if (err) {
                             adapter.log.error('Error on getParamsetDescription: ' + err);
                         } else {
-                            var paramset = {
+                            const paramset = {
                                 'type': 'meta',
                                 'meta': {
                                     adapter: 'hm-rpc',
@@ -1099,7 +1107,7 @@ function getValueParamsets() {
 
                             if (res) {
                                 // if not empty
-                                for (var attr in res) {
+                                for (const attr in res) {
                                     if (res.hasOwnProperty(attr)) {
                                         adapter.log.warn('Send this info to developer: _id: "' + key + '"');
                                         adapter.log.warn('Send this info to developer: ' + JSON.stringify(paramset));
@@ -1108,8 +1116,8 @@ function getValueParamsets() {
                                 }
                             }
 
-                            adapter.objects.setObject(key, paramset, function () {
-                                addParamsetObjects(obj, res, function () {
+                            adapter.objects.setObject(key, paramset, () => {
+                                addParamsetObjects(obj, res, () => {
                                     setTimeout(getValueParamsets, 0);
                                 });
                             });
@@ -1125,11 +1133,11 @@ function getValueParamsets() {
 
 function addEPaperToMeta() {
     // Check all versions from 9 to 12
-    for (var i = 9; i < 13; i++) {
-        var id = 'HM-Dis-EP-WM55.MAINTENANCE.' + i;
+    for (let i = 9; i < 13; i++) {
+        const id = 'HM-Dis-EP-WM55.MAINTENANCE.' + i;
         if (!metaValues[id] || !metaValues[id].EPAPER_LINE2) {
             metaValues[id] = metaValues[id] || {};
-            var obj = metaValues[id];
+            const obj = metaValues[id];
             obj.EPAPER_LINE2  = {
                 TYPE: 'EPAPER_LINE',
                 ID: 'LINE2',
@@ -1229,12 +1237,12 @@ function addEPaperToMeta() {
 }
 
 function createDevices(deviceArr, callback) {
-    var objs = [];
+    let objs = [];
 
-    for (var i = 0; i < deviceArr.length; i++) {
-        var type;
-        var role;
-        var icon;
+    for (let i = 0; i < deviceArr.length; i++) {
+        let type;
+        let role;
+        let icon;
 
         if (deviceArr[i].PARENT) {
             type = 'channel';
@@ -1248,8 +1256,8 @@ function createDevices(deviceArr, callback) {
             icon = images[deviceArr[i].TYPE] ? ('/icons/' + images[deviceArr[i].TYPE]) : '';
         }
 
-        var obj = {
-            _id: deviceArr[i].ADDRESS.replace(':', '.'),
+        const obj = {
+            _id: deviceArr[i].ADDRESS.replace(':', '.').replace(/[*,;'"`<>\\\s?]/, '_'),
             type: type,
             common: {
                 // FIXME strange bug - LEVEL and WORKING datapoint of Dimmers have name of first dimmer device?!?
@@ -1261,7 +1269,7 @@ function createDevices(deviceArr, callback) {
 
         if (icon) obj.common.icon = icon;
 
-        var dpID = adapter.namespace + '.' + obj._id;
+        const dpID = adapter.namespace + '.' + obj._id;
         dpTypes[dpID] = {UNIT: deviceArr[i].UNIT, TYPE: deviceArr[i].TYPE, MAX: deviceArr[i].MAX, MIN: deviceArr[i].MIN};
         if (typeof dpTypes[dpID].MIN === 'number') {
             dpTypes[dpID].MIN = parseFloat(dpTypes[dpID].MIN);
@@ -1282,7 +1290,7 @@ function createDevices(deviceArr, callback) {
     function queue() {
         if (objs.length) {
 
-            var obj = objs.pop();
+            const obj = objs.pop();
             adapter.setObject(obj._id, obj, function (err, res) {
                 if (!err) {
                     adapter.log.debug('object ' + res.id + ' created');
@@ -1327,18 +1335,18 @@ function getCuxDevices(callback) {
                         endkey:   'hm-rpc.' + adapter.instance + '.\u9999'
                     }, function (err, doc) {
                         if (doc && doc.rows) {
-                            for (var i = 0; i < doc.rows.length; i++) {
+                            for (let i = 0; i < doc.rows.length; i++) {
                                 if (doc.rows[i].id === adapter.namespace + '.updated') continue;
 
                                 // lets get the device description
-                                var val = doc.rows[i].value;
+                                const val = doc.rows[i].value;
 
                                 if (typeof val.ADDRESS === 'undefined') continue;
 
                                 // lets find the current device in the newDevices array
                                 // and if it doesn't exist we can delete it
-                                var index = -1;
-                                for (var j = 0; j < newDevices.length; j++) {
+                                let index = -1;
+                                for (let j = 0; j < newDevices.length; j++) {
                                     if (newDevices[j].ADDRESS === val.ADDRESS && newDevices[j].VERSION === val.VERSION) {
                                         index = j;
                                         break;
@@ -1350,8 +1358,8 @@ function getCuxDevices(callback) {
                                 if (index === -1) {
                                     if (val.ADDRESS && !adapter.config.dontDelete) {
                                         if (val.ADDRESS.indexOf(':') !== -1) {
-                                            var address = val.ADDRESS.replace(':', '.');
-                                            var parts = address.split('.');
+                                            const address = val.ADDRESS.replace(':', '.').replace(/[*,;'"`<>\\\s?]/, '_');
+                                            const parts = address.split('.');
                                             adapter.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
                                             adapter.log.info('obsolete channel ' + address + ' ' + JSON.stringify(address) + ' deleted');
                                         } else {
@@ -1483,7 +1491,7 @@ function keepAlive() {
         connInterval = null;
     }
 
-    var _now = new Date().getTime();
+    const _now = Date.now();
     // Check last event time. If timeout => send init again
     if (!lastEvent || (_now - lastEvent) >= adapter.config.checkInitInterval * 1000) {
         connect();

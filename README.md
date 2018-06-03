@@ -63,6 +63,10 @@ If this flag is not activated, the ioBroker will remove devices from configurati
 Activate this flag to do *not* delete such a devices, e.g. if some devices was temporary removed on CCU/Homematic.
 
 ## Changelog
+### 1.7.0 (2018-06-03)
+* (bluefox) Breaking changes: following chars *,;'"`<>\s?" in ADDRESS will be replaces by "_"
+* (bluefox) Some roles were changed
+
 ### 1.6.2 (2018-04-27)
 * (BuZZy1337) Added some missing metas for HM-IP Devices
 
