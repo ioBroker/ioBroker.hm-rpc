@@ -919,10 +919,6 @@ function addParamsetObjects(channel, paramset, callback) {
     let channelChildren = [];
     let count = 0;
 
-    if (metaRoles.dvTYPE && metaRoles.dvTYPE[channel.native.PARENT_TYPE]) {
-        channel.common.role = metaRoles.dvTYPE[channel.native.PARENT_TYPE];
-    }
-
     for (const key in paramset) {
         if (!paramset.hasOwnProperty(key)) continue;
         channelChildren.push(channel._id + '.' + key);
@@ -1026,7 +1022,7 @@ function addParamsetObjects(channel, paramset, callback) {
             obj.common.workingID = 'WORKING';
         }
         count++;
-        adapter.extendObject(channel._id + '.' + key, obj, function (err, res) {
+        adapter.extendObject(channel._id + '.' + key, obj, (err, res) => {
             if (!err) {
                 adapter.log.debug('object ' + res.id + ' extended');
             } else {
@@ -1062,7 +1058,7 @@ function getValueParamsets() {
 
         adapter.log.debug('paramset cache hit');
         addParamsetObjects(obj, metaValues[cid], function () {
-            setTimeout(getValueParamsets, 0);
+            setImmediate(getValueParamsets);
         });
 
     } else {
@@ -1079,7 +1075,7 @@ function getValueParamsets() {
                 }
 
                 addParamsetObjects(obj, res.native, function () {
-                    setTimeout(getValueParamsets, 0);
+                    setImmediate(getValueParamsets);
                 });
             } else {
                 adapter.log.info(adapter.config.type + 'rpc -> getParamsetDescription ' + JSON.stringify([obj.native.ADDRESS, 'VALUES']));
@@ -1118,7 +1114,7 @@ function getValueParamsets() {
 
                             adapter.objects.setObject(key, paramset, () => {
                                 addParamsetObjects(obj, res, () => {
-                                    setTimeout(getValueParamsets, 0);
+                                    setImmediate(getValueParamsets);
                                 });
                             });
                         }
@@ -1291,13 +1287,18 @@ function createDevices(deviceArr, callback) {
         if (objs.length) {
 
             const obj = objs.pop();
+
+            if (metaRoles.dvTYPE && obj.native && metaRoles.dvTYPE[obj.native.PARENT_TYPE]) {
+                obj.common.role = metaRoles.dvTYPE[obj.native.PARENT_TYPE];
+            }
+
             adapter.setObject(obj._id, obj, function (err, res) {
                 if (!err) {
                     adapter.log.debug('object ' + res.id + ' created');
                 } else {
                     adapter.log.error('object ' + (res ? res.id : '?') + ' error on creation: ' + err);
                 }
-                setTimeout(queue, 0);
+                setImmediate(queue);
             });
 
             if (obj.type === 'channel') {
