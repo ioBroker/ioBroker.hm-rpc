@@ -7,6 +7,8 @@ const utils     = require(__dirname + '/lib/utils'); // Get common adapter utils
 const images    = require(__dirname + '/lib/images');
 let connected = false;
 let displays  = {};
+
+const FORBIDDEN_CHARS = /[\]\[*,;'"`<>\\\s?]/g;
 // msgBuffer = [{line: line2, icon: icon2}, {line: line3, icon: icon3}, {line: '', icon: ''}];
 // Icons:
 //      0x80 AUS
@@ -792,7 +794,7 @@ function initRpcServer() {
                             if (index === -1) {
                                 if (val.ADDRESS && !adapter.config.dontDelete) {
                                     if (val.ADDRESS.indexOf(':') !== -1) {
-                                        const address = val.ADDRESS.replace(':', '.').replace(/[*,;'"`<>\\\s?]/, '_');
+                                        const address = val.ADDRESS.replace(':', '.').replace(FORBIDDEN_CHARS, '_');
                                         const parts = address.split('.');
                                         adapter.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
                                         adapter.log.info('obsolete channel ' + address + ' ' + JSON.stringify(address) + ' deleted');
@@ -863,7 +865,7 @@ function initRpcServer() {
             adapter.log.info(adapter.config.type + 'rpc <- deleteDevices ' + params[1].length);
             for (let i = 0; i < params[1].length; i++) {
                 if (params[1][i].indexOf(':') !== -1) {
-                    params[1][i] = params[1][i].replace(':', '.').replace(/[*,;'"`<>\\\s?]/, '_');
+                    params[1][i] = params[1][i].replace(':', '.').replace(FORBIDDEN_CHARS, '_');
                     adapter.log.info('channel ' + params[1][i] + ' ' + JSON.stringify(params[1][i]) + ' deleted');
                     const parts = params[1][i].split('.');
                     adapter.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
@@ -890,7 +892,7 @@ const methods = {
         if (params[0] === 'CUxD' || params[0].indexOf(adapter.name) === -1) {
             params[0] = adapter.namespace;
         }
-        const channel = params[1].replace(':', '.').replace(/[*,;'"`<>\\\s?]/, '_');
+        const channel = params[1].replace(':', '.').replace(FORBIDDEN_CHARS, '_');
         const name = params[0] + '.' + channel + '.' + params[2];
 
         if (dpTypes[name]) {
@@ -1253,7 +1255,7 @@ function createDevices(deviceArr, callback) {
         }
 
         const obj = {
-            _id: deviceArr[i].ADDRESS.replace(':', '.').replace(/[*,;'"`<>\\\s?]/, '_'),
+            _id: deviceArr[i].ADDRESS.replace(':', '.').replace(FORBIDDEN_CHARS, '_'),
             type: type,
             common: {
                 // FIXME strange bug - LEVEL and WORKING datapoint of Dimmers have name of first dimmer device?!?
@@ -1359,7 +1361,7 @@ function getCuxDevices(callback) {
                                 if (index === -1) {
                                     if (val.ADDRESS && !adapter.config.dontDelete) {
                                         if (val.ADDRESS.indexOf(':') !== -1) {
-                                            const address = val.ADDRESS.replace(':', '.').replace(/[*,;'"`<>\\\s?]/, '_');
+                                            const address = val.ADDRESS.replace(':', '.').replace(FORBIDDEN_CHARS, '_');
                                             const parts = address.split('.');
                                             adapter.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
                                             adapter.log.info('obsolete channel ' + address + ' ' + JSON.stringify(address) + ' deleted');
