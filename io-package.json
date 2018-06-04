@@ -13,8 +13,19 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.6.2",
+        "version": "1.7.0",
         "news": {
+            "1.7.0": {
+                "en": "Following chars *,;'\"`<>\\s?\" in ADDRESS will be replaces by \"_\"\nSome roles were changed",
+                "de": "Folgende Zeichen *,;'\"`<>\\s?\" in ADRESSE wird durch \"_\" ersetzt\nEinige Rollen wurden geändert",
+                "ru": "Следующие символы *,;'\"`<>\\s?\" в ADDRESS будет заменяться на \"_\"\nНекоторые роли были изменены",
+                "pt": "Seguindo chars *,;'\"`<>\\s?\" em ADDRESS será substituído por \"_\"\nAlgumas funções foram alteradas",
+                "nl": "Volgende tekens *,;'\"`<>\\s?\" in ADDRESS wordt vervangen door '_'\nSommige rollen zijn gewijzigd",
+                "fr": "Caractères suivants *,;'\"`<>\\s?\" dans ADDRESS sera remplacé par \"_\"\nCertains rôles ont été modifiés",
+                "it": "Seguendo i caratteri *,;'\"`<>\\s?\" in ADDRESS sarà sostituito da \"_\"\nAlcuni ruoli sono stati cambiati",
+                "es": "¿Después de los caracteres *,;'\"`<>\\s?\" en ADDRESS se reemplazará por \"_\"\nAlgunos roles fueron cambiados",
+                "pl": "Po znakach * *,;'\"`<>\\s?\" w ADRESIE będzie zastępowane przez \"_\"\nNiektóre role zostały zmienione"
+            },
             "1.6.2": {
                 "en": "Added some missing metas for HM-IP Devices",
                 "de": "Einige fehlende Metas für HM-IP-Geräte hinzugefügt",
@@ -245,9 +256,9 @@
                 "dpNAME": {
                     "AUTO_MODE": "state",
                     "BATTERY_STATE": "value.voltage",
-                    "BOOST_MODE": "action",
-                    "BOOST_STATE": "level.temperature",
-                    "COMFORT_MODE": "action",
+                    "BOOST_MODE": "switch.boost",
+                    "BOOST_STATE": "level.boost",
+                    "COMFORT_MODE": "switch.comfort",
                     "CONTROL_MODE": "indicator",
                     "FAULT_REPORTING": "indicator",
                     "LOWERING_MODE": "action",
@@ -263,7 +274,7 @@
                     "PRESS_LONG_RELEASE": "button.release",
                     "PRESS_CONT": "button.continuous",
                     "LEVEL": "level",
-                    "LOWBAT": "indicator.battery",
+                    "LOWBAT": "indicator.lowbat",
                     "INSTALL_TEST": "indicator",
                     "UNREACH": "indicator.unreach",
                     "WORKING": "indicator.working",
@@ -278,15 +289,32 @@
                     "ERROR_OVERHEAT": "indicator.error.overheat",
                     "ERROR_OVERLOAD": "indicator.error.overload",
                     "ERROR_REDUCED": "indicator.error",
-                    "MOTION": "indicator.motion",
+                    "MOTION": "sensor.motion",
                     "INHIBIT": "state.inhibit",
                     "VALVE_STATE": "value.valve",
                     "BRIGHTNESS": "value.brightness",
                     "RAMP_TIME": "timer.ramp",
-                    "RAMP_STOP": "action.cancel",
-                    "STOP": "action.stop",
+                    "RAMP_STOP": "button.stop",
+                    "STOP": "button.stop",
                     "ON_TIME": "timer.off",
                     "DUTYCYCLE": "value"
+                },
+                "dvTYPE": {
+                    "HM-Sec-SD": "sensor.alarm.fire",
+                    "HM-Sec-SD-2": "sensor.alarm.fire",
+                    "HM-Sec-SD-Team": "sensor.alarm.fire",
+                    "HM-Sen-MDIR-O-2": "sensor.motion",
+                    "HM-Sec-MDIR-3": "sensor.motion",
+                    "HmIP-SMO": "sensor.motion",
+                    "HmIP-SMO-A": "sensor.motion",
+                    "HmIP-SPI": "sensor.motion",
+                    "HmIP-SMI": "sensor.motion",
+                    "HM-Sen-RD-O": "sensor.rain",
+                    "HM-Sec-RHS": "value.tilt",
+                    "HmIP-SRH": "value.tilt",
+                    "HM-Sec-WDS-2": "sensor.alarm.flood",
+                    "HmIP-SWD": "sensor.alarm.flood",
+                    "HmIP-SWSD": "sensor.alarm.fire"
                 }
             }
         },
@@ -5721,7 +5749,9 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+                "role": "sensor.alarm.fire"
+            },
             "native": {}
         },
         {
@@ -5731,7 +5761,9 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+                "role": "sensor.alarm.fire"
+            },
             "native": {
                 "INSTALL_TEST": {
                     "DEFAULT": false,
@@ -5765,7 +5797,9 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+                "role": "sensor.alarm.fire"
+            },
             "native": {
                 "CONFIG_PENDING": {
                     "DEFAULT": false,
@@ -5853,7 +5887,9 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+                "role": "sensor.alarm.fire"
+            },
             "native": {
                 "INSTALL_TEST": {
                     "DEFAULT": false,
@@ -5886,7 +5922,9 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+                "role": "sensor.alarm.fire"
+            },
             "native": {
                 "INSTALL_TEST": {
                     "DEFAULT": false,
@@ -5919,7 +5957,9 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+                "role": "sensor.alarm.fire"
+            },
             "native": {
                 "CONFIG_PENDING": {
                     "DEFAULT": false,
@@ -6029,7 +6069,9 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+                "role": "sensor.alarm.fire"
+            },
             "native": {
                 "AES_KEY": {
                     "DEFAULT": 0,
@@ -6128,7 +6170,9 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+                "role": "sensor.alarm.fire"
+            },
             "native": {
                 "ERROR_ALARM_TEST": {
                     "CONTROL": "NONE",
@@ -6206,7 +6250,9 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+                "role": "sensor.alarm.fire"
+            },
             "native": {
                 "INSTALL_TEST": {
                     "DEFAULT": false,
