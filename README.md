@@ -63,6 +63,9 @@ If this flag is not activated, the ioBroker will remove devices from configurati
 Activate this flag to do *not* delete such a devices, e.g. if some devices was temporary removed on CCU/Homematic.
 
 ## Changelog
+### 1.7.1 (2018-06-11)
+* (angelu) changed reconnection handling
+
 ### 1.7.0 (2018-06-03)
 * (bluefox) Breaking changes: following chars *,;'"`<>\s?" in ADDRESS will be replaces by "_"
 * (bluefox) Some roles were changed
