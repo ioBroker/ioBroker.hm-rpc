@@ -13,9 +13,9 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.7.1",
+        "version": "1.7.2",
         "news": {
-            "1.7.1": {
+            "1.7.2": {
                 "en": "changed reconnection handling",
                 "de": "geänderte Reconnection-Behandlung",
                 "ru": "измененная переконфигурация",
@@ -27,15 +27,15 @@
                 "pl": "zmieniono obsługę ponownego połączenia"
             },
             "1.7.0": {
-                "en": "Following chars *,;'\"`<>\\s?\" in ADDRESS will be replaces by \"_\"\nSome roles were changed",
-                "de": "Folgende Zeichen *,;'\"`<>\\s?\" in ADRESSE wird durch \"_\" ersetzt\nEinige Rollen wurden geändert",
-                "ru": "Следующие символы *,;'\"`<>\\s?\" в ADDRESS будет заменяться на \"_\"\nНекоторые роли были изменены",
-                "pt": "Seguindo chars *,;'\"`<>\\s?\" em ADDRESS será substituído por \"_\"\nAlgumas funções foram alteradas",
-                "nl": "Volgende tekens *,;'\"`<>\\s?\" in ADDRESS wordt vervangen door '_'\nSommige rollen zijn gewijzigd",
-                "fr": "Caractères suivants *,;'\"`<>\\s?\" dans ADDRESS sera remplacé par \"_\"\nCertains rôles ont été modifiés",
-                "it": "Seguendo i caratteri *,;'\"`<>\\s?\" in ADDRESS sarà sostituito da \"_\"\nAlcuni ruoli sono stati cambiati",
-                "es": "¿Después de los caracteres *,;'\"`<>\\s?\" en ADDRESS se reemplazará por \"_\"\nAlgunos roles fueron cambiados",
-                "pl": "Po znakach * *,;'\"`<>\\s?\" w ADRESIE będzie zastępowane przez \"_\"\nNiektóre role zostały zmienione"
+                "en": "Invalid characters in ADRESSE will be replaced by _, some roles were changed",
+                "de": "Ungültige Zeichen in ADRESSE werden durch _ ersetzt, einige Rollen wurden geändert",
+                "ru": "Недопустимые символы в ADRESSE будут заменены на _, некоторые роли были изменены",
+                "pt": "Caracteres inválidos em ADRESSE serão substituídos por _, algumas funções foram alteradas",
+                "nl": "Ongeldige tekens in ADRESSE worden vervangen door _, sommige rollen zijn gewijzigd",
+                "fr": "Les caractères non valides dans ADRESSE seront remplacés par _, certains rôles ont été modifiés",
+                "it": "I caratteri non validi in ADRESSE saranno sostituiti da _, alcuni ruoli sono stati modificati",
+                "es": "Los caracteres inválidos en ADRESSE serán reemplazados por _, algunos roles fueron cambiados",
+                "pl": "Nieprawidłowe znaki w ADRESSE zostaną zastąpione przez _, niektóre role zostały zmienione"
             },
             "1.6.2": {
                 "en": "Added some missing metas for HM-IP Devices",
