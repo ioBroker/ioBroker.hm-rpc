@@ -13,8 +13,19 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.7.2",
+        "version": "1.7.3",
         "news": {
+            "1.7.3": {
+                "en": "E-Paper was corrected",
+                "de": "E-Paper wurde korrigiert",
+                "ru": "E-Paper была исправлена",
+                "pt": "E-Paper foi corrigido",
+                "nl": "E-paper is gecorrigeerd",
+                "fr": "E-Paper a été corrigé",
+                "it": "E-Paper è stato corretto",
+                "es": "E-Paper fue corregido",
+                "pl": "E-Paper został poprawiony"
+            },
             "1.7.2": {
                 "en": "changed reconnection handling",
                 "de": "geänderte Reconnection-Behandlung",
@@ -69,112 +80,6 @@
                 "it": "Aggiorna dipendenze",
                 "es": "Actualizar dependencias",
                 "pl": "Zaktualizuj zależności"
-            },
-            "1.5.1": {
-                "en": "Ready for Admin3",
-                "de": "Bereit für Admin3",
-                "ru": "Готово для Admin3",
-                "pt": "Pronto para Admin3",
-                "nl": "Klaar voor Admin3",
-                "fr": "Prêt pour Admin3",
-                "it": "Pronto per Admin3",
-                "es": "Listo para Admin3",
-                "pl": "Gotowy na Admin3"
-            },
-            "1.5.0": {
-                "en": "Add new devices in the meta information\nForce stop of adapter",
-                "de": "Neue Meta-Information ist hinzugefügt\nForsiere Beendung vom Adapter",
-                "ru": "Добавлена информация о новых устройства\nФорсировать завершение драйвера"
-            },
-            "1.4.15": {
-                "en": "Added option to not delete the devices",
-                "de": "Added option to not delete the devices",
-                "ru": "Added option to not delete the devices"
-            },
-            "1.4.14": {
-                "en": "Fix images",
-                "de": "Korrigiere Bilder",
-                "ru": "Исправлены картинки"
-            },
-            "1.4.13": {
-                "en": "Added Callback address - needed for Docker",
-                "de": "Callback Adresse addiert - nutzlich für Docker",
-                "ru": "Added Callback address - needed for Docker"
-            },
-            "1.4.12": {
-                "en": "Add ePaper control",
-                "de": "ePaper Steuerung hinzugefügt",
-                "ru": "Добавлено управление ePaper"
-            },
-            "1.4.11": {
-                "en": "Fix humidity calculation",
-                "de": "Feuchtigkeitsberechnung korrigieren",
-                "ru": "Исправить расчет влажности"
-            },
-            "1.4.8": {
-                "en": "Remove log entry\nFix values conversion for CUxD",
-                "de": "Dektiviere info log bei Steuerung\nKorrigiere die Kalkulation von CUxD Werten",
-                "ru": "Remove log entry\nFix values conversion for CUxD"
-            },
-            "1.4.6": {
-                "en": "use right version of rpc-bin lib",
-                "de": "Benutze die richtige Version für rpc-bin lib",
-                "ru": "Используется правильная версия для rpc-bin"
-            },
-            "1.4.4": {
-                "en": "add Lock Value for KeyMatic",
-                "de": "Lock Wert ist zu Keymaitc hinzugefügt",
-                "ru": "Добавлено значение Lock для KeyMatic"
-            },
-            "1.4.2": {
-                "en": "fixes small errors",
-                "de": "Korrigiere kleine Fehler",
-                "ru": "Исправлены небольшие ошибки"
-            },
-            "1.4.1": {
-                "en": "fixes/changes for listDevices/newDevices RPC calls for HmIP and CUxD variants of hm-rpc",
-                "de": "Korrigiere dass HMIP Geräte nicht jedes mal neu angelegt werden",
-                "ru": "fixes/changes for listDevices/newDevices RPC calls for HmIP and CUxD variants of hm-rpc"
-            },
-            "1.3.5": {
-                "en": "Fix notify of hm-rega to update names too on force-reload",
-                "de": "Notifizierung vom hm-rega korrigiert um Namen bei forciertem Reload neu zu laden",
-                "ru": "Fix notify of hm-rega to update names too on force-reload"
-            },
-            "1.3.4": {
-                "en": "Update device icons",
-                "de": "Gerätebilder aktualisiert",
-                "ru": "Update device icons"
-            },
-            "1.3.3": {
-                "en": "Better connection indication",
-                "de": "Bessere Verbindungsanzeige",
-                "ru": "Исправлено info.connection"
-            },
-            "1.3.2": {
-                "en": "Very small changes for debug output",
-                "de": "Kleine Änderung an debug Ausgaben",
-                "ru": "Небольшие изменения debug вывода"
-            },
-            "1.3.1": {
-                "en": "add new devices to meta info\nadd some icons\nfix xml-rpc",
-                "de": "add new devices to meta info\nadd some icons\nfix xml-rpc",
-                "ru": "add new devices to meta info\nadd some icons\nfix xml-rpc"
-            },
-            "1.2.1": {
-                "en": "add device icons",
-                "de": "add device icons",
-                "ru": "add device icons"
-            },
-            "1.2.0": {
-                "en": "fix reconnection with binrpc",
-                "de": "fix reconnection with binrpc",
-                "ru": "fix reconnection with binrpc"
-            },
-            "1.1.5": {
-                "en": "change connected status",
-                "de": "change connected status",
-                "ru": "change connected status"
             }
         },
         "authors": [
