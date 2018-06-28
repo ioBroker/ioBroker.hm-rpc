@@ -13,8 +13,19 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.7.3",
+        "version": "1.7.4",
         "news": {
+            "1.7.4": {
+                "en": "Added Metas for HM-Sen-MDIR-O-3",
+                "de": "Metas für HM-Sen-MDIR-O-3 hinzugefügt",
+                "ru": "Добавлены метасы для HM-Sen-MDIR-O-3",
+                "pt": "Metas adicionadas para HM-Sen-MDIR-O-3",
+                "nl": "Meta toegevoegd voor HM-Sen-MDIR-O-3",
+                "fr": "Métas ajoutés pour HM-Sen-MDIR-O-3",
+                "it": "Metas aggiunti per HM-Sen-MDIR-O-3",
+                "es": "Metas añadidas para HM-Sen-MDIR-O-3",
+                "pl": "Dodano meta dla HM-Sen-MDIR-O-3"
+            },
             "1.7.3": {
                 "en": "E-Paper was corrected",
                 "de": "E-Paper wurde korrigiert",
