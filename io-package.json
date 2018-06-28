@@ -220,6 +220,7 @@
                     "HM-Sec-SD-2": "sensor.alarm.fire",
                     "HM-Sec-SD-Team": "sensor.alarm.fire",
                     "HM-Sen-MDIR-O-2": "sensor.motion",
+                    "HM-Sen-MDIR-O-3": "sensor.motion",
                     "HM-Sec-MDIR-3": "sensor.motion",
                     "HmIP-SMO": "sensor.motion",
                     "HmIP-SMO-A": "sensor.motion",
@@ -4821,6 +4822,171 @@
             }
         },
         {
+            "_id": "hm-rpc.meta.VALUES.HM-Sen-MDIR-O-3.MAINTENANCE.12",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "AES_KEY": {
+                    "DEFAULT": 0,
+                    "FLAGS": 0,
+                    "ID": "AES_KEY",
+                    "MAX": 127,
+                    "MIN": 0,
+                    "OPERATIONS": 1,
+                    "TAB_ORDER": 8,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
+                },
+                "CONFIG_PENDING": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "CONFIG_PENDING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 2,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "DEVICE_IN_BOOTLOADER": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "DEVICE_IN_BOOTLOADER",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 6,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "ENTER_BOOTLOADER": {
+                    "DEFAULT": false,
+                    "FLAGS": 3,
+                    "ID": "ENTER_BOOTLOADER",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 2,
+                    "TAB_ORDER": 9,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
+                },
+                "LOWBAT": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "LOWBAT",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 3,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "RSSI_DEVICE": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "RSSI_DEVICE",
+                    "MAX": 2147483647,
+                    "MIN": -2147483648,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 4,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
+                },
+                "RSSI_PEER": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "RSSI_PEER",
+                    "MAX": 2147483647,
+                    "MIN": -2147483648,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 5,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
+                },
+                "STICKY_UNREACH": {
+                    "DEFAULT": false,
+                    "FLAGS": 25,
+                    "ID": "STICKY_UNREACH",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 7,
+                    "TAB_ORDER": 1,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "UNREACH": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "UNREACH",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 0,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "UPDATE_PENDING": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "UPDATE_PENDING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 7,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HM-Sen-MDIR-O-3.MOTION_DETECTOR.12",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "BRIGHTNESS": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "BRIGHTNESS",
+                    "MAX": 255,
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 0,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
+                },
+                "INSTALL_TEST": {
+                    "DEFAULT": false,
+                    "FLAGS": 3,
+                    "ID": "INSTALL_TEST",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 4,
+                    "TAB_ORDER": 3,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
+                },
+                "MOTION": {
+                    "DEFAULT": false,
+                    "FLAGS": 1,
+                    "ID": "MOTION",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 2,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                }
+            }
+        },
+        {
             "_id": "hm-rpc.meta.VALUES.HM-Sec-MDIR-2.MOTION_DETECTOR.11",
             "type": "meta",
             "meta": {
@@ -7951,7 +8117,10 @@
                     "TAB_ORDER": 9,
                     "TYPE": "ENUM",
                     "UNIT": "",
-                    "VALUE_LIST": ["NO_ERROR", "SABOTAGE"]
+                    "VALUE_LIST": [
+                        "NO_ERROR",
+                        "SABOTAGE"
+                    ]
                 },
                 "LOWBAT": {
                     "DEFAULT": false,
@@ -7997,7 +8166,10 @@
                     "TAB_ORDER": 10,
                     "TYPE": "ENUM",
                     "UNIT": "",
-                    "VALUE_LIST": ["WAS_SABOTAGED", "SABOTAGE"]
+                    "VALUE_LIST": [
+                        "WAS_SABOTAGED",
+                        "SABOTAGE"
+                    ]
                 },
                 "STICKY_UNREACH": {
                     "DEFAULT": false,
@@ -8054,7 +8226,10 @@
                     "TAB_ORDER": 3,
                     "TYPE": "ENUM",
                     "UNIT": "",
-                    "VALUE_LIST": ["NO_ERROR", "SABOTAGE"]
+                    "VALUE_LIST": [
+                        "NO_ERROR",
+                        "SABOTAGE"
+                    ]
                 },
                 "INHIBIT": {
                     "CONTROL": "NONE",
@@ -8148,7 +8323,10 @@
                     "TAB_ORDER": 3,
                     "TYPE": "ENUM",
                     "UNIT": "",
-                    "VALUE_LIST": ["NO_ERROR", "SABOTAGE"]
+                    "VALUE_LIST": [
+                        "NO_ERROR",
+                        "SABOTAGE"
+                    ]
                 },
                 "INHIBIT": {
                     "CONTROL": "NONE",
@@ -8242,7 +8420,12 @@
                     "TAB_ORDER": 0,
                     "TYPE": "ENUM",
                     "UNIT": "",
-                    "VALUE_LIST": ["DISARMED", "EXTSENS_ARMED", "ALLSENS_ARMED", "ALARM_BLOCKED"]
+                    "VALUE_LIST": [
+                        "DISARMED",
+                        "EXTSENS_ARMED",
+                        "ALLSENS_ARMED",
+                        "ALARM_BLOCKED"
+                    ]
                 },
                 "ERROR_SABOTAGE": {
                     "CONTROL": "DEVICE.SABOTAGE",
@@ -8255,7 +8438,10 @@
                     "TAB_ORDER": 3,
                     "TYPE": "ENUM",
                     "UNIT": "",
-                    "VALUE_LIST": ["NO_ERROR", "SABOTAGE"]
+                    "VALUE_LIST": [
+                        "NO_ERROR",
+                        "SABOTAGE"
+                    ]
                 },
                 "INHIBIT": {
                     "CONTROL": "NONE",
@@ -9008,7 +9194,12 @@
                     "TAB_ORDER": 0,
                     "TYPE": "ENUM",
                     "UNIT": "",
-                    "VALUE_LIST": ["AUTO-MODE", "MANU-MODE", "PARTY-MODE", "BOOST-MODE"]
+                    "VALUE_LIST": [
+                        "AUTO-MODE",
+                        "MANU-MODE",
+                        "PARTY-MODE",
+                        "BOOST-MODE"
+                    ]
                 },
                 "FAULT_REPORTING": {
                     "CONTROL": "NONE",
@@ -9021,7 +9212,16 @@
                     "TAB_ORDER": 1,
                     "TYPE": "ENUM",
                     "UNIT": "",
-                    "VALUE_LIST": ["NO_FAULT", "VALVE_TIGHT", "ADJUSTING_RANGE_TOO_LARGE", "ADJUSTING_RANGE_TOO_SMALL", "COMMUNICATION_ERROR", "", "LOWBAT", "VALVE_ERROR_POSITION"]
+                    "VALUE_LIST": [
+                        "NO_FAULT",
+                        "VALVE_TIGHT",
+                        "ADJUSTING_RANGE_TOO_LARGE",
+                        "ADJUSTING_RANGE_TOO_SMALL",
+                        "COMMUNICATION_ERROR",
+                        "",
+                        "LOWBAT",
+                        "VALVE_ERROR_POSITION"
+                    ]
                 },
                 "LOWERING_MODE": {
                     "CONTROL": "HEATING_CONTROL.LOWERING",
@@ -9323,7 +9523,16 @@
                     "TAB_ORDER": 1,
                     "TYPE": "ENUM",
                     "UNIT": "",
-                    "VALUE_LIST": ["NO_ERROR", "", "", "", "", "", "", "SABOTAGE"]
+                    "VALUE_LIST": [
+                        "NO_ERROR",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "SABOTAGE"
+                    ]
                 },
                 "INSTALL_TEST": {
                     "DEFAULT": false,
@@ -10181,7 +10390,12 @@
                     "TAB_ORDER": 0,
                     "TYPE": "ENUM",
                     "UNIT": "",
-                    "VALUE_LIST": ["AUTO-MODE", "MANU-MODE", "PARTY-MODE", "BOOST-MODE"]
+                    "VALUE_LIST": [
+                        "AUTO-MODE",
+                        "MANU-MODE",
+                        "PARTY-MODE",
+                        "BOOST-MODE"
+                    ]
                 },
                 "LOWBAT_REPORTING": {
                     "CONTROL": "NONE",
