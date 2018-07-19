@@ -63,6 +63,9 @@ If this flag is not activated, the ioBroker will remove devices from configurati
 Activate this flag to do *not* delete such a devices, e.g. if some devices was temporary removed on CCU/Homematic.
 
 ## Changelog
+### 1.7.5 (2018-07-20)
+* (bluefox) The roles of states were tuned
+
 ### 1.7.4 (2018-06-28)
 * (BuZZy1337) Added Metas for HM-Sen-MDIR-O-3
 

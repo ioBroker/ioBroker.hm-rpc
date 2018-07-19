@@ -13,8 +13,19 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.7.4",
+        "version": "1.7.5",
         "news": {
+            "1.7.5": {
+                "en": "The roles were tuned",
+                "de": "Die Rollen waren abgestimmt",
+                "ru": "Роли были настроены",
+                "pt": "Os papéis foram afinados",
+                "nl": "De rollen zijn afgestemd",
+                "fr": "Les rôles ont été réglés",
+                "it": "I ruoli erano sintonizzati",
+                "es": "Los roles fueron sintonizados",
+                "pl": "Role zostały dostrojone"
+            },
             "1.7.4": {
                 "en": "Added Metas for HM-Sen-MDIR-O-3",
                 "de": "Metas für HM-Sen-MDIR-O-3 hinzugefügt",

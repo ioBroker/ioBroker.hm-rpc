@@ -986,6 +986,10 @@ function addParamsetObjects(channel, paramset, callback) {
             obj.common.role =  metaRoles.dpNAME[key];
         }
 
+        if (obj.common.role === 'state' && obj.common.write) {
+            obj.common.role = 'switch';
+        }
+
         if (paramset[key].OPERATIONS & 8) {
             obj.common.role = 'indicator.service';
         }
@@ -1257,7 +1261,7 @@ function createDevices(deviceArr, callback) {
         if (icon) obj.common.icon = icon;
 
         const dpID = adapter.namespace + '.' + obj._id;
-        dpTypes[dpID] = {UNIT: deviceArr[i].UNIT, TYPE: deviceArr[i].TYPE, MAX: deviceArr[i].MAX, MIN: deviceArr[i].MIN};
+        dpTypes[dpID] = {UNIT: deviceArr[i].UNIT, TYPE: deviceArr[i].TYPE, MAX: deviceArr[i].MAX, MIN: deviceArr[i].MIN, role: role};
         if (typeof dpTypes[dpID].MIN === 'number') {
             dpTypes[dpID].MIN = parseFloat(dpTypes[dpID].MIN);
             dpTypes[dpID].MAX = parseFloat(dpTypes[dpID].MAX);
