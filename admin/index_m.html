@@ -25,11 +25,11 @@
     function setValue(id, value) {
         var $value = $('#' + id + '.value');
         if ($value.attr('type') === 'checkbox') {
-            $value.prop('checked', value).change(function() {
+            $value.prop('checked', value).on('change', function() {
                 onChange();
             });
         } else {
-            $value.val(value).change(function() {
+            $value.val(value).on('change', function() {
                 var $adapterAddress   = $('#adapterAddress');
                 var $homematicAddress = $('#homematicAddress');
                 var $callbackAddress  = $('#callbackAddress');
@@ -72,22 +72,7 @@
                 }
 
                 onChange();
-            }).keyup(function() {
-                // Check that only numbers entered
-                if ($(this).hasClass('number')) {
-                    var val = $(this).val();
-                    if (val) {
-                        var newVal = '';
-                        for (var i = 0; i < val.length; i++) {
-                            if (val[i] >= '0' && val[i] <= '9') {
-                                newVal += val[i];
-                            }
-                        }
-
-                        if (val != newVal) $(this).val(newVal);
-                    }
-                }
-
+            }).on('keyup', function() {
                 $(this).trigger('change');
             });
         }
@@ -123,12 +108,12 @@
 
                 case 'CUxD':
                     $port.val('8701');
-                    $type.val('bin');
+                    $type.val('bin').select();
                     break;
 
                 case 'HMIP':
                     $port.val('2010');
-                    $type.val('xml');
+                    $type.val('xml').select();
                     break;
                 default:
             }
@@ -206,27 +191,27 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col s12 m8">
+                <div class="input-field col s12 m8">
                     <input type="text" id="homematicAddress" class="value"/>
                     <label for="homematicAddress" class="translate">HomeMatic Address</label>
                 </div>
-                <div class="col s12 m4">
-                    <input type="number" id="homematicPort" class="value number"/>
+                <div class="input-field col s12 m4">
+                    <input type="number" id="homematicPort" min="0" max="65565" class="value"/>
                     <label for="homematicPort" class="translate">HomeMatic Port</label>
                 </div>
             </div>
             <div class="row">
-                <div class="col s12 m8">
+                <div class="input-field col s12 m8">
                     <select id="adapterAddress" class="value"></select>
                     <label for="adapterAddress" class="translate">Adapter Address</label>
                 </div>
-                <div class="col s12 m4">
-                    <input type="number" id="port" class="value number"/>
+                <div class="input-field col s12 m4">
+                    <input type="number" id="port" class="value" min="0" max="65565"/>
                     <label for="port" class="translate">Adapter Port</label>
                 </div>
             </div>
             <div class="row">
-                <div class="col s12 m4">
+                <div class="input-field col s12 m4">
                     <select id="daemon" class="value">
                         <option>rfd</option>
                         <option>hs485d</option>
@@ -236,7 +221,7 @@
                     </select>
                     <label for="daemon" class="translate">Daemon</label>
                 </div>
-                <div class="col s12 m4">
+                <div class="input-field col s12 m4">
                     <select id="type" class="value">
                         <option value="xml">XML-RPC</option>
                         <option value="bin">BIN-RPC</option>
@@ -245,7 +230,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col s12">
+                <div class="input-field col s12">
                     <input type="checkbox" id="forceReInit" class="value"/>
                     <span for="forceReInit" class="translate">Force objects re-init</span>
                 </div>
@@ -253,23 +238,23 @@
         </div>
         <div id="tab-advanced"    class="col s12 page">
             <div class="row">
-                <div class="col s12">
+                <div class="input-field col s12">
                     <input type="text" id="callbackAddress" class="value"/>
                     <label for="callbackAddress" class="translate">Adapter Callback Address</label>
                 </div>
             </div>
             <div class="row">
-                <div class="col s12 m6">
+                <div class="input-field col s12 m6">
                     <input id="checkInitInterval" class="value" type="number" min="10"/>
                     <label for="checkInitInterval" class="translate">Check communication interval (sec)</label>
                 </div>
-                <div class="col s12 m6">
+                <div class="input-field col s12 m6">
                     <input type="number" id="reconnectInterval" class="value" min="10"/>
                     <label for="reconnectInterval" class="translate">Reconnect interval (sec)</label>
                 </div>
             </div>
             <div class="row">
-                <div class="col s12">
+                <div class="input-field col s12">
                     <input type="checkbox" id="dontDelete" class="value"/>
                     <span for="dontDelete"  class="translate">Don't delete devices</span>
                 </div>

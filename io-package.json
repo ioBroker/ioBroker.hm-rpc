@@ -13,8 +13,19 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.7.5",
+        "version": "1.7.6",
         "news": {
+            "1.7.6": {
+                "en": "Configuration dialog was corrected",
+                "de": "Konfigurationsdialog wurde korrigiert",
+                "ru": "Диалог конфигурации был исправлен",
+                "pt": "A caixa de diálogo de configuração foi corrigida",
+                "nl": "Configuratiedialoog is gecorrigeerd",
+                "fr": "La boîte de dialogue de configuration a été corrigée",
+                "it": "La finestra di configurazione è stata corretta",
+                "es": "Se corrigió el diálogo de configuración",
+                "pl": "Okno dialogowe konfiguracji zostało poprawione"
+            },
             "1.7.5": {
                 "en": "The roles were tuned",
                 "de": "Die Rollen waren abgestimmt",
