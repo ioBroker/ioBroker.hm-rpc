@@ -246,7 +246,8 @@
                     "RAMP_STOP": "button.stop",
                     "STOP": "button.stop",
                     "ON_TIME": "timer.off",
-                    "DUTYCYCLE": "value"
+                    "DUTYCYCLE": "value",
+                    "COLOR": "level.color.hue"
                 },
                 "dvTYPE": {
                     "HM-Sec-SD": "sensor.alarm.fire",

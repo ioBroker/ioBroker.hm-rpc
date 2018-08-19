@@ -990,6 +990,10 @@ function addParamsetObjects(channel, paramset, callback) {
             obj.common.role = 'switch';
         }
 
+        if (obj.common.role === 'level.color.hue') {
+            obj.common.max = 200;
+        }
+
         if (paramset[key].OPERATIONS & 8) {
             obj.common.role = 'indicator.service';
         }
