@@ -1411,7 +1411,7 @@ function updateConnection() {
     }
 
     // CUxD does not support ping
-    if (!eventInterval && adapter.config.daemon !== 'CUxD') {
+    if (!eventInterval) {
         adapter.log.debug('start ping interval');
         eventInterval = setInterval(keepAlive, adapter.config.checkInitInterval * 1000 / 2);
     }
