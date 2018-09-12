@@ -85,6 +85,8 @@
         });
 
         settings.callbackAddress = settings.callbackAddress || '';
+        settings.authUser        = settings.authUser || null;
+        settings.authPass        = settings.authPass || null;
         settings.port            = settings.port || 0;
         settings.dontDelete      = settings.dontDelete || false;
 
@@ -198,6 +200,18 @@
                 <div class="input-field col s12 m4">
                     <input type="number" id="homematicPort" min="0" max="65565" class="value"/>
                     <label for="homematicPort" class="translate">HomeMatic Port</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12 m4">
+                    <input type="text" id="authUser" class="value"/>
+                    <label for="authUser" class="translate">HomeMatic User</label>
+                </div>
+                <div class="input-field col s12 m4">
+                    <input type="password" id="authPass" class="value"/>
+                    <label for="authPass" class="translate">HomeMatic Password</label>
+                </div>
+                <div class="input-field col s12 m4">
                 </div>
             </div>
             <div class="row">
