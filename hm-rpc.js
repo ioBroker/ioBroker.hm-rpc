@@ -1423,7 +1423,8 @@ function connect(isFirst) {
             host: adapter.config.homematicAddress,
             port: adapter.config.homematicPort,
             path: '/',
-            reconnectTimeout: adapter.config.reconnectInterval * 1000
+            reconnectTimeout: adapter.config.reconnectInterval * 1000,
+            basic_auth: {user: adapter.config.authUser, pass: adapter.config.authPass}
         });
 
         // if bin-rpc
