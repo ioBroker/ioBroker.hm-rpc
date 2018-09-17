@@ -96,23 +96,34 @@
 
         $('#daemon').change(function () {
             var $port = $('#homematicPort');
+            var $path = $('#homematicPath');
             var $type = $('#type');
             switch ($(this).val()) {
                 case 'rfd':
                     $port.val('2001');
+                    $path.val('/');
+                    break;
+
+                case 'rfd-groups':
+                    $port.val('9292');
+                    $path.val('/groups/');
+                    $type.val('xml').select();
                     break;
 
                 case 'hs485d':
                     $port.val('2000');
+                    $path.val('/');
                     break;
 
                 case 'CUxD':
                     $port.val('8701');
+                    $path.val('/');
                     $type.val('bin').select();
                     break;
 
                 case 'HMIP':
                     $port.val('2010');
+                    $path.val('/');
                     $type.val('xml').select();
                     break;
                 default:
@@ -202,6 +213,14 @@
             </div>
             <div class="row">
                 <div class="input-field col s12 m8">
+                </div>
+                <div class="input-field col s12 m4">
+                    <input type="text" id="homematicPath" class="value"/>
+                    <label for="homematicPath" class="translate">HomeMatic Path</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12 m8">
                     <select id="adapterAddress" class="value"></select>
                     <label for="adapterAddress" class="translate">Adapter Address</label>
                 </div>
@@ -214,6 +233,7 @@
                 <div class="input-field col s12 m4">
                     <select id="daemon" class="value">
                         <option>rfd</option>
+                        <option value="rfd-groups">rfd Groups</option>
                         <option>hs485d</option>
                         <option>CUxD</option>
                         <option value="HMIP">HomeMatic IP</option>

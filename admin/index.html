@@ -157,23 +157,34 @@
     $(document).ready(function () {
         $('#daemon').change(function () {
             var $port = $('#homematicPort');
+            var $path = $('#homematicPath');
             var $type = $('#type');
             switch ($(this).val()) {
                 case 'rfd':
                     $port.val('2001');
+                    $path.val('/');
+                    break;
+
+                case 'rfd-groups':
+                    $port.val('9292');
+                    $path.val('/groups/');
+                    $type.val('xml');
                     break;
 
                 case 'hs485d':
                     $port.val('2000');
+                    $path.val('/');
                     break;
 
                 case 'CUxD':
                     $port.val('8701');
+                    $path.val('/');
                     $type.val('bin');
                     break;
 
                 case 'HMIP':
                     $port.val('2010');
+                    $path.val('/');
                     $type.val('xml');
                     break;
                 default:
@@ -204,6 +215,7 @@
             <td>
                 <select id="daemon" class="value">
                     <option>rfd</option>
+                    <option value="rfd-groups">rfd Groups</option>
                     <option>hs485d</option>
                     <option>CUxD</option>
                     <option value="HMIP">HomeMatic IP</option>
@@ -215,6 +227,10 @@
         <tr>
             <td><label for="homematicPort" class="translate">HomeMatic Port</label></td>
             <td><input type="number" id="homematicPort" class="value number"/></td>
+        </tr>
+        <tr>
+            <td><label for="homematicPath" class="translate">HomeMatic Path</label></td>
+            <td><input type="text" id="homematicPath" class="value"/></td>
         </tr>
         <tr>
             <td><label for="type" class="translate">Protocol</label></td>

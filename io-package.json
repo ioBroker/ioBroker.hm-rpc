@@ -152,6 +152,7 @@
         "homematicAddress": "192.168.0.100",
         "adapterAddress": "0.0.0.0",
         "homematicPort": "2001",
+        "homematicPath": "/",
         "callbackAddress": "",
         "port": "0",
         "type": "bin",
