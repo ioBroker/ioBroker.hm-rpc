@@ -510,7 +510,7 @@ const adapter = utils.Adapter({
             }
 
             if (adapter.config && rpcClient) {
-                adapter.log.info(adapter.config.type + 'rpc -> ' + adapter.config.homematicAddress + adapter.config.homematicPath + ':' + adapter.config.homematicPort + ' init ' + JSON.stringify([daemonURL, '']));
+                adapter.log.info(adapter.config.type + 'rpc -> ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + adapter.config.homematicPath + ' init ' + JSON.stringify([daemonURL, '']));
                 try {
                     rpcClient.methodCall('init', [daemonURL, ''], (err, data) => {
                         if (connected) {
@@ -641,7 +641,7 @@ function main() {
 function sendInit() {
     try {
         if (rpcClient && (rpcClient.connected === undefined || rpcClient.connected)) {
-            adapter.log.debug(adapter.config.type + 'rpc -> ' + adapter.config.homematicAddress + adapter.config.homematicPath + ':' + adapter.config.homematicPort + ' init ' + JSON.stringify([daemonURL, adapter.namespace]));
+            adapter.log.debug(adapter.config.type + 'rpc -> ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + adapter.config.homematicPath + ' init ' + JSON.stringify([daemonURL, adapter.namespace]));
             rpcClient.methodCall('init', [daemonURL, adapter.namespace], function handleInit(err, data) {
                 if (!err) {
                     if (adapter.config.daemon === 'CUxD') {
@@ -709,7 +709,7 @@ function initRpcServer() {
         rpcServer = rpc.createServer({host: adapter.config.adapterAddress, port: port});
 
         adapter.log.info(adapter.config.type + 'rpc server is trying to listen on ' + adapter.config.adapterAddress + ':' + port);
-        adapter.log.info(adapter.config.type + 'rpc client is trying to connect to ' + adapter.config.homematicAddress + adapter.config.homematicPath + ':' + adapter.config.homematicPort + ' with ' + JSON.stringify([daemonURL, adapter.namespace]));
+        adapter.log.info(adapter.config.type + 'rpc client is trying to connect to ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + adapter.config.homematicPath + ' with ' + JSON.stringify([daemonURL, adapter.namespace]));
 
         connect(true);
 
