@@ -734,7 +734,7 @@ function initRpcServer() {
                 adapter.log.warn(' Error on system.listMethods: ' + err);
             }
             adapter.log.info(adapter.config.type + 'rpc <- system.listMethods ' + JSON.stringify(params));
-            callback(null, ['event', 'deleteDevices', 'listDevices', 'newDevices', 'system.listMethods', 'system.multicall']);
+            callback(null, ['event', 'deleteDevices', 'listDevices', 'newDevices', 'system.listMethods', 'system.multicall', 'setReadyConfig']);
         });
 
         rpcServer.on('event', (err, params, callback) => {
@@ -875,6 +875,19 @@ function initRpcServer() {
                 adapter.log.error('Cannot response on deleteDevices:' + err);
             }
         });
+		
+		rpcServer.on('setReadyConfig', (err, params, callback) => {
+			if (err) {
+                adapter.log.warn(' Error on setReadyConfig: ' + err);
+            }
+			adapter.log.info(adapter.config.type + 'rpc <- setReadyConfig ' + JSON.stringify(params));
+			try {
+                callback(null, '');
+            } catch (err) {
+                adapter.log.error('Cannot response on setReadyConfig:' + err);
+            }
+		});
+
     });
 }
 
