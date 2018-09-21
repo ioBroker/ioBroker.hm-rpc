@@ -875,18 +875,18 @@ function initRpcServer() {
                 adapter.log.error('Cannot response on deleteDevices:' + err);
             }
         });
-		
-		rpcServer.on('setReadyConfig', (err, params, callback) => {
-			if (err) {
+
+        rpcServer.on('setReadyConfig', (err, params, callback) => {
+            if (err) {
                 adapter.log.warn(' Error on setReadyConfig: ' + err);
             }
-			adapter.log.info(adapter.config.type + 'rpc <- setReadyConfig ' + JSON.stringify(params));
-			try {
+            adapter.log.info(adapter.config.type + 'rpc <- setReadyConfig ' + JSON.stringify(params));
+            try {
                 callback(null, '');
             } catch (err) {
                 adapter.log.error('Cannot response on setReadyConfig:' + err);
             }
-		});
+        });
 
     });
 }
