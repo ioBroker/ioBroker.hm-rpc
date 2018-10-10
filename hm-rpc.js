@@ -510,7 +510,7 @@ const adapter = utils.Adapter({
             }
 
             if (adapter.config && rpcClient) {
-                adapter.log.info(adapter.config.type + 'rpc -> ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + ' init ' + JSON.stringify([daemonURL, '']));
+                adapter.log.info(adapter.config.type + 'rpc -> ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + adapter.config.homematicPath + ' init ' + JSON.stringify([daemonURL, '']));
                 try {
                     rpcClient.methodCall('init', [daemonURL, ''], (err, data) => {
                         if (connected) {
@@ -641,7 +641,7 @@ function main() {
 function sendInit() {
     try {
         if (rpcClient && (rpcClient.connected === undefined || rpcClient.connected)) {
-            adapter.log.debug(adapter.config.type + 'rpc -> ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + ' init ' + JSON.stringify([daemonURL, adapter.namespace]));
+            adapter.log.debug(adapter.config.type + 'rpc -> ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + adapter.config.homematicPath + ' init ' + JSON.stringify([daemonURL, adapter.namespace]));
             rpcClient.methodCall('init', [daemonURL, adapter.namespace], function handleInit(err, data) {
                 if (!err) {
                     if (adapter.config.daemon === 'CUxD') {
@@ -709,7 +709,7 @@ function initRpcServer() {
         rpcServer = rpc.createServer({host: adapter.config.adapterAddress, port: port});
 
         adapter.log.info(adapter.config.type + 'rpc server is trying to listen on ' + adapter.config.adapterAddress + ':' + port);
-        adapter.log.info(adapter.config.type + 'rpc client is trying to connect to ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + ' with ' + JSON.stringify([daemonURL, adapter.namespace]));
+        adapter.log.info(adapter.config.type + 'rpc client is trying to connect to ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + adapter.config.homematicPath + ' with ' + JSON.stringify([daemonURL, adapter.namespace]));
 
         connect(true);
 
@@ -734,7 +734,7 @@ function initRpcServer() {
                 adapter.log.warn(' Error on system.listMethods: ' + err);
             }
             adapter.log.info(adapter.config.type + 'rpc <- system.listMethods ' + JSON.stringify(params));
-            callback(null, ['event', 'deleteDevices', 'listDevices', 'newDevices', 'system.listMethods', 'system.multicall']);
+            callback(null, ['event', 'deleteDevices', 'listDevices', 'newDevices', 'system.listMethods', 'system.multicall', 'setReadyConfig']);
         });
 
         rpcServer.on('event', (err, params, callback) => {
@@ -875,6 +875,19 @@ function initRpcServer() {
                 adapter.log.error('Cannot response on deleteDevices:' + err);
             }
         });
+
+        rpcServer.on('setReadyConfig', (err, params, callback) => {
+            if (err) {
+                adapter.log.warn(' Error on setReadyConfig: ' + err);
+            }
+            adapter.log.info(adapter.config.type + 'rpc <- setReadyConfig ' + JSON.stringify(params));
+            try {
+                callback(null, '');
+            } catch (err) {
+                adapter.log.error('Cannot response on setReadyConfig:' + err);
+            }
+        });
+
     });
 }
 
@@ -1422,7 +1435,7 @@ function connect(isFirst) {
         rpcClient = rpc.createClient({
             host: adapter.config.homematicAddress,
             port: adapter.config.homematicPort,
-            path: '/',
+            path: adapter.config.homematicPath,
             reconnectTimeout: adapter.config.reconnectInterval * 1000
         });
 
