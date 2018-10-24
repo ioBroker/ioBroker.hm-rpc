@@ -217,6 +217,7 @@
                     "TEMPERATURE": "value.temperature",
                     "SETPOINT": "level.temperature",
                     "SET_TEMPERATURE": "level.temperature",
+                    "SET_POINT_TEMPERATURE": "level.temperature",
                     "HUMIDITY": "value.humidity",
                     "STATE": "state",
                     "PRESS_SHORT": "button",
