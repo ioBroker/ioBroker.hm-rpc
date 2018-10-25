@@ -63,6 +63,10 @@ If this flag is not activated, the ioBroker will remove devices from configurati
 Activate this flag to do *not* delete such a devices, e.g. if some devices was temporary removed on CCU/Homematic.
 
 ## Changelog
+### 1.7.7 (2018-10-25)
+* (foxriver76) Meta information for HmIP-WTH-2 and HMIP-eTRV added (to fix issues with unit and other properties)
+* (foxriver76) General role mapping for SET_POINT_TEMPERATURE added
+
 ### 1.7.6 (2018-07-29)
 * (bluefox) Configuration dialog was corrected
 
