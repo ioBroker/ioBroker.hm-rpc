@@ -20427,6 +20427,294 @@
                     "UNIT": ""
                 }
             }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HM-RC-19.KEY.1",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "LEVEL": {
+                    "ID": "LEVEL",
+                    "UNIT": "100%",
+                    "TAB_ORDER": 0,
+                    "OPERATIONS": 7,
+                    "FLAGS": 2,
+                    "TYPE": "FLOAT",
+                    "MIN": 0,
+                    "MAX": 1,
+                    "DEFAULT": 0
+                },
+                "OLD_LEVEL": {
+                    "ID": "OLD_LEVEL",
+                    "UNIT": "",
+                    "TAB_ORDER": 1,
+                    "OPERATIONS": 2,
+                    "FLAGS": 2,
+                    "TYPE": "ACTION",
+                    "MIN": false,
+                    "MAX": true,
+                    "DEFAULT": false
+                },
+                "STOP": {
+                    "ID": "STOP",
+                    "UNIT": "",
+                    "TAB_ORDER": 2,
+                    "OPERATIONS": 6,
+                    "FLAGS": 2,
+                    "TYPE": "ACTION",
+                    "MIN": false,
+                    "MAX": true,
+                    "DEFAULT": false
+                },
+                "STATE": {
+                    "ID": "STATE",
+                    "UNIT": "",
+                    "TAB_ORDER": 3,
+                    "OPERATIONS": 7,
+                    "FLAGS": 2,
+                    "TYPE": "BOOL",
+                    "MIN": false,
+                    "MAX": true,
+                    "DEFAULT": false
+                },
+                "PRESS_SHORT": {
+                    "ID": "PRESS_SHORT",
+                    "UNIT": "",
+                    "TAB_ORDER": 4,
+                    "OPERATIONS": 6,
+                    "FLAGS": 1,
+                    "CONTROL": "BUTTON.SHORT",
+                    "TYPE": "ACTION",
+                    "MIN": false,
+                    "MAX": true,
+                    "DEFAULT": false
+                },
+                "PRESS_LONG": {
+                    "ID": "PRESS_LONG",
+                    "UNIT": "",
+                    "TAB_ORDER": 5,
+                    "OPERATIONS": 6,
+                    "FLAGS": 1,
+                    "CONTROL": "BUTTON.LONG",
+                    "TYPE": "ACTION",
+                    "MIN": false,
+                    "MAX": true,
+                    "DEFAULT": false
+                },
+                "CMD_RUNS": {
+                    "ID": "CMD_RUNS",
+                    "UNIT": "",
+                    "TAB_ORDER": 6,
+                    "OPERATIONS": 2,
+                    "FLAGS": 2,
+                    "TYPE": "ACTION",
+                    "MIN": false,
+                    "MAX": true,
+                    "DEFAULT": false
+                },
+                "CMD_RUNL": {
+                    "ID": "CMD_RUNL",
+                    "UNIT": "",
+                    "TAB_ORDER": 7,
+                    "OPERATIONS": 2,
+                    "FLAGS": 2,
+                    "TYPE": "ACTION",
+                    "MIN": false,
+                    "MAX": true,
+                    "DEFAULT": false
+                },
+                "CMD_KILL": {
+                    "ID": "CMD_KILL",
+                    "UNIT": "",
+                    "TAB_ORDER": 8,
+                    "OPERATIONS": 2,
+                    "FLAGS": 1,
+                    "TYPE": "STRING",
+                    "MIN": "",
+                    "MAX": "",
+                    "DEFAULT": ""
+                },
+                "CMD_EXEC": {
+                    "ID": "CMD_EXEC",
+                    "UNIT": "",
+                    "TAB_ORDER": 9,
+                    "OPERATIONS": 2,
+                    "FLAGS": 1,
+                    "TYPE": "STRING",
+                    "MIN": "",
+                    "MAX": "",
+                    "DEFAULT": ""
+                },
+                "LOGIT": {
+                    "ID": "LOGIT",
+                    "UNIT": "",
+                    "TAB_ORDER": 10,
+                    "OPERATIONS": 2,
+                    "FLAGS": 2,
+                    "TYPE": "STRING",
+                    "MIN": "",
+                    "MAX": "",
+                    "DEFAULT": ""
+                },
+                "POSTIT": {
+                    "ID": "POSTIT",
+                    "UNIT": "",
+                    "TAB_ORDER": 11,
+                    "OPERATIONS": 2,
+                    "FLAGS": 2,
+                    "TYPE": "STRING",
+                    "MIN": "",
+                    "MAX": "",
+                    "DEFAULT": ""
+                },
+                "SYSLOG": {
+                    "ID": "SYSLOG",
+                    "UNIT": "",
+                    "TAB_ORDER": 12,
+                    "OPERATIONS": 2,
+                    "FLAGS": 2,
+                    "TYPE": "STRING",
+                    "MIN": "",
+                    "MAX": "",
+                    "DEFAULT": ""
+                },
+                "WRITE_FILE": {
+                    "ID": "WRITE_FILE",
+                    "UNIT": "",
+                    "TAB_ORDER": 13,
+                    "OPERATIONS": 2,
+                    "FLAGS": 2,
+                    "TYPE": "STRING",
+                    "MIN": "",
+                    "MAX": "",
+                    "DEFAULT": ""
+                },
+                "CMD_SETS": {
+                    "ID": "CMD_SETS",
+                    "UNIT": "",
+                    "TAB_ORDER": 14,
+                    "OPERATIONS": 7,
+                    "FLAGS": 1,
+                    "TYPE": "STRING",
+                    "MIN": "",
+                    "MAX": "",
+                    "DEFAULT": ""
+                },
+                "CMD_SETL": {
+                    "ID": "CMD_SETL",
+                    "UNIT": "",
+                    "TAB_ORDER": 15,
+                    "OPERATIONS": 7,
+                    "FLAGS": 1,
+                    "TYPE": "STRING",
+                    "MIN": "",
+                    "MAX": "",
+                    "DEFAULT": ""
+                },
+                "CMD_RETS": {
+                    "ID": "CMD_RETS",
+                    "UNIT": "",
+                    "TAB_ORDER": 16,
+                    "OPERATIONS": 5,
+                    "FLAGS": 1,
+                    "TYPE": "STRING",
+                    "MIN": "",
+                    "MAX": "",
+                    "DEFAULT": ""
+                },
+                "CMD_RETL": {
+                    "ID": "CMD_RETL",
+                    "UNIT": "",
+                    "TAB_ORDER": 17,
+                    "OPERATIONS": 5,
+                    "FLAGS": 1,
+                    "TYPE": "STRING",
+                    "MIN": "",
+                    "MAX": "",
+                    "DEFAULT": ""
+                },
+                "CMD_QUERY_RET": {
+                    "ID": "CMD_QUERY_RET",
+                    "UNIT": "",
+                    "TAB_ORDER": 18,
+                    "OPERATIONS": 2,
+                    "FLAGS": 2,
+                    "TYPE": "ACTION",
+                    "MIN": false,
+                    "MAX": true,
+                    "DEFAULT": false
+                },
+                "WORKING": {
+                    "ID": "WORKING",
+                    "UNIT": "",
+                    "TAB_ORDER": 19,
+                    "OPERATIONS": 5,
+                    "FLAGS": 1,
+                    "TYPE": "BOOL",
+                    "MIN": false,
+                    "MAX": true,
+                    "DEFAULT": false
+                },
+                "CONTROL": {
+                    "ID": "CONTROL",
+                    "UNIT": "",
+                    "TAB_ORDER": 20,
+                    "OPERATIONS": 1,
+                    "FLAGS": 2,
+                    "TYPE": "INTEGER",
+                    "MIN": 0,
+                    "MAX": 1,
+                    "DEFAULT": 0
+                },
+                "SET_STATE": {
+                    "ID": "SET_STATE",
+                    "UNIT": "",
+                    "TAB_ORDER": 21,
+                    "OPERATIONS": 2,
+                    "FLAGS": 2,
+                    "TYPE": "FLOAT",
+                    "MIN": 0,
+                    "MAX": 1,
+                    "DEFAULT": 0
+                },
+                "RAND": {
+                    "ID": "RAND",
+                    "UNIT": "",
+                    "TAB_ORDER": 22,
+                    "OPERATIONS": 3,
+                    "FLAGS": 2,
+                    "TYPE": "STRING",
+                    "MIN": "",
+                    "MAX": "",
+                    "DEFAULT": ""
+                },
+                "INHIBIT": {
+                    "ID": "INHIBIT",
+                    "UNIT": "",
+                    "TAB_ORDER": 23,
+                    "OPERATIONS": 3,
+                    "FLAGS": 1,
+                    "TYPE": "BOOL",
+                    "MIN": false,
+                    "MAX": true,
+                    "DEFAULT": false
+                },
+                "INSTALL_TEST": {
+                    "ID": "INSTALL_TEST",
+                    "UNIT": "",
+                    "TAB_ORDER": 24,
+                    "OPERATIONS": 3,
+                    "FLAGS": 3,
+                    "TYPE": "ACTION",
+                    "MIN": false,
+                    "MAX": true,
+                    "DEFAULT": false
+                }
+            }
         }
     ],
     "instanceObjects": [
