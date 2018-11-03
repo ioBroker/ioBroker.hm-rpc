@@ -13,8 +13,19 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.7.7",
+        "version": "1.7.8",
         "news": {
+            "1.7.8": {
+                "en": "Added a lot of Device-Metainformations",
+                "de": "Viele Geräte-Metainformationen hinzugefügt",
+                "ru": "Добавлено много устройств-метаинформаций",
+                "pt": "Adicionado muitas metainformações de dispositivos",
+                "nl": "Veel Device-Metainformations toegevoegd",
+                "fr": "Beaucoup de métainformations de périphérique ajoutées",
+                "it": "Aggiunte molte Device-Metainformations",
+                "es": "Añadido un montón de dispositivos-metainformaciones",
+                "pl": "Dodano wiele Device-Metainformations"
+            },
             "1.7.7": {
                 "en": "Added metas for HmIP-WTH-2, HMIP-eTRV",
                 "de": "Meta Informationen für HmIP-WTH-2 und HMIP-eTRV hinzugefügt",
