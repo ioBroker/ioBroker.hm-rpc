@@ -1435,7 +1435,7 @@ function connect(isFirst) {
         rpcClient = rpc.createClient({
             host: adapter.config.homematicAddress,
             port: adapter.config.homematicPort,
-            path: adapter.config.homematicPath,
+            path: adapter.config.homematicPath || '/',
             reconnectTimeout: adapter.config.reconnectInterval * 1000
         });
 
