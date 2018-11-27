@@ -5,6 +5,7 @@
 
 const utils     = require(__dirname + '/lib/utils'); // Get common adapter utils
 const images    = require(__dirname + '/lib/images');
+const crypto    = require(__dirname + '/lib/crypto'); // Provides encrypt and decrypt
 let connected = false;
 let displays  = {};
 
@@ -1487,13 +1488,24 @@ function connect(isFirst) {
             });
         }*/
     } else if (!rpcClient) {
-        rpcClient = rpc.createSecureClient({
-            host: adapter.config.homematicAddress,
-            port: adapter.config.homematicPort,
-            path: adapter.config.homematicPath || '/',
-            reconnectTimeout: adapter.config.reconnectInterval * 1000,
-            basic_auth: {user: adapter.config.username, pass: adapter.config.password}
-        });
+        adapter.getForeignObject('system.config', (err, obj) => {
+            let password;
+            if (obj && obj.native && obj.native.secret) {
+                password = crypto.decrypt(obj.native.secret, adapter.config.password);
+            } else {
+                password = crypto.decrypt('Zgfr56gFe87jJOM', adapter.config.password);
+            } // endElse
+
+            rpcClient = rpc.createSecureClient({
+                host: adapter.config.homematicAddress,
+                port: adapter.config.homematicPort,
+                path: adapter.config.homematicPath || '/',
+                reconnectTimeout: adapter.config.reconnectInterval * 1000,
+                basic_auth: {user: adapter.config.username, pass: password},
+                rejectUnauthorized: false
+            });
+    });
+
     } // endElseIf
 
     connTimeout = null;

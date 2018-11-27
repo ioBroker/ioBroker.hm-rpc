@@ -20,6 +20,15 @@
 </style>
 
 <script type="text/javascript">
+
+    function encrypt(key, value) {
+        var result = '';
+        for (var i = 0; i < value.length; ++i) {
+            result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
+        }
+        return result;
+    }
+
     var secret;
     var onChange = null;
 
@@ -80,59 +89,85 @@
     }
 
     function load(settings, _onChange) {
-        onChange = _onChange;
-        fillSelectIPs('#adapterAddress', settings.adapterAddress, false, true, function () {
-            $('#adapterAddress').select();
-        });
+        socket.emit('getObject', 'system.config', function (err, obj) {
+            secret = (obj.native ? obj.native.secret : '') || 'Zgfr56gFe87jJOM';
+            onChange = _onChange;
+            fillSelectIPs('#adapterAddress', settings.adapterAddress, false, true, function () {
+                $('#adapterAddress').select();
+            });
 
-        settings.callbackAddress = settings.callbackAddress || '';
-        settings.port            = settings.port || 0;
-        settings.dontDelete      = settings.dontDelete || false;
+            settings.callbackAddress = settings.callbackAddress || '';
+            settings.port = settings.port || 0;
+            settings.dontDelete = settings.dontDelete || false;
+            settings.username = settings.username || '';
 
-        for (var key in settings) {
-            if (settings.hasOwnProperty(key)) {
-                setValue(key, settings[key]);
+            for (var key in settings) {
+                if (settings.hasOwnProperty(key)) {
+                    setValue(key, settings[key]);
+                }
             }
-        }
 
-        $('#daemon').change(function () {
-            var $port = $('#homematicPort');
-            var $path = $('#homematicPath');
-            var $type = $('#type');
-            switch ($(this).val()) {
-                case 'rfd':
-                    $port.val('2001');
-                    $path.val('/');
-                    $type.val('xml').select();
-                    break;
+            var $useHttps = $('#useHttps');
+            var $password = $('#password');
+            var $username = $('#username');
 
-                case 'virtual-devices':
-                    $port.val('9292');
-                    $path.val('/groups/');
-                    $type.val('xml').select();
-                    break;
-
-                case 'hs485d':
-                    $port.val('2000');
-                    $path.val('/');
-                    break;
-
-                case 'CUxD':
-                    $port.val('8701');
-                    $path.val('/');
-                    $type.val('bin').select();
-                    break;
-
-                case 'HMIP':
-                    $port.val('2010');
-                    $path.val('/');
-                    $type.val('xml').select();
-                    break;
-                default:
+            if ($useHttps.prop('checked')) {
+                $password.prop('disabled', false);
+                $username.prop('disabled', false);
+            } else {
+                $password.prop('disabled', true);
+                $username.prop('disabled', true);
             }
-        });
 
-        onChange(false);
+            $useHttps.change(function () {
+                if ($(this).prop('checked')) {
+                    $password.prop('disabled', false);
+                    $username.prop('disabled', false);
+                } else {
+                    $password.prop('disabled', true);
+                    $username.prop('disabled', true);
+                }
+            });
+
+            $('#daemon').change(function () {
+                var $port = $('#homematicPort');
+                var $path = $('#homematicPath');
+                var $type = $('#type');
+                switch ($(this).val()) {
+                    case 'rfd':
+                        $port.val('2001');
+                        $path.val('/');
+                        $type.val('xml').select();
+                        break;
+
+                    case 'virtual-devices':
+                        $port.val('9292');
+                        $path.val('/groups/');
+                        $type.val('xml').select();
+                        break;
+
+                    case 'hs485d':
+                        $port.val('2000');
+                        $path.val('/');
+                        break;
+
+                    case 'CUxD':
+                        $port.val('8701');
+                        $path.val('/');
+                        $type.val('bin').select();
+                        break;
+
+                    case 'HMIP':
+                        $port.val('2010');
+                        $path.val('/');
+                        $type.val('xml').select();
+                        break;
+                    default:
+                }
+            });
+
+            onChange(false);
+        });
     }
 
     function getSettings() {
@@ -144,7 +179,7 @@
             if ($this.attr('type') === 'checkbox') {
                 obj[$this.attr('id')] = $this.prop('checked');
             } else {
-                obj[$this.attr('id')] = $this.val();
+                obj[$this.attr('id')] = $this.data('crypt') && $this.val() ? encrypt(secret, $this.val()) : $this.val();
             }
         });
         return obj;
@@ -285,6 +320,16 @@
                 <div class="input field col s12">
                     <input type="checkbox" id="useHttps" class="value"/>
                     <span for="useHttps"  class="translate">Use https</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12 m6 l4">
+                    <input class="value" id="username" type="text" disabled>
+                    <label for="username" class="translate">Username</label>
+                </div>
+                <div class="input-field col s12 m6 l4">
+                    <input class="value" id="password" data-crypt="1" type="password" disabled>
+                    <label for="password" class="translate">Password</label>
                 </div>
             </div>
         </div>
