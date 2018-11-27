@@ -586,11 +586,7 @@ function main() {
     } else {
         rpc = require('homematic-xmlrpc');
         adapter.config.type = 'xml';
-        if(adapter.config.useHttps) {
-            daemonProto = 'https://';
-        } else {
-            daemonProto = 'http://';
-        } // endElse
+        daemonProto = 'http://';
     }
 
     // Load VALUE paramsetDescriptions (needed to create state objects)
@@ -712,13 +708,12 @@ function initRpcServer() {
     const callbackAddress = adapter.config.callbackAddress || adapter.config.adapterAddress;
     adapter.getPort(adapterPort, port => {
         daemonURL = daemonProto + callbackAddress + ':' + port;
-        if(adapter.config.useHttps) {
-            adapter.log.debug('[START] Create HTTPS server');
-            rpcServer = rpc.createSecureServer({host: adapter.config.adapterAddress, port: port});
-        } else {
-            adapter.log.debug('[START] Create HTTP server');
-            rpcServer = rpc.createServer({host: adapter.config.adapterAddress, port: port});
-        } // endElse
+
+        rpcServer = rpc.createServer({
+            host: adapter.config.adapterAddress,
+            port: port/*,
+            rejectUnauthorized: false*/
+        });
 
         adapter.log.info(adapter.config.type + 'rpc server is trying to listen on ' + adapter.config.adapterAddress + ':' + port);
         adapter.log.info(adapter.config.type + 'rpc client is trying to connect to ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + adapter.config.homematicPath + ' with ' + JSON.stringify([daemonURL, adapter.namespace]));

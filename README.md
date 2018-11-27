@@ -63,6 +63,12 @@ If this flag is not activated, the ioBroker will remove devices from configurati
 Activate this flag to do *not* delete such a devices, e.g. if some devices was temporary removed on CCU/Homematic.
 
 ## Changelog
+### 1.8.0 (2018-11-27)
+* (foxriver76) Https checkbox added
+* (foxriver76) Https can be used instead of http
+* (foxriver76) Added possibility to authenticate on API
+* (foxriver76) de- and encryption added
+
 ### 1.7.7 (2018-10-25)
 * (foxriver76) Meta information for HmIP-WTH-2 and HMIP-eTRV added (to fix issues with unit and other properties)
 * (foxriver76) General role mapping for SET_POINT_TEMPERATURE added
