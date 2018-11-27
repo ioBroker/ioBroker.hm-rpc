@@ -181,7 +181,10 @@
         "daemon": "rfd",
         "checkInitInterval": 180,
         "reconnectInterval": 30,
-        "forceReInit": false
+        "forceReInit": false,
+        "username": "",
+        "password": "",
+        "useHttps": false
     },
     "objects": [
         {

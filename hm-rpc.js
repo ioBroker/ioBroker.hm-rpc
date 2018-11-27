@@ -585,7 +585,11 @@ function main() {
     } else {
         rpc = require('homematic-xmlrpc');
         adapter.config.type = 'xml';
-        daemonProto = 'http://';
+        if(adapter.config.useHttps) {
+            daemonProto = 'https://';
+        } else {
+            daemonProto = 'http://';
+        } // endElse
     }
 
     // Load VALUE paramsetDescriptions (needed to create state objects)
@@ -700,13 +704,20 @@ function sendPing() {
 function initRpcServer() {
     adapter.config.homematicPort = parseInt(adapter.config.homematicPort, 10);
     adapter.config.port          = parseInt(adapter.config.port, 10);
+    adapter.config.useHttps = adapter.config.useHttps || false;
 
     //adapterPort was introduced in v1.0.1. If not set yet then try 2000
     const adapterPort = parseInt(adapter.config.port || adapter.config.homematicPort, 10) || 2000;
     const callbackAddress = adapter.config.callbackAddress || adapter.config.adapterAddress;
     adapter.getPort(adapterPort, port => {
         daemonURL = daemonProto + callbackAddress + ':' + port;
-        rpcServer = rpc.createServer({host: adapter.config.adapterAddress, port: port});
+        if(adapter.config.useHttps) {
+            adapter.log.debug('[START] Create HTTPS server');
+            rpcServer = rpc.createSecureServer({host: adapter.config.adapterAddress, port: port});
+        } else {
+            adapter.log.debug('[START] Create HTTP server');
+            rpcServer = rpc.createServer({host: adapter.config.adapterAddress, port: port});
+        } // endElse
 
         adapter.log.info(adapter.config.type + 'rpc server is trying to listen on ' + adapter.config.adapterAddress + ':' + port);
         adapter.log.info(adapter.config.type + 'rpc client is trying to connect to ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + adapter.config.homematicPath + ' with ' + JSON.stringify([daemonURL, adapter.namespace]));
@@ -1431,7 +1442,7 @@ function updateConnection() {
 }
 
 function connect(isFirst) {
-    if (!rpcClient) {
+    if (!rpcClient && !adapter.config.useHttps) {
         rpcClient = rpc.createClient({
             host: adapter.config.homematicAddress,
             port: adapter.config.homematicPort,
@@ -1475,7 +1486,15 @@ function connect(isFirst) {
                 }
             });
         }*/
-    }
+    } else if (!rpcClient) {
+        rpcClient = rpc.createSecureClient({
+            host: adapter.config.homematicAddress,
+            port: adapter.config.homematicPort,
+            path: adapter.config.homematicPath || '/',
+            reconnectTimeout: adapter.config.reconnectInterval * 1000,
+            basic_auth: {user: adapter.config.username, pass: adapter.config.password}
+        });
+    } // endElseIf
 
     connTimeout = null;
     adapter.log.debug('Connect...');
