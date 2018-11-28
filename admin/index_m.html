@@ -39,9 +39,9 @@
         return result;
     }
 
-    function setValue(id, settings) {
+    function setValue($value, settings) {
+        var id = $value.attr('id');
         var value = settings[id];
-        var $value = $('#' + id + '.value');
 
         if ($value.attr('type') === 'checkbox') {
             $value.prop('checked', value).on('change', function() {
@@ -114,11 +114,10 @@
             settings.port = settings.port || 0;
             settings.dontDelete = settings.dontDelete || false;
 
-            for (var key in settings) {
-                if (settings.hasOwnProperty(key)) {
-                    setValue(key, settings);
-                }
-            }
+            $('.value').each(function () {
+                var $key = $(this);
+                setValue($key, settings);
+            });
 
             var $useHttps = $('#useHttps');
             var $password = $('#password');
