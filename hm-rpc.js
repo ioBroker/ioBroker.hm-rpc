@@ -701,7 +701,7 @@ function sendPing() {
 function initRpcServer() {
     adapter.config.homematicPort = parseInt(adapter.config.homematicPort, 10);
     adapter.config.port          = parseInt(adapter.config.port, 10);
-    adapter.config.useHttps = adapter.config.useHttps || false;
+    adapter.config.useHttps      = adapter.config.useHttps || false;
 
     //adapterPort was introduced in v1.0.1. If not set yet then try 2000
     const adapterPort = parseInt(adapter.config.port || adapter.config.homematicPort, 10) || 2000;
@@ -823,7 +823,7 @@ function initRpcServer() {
 
         rpcServer.on('listDevices', (err, params, callback) => {
             if (err) {
-                adapter.log.warn(' Error on system.listMethods: ' + err);
+                adapter.log.warn('Error on system.listMethods: ' + err);
             }
             adapter.log.info(adapter.config.type + 'rpc <- listDevices ' + JSON.stringify(params));
             adapter.objects.getObjectView('hm-rpc', 'listDevices', {startkey: 'hm-rpc.' + adapter.instance + '.', endkey: 'hm-rpc.' + adapter.instance + '.\u9999'}, (err, doc) => {
@@ -1485,10 +1485,14 @@ function connect(isFirst) {
     } else if (!rpcClient) {
         adapter.getForeignObject('system.config', (err, obj) => {
             let password;
+            let username;
+
             if (obj && obj.native && obj.native.secret) {
                 password = crypto.decrypt(obj.native.secret, adapter.config.password);
+                username = crypto.decrypt(obj.native.secret, adapter.config.username);
             } else {
                 password = crypto.decrypt('Zgfr56gFe87jJOM', adapter.config.password);
+                username = crypto.decrypt('Zgfr56gFe87jJOM', adapter.config.username);
             } // endElse
 
             rpcClient = rpc.createSecureClient({
@@ -1496,7 +1500,7 @@ function connect(isFirst) {
                 port: adapter.config.homematicPort,
                 path: adapter.config.homematicPath || '/',
                 reconnectTimeout: adapter.config.reconnectInterval * 1000,
-                basic_auth: {user: adapter.config.username, pass: password},
+                basic_auth: {user: username, pass: password},
                 rejectUnauthorized: false
             });
     });

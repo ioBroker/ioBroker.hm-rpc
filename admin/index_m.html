@@ -20,6 +20,8 @@
 </style>
 
 <script type="text/javascript">
+    var secret;
+    var onChange = null;
 
     function encrypt(key, value) {
         var result = '';
@@ -29,16 +31,23 @@
         return result;
     }
 
-    var secret;
-    var onChange = null;
+    function decrypt(key, value) {
+        var result = '';
+        for (var i = 0; i < value.length; ++i) {
+            result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
+        }
+        return result;
+    }
 
-    function setValue(id, value) {
+    function setValue(id, settings) {
+        var value = settings[id];
         var $value = $('#' + id + '.value');
         if ($value.attr('type') === 'checkbox') {
             $value.prop('checked', value).on('change', function() {
                 onChange();
             });
         } else {
+            value = $value.data('crypt') && settings[id] ? decrypt(secret, settings[id]) : settings[id];
             $value.val(value).on('change', function() {
                 var $adapterAddress   = $('#adapterAddress');
                 var $homematicAddress = $('#homematicAddress');
@@ -62,6 +71,7 @@
                             $adapterAddress.val(ip);
                         }
                     }
+
                     if (ip3 || ip3 === '0.0.0.0' || !checkIPs(ip1, ip3)) {
                         $callbackAddress.addClass('invalid').attr('title', _('This IP is unreachable from %s', $homematicAddress.val()));
                     } else {
@@ -99,11 +109,10 @@
             settings.callbackAddress = settings.callbackAddress || '';
             settings.port = settings.port || 0;
             settings.dontDelete = settings.dontDelete || false;
-            settings.username = settings.username || '';
 
             for (var key in settings) {
                 if (settings.hasOwnProperty(key)) {
-                    setValue(key, settings[key]);
+                    setValue(key, settings);
                 }
             }
 
@@ -130,7 +139,7 @@
             });
 
             $('#daemon, #useHttps').change(function () {
-                var $daemon = $('#daemon')
+                var $daemon = $('#daemon');
                 var $useHttps = $('#useHttps');
                 var $port = $('#homematicPort');
                 var $path = $('#homematicPath');
@@ -223,7 +232,7 @@
     }
 
     function checkIPs(ip1, ip2) {
-        // normally it must be calculated the common subnet mask and applyed to both ip addresses, if result is the same => ok
+        // normally it must be calculated the common subnet mask and applied to both ip addresses, if result is the same => ok
         // I will check only 2 first numbers of ipV4
         var i1 = ip1.split('.');
         var i2 = ip2.split('.');
@@ -346,7 +355,7 @@
             </div>
             <div class="row">
                 <div class="input-field col s12 m6 l4">
-                    <input class="value" id="username" type="text" disabled>
+                    <input class="value" id="username" data-crypt="1" type="text" disabled>
                     <label for="username" class="translate">Username</label>
                 </div>
                 <div class="input-field col s12 m6 l4">
