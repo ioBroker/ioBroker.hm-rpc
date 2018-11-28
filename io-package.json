@@ -13,8 +13,19 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.7.8",
+        "version": "1.8.0",
         "news": {
+            "1.8.0": {
+                "en": "Added possibility to use https and authentication",
+                "de": "Möglichkeit hinzugefügt https und Authentifizierung zu nutzen",
+                "ru": "Добавлена ​​возможность использования https и аутентификации",
+                "pt": "Adicionado possibilidade de usar https e autenticação",
+                "nl": "Mogelijkheid toegevoegd om https en authenticatie te gebruiken",
+                "fr": "Ajout de la possibilité d'utiliser https et l'authentification",
+                "it": "Aggiunta la possibilità di utilizzare https e autenticazione",
+                "es": "Posibilidad añadida de usar https y autenticación.",
+                "pl": "Dodano możliwość korzystania z https i uwierzytelniania"
+            },
             "1.7.8": {
                 "en": "Added a lot of Device-Metainformations",
                 "de": "Viele Geräte-Metainformationen hinzugefügt",
@@ -181,7 +192,10 @@
         "daemon": "rfd",
         "checkInitInterval": 180,
         "reconnectInterval": 30,
-        "forceReInit": false
+        "forceReInit": false,
+        "username": "",
+        "password": "",
+        "useHttps": false
     },
     "objects": [
         {
