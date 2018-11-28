@@ -42,12 +42,16 @@
     function setValue(id, settings) {
         var value = settings[id];
         var $value = $('#' + id + '.value');
+
         if ($value.attr('type') === 'checkbox') {
             $value.prop('checked', value).on('change', function() {
                 onChange();
             });
         } else {
             value = $value.data('crypt') && settings[id] ? decrypt(secret, settings[id]) : settings[id];
+            if (id === 'daemon') {
+                $('#daemon').val(value).select();
+            }
             $value.val(value).on('change', function() {
                 var $adapterAddress   = $('#adapterAddress');
                 var $homematicAddress = $('#homematicAddress');
