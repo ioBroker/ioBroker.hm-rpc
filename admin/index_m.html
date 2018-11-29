@@ -221,6 +221,7 @@
                         } // endElse
                         $path.val('/');
                         $type.val('xml').select();
+                        $useHttps.prop('disabled', false);
                         break;
 
                     case 'virtual-devices':
@@ -231,6 +232,7 @@
                         } // endElse
                         $path.val('/groups/');
                         $type.val('xml').select();
+                        $useHttps.prop('disabled', false);
                         break;
 
                     case 'hs485d':
@@ -250,6 +252,7 @@
                         } // endElse
                         $path.val('/');
                         $type.val('bin').select();
+                        $useHttps.prop('disabled', true);
                         break;
 
                     case 'HMIP':
@@ -260,6 +263,7 @@
                         } // endElse
                         $path.val('/');
                         $type.val('xml').select();
+                        $useHttps.prop('disabled', false);
                         break;
                     default:
                 }
