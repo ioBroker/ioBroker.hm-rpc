@@ -23,5 +23,16 @@ systemDictionary = {
     "Force objects re-init": {                       "en": "Synchronize objects (once)",                      "de": "Synchronisiere Geräte neu (einmalig)",            "ru": "Синхронизировать объекты (один раз)",             "pt": "Sincronizar objetos (uma vez)",                   "nl": "Synchroniseer objecten (één keer)",               "fr": "Synchroniser des objets (une fois)",              "it": "Sincronizza oggetti (una volta)",                 "es": "Sincronizar objetos (una vez)",                   "pl": "Synchronizuj obiekty (raz)"},
     "Use https": {                                   "en": "Use https",                                       "de": "Nutze https",                                     "ru": "использовать https",                              "pt": "use https",                                       "nl": "gebruik https",                                   "fr": "utiliser https",                                  "it": "usa https",                                       "es": "usar https",                                      "pl": "użyj https"},
     "Username": {                                    "en": "Username",                                        "de": "Nutzername",                                      "ru": "имя пользователя",                                "pt": "Username",                                        "nl": "Gebruikersnaam",                                  "fr": "Nom d'utilisateur",                               "it": "Nome utente",                                     "es": "Nombre de usuario",                               "pl": "Nazwa Użytkownika"},
-    "Password": {                                    "en": "Password",                                        "de": "Passwort",                                        "ru": "пароль",                                          "pt": "Senha",                                           "nl": "Wachtwoord",                                      "fr": "Mot de passe",                                    "it": "Parola d'ordine",                                 "es": "Contraseña",                                      "pl": "Hasło"}
+    "Password": {                                    "en": "Password",                                        "de": "Passwort",                                        "ru": "пароль",                                          "pt": "Senha",                                           "nl": "Wachtwoord",                                      "fr": "Mot de passe",                                    "it": "Parola d'ordine",                                 "es": "Contraseña",                                      "pl": "Hasło"},
+    "BIN-RPC does not work with HTTPS. HTTPS has been disabled.": {
+        "en": "BIN-RPC does not work with HTTPS. HTTPS has been disabled.",
+        "de": "BIN-RPC ist nicht HTTPS kompatibel. HTTPS wurde deaktiviert.",
+        "ru": "BIN-RPC не работает с HTTPS. HTTPS отключен.",
+        "pt": "O BIN-RPC não funciona com HTTPS. HTTPS foi desativado.",
+        "nl": "BIN-RPC werkt niet met HTTPS. HTTPS is uitgeschakeld.",
+        "fr": "BIN-RPC ne fonctionne pas avec HTTPS. HTTPS a été désactivé.",
+        "it": "BIN-RPC non funziona con HTTPS. HTTPS è stato disabilitato.",
+        "es": "BIN-RPC no funciona con HTTPS. HTTPS ha sido desactivado.",
+        "pl": "BIN-RPC nie działa z HTTPS. HTTPS został wyłączony."
+    }
 };

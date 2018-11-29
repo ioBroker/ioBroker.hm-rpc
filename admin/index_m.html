@@ -122,6 +122,17 @@
             var $useHttps = $('#useHttps');
             var $password = $('#password');
             var $username = $('#username');
+            var $type     = $('#type');
+
+            if ($type.val() === 'bin') {
+                $useHttps.prop('checked', false);
+                $useHttps.prop('disabled', true);
+                $password.prop('disabled', true);
+                $username.prop('disabled', true);
+                $type.val('bin').select();
+            } else {
+                $useHttps.prop('disabled', false);
+            }
 
             if ($useHttps.prop('checked')) {
                 $password.prop('disabled', false);
@@ -141,7 +152,61 @@
                 }
             });
 
-            $('#daemon, #useHttps').change(function () {
+            $type.change(function () {
+                if ($(this).val() === 'bin') {
+                    if($useHttps.prop('checked') === true) {
+                        showToast(null, _('BIN-RPC does not work with HTTPS. HTTPS has been disabled.'));
+                    } // endIf
+                    $useHttps.prop('checked', false);
+                    $useHttps.prop('disabled', true);
+                    $password.prop('disabled', true);
+                    $username.prop('disabled', true);
+                } else {
+                    $useHttps.prop('disabled', false);
+                }
+                var $daemon = $('#daemon');
+
+                switch ($daemon.val()) {
+                    case 'rfd':
+                        if ($useHttps.prop('checked')) {
+                            $port.val('42001');
+                        } else {
+                            $port.val('2001');
+                        } // endElse
+                        break;
+                    case 'virtual-devices':
+                        if ($useHttps.prop('checked')) {
+                            $port.val('49292');
+                        } else {
+                            $port.val('9292');
+                        } // endElse
+                        break;
+                    case 'hs485d':
+                        if ($useHttps.prop('checked')) {
+                            $port.val('42000');
+                        } else {
+                            $port.val('2000');
+                        } // endElse
+                        break;
+                    case 'CUxD':
+                        if ($useHttps.prop('checked')) {
+                            $port.val('48701');
+                        } else {
+                            $port.val('8701');
+                        } // endElse
+                        break;
+                    case 'HMIP':
+                        if ($useHttps.prop('checked')) {
+                            $port.val('42010');
+                        } else {
+                            $port.val('2010');
+                        } // endElse
+                        break;
+                    default:
+                } // endSwitch
+            });
+
+            $('#daemon').change(function () {
                 var $daemon = $('#daemon');
                 var $useHttps = $('#useHttps');
                 var $port = $('#homematicPort');
@@ -208,7 +273,6 @@
         var obj = {};
         $('.value').each(function () {
             var $this = $(this);
-            var id = $this.attr('id');
 
             if ($this.attr('type') === 'checkbox') {
                 obj[$this.attr('id')] = $this.prop('checked');
@@ -352,17 +416,17 @@
             </div>
             <div class="row">
                 <div class="input field col s12">
-                    <input type="checkbox" id="useHttps" class="value"/>
+                    <input type="checkbox" id="useHttps" class="value" disabled />
                     <span for="useHttps"  class="translate">Use https</span>
                 </div>
             </div>
             <div class="row">
                 <div class="input-field col s12 m6 l4">
-                    <input class="value" id="username" data-crypt="1" type="text" disabled>
+                    <input class="value" id="username" data-crypt="1" type="text" disabled />
                     <label for="username" class="translate">Username</label>
                 </div>
                 <div class="input-field col s12 m6 l4">
-                    <input class="value" id="password" data-crypt="1" type="password" disabled>
+                    <input class="value" id="password" data-crypt="1" type="password" disabled />
                     <label for="password" class="translate">Password</label>
                 </div>
             </div>

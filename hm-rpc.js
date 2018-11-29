@@ -711,8 +711,7 @@ function initRpcServer() {
 
         rpcServer = rpc.createServer({
             host: adapter.config.adapterAddress,
-            port: port/*,
-            rejectUnauthorized: false*/
+            port: port
         });
 
         adapter.log.info(adapter.config.type + 'rpc server is trying to listen on ' + adapter.config.adapterAddress + ':' + port);
