@@ -152,8 +152,22 @@
                 }
             });
 
-            $type.change(function () {
-                if ($(this).val() === 'bin') {
+            $type.change(function() {
+                if ($type.val() === 'bin') {
+                    if($useHttps.prop('checked') === true) {
+                        showToast(null, _('BIN-RPC does not work with HTTPS. HTTPS has been disabled.'));
+                    } // endIf
+                    $useHttps.prop('checked', false);
+                    $useHttps.prop('disabled', true);
+                    $password.prop('disabled', true);
+                    $username.prop('disabled', true);
+                } else {
+                    $useHttps.prop('disabled', false);
+                } // endIf
+            });
+
+            $useHttps.change(function () {
+                if ($type.val() === 'bin') {
                     if($useHttps.prop('checked') === true) {
                         showToast(null, _('BIN-RPC does not work with HTTPS. HTTPS has been disabled.'));
                     } // endIf
@@ -189,11 +203,7 @@
                         } // endElse
                         break;
                     case 'CUxD':
-                        if ($useHttps.prop('checked')) {
-                            $port.val('48701');
-                        } else {
-                            $port.val('8701');
-                        } // endElse
+                        $port.val('8701');
                         break;
                     case 'HMIP':
                         if ($useHttps.prop('checked')) {
@@ -245,14 +255,11 @@
                         break;
 
                     case 'CUxD':
-                        if ($useHttps.prop('checked')) {
-                            $port.val('48701');
-                        } else {
-                            $port.val('8701');
-                        } // endElse
+                        $useHttps.prop('checked', false);
+                        $useHttps.prop('disabled', true);
+                        $port.val('8701');
                         $path.val('/');
                         $type.val('bin').select();
-                        $useHttps.prop('disabled', true);
                         break;
 
                     case 'HMIP':
