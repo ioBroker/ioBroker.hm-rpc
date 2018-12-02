@@ -28,9 +28,10 @@ Usually:
 CCU/Homematic can support different types of devices (wired, wireless, hmip, CUxD) and for every type you should create the instance of adapter separately.
 
 ### Protocol
-There are two protocols for communication XML-RPC and BIN-RPC. BIN-RPC is faster, but it can be, that the end device do not support it or supports it incorrect. In this case switch the protocol to XML.
+There are two protocols for communication XML-RPC and BIN-RPC. BIN-RPC is faster, but it can be, that the end device do not support it or supports it incorrect.
+In this case switch the protocol to XML.
 
-*Notice:* CUxD can only communicate with BIN-RPC and HMPI only via XML-rpc protocol.
+*Notice:* CUxD can only communicate with BIN-RPC and HMIP and RFD only via XML-RPC protocol.
 
 ### Synchronize objects (once)
 After very first start the instance read *all* devices from CCU/Homematic.
@@ -61,6 +62,14 @@ How many seconds will be waited before connect attempts.
 ### Don't delete devices
 If this flag is not activated, the ioBroker will remove devices from configuration of device is removed in CCU/Homematic.
 Activate this flag to do *not* delete such a devices, e.g. if some devices was temporary removed on CCU/Homematic.
+
+### Use https
+If this flag is activated, the connection will be established via https instead http.
+This only works with XML-RPC protocol.
+
+### Username and password
+If 'use https' is activated you can fill in the username and password of a CCU user.
+In case the CCU needs authentication on the API, you have to provide the credentials here.
 
 ## Changelog
 ### 1.8.0 (2018-11-27)
