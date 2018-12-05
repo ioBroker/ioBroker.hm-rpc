@@ -168,7 +168,7 @@
 
             $useHttps.change(function () {
                 if ($type.val() === 'bin') {
-                    if($useHttps.prop('checked') === true) {
+                    if($useHttps.prop('checked')) {
                         showToast(null, _('BIN-RPC does not work with HTTPS. HTTPS has been disabled.'));
                     } // endIf
                     $useHttps.prop('checked', false);
@@ -179,6 +179,7 @@
                     $useHttps.prop('disabled', false);
                 }
                 var $daemon = $('#daemon');
+                var $port = $('#homematicPort');
 
                 switch ($daemon.val()) {
                     case 'rfd':
@@ -257,6 +258,8 @@
                     case 'CUxD':
                         $useHttps.prop('checked', false);
                         $useHttps.prop('disabled', true);
+                        $password.prop('disabled', true);
+                        $username.prop('disabled', true);
                         $port.val('8701');
                         $path.val('/');
                         $type.val('bin').select();
