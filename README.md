@@ -19,10 +19,10 @@ CCU IP address.
 CCU Port.
 
 Usually:
-- 2001 for wireless devices,
-- 2000 for wired devices,
+- 2001 for wireless devices (https: 42001),
+- 2000 for wired devices (https: 42000),
 - 8701 for CUxD daemon,
-- 2010 for Homematic IP devices
+- 2010 for Homematic IP devices (https: 42010)
 
 ### Daemon
 CCU/Homematic can support different types of devices (wired, wireless, hmip, CUxD) and for every type you should create the instance of adapter separately.
