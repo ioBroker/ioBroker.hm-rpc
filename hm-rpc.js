@@ -1520,7 +1520,7 @@ function connect(isFirst) {
 
     if (isFirst) sendInit();
 
-    //Peridically try to reconnect
+    // Periodically try to reconnect
     if (!connInterval) {
         adapter.log.debug('start connecting interval');
         connInterval = setInterval(() => sendInit(), adapter.config.reconnectInterval * 1000);
@@ -1528,6 +1528,9 @@ function connect(isFirst) {
 }
 
 function keepAlive() {
+
+    adapter.log.debug('[KEEPALIVE] Check if connection is alive');
+
     if (connInterval) {
         clearInterval(connInterval);
         connInterval = null;
@@ -1536,6 +1539,7 @@ function keepAlive() {
     const _now = Date.now();
     // Check last event time. If timeout => send init again
     if (!lastEvent || (_now - lastEvent) >= adapter.config.checkInitInterval * 1000) {
+        adapter.log.warn('[KEEPALIVE] Connection timed out');
         connect();
     } else {
         // Send every half interval ping to CCU
