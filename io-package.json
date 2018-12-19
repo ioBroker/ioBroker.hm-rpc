@@ -16,15 +16,15 @@
         "version": "1.8.1",
         "news": {
             "1.8.1": {
-                "en": "Added a lot of Device-Metainformations",
-                "de": "Viele Geräte-Metainformationen hinzugefügt",
-                "ru": "Добавлено много устройств-метаинформаций",
-                "pt": "Adicionado muitas metainformações de dispositivos",
-                "nl": "Veel Device-Metainformations toegevoegd",
-                "fr": "Beaucoup de métainformations de périphérique ajoutées",
-                "it": "Aggiunte molte Device-Metainformations",
-                "es": "Añadido un montón de dispositivos-metainformaciones",
-                "pl": "Dodano wiele Device-Metainformations"
+                "en": "added a lot of meta information and minor fixes",
+                "de": "viele Metainformationen und kleinere Korrekturen hinzugefügt",
+                "ru": "добавлено много метаинформации и мелкие исправления",
+                "pt": "adicionou muita informação meta e pequenas correções",
+                "nl": "veel meta-informatie en kleine fixes toegevoegd",
+                "fr": "ajouté beaucoup de méta-informations et corrections mineures",
+                "it": "aggiunto un sacco di meta-informazioni e correzioni minori",
+                "es": "Agregó mucha metainformación y correcciones menores.",
+                "pl": "dodano wiele informacji meta i drobne poprawki"
             },
             "1.8.0": {
                 "en": "Added possibility to use https and authentication",
@@ -199,7 +199,7 @@
         "homematicPath": "/",
         "callbackAddress": "",
         "port": "0",
-        "type": "bin",
+        "type": "xml",
         "daemon": "rfd",
         "checkInitInterval": 180,
         "reconnectInterval": 30,

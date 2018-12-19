@@ -223,6 +223,7 @@
                 var $port = $('#homematicPort');
                 var $path = $('#homematicPath');
                 var $type = $('#type');
+                var $dontDelete = $('#dontDelete');
                 switch ($daemon.val()) {
                     case 'rfd':
                         if ($useHttps.prop('checked')) {
@@ -233,6 +234,7 @@
                         $path.val('/');
                         $type.val('xml').select();
                         $useHttps.prop('disabled', false);
+                        $dontDelete.prop('checked', false);
                         break;
 
                     case 'virtual-devices':
@@ -244,6 +246,7 @@
                         $path.val('/groups/');
                         $type.val('xml').select();
                         $useHttps.prop('disabled', false);
+                        $dontDelete.prop('checked', false);
                         break;
 
                     case 'hs485d':
@@ -253,6 +256,7 @@
                             $port.val('2000');
                         } // endElse
                         $path.val('/');
+                        $dontDelete.prop('checked', false);
                         break;
 
                     case 'CUxD':
@@ -263,6 +267,7 @@
                         $port.val('8701');
                         $path.val('/');
                         $type.val('bin').select();
+                        $dontDelete.prop('checked', false);
                         break;
 
                     case 'HMIP':
@@ -274,6 +279,7 @@
                         $path.val('/');
                         $type.val('xml').select();
                         $useHttps.prop('disabled', false);
+                        $dontDelete.prop('checked', true);
                         break;
                     default:
                 }
