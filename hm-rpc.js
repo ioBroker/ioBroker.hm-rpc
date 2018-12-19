@@ -3,7 +3,7 @@
 /*jslint node: true */
 'use strict';
 
-const utils     = require('@iobroker/adapter-core'); // Get common adapter utils
+const utils     = require(__dirname + '/lib/utils'); // Get common adapter utils
 const images    = require(__dirname + '/lib/images');
 const crypto    = require(__dirname + '/lib/crypto'); // Provides encrypt and decrypt
 let connected = false;
@@ -666,7 +666,7 @@ function sendInit() {
             });
         }
     } catch (err) {
-        adapter.log.error('Init not possible, going to stop: ' + err);
+        adapter.log.error('Init not possible, going to stop: ', err);
         adapter.stop();
     }
 }
@@ -1517,7 +1517,7 @@ function connect(isFirst) {
         clearInterval(eventInterval);
         eventInterval = null;
     }
-    
+
     if (isFirst) sendInit();
 
     //Peridically try to reconnect
