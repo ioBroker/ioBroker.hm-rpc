@@ -21987,39 +21987,6 @@
                     "UNIT": ""
                 }
             }
-        }
-    ],
-    "instanceObjects": [
-        {
-            "_id": "updated",
-            "type": "state",
-            "common": {
-                "name": "Some new devices added",
-                "type": "boolean",
-                "read": true,
-                "write": true
-            }
-        },
-        {
-            "_id": "info",
-            "type": "channel",
-            "common": {
-                "name": "Information"
-            },
-            "native": {}
-        },
-        {
-            "_id": "info.connection",
-            "type": "state",
-            "common": {
-                "role": "indicator.connected",
-                "name": "If connected to CCU",
-                "type": "boolean",
-                "read": true,
-                "write": false,
-                "def": false
-            },
-            "native": {}
         },
         {
             "_id": "hm-rpc.meta.VALUES.HM-LC-Bl1-FM.MAINTENANCE.13",
@@ -22721,6 +22688,39 @@
                     "CONTROL": "BUTTON_NO_FUNCTION.LONG"
                 }
             }
+        }
+    ],
+    "instanceObjects": [
+        {
+            "_id": "updated",
+            "type": "state",
+            "common": {
+                "name": "Some new devices added",
+                "type": "boolean",
+                "read": true,
+                "write": true
+            }
+        },
+        {
+            "_id": "info",
+            "type": "channel",
+            "common": {
+                "name": "Information"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.connection",
+            "type": "state",
+            "common": {
+                "role": "indicator.connected",
+                "name": "If connected to CCU",
+                "type": "boolean",
+                "read": true,
+                "write": false,
+                "def": false
+            },
+            "native": {}
         }
     ]
 }
