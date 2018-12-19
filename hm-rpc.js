@@ -3,11 +3,11 @@
 /*jslint node: true */
 'use strict';
 
-const utils     = require(__dirname + '/lib/utils'); // Get common adapter utils
+const utils     = require('@iobroker/adapter-core'); // Get common adapter utils
 const images    = require(__dirname + '/lib/images');
 const crypto    = require(__dirname + '/lib/crypto'); // Provides encrypt and decrypt
 let connected = false;
-let displays  = {};
+const displays  = {};
 
 const FORBIDDEN_CHARS = /[\]\[*,;'"`<>\\\s?]/g;
 // msgBuffer = [{line: line2, icon: icon2}, {line: line3, icon: icon3}, {line: '', icon: ''}];
@@ -147,8 +147,8 @@ function combineEPaperCommand(lines, signal, ton, repeats, offset) {
 
     let command = '0x02,0x0A';
     for (let m = 0; m < lines.length; m++) {
-        let line = lines[m].line;
-        let icon = lines[m].icon;
+        const line = lines[m].line;
+        const icon = lines[m].icon;
         if (line || icon) {
             command = command + ',0x12';
             let i;
@@ -244,7 +244,7 @@ function combineEPaperCommand(lines, signal, ton, repeats, offset) {
 }
 
 function controlEPaper(id, data) {
-    let tmp = id.split('.');
+    const tmp = id.split('.');
     tmp[3] = '3';
     tmp[4] = 'SUBMIT';
     const val = combineEPaperCommand(data.lines, data.signal || '0xF0', data.tone || '0xC0');
@@ -267,7 +267,7 @@ function controlEPaper(id, data) {
 
 function readSignals(id) {
     displays[id] = null;
-    let data = {
+    const data = {
         lines:  [{}, {}, {}],
         signal: '0xF0',
         tone:   '0xC0'
@@ -317,7 +317,7 @@ function readSignals(id) {
 
 function readSettings(id) {
     displays[id] = null;
-    let data = {
+    const data = {
         lines:  [{}, {}, {}],
         signal: '0xF0',
         tone:   '0xC0'
@@ -554,9 +554,9 @@ let rpcClient;
 
 let rpcServer;
 
-let metaValues = {};
+const metaValues = {};
 let metaRoles =  {};
-let dpTypes =    {};
+const dpTypes =    {};
 
 let lastEvent = 0;
 let eventInterval;
@@ -666,7 +666,7 @@ function sendInit() {
             });
         }
     } catch (err) {
-        adapter.log.error('Init not possible, going to stop: ', err);
+        adapter.log.error('Init not possible, going to stop: ' + err);
         adapter.stop();
     }
 }
@@ -727,7 +727,7 @@ function initRpcServer() {
 
         rpcServer.on('system.multicall', (method, params, callback) => {
             updateConnection();
-            let response = [];
+            const response = [];
             for (let i = 0; i < params[0].length; i++) {
                 if (methods[params[0][i].methodName]) {
                     adapter.log.debug(adapter.config.type + ' multicall <' + params[0][i].methodName + '>: ' + params[0][i].params);
@@ -830,7 +830,7 @@ function initRpcServer() {
             }
             adapter.log.info(adapter.config.type + 'rpc <- listDevices ' + JSON.stringify(params));
             adapter.objects.getObjectView('hm-rpc', 'listDevices', {startkey: 'hm-rpc.' + adapter.instance + '.', endkey: 'hm-rpc.' + adapter.instance + '.\u9999'}, (err, doc) => {
-                let response = [];
+                const response = [];
 
                 // we only fill the response if this isn't a force reinit and
                 // if the adapter instance is not bothering with HmIP (which seems to work slightly different in terms of XMLRPC)
@@ -933,16 +933,16 @@ const methods = {
 
 };
 
-let queueValueParamsets = [];
+const queueValueParamsets = [];
 
 function addParamsetObjects(channel, paramset, callback) {
-    let channelChildren = [];
+    const channelChildren = [];
     let count = 0;
 
     for (const key in paramset) {
         if (!paramset.hasOwnProperty(key)) continue;
         channelChildren.push(channel._id + '.' + key);
-        let commonType = {
+        const commonType = {
             ACTION:  'boolean',
             BOOL:    'boolean',
             FLOAT:   'number',
@@ -1255,7 +1255,7 @@ function addEPaperToMeta() {
 }
 
 function createDevices(deviceArr, callback) {
-    let objs = [];
+    const objs = [];
 
     for (let i = 0; i < deviceArr.length; i++) {
         let type;
@@ -1450,7 +1450,7 @@ function connect(isFirst) {
         });
 
         // if bin-rpc
-/*        if (rpcClient.on) {
+        /*        if (rpcClient.on) {
             rpcClient.on('connect', function (err) {
                 sendInit();
             });
@@ -1506,7 +1506,7 @@ function connect(isFirst) {
                 basic_auth: {user: username, pass: password},
                 rejectUnauthorized: false
             });
-    });
+        });
 
     } // endElseIf
 

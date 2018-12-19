@@ -30,7 +30,8 @@
   },
   "dependencies": {
     "homematic-xmlrpc": "^1.0.2",
-    "binrpc": "^3.2.1"
+    "binrpc": "^3.2.1",
+    "@iobroker/adapter-core": "^1.0.1"
   },
   "devDependencies": {
     "gulp": "^3.9.1",
