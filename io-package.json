@@ -206,7 +206,8 @@
         "forceReInit": false,
         "username": "",
         "password": "",
-        "useHttps": false
+        "useHttps": false,
+        "dontDelete": false
     },
     "objects": [
         {
@@ -22019,6 +22020,570 @@
                 "def": false
             },
             "native": {}
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HM-LC-Bl1-FM.MAINTENANCE.13",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "AES_KEY": {
+                    "DEFAULT": 0,
+                    "FLAGS": 0,
+                    "ID": "AES_KEY",
+                    "MAX": 127,
+                    "MIN": 0,
+                    "OPERATIONS": 1,
+                    "TAB_ORDER": 6,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
+                },
+                "CONFIG_PENDING": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "CONFIG_PENDING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 2,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "DUTYCYCLE": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "DUTYCYCLE",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 3,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "RSSI_DEVICE": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "RSSI_DEVICE",
+                    "MAX": 2147483647,
+                    "MIN": -2147483648,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 4,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
+                },
+                "RSSI_PEER": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "RSSI_PEER",
+                    "MAX": 2147483647,
+                    "MIN": -2147483648,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 5,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
+                },
+                "STICKY_UNREACH": {
+                    "DEFAULT": false,
+                    "FLAGS": 25,
+                    "ID": "STICKY_UNREACH",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 7,
+                    "TAB_ORDER": 1,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "UNREACH": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "UNREACH",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 0,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HM-LC-Bl1-FM.BLIND.13",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "DIRECTION": {
+                    "DEFAULT": 0,
+                    "FLAGS": 3,
+                    "ID": "DIRECTION",
+                    "MAX": 3,
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 3,
+                    "TYPE": "ENUM",
+                    "UNIT": "",
+                    "VALUE_LIST": [
+                        "NONE",
+                        "UP",
+                        "DOWN",
+                        "UNDEFINED"
+                    ]
+                },
+                "INHIBIT": {
+                    "CONTROL": "NONE",
+                    "DEFAULT": false,
+                    "FLAGS": 1,
+                    "ID": "INHIBIT",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 7,
+                    "TAB_ORDER": 2,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "INSTALL_TEST": {
+                    "DEFAULT": false,
+                    "FLAGS": 3,
+                    "ID": "INSTALL_TEST",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 2,
+                    "TAB_ORDER": 4,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
+                },
+                "LEVEL": {
+                    "CONTROL": "BLIND.LEVEL",
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "LEVEL",
+                    "MAX": 1,
+                    "MIN": 0,
+                    "OPERATIONS": 7,
+                    "TAB_ORDER": 0,
+                    "TYPE": "FLOAT",
+                    "UNIT": "100%"
+                },
+                "STOP": {
+                    "CONTROL": "BLIND.STOP",
+                    "DEFAULT": false,
+                    "FLAGS": 1,
+                    "ID": "STOP",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 2,
+                    "TAB_ORDER": 1,
+                    "TYPE": "ACTION",
+                    "UNIT": ""
+                },
+                "WORKING": {
+                    "DEFAULT": false,
+                    "FLAGS": 3,
+                    "ID": "WORKING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 5,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HM-CC-VG-1.MAINTENANCE.3",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "CONFIG_PENDING": {
+                    "UNIT": "",
+                    "MIN": "5.0",
+                    "MAX": "30.0",
+                    "OPERATIONS": 5,
+                    "FLAGS": 1,
+                    "ID": "CONFIG_PENDING",
+                    "TAB_ORDER": 4,
+                    "TYPE": "BOOL",
+                    "DEFAULT": "false"
+                },
+                "LOWBAT": {
+                    "UNIT": "",
+                    "MIN": "5.0",
+                    "MAX": "30.0",
+                    "OPERATIONS": 5,
+                    "FLAGS": 1,
+                    "ID": "LOWBAT",
+                    "TAB_ORDER": 6,
+                    "TYPE": "BOOL",
+                    "DEFAULT": "20.0"
+                },
+                "STICKY_UNREACH": {
+                    "UNIT": "",
+                    "MIN": "5.0",
+                    "MAX": "30.0",
+                    "OPERATIONS": 7,
+                    "FLAGS": 1,
+                    "ID": "STICKY_UNREACH",
+                    "TAB_ORDER": 8,
+                    "TYPE": "BOOL",
+                    "DEFAULT": "20.0"
+                },
+                "DEVICE_IN_BOOTLOADER": {
+                    "UNIT": "",
+                    "MIN": "5.0",
+                    "MAX": "30.0",
+                    "OPERATIONS": 5,
+                    "FLAGS": 1,
+                    "ID": "DEVICE_IN_BOOTLOADER",
+                    "TAB_ORDER": 3,
+                    "TYPE": "BOOL",
+                    "DEFAULT": "20.0"
+                },
+                "UNREACH": {
+                    "UNIT": "",
+                    "MIN": "5.0",
+                    "MAX": "30.0",
+                    "OPERATIONS": 5,
+                    "FLAGS": 1,
+                    "ID": "UNREACH",
+                    "TAB_ORDER": 5,
+                    "TYPE": "BOOL",
+                    "DEFAULT": "20.0"
+                },
+                "RSSI_DEVICE": {
+                    "UNIT": "",
+                    "MIN": "5.0",
+                    "MAX": "30.0",
+                    "OPERATIONS": 5,
+                    "FLAGS": 1,
+                    "ID": "RSSI_DEVICE",
+                    "TAB_ORDER": 1,
+                    "TYPE": "INTEGER",
+                    "DEFAULT": "20.0"
+                },
+                "AES_KEY": {
+                    "UNIT": "",
+                    "MIN": "0",
+                    "MAX": "127",
+                    "OPERATIONS": 1,
+                    "FLAGS": 1,
+                    "ID": "AES_KEY",
+                    "TAB_ORDER": 2,
+                    "TYPE": "INTEGER",
+                    "DEFAULT": "20.0"
+                },
+                "INHIBIT": {
+                    "UNIT": "",
+                    "MIN": "5.0",
+                    "MAX": "30.0",
+                    "OPERATIONS": 7,
+                    "FLAGS": 1,
+                    "ID": "INHIBIT",
+                    "TAB_ORDER": 7,
+                    "TYPE": "BOOL",
+                    "DEFAULT": "20.0",
+                    "CONTROL": "NONE"
+                },
+                "RSSI_PEER": {
+                    "UNIT": "",
+                    "MIN": "5.0",
+                    "MAX": "30.0",
+                    "OPERATIONS": 5,
+                    "FLAGS": 1,
+                    "ID": "RSSI_PEER",
+                    "TAB_ORDER": 9,
+                    "TYPE": "INTEGER",
+                    "DEFAULT": "20.0"
+                },
+                "UPDATE_PENDING": {
+                    "UNIT": "",
+                    "MIN": "5.0",
+                    "MAX": "30.0",
+                    "OPERATIONS": 5,
+                    "FLAGS": 1,
+                    "ID": "UPDATE_PENDING",
+                    "TAB_ORDER": 0,
+                    "TYPE": "BOOL",
+                    "DEFAULT": "false"
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HM-CC-VG-1.CLIMATECONTROL_RT_TRANSCEIVER.3",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "PARTY_START_DAY": {
+                    "UNIT": "day",
+                    "MIN": "1",
+                    "MAX": "31",
+                    "OPERATIONS": 3,
+                    "FLAGS": 1,
+                    "ID": "PARTY_START_DAY",
+                    "TAB_ORDER": 11,
+                    "TYPE": "INTEGER",
+                    "DEFAULT": "1",
+                    "CONTROL": "HEATING_CONTROL.PARTY_START_DAY"
+                },
+                "SET_TEMPERATURE": {
+                    "UNIT": "�C",
+                    "MIN": "5.0",
+                    "MAX": "30.0",
+                    "OPERATIONS": 7,
+                    "FLAGS": 1,
+                    "ID": "SET_TEMPERATURE",
+                    "TAB_ORDER": 4,
+                    "TYPE": "FLOAT",
+                    "DEFAULT": "20.0",
+                    "CONTROL": "HEATING_CONTROL.SETPOINT"
+                },
+                "COMFORT_MODE": {
+                    "UNIT": "",
+                    "MIN": "5.0",
+                    "MAX": "30.0",
+                    "OPERATIONS": 2,
+                    "FLAGS": 1,
+                    "ID": "COMFORT_MODE",
+                    "TAB_ORDER": 7,
+                    "TYPE": "ACTION",
+                    "DEFAULT": "true",
+                    "CONTROL": "HEATING_CONTROL.COMFORT"
+                },
+                "CONTROL_MODE": {
+                    "UNIT": "",
+                    "MIN": "0",
+                    "MAX": "3",
+                    "OPERATIONS": 5,
+                    "FLAGS": 1,
+                    "ID": "CONTROL_MODE",
+                    "TAB_ORDER": 0,
+                    "TYPE": "ENUM",
+                    "DEFAULT": "0",
+                    "CONTROL": "HEATING_CONTROL.CONTROL_MODE",
+                    "VALUE_LIST": [
+                        "AUTO-MODE",
+                        "MANU-MODE",
+                        "PARTY-MODE",
+                        "BOOST-MODE"
+                    ]
+                },
+                "LOWERING_MODE": {
+                    "UNIT": "",
+                    "MIN": "5.0",
+                    "MAX": "30.0",
+                    "OPERATIONS": 2,
+                    "FLAGS": 1,
+                    "ID": "LOWERING_MODE",
+                    "TAB_ORDER": 8,
+                    "TYPE": "ACTION",
+                    "DEFAULT": "true",
+                    "CONTROL": "HEATING_CONTROL.LOWERING"
+                },
+                "PARTY_START_YEAR": {
+                    "UNIT": "year",
+                    "MIN": "0",
+                    "MAX": "99",
+                    "OPERATIONS": 3,
+                    "FLAGS": 1,
+                    "ID": "PARTY_START_YEAR",
+                    "TAB_ORDER": 13,
+                    "TYPE": "INTEGER",
+                    "DEFAULT": "12",
+                    "CONTROL": "HEATING_CONTROL.PARTY_START_YEAR"
+                },
+                "PARTY_STOP_YEAR": {
+                    "UNIT": "year",
+                    "MIN": "0",
+                    "MAX": "99",
+                    "OPERATIONS": 3,
+                    "FLAGS": 1,
+                    "ID": "PARTY_STOP_YEAR",
+                    "TAB_ORDER": 17,
+                    "TYPE": "INTEGER",
+                    "DEFAULT": "12",
+                    "CONTROL": "HEATING_CONTROL.PARTY_STOP_YEAR"
+                },
+                "PARTY_MODE_SUBMIT": {
+                    "UNIT": "",
+                    "MIN": "5.0",
+                    "MAX": "30.0",
+                    "OPERATIONS": 2,
+                    "FLAGS": 1,
+                    "ID": "PARTY_MODE_SUBMIT",
+                    "TAB_ORDER": 18,
+                    "TYPE": "STRING",
+                    "DEFAULT": "",
+                    "CONTROL": "NONE"
+                },
+                "AUTO_MODE": {
+                    "UNIT": "",
+                    "MIN": "5.0",
+                    "MAX": "30.0",
+                    "OPERATIONS": 2,
+                    "FLAGS": 1,
+                    "ID": "AUTO_MODE",
+                    "TAB_ORDER": 3,
+                    "TYPE": "ACTION",
+                    "DEFAULT": "true",
+                    "CONTROL": "HEATING_CONTROL.AUTO"
+                },
+                "ACTUAL_HUMIDITY": {
+                    "UNIT": "%",
+                    "MIN": "0.0",
+                    "MAX": "99.0",
+                    "OPERATIONS": 5,
+                    "FLAGS": 1,
+                    "ID": "ACTUAL_HUMIDITY",
+                    "TAB_ORDER": 1,
+                    "TYPE": "FLOAT",
+                    "DEFAULT": "20.0",
+                    "CONTROL": "THERMAL_CONTROL.HUMIDITY"
+                },
+                "MANU_MODE": {
+                    "UNIT": "�C",
+                    "MIN": "4.5",
+                    "MAX": "30.5",
+                    "OPERATIONS": 2,
+                    "FLAGS": 1,
+                    "ID": "MANU_MODE",
+                    "TAB_ORDER": 6,
+                    "TYPE": "FLOAT",
+                    "DEFAULT": "20.0",
+                    "CONTROL": "HEATING_CONTROL.MANU"
+                },
+                "BOOST_MODE": {
+                    "UNIT": "",
+                    "MIN": "5.0",
+                    "MAX": "30.0",
+                    "OPERATIONS": 2,
+                    "FLAGS": 1,
+                    "ID": "BOOST_MODE",
+                    "TAB_ORDER": 2,
+                    "TYPE": "ACTION",
+                    "DEFAULT": "true",
+                    "CONTROL": "HEATING_CONTROL.BOOST"
+                },
+                "ACTUAL_TEMPERATURE": {
+                    "UNIT": "�C",
+                    "MIN": "-10.0",
+                    "MAX": "50.0",
+                    "OPERATIONS": 5,
+                    "FLAGS": 1,
+                    "ID": "ACTUAL_TEMPERATURE",
+                    "TAB_ORDER": 5,
+                    "TYPE": "FLOAT",
+                    "DEFAULT": "20.0",
+                    "CONTROL": "HEATING_CONTROL.TEMPERATURE"
+                },
+                "PARTY_START_MONTH": {
+                    "UNIT": "month",
+                    "MIN": "1",
+                    "MAX": "12",
+                    "OPERATIONS": 3,
+                    "FLAGS": 1,
+                    "ID": "PARTY_START_MONTH",
+                    "TAB_ORDER": 12,
+                    "TYPE": "INTEGER",
+                    "DEFAULT": "1",
+                    "CONTROL": "HEATING_CONTROL.PARTY_START_MONTH"
+                },
+                "PARTY_STOP_TIME": {
+                    "UNIT": "minutes",
+                    "MIN": "0",
+                    "MAX": "1410",
+                    "OPERATIONS": 3,
+                    "FLAGS": 1,
+                    "ID": "PARTY_STOP_TIME",
+                    "TAB_ORDER": 14,
+                    "TYPE": "INTEGER",
+                    "DEFAULT": "0",
+                    "CONTROL": "HEATING_CONTROL.PARTY_STOP_TIME"
+                },
+                "PARTY_STOP_DAY": {
+                    "UNIT": "day",
+                    "MIN": "1",
+                    "MAX": "31",
+                    "OPERATIONS": 3,
+                    "FLAGS": 1,
+                    "ID": "PARTY_STOP_DAY",
+                    "TAB_ORDER": 15,
+                    "TYPE": "INTEGER",
+                    "DEFAULT": "1",
+                    "CONTROL": "HEATING_CONTROL.PARTY_STOP_DAY"
+                },
+                "PARTY_STOP_MONTH": {
+                    "UNIT": "month",
+                    "MIN": "1",
+                    "MAX": "12",
+                    "OPERATIONS": 3,
+                    "FLAGS": 1,
+                    "ID": "PARTY_STOP_MONTH",
+                    "TAB_ORDER": 16,
+                    "TYPE": "INTEGER",
+                    "DEFAULT": "1",
+                    "CONTROL": "HEATING_CONTROL.PARTY_STOP_MONTH"
+                },
+                "PARTY_TEMPERATURE": {
+                    "UNIT": "�C",
+                    "MIN": "5.0",
+                    "MAX": "30.0",
+                    "OPERATIONS": 3,
+                    "FLAGS": 1,
+                    "ID": "PARTY_TEMPERATURE",
+                    "TAB_ORDER": 9,
+                    "TYPE": "FLOAT",
+                    "DEFAULT": "20.0",
+                    "CONTROL": "HEATING_CONTROL.PARTY_TEMP"
+                },
+                "PARTY_START_TIME": {
+                    "UNIT": "minutes",
+                    "MIN": "0",
+                    "MAX": "1410",
+                    "OPERATIONS": 3,
+                    "FLAGS": 1,
+                    "ID": "PARTY_START_TIME",
+                    "TAB_ORDER": 10,
+                    "TYPE": "INTEGER",
+                    "DEFAULT": "0",
+                    "CONTROL": "HEATING_CONTROL.PARTY_START_TIME"
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HM-CC-VG-1.SHUTTER_CONTACT.3",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "STATE": {
+                    "UNIT": "",
+                    "MIN": "5.0",
+                    "MAX": "30.0",
+                    "OPERATIONS": 5,
+                    "FLAGS": 1,
+                    "ID": "STATE",
+                    "TAB_ORDER": 5,
+                    "TYPE": "BOOL",
+                    "DEFAULT": "false",
+                    "CONTROL": "DOOR_SENSOR.STATE"
+                }
+            }
         }
     ]
 }
