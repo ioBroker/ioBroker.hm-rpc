@@ -22688,6 +22688,263 @@
                     "CONTROL": "BUTTON_NO_FUNCTION.LONG"
                 }
             }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HB-UNI-Sen-WEA.MAINTENANCE.2",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "CONFIG_PENDING": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "CONFIG_PENDING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 2,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "DEVICE_IN_BOOTLOADER": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "DEVICE_IN_BOOTLOADER",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 5,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "RSSI_DEVICE": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "RSSI_DEVICE",
+                    "MAX": 2147483647,
+                    "MIN": -2147483648,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 3,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
+                },
+                "RSSI_PEER": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "RSSI_PEER",
+                    "MAX": 2147483647,
+                    "MIN": -2147483648,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 4,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
+                },
+                "STICKY_UNREACH": {
+                    "DEFAULT": false,
+                    "FLAGS": 25,
+                    "ID": "STICKY_UNREACH",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 7,
+                    "TAB_ORDER": 1,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "UNREACH": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "UNREACH",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 0,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "UPDATE_PENDING": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "UPDATE_PENDING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 6,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HB-UNI-Sen-WEA.WEATHER.2",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "AIR_PRESSURE": {
+                    "AutoconfRoles": "WEATHER",
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "AIR_PRESSURE",
+                    "MAX": 1100,
+                    "MIN": 500,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 1,
+                    "TYPE": "FLOAT",
+                    "UNIT": "hPa"
+                },
+                "GUST_SPEED": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "GUST_SPEED",
+                    "MAX": 3276.7,
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 10,
+                    "TYPE": "FLOAT",
+                    "UNIT": "km/h"
+                },
+                "HUMIDITY": {
+                    "AutoconfRoles": "WEATHER",
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "HUMIDITY",
+                    "MAX": 99,
+                    "MIN": 1,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 2,
+                    "TYPE": "INTEGER",
+                    "UNIT": "%"
+                },
+                "LIGHTNING_COUNTER": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "LIGHTNING_COUNTER",
+                    "MAX": 255,
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 12,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
+                },
+                "LIGHTNING_DISTANCE": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "LIGHTNING_DISTANCE",
+                    "MAX": 45,
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 13,
+                    "TYPE": "INTEGER",
+                    "UNIT": "km"
+                },
+                "LUX": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "LUX",
+                    "MAX": 200000,
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 3,
+                    "TYPE": "FLOAT",
+                    "UNIT": "Lux"
+                },
+                "RAINING": {
+                    "DEFAULT": false,
+                    "FLAGS": 1,
+                    "ID": "RAINING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 4,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "RAIN_COUNTER": {
+                    "CONTROL": "NONE",
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "RAIN_COUNTER",
+                    "MAX": 32767,
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 6,
+                    "TYPE": "FLOAT",
+                    "UNIT": "mm"
+                },
+                "RD_HEATING": {
+                    "DEFAULT": false,
+                    "FLAGS": 1,
+                    "ID": "RD_HEATING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 5,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "TEMPERATURE": {
+                    "AutoconfRoles": "WEATHER",
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "TEMPERATURE",
+                    "MAX": 120,
+                    "MIN": -50,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 0,
+                    "TYPE": "FLOAT",
+                    "UNIT": "�C"
+                },
+                "UVINDEX": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "UVINDEX",
+                    "MAX": 11,
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 11,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
+                },
+                "WIND_DIRECTION": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "WIND_DIRECTION",
+                    "MAX": 355,
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 8,
+                    "TYPE": "INTEGER",
+                    "UNIT": "degree"
+                },
+                "WIND_DIRECTION_RANGE": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "WIND_DIRECTION_RANGE",
+                    "MAX": 67,
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 9,
+                    "TYPE": "INTEGER",
+                    "UNIT": "degree"
+                },
+                "WIND_SPEED": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "WIND_SPEED",
+                    "MAX": 1638.3,
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 7,
+                    "TYPE": "FLOAT",
+                    "UNIT": "km/h"
+                }
+            }
         }
     ],
     "instanceObjects": [

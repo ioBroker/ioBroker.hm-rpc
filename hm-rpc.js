@@ -272,43 +272,43 @@ function readSignals(id) {
         signal: '0xF0',
         tone:   '0xC0'
     };
-    let count = 0;
-    count++;
+    let count = 8;
+
     adapter.getForeignState(id + '.0.EPAPER_LINE2', (err, state) => {
         data.lines[0].line = state ? state.val || '' : '';
         if (!--count) controlEPaper(id, data);
     });
-    count++;
+
     adapter.getForeignState(id + '.0.EPAPER_ICON2', (err, state) => {
         data.lines[0].icon = state ? state.val || '' : '';
         if (!--count) controlEPaper(id, data);
     });
-    count++;
+
     adapter.getForeignState(id + '.0.EPAPER_LINE3', (err, state) => {
         data.lines[1].line = state ? state.val || '' : '';
         if (!--count) controlEPaper(id, data);
     });
-    count++;
+
     adapter.getForeignState(id + '.0.EPAPER_ICON3', (err, state) => {
         data.lines[1].icon = state ? state.val || '' : '';
         if (!--count) controlEPaper(id, data);
     });
-    count++;
+
     adapter.getForeignState(id + '.0.EPAPER_LINE4', (err, state) => {
         data.lines[2].line = state ? state.val || '' : '';
         if (!--count) controlEPaper(id, data);
     });
-    count++;
+
     adapter.getForeignState(id + '.0.EPAPER_ICON4', (err, state) => {
         data.lines[2].icon = state ? state.val || '' : '';
         if (!--count) controlEPaper(id, data);
     });
-    count++;
+
     adapter.getForeignState(id + '.0.EPAPER_SIGNAL', (err, state) => {
         data.signal = state ? state.val || '0xF0' : '0xF0';
         if (!--count) controlEPaper(id, data);
     });
-    count++;
+
     adapter.getForeignState(id + '.0.EPAPER_TONE', (err, state) => {
         data.tone = state ? state.val || '0xC0' : '0xC0';
         if (!--count) controlEPaper(id, data);
@@ -322,33 +322,33 @@ function readSettings(id) {
         signal: '0xF0',
         tone:   '0xC0'
     };
-    let count = 0;
-    count++;
+    let count = 6;
+
     adapter.getForeignState(id + '.0.EPAPER_LINE2', (err, state) => {
         data.lines[0].line = state ? state.val || '' : '';
         if (!--count) controlEPaper(id, data);
     });
-    count++;
+
     adapter.getForeignState(id + '.0.EPAPER_ICON2', (err, state) => {
         data.lines[0].icon = state ? state.val || '' : '';
         if (!--count) controlEPaper(id, data);
     });
-    count++;
+
     adapter.getForeignState(id + '.0.EPAPER_LINE3', (err, state) => {
         data.lines[1].line = state ? state.val || '' : '';
         if (!--count) controlEPaper(id, data);
     });
-    count++;
+
     adapter.getForeignState(id + '.0.EPAPER_ICON3', (err, state) => {
         data.lines[1].icon = state ? state.val || '' : '';
         if (!--count) controlEPaper(id, data);
     });
-    count++;
+
     adapter.getForeignState(id + '.0.EPAPER_LINE4', (err, state) => {
         data.lines[2].line = state ? state.val || '' : '';
         if (!--count) controlEPaper(id, data);
     });
-    count++;
+
     adapter.getForeignState(id + '.0.EPAPER_ICON4', (err, state) => {
         data.lines[2].icon = state ? state.val || '': '';
         if (!--count) controlEPaper(id, data);
