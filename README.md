@@ -72,6 +72,10 @@ If 'use https' is activated you can fill in the username and password of a CCU u
 In case the CCU needs authentication on the API, you have to provide the credentials here.
 
 ## Changelog
+### 1.8.2 (2018-12-30)
+* (foxriver76) Added meta information
+* (foxriver76) Added new icons
+* (foxriver76) Minor improvements
 
 ### 1.8.1 (2018-12-22)
 * (foxriver76) Added a lot of meta information

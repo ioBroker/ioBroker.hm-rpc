@@ -3,11 +3,11 @@
 /*jslint node: true */
 'use strict';
 
-const utils     = require('@iobroker/adapter-core'); // Get common adapter utils
-const images    = require(__dirname + '/lib/images');
-const crypto    = require(__dirname + '/lib/crypto'); // Provides encrypt and decrypt
+const utils = require('@iobroker/adapter-core'); // Get common adapter utils
+const images = require(__dirname + '/lib/images');
+const crypto = require(__dirname + '/lib/crypto'); // Provides encrypt and decrypt
 let connected = false;
-const displays  = {};
+const displays = {};
 
 const FORBIDDEN_CHARS = /[\]\[*,;'"`<>\\\s?]/g;
 // msgBuffer = [{line: line2, icon: icon2}, {line: line3, icon: icon3}, {line: '', icon: ''}];
@@ -51,7 +51,7 @@ function number2hex(num) {
 
 function combineEPaperCommand(lines, signal, ton, repeats, offset) {
     signal = number2hex(signal || '0xF0');
-    ton    = number2hex(ton    || '0xC0');
+    ton = number2hex(ton || '0xC0');
     const substitutions = {
         'A': '0x41',
         'B': '0x42',
@@ -142,7 +142,7 @@ function combineEPaperCommand(lines, signal, ton, repeats, offset) {
         '>': '0x3E'
     };
 
-    offset  = 10;
+    offset = 10;
     repeats = 1;
 
     let command = '0x02,0x0A';
@@ -155,8 +155,7 @@ function combineEPaperCommand(lines, signal, ton, repeats, offset) {
             if ((line.substring(0, 2) === '0x') && (line.length === 4)) {
                 command = command + ',' + line;
                 i = 12;
-            }
-            else {
+            } else {
                 i = 0;
             }
             while ((i < line.length) && (i < 12)) {
@@ -174,28 +173,22 @@ function combineEPaperCommand(lines, signal, ton, repeats, offset) {
 
     if (repeats < 1) {
         command = command + '0xDF,0x1D,';
-    }
-    else {
+    } else {
         if (repeats < 11) {
             command = command + '0xD' + (repeats - 1) + ',0x1D,';
-        }
-        else {
+        } else {
             if (repeats === 11) {
                 command = command + '0xDA,0x1D,';
-            }
-            else {
+            } else {
                 if (repeats === 12) {
                     command = command + '0xDB,0x1D,';
-                }
-                else {
+                } else {
                     if (repeats === 13) {
                         command = command + '0xDC,0x1D,';
-                    }
-                    else {
+                    } else {
                         if (repeats === 14) {
                             command = command + '0xDD,0x1D,';
-                        }
-                        else {
+                        } else {
                             command = command + '0xDE,0x1D,';
                         }
                     }
@@ -205,32 +198,25 @@ function combineEPaperCommand(lines, signal, ton, repeats, offset) {
     }
     if (offset <= 10) {
         command = command + '0xE0,0x16,';
-    }
-    else {
+    } else {
         if (offset <= 100) {
             command = command + '0xE' + (offset - 1 / 10) + ',0x16,';
-        }
-        else {
+        } else {
             if (offset <= 110) {
                 command = command + '0xEA,0x16,';
-            }
-            else {
+            } else {
                 if (offset <= 120) {
                     command = command + '0xEB,0x16,';
-                }
-                else {
+                } else {
                     if (offset <= 130) {
                         command = command + '0xEC,0x16,';
-                    }
-                    else {
+                    } else {
                         if (offset <= 140) {
                             command = command + '0xED,0x16,';
-                        }
-                        else {
+                        } else {
                             if (offset <= 150) {
                                 command = command + '0xEE,0x16,';
-                            }
-                            else {
+                            } else {
                                 command = command + '0xEF,0x16,';
                             }
                         }
@@ -268,93 +254,128 @@ function controlEPaper(id, data) {
 function readSignals(id) {
     displays[id] = null;
     const data = {
-        lines:  [{}, {}, {}],
+        lines: [{}, {}, {}],
         signal: '0xF0',
-        tone:   '0xC0'
+        tone: '0xC0'
     };
-    let count = 8;
 
-    adapter.getForeignState(id + '.0.EPAPER_LINE2', (err, state) => {
-        data.lines[0].line = state ? state.val || '' : '';
-        if (!--count) controlEPaper(id, data);
-    });
+    const promises = [];
 
-    adapter.getForeignState(id + '.0.EPAPER_ICON2', (err, state) => {
-        data.lines[0].icon = state ? state.val || '' : '';
-        if (!--count) controlEPaper(id, data);
-    });
+    promises.push(new Promise(resolve => {
+        adapter.getForeignState(id + '.0.EPAPER_LINE2', (err, state) => {
+            data.lines[0].line = state ? state.val || '' : '';
+            resolve();
+        });
+    }));
 
-    adapter.getForeignState(id + '.0.EPAPER_LINE3', (err, state) => {
-        data.lines[1].line = state ? state.val || '' : '';
-        if (!--count) controlEPaper(id, data);
-    });
+    promises.push(new Promise(resolve => {
+        adapter.getForeignState(id + '.0.EPAPER_ICON2', (err, state) => {
+            data.lines[0].icon = state ? state.val || '' : '';
+            resolve();
+        });
+    }));
 
-    adapter.getForeignState(id + '.0.EPAPER_ICON3', (err, state) => {
-        data.lines[1].icon = state ? state.val || '' : '';
-        if (!--count) controlEPaper(id, data);
-    });
+    promises.push(new Promise(resolve => {
+        adapter.getForeignState(id + '.0.EPAPER_LINE3', (err, state) => {
+            data.lines[1].line = state ? state.val || '' : '';
+            resolve();
+        });
+    }));
 
-    adapter.getForeignState(id + '.0.EPAPER_LINE4', (err, state) => {
-        data.lines[2].line = state ? state.val || '' : '';
-        if (!--count) controlEPaper(id, data);
-    });
+    promises.push(new Promise(resolve => {
+        adapter.getForeignState(id + '.0.EPAPER_ICON3', (err, state) => {
+            data.lines[1].icon = state ? state.val || '' : '';
+            resolve();
+        });
+    }));
 
-    adapter.getForeignState(id + '.0.EPAPER_ICON4', (err, state) => {
-        data.lines[2].icon = state ? state.val || '' : '';
-        if (!--count) controlEPaper(id, data);
-    });
+    promises.push(new Promise(resolve => {
+        adapter.getForeignState(id + '.0.EPAPER_LINE4', (err, state) => {
+            data.lines[2].line = state ? state.val || '' : '';
+            resolve();
+        });
+    }));
 
-    adapter.getForeignState(id + '.0.EPAPER_SIGNAL', (err, state) => {
-        data.signal = state ? state.val || '0xF0' : '0xF0';
-        if (!--count) controlEPaper(id, data);
-    });
+    promises.push(new Promise(resolve => {
+        adapter.getForeignState(id + '.0.EPAPER_ICON4', (err, state) => {
+            data.lines[2].icon = state ? state.val || '' : '';
+            resolve();
+        });
+    }));
 
-    adapter.getForeignState(id + '.0.EPAPER_TONE', (err, state) => {
-        data.tone = state ? state.val || '0xC0' : '0xC0';
-        if (!--count) controlEPaper(id, data);
-    });
-}
+    promises.push(new Promise(resolve => {
+        adapter.getForeignState(id + '.0.EPAPER_SIGNAL', (err, state) => {
+            data.signal = state ? state.val || '0xF0' : '0xF0';
+            resolve();
+        });
+    }));
+
+    promises.push(new Promise(resolve => {
+        adapter.getForeignState(id + '.0.EPAPER_TONE', (err, state) => {
+            data.tone = state ? state.val || '0xC0' : '0xC0';
+            resolve();
+        });
+    }));
+
+    Promise.all(promises).then(() => controlEPaper(id, data));
+
+} // endReadSignals
 
 function readSettings(id) {
     displays[id] = null;
     const data = {
-        lines:  [{}, {}, {}],
+        lines: [{}, {}, {}],
         signal: '0xF0',
-        tone:   '0xC0'
+        tone: '0xC0'
     };
-    let count = 6;
 
-    adapter.getForeignState(id + '.0.EPAPER_LINE2', (err, state) => {
-        data.lines[0].line = state ? state.val || '' : '';
-        if (!--count) controlEPaper(id, data);
-    });
+    const promises = [];
 
-    adapter.getForeignState(id + '.0.EPAPER_ICON2', (err, state) => {
-        data.lines[0].icon = state ? state.val || '' : '';
-        if (!--count) controlEPaper(id, data);
-    });
+    promises.push(new Promise(resolve => {
+        adapter.getForeignState(id + '.0.EPAPER_LINE2', (err, state) => {
+            data.lines[0].line = state ? state.val || '' : '';
+            resolve();
+        });
+    }));
 
-    adapter.getForeignState(id + '.0.EPAPER_LINE3', (err, state) => {
-        data.lines[1].line = state ? state.val || '' : '';
-        if (!--count) controlEPaper(id, data);
-    });
+    promises.push(new Promise(resolve => {
+        adapter.getForeignState(id + '.0.EPAPER_ICON2', (err, state) => {
+            data.lines[0].icon = state ? state.val || '' : '';
+            resolve();
+        });
+    }));
 
-    adapter.getForeignState(id + '.0.EPAPER_ICON3', (err, state) => {
-        data.lines[1].icon = state ? state.val || '' : '';
-        if (!--count) controlEPaper(id, data);
-    });
+    promises.push(new Promise(resolve => {
+        adapter.getForeignState(id + '.0.EPAPER_LINE3', (err, state) => {
+            data.lines[1].line = state ? state.val || '' : '';
+            resolve();
+        });
+    }));
 
-    adapter.getForeignState(id + '.0.EPAPER_LINE4', (err, state) => {
-        data.lines[2].line = state ? state.val || '' : '';
-        if (!--count) controlEPaper(id, data);
-    });
+    promises.push(new Promise(resolve => {
+        adapter.getForeignState(id + '.0.EPAPER_ICON3', (err, state) => {
+            data.lines[1].icon = state ? state.val || '' : '';
+            resolve();
+        });
+    }));
 
-    adapter.getForeignState(id + '.0.EPAPER_ICON4', (err, state) => {
-        data.lines[2].icon = state ? state.val || '': '';
-        if (!--count) controlEPaper(id, data);
-    });
+    promises.push(new Promise(resolve => {
+        adapter.getForeignState(id + '.0.EPAPER_LINE4', (err, state) => {
+            data.lines[2].line = state ? state.val || '' : '';
+            resolve();
+        });
+    }));
 
-}
+    promises.push(new Promise(resolve => {
+        adapter.getForeignState(id + '.0.EPAPER_ICON4', (err, state) => {
+            data.lines[2].icon = state ? state.val || '' : '';
+            resolve();
+        });
+    }));
+
+    Promise.all(promises).then(() => controlEPaper(id, data));
+
+} // endReadSettings
 
 // the adapter object
 const adapter = utils.Adapter({
@@ -382,8 +403,7 @@ const adapter = utils.Adapter({
             if (dpTypes[id].UNIT === '%' && dpTypes[id].MIN !== undefined) {
                 state.val = (state.val / 100) * (dpTypes[id].MAX - dpTypes[id].MIN) + dpTypes[id].MIN;
                 state.val = Math.round(state.val * 1000) / 1000;
-            } else
-            if (dpTypes[id].UNIT === '100%') {
+            } else if (dpTypes[id].UNIT === '100%') {
                 state.val = state.val / 100;
             }
 
@@ -460,12 +480,14 @@ const adapter = utils.Adapter({
             }
             // force close
             setTimeout(() => process.exit(), 3000);
-        } else
-        if (obj.message.params === undefined || obj.message.params === null) {
+        } else if (obj.message.params === undefined || obj.message.params === null) {
             try {
                 if (rpcClient && connected) {
                     rpcClient.methodCall(obj.command, [obj.message.ID, obj.message.paramType], (err, data) => {
-                        if (obj.callback) adapter.sendTo(obj.from, obj.command, {result: data, error: err}, obj.callback);
+                        if (obj.callback) adapter.sendTo(obj.from, obj.command, {
+                            result: data,
+                            error: err
+                        }, obj.callback);
                     });
                 } else {
                     adapter.log.warn('Cannot send "' + obj.command + '" "' + obj.message.ID + '": because not connected');
@@ -481,7 +503,7 @@ const adapter = utils.Adapter({
                     rpcClient.methodCall(obj.command, [obj.message.ID, obj.message.paramType, obj.message.params], (err, data) => {
                         if (obj.callback) adapter.sendTo(obj.from, obj.command, {
                             result: data,
-                            error:  err
+                            error: err
                         }, obj.callback);
                     });
                 } else {
@@ -555,8 +577,8 @@ let rpcClient;
 let rpcServer;
 
 const metaValues = {};
-let metaRoles =  {};
-const dpTypes =    {};
+let metaRoles = {};
+const dpTypes = {};
 
 let lastEvent = 0;
 let eventInterval;
@@ -594,7 +616,10 @@ function main() {
     }
 
     // Load VALUE paramsetDescriptions (needed to create state objects)
-    adapter.objects.getObjectView('hm-rpc', 'paramsetDescription', {startkey: 'hm-rpc.meta.VALUES', endkey: 'hm-rpc.meta.VALUES.\u9999'}, function handleValueParamSetDescriptions(err, doc) {
+    adapter.objects.getObjectView('hm-rpc', 'paramsetDescription', {
+        startkey: 'hm-rpc.meta.VALUES',
+        endkey: 'hm-rpc.meta.VALUES.\u9999'
+    }, function handleValueParamSetDescriptions(err, doc) {
         if (err) adapter.log.error('getObjectView hm-rpc: ' + err);
         if (doc && doc.rows) {
             for (let i = 0; i < doc.rows.length; i++) {
@@ -612,7 +637,10 @@ function main() {
         });
     });
 
-    adapter.objects.getObjectView('system', 'state', {startkey: adapter.namespace, endkey: adapter.namespace + '\u9999'}, function handleStateViews(err, res) {
+    adapter.objects.getObjectView('system', 'state', {
+        startkey: adapter.namespace,
+        endkey: adapter.namespace + '\u9999'
+    }, function handleStateViews(err, res) {
         if (!err && res.rows) {
             for (let i = 0; i < res.rows.length; i++) {
                 if (res.rows[i].id === adapter.namespace + '.updated') continue;
@@ -623,8 +651,8 @@ function main() {
                     dpTypes[res.rows[i].id] = {
                         UNIT: res.rows[i].value.native.UNIT,
                         TYPE: res.rows[i].value.native.TYPE,
-                        MIN:  res.rows[i].value.native.MIN,
-                        MAX:  res.rows[i].value.native.MAX
+                        MIN: res.rows[i].value.native.MIN,
+                        MAX: res.rows[i].value.native.MAX
                     };
 
                     if (typeof dpTypes[res.rows[i].id].MIN === 'number') {
@@ -704,8 +732,8 @@ function sendPing() {
 
 function initRpcServer() {
     adapter.config.homematicPort = parseInt(adapter.config.homematicPort, 10);
-    adapter.config.port          = parseInt(adapter.config.port, 10);
-    adapter.config.useHttps      = adapter.config.useHttps || false;
+    adapter.config.port = parseInt(adapter.config.port, 10);
+    adapter.config.useHttps = adapter.config.useHttps || false;
 
     //adapterPort was introduced in v1.0.1. If not set yet then try 2000
     const adapterPort = parseInt(adapter.config.port || adapter.config.homematicPort, 10) || 2000;
@@ -829,7 +857,10 @@ function initRpcServer() {
                 adapter.log.warn('Error on system.listMethods: ' + err);
             }
             adapter.log.info(adapter.config.type + 'rpc <- listDevices ' + JSON.stringify(params));
-            adapter.objects.getObjectView('hm-rpc', 'listDevices', {startkey: 'hm-rpc.' + adapter.instance + '.', endkey: 'hm-rpc.' + adapter.instance + '.\u9999'}, (err, doc) => {
+            adapter.objects.getObjectView('hm-rpc', 'listDevices', {
+                startkey: 'hm-rpc.' + adapter.instance + '.',
+                endkey: 'hm-rpc.' + adapter.instance + '.\u9999'
+            }, (err, doc) => {
                 const response = [];
 
                 // we only fill the response if this isn't a force reinit and
@@ -925,7 +956,7 @@ const methods = {
         } else {
             val = params[3];
         }
-        adapter.log.debug(name + ' ==> UNIT: "' + (dpTypes[name] ? dpTypes[name].UNIT : 'none')  + '" (min: ' + (dpTypes[name] ? dpTypes[name].MIN : 'none')  + ', max: ' + (dpTypes[name] ? dpTypes[name].MAX : 'none') + ') From "' + params[3] + '" => "' + val + '"');
+        adapter.log.debug(name + ' ==> UNIT: "' + (dpTypes[name] ? dpTypes[name].UNIT : 'none') + '" (min: ' + (dpTypes[name] ? dpTypes[name].MIN : 'none') + ', max: ' + (dpTypes[name] ? dpTypes[name].MAX : 'none') + ') From "' + params[3] + '" => "' + val + '"');
 
         adapter.setState(channel + '.' + params[2], {val: val, ack: true});
         return '';
@@ -937,26 +968,26 @@ const queueValueParamsets = [];
 
 function addParamsetObjects(channel, paramset, callback) {
     const channelChildren = [];
-    let count = 0;
+    const promises = [];
 
     for (const key in paramset) {
         if (!paramset.hasOwnProperty(key)) continue;
         channelChildren.push(channel._id + '.' + key);
         const commonType = {
-            ACTION:  'boolean',
-            BOOL:    'boolean',
-            FLOAT:   'number',
-            ENUM:    'number',
+            ACTION: 'boolean',
+            BOOL: 'boolean',
+            FLOAT: 'number',
+            ENUM: 'number',
             INTEGER: 'number',
-            STRING:  'string'
+            STRING: 'string'
         };
 
         const obj = {
-            type:   'state',
+            type: 'state',
             common: {
-                def:   paramset[key].DEFAULT,
-                type:  commonType[paramset[key].TYPE] || paramset[key].TYPE || '',
-                read:  !!(paramset[key].OPERATIONS & 1),
+                def: paramset[key].DEFAULT,
+                type: commonType[paramset[key].TYPE] || paramset[key].TYPE || '',
+                read: !!(paramset[key].OPERATIONS & 1),
                 write: !!(paramset[key].OPERATIONS & 2)
             },
             native: paramset[key]
@@ -1006,7 +1037,7 @@ function addParamsetObjects(channel, paramset, callback) {
             obj.common.role = metaRoles.chTYPE_dpNAME[channel.native.TYPE + '.' + key];
 
         } else if (metaRoles.dpNAME && metaRoles.dpNAME[key]) {
-            obj.common.role =  metaRoles.dpNAME[key];
+            obj.common.role = metaRoles.dpNAME[key];
         }
 
         if (obj.common.role === 'state' && obj.common.write) {
@@ -1032,7 +1063,12 @@ function addParamsetObjects(channel, paramset, callback) {
         }
         const dpID = adapter.namespace + '.' + channel._id + '.' + key;
 
-        dpTypes[dpID] = {UNIT: paramset[key].UNIT, TYPE: paramset[key].TYPE, MIN: paramset[key].MIN, MAX: paramset[key].MAX};
+        dpTypes[dpID] = {
+            UNIT: paramset[key].UNIT,
+            TYPE: paramset[key].TYPE,
+            MIN: paramset[key].MIN,
+            MAX: paramset[key].MAX
+        };
 
         if (typeof dpTypes[dpID].MIN === 'number') {
             dpTypes[dpID].MIN = parseFloat(dpTypes[dpID].MIN);
@@ -1049,19 +1085,21 @@ function addParamsetObjects(channel, paramset, callback) {
         if (key === 'LEVEL' && paramset.WORKING) {
             obj.common.workingID = 'WORKING';
         }
-        count++;
-        adapter.extendObject(channel._id + '.' + key, obj, (err, res) => {
-            if (!err) {
-                adapter.log.debug('object ' + res.id + ' extended');
-            } else {
-                adapter.log.error('object ' + (res ? res.id : '?') + ' extend ' + err);
-            }
 
-            if (!--count) callback();
-        });
-    }
-    if (!count) callback();
-}
+        promises.push(new Promise(resolve => {
+            adapter.extendObject(channel._id + '.' + key, obj, (err, res) => {
+                if (!err) {
+                    adapter.log.debug('object ' + res.id + ' extended');
+                } else {
+                    adapter.log.error('object ' + (res ? res.id : '?') + ' extend ' + err);
+                }
+                resolve();
+            });
+        }));
+    } // endFor
+
+    Promise.all(promises).then(() => callback());
+} // endAddParamsetObjects
 
 function getValueParamsets() {
     if (queueValueParamsets.length === 0) {
@@ -1112,9 +1150,7 @@ function getValueParamsets() {
                                     adapter: 'hm-rpc',
                                     type: 'paramsetDescription'
                                 },
-                                'common': {
-
-                                },
+                                'common': {},
                                 'native': res
                             };
                             metaValues[key] = res;
@@ -1156,12 +1192,12 @@ function addEPaperToMeta() {
         if (!metaValues[id] || !metaValues[id].EPAPER_LINE2) {
             metaValues[id] = metaValues[id] || {};
             const obj = metaValues[id];
-            obj.EPAPER_LINE2  = {
+            obj.EPAPER_LINE2 = {
                 TYPE: 'EPAPER_LINE',
                 ID: 'LINE2',
                 OPERATIONS: 2
             };
-            obj.EPAPER_ICON2  = {
+            obj.EPAPER_ICON2 = {
                 TYPE: 'EPAPER_ICON',
                 ID: 'ICON2',
                 STATES: {
@@ -1178,12 +1214,12 @@ function addEPaperToMeta() {
                 },
                 OPERATIONS: 2
             };
-            obj.EPAPER_LINE3  = {
+            obj.EPAPER_LINE3 = {
                 TYPE: 'EPAPER_LINE',
                 ID: 'LINE3',
                 OPERATIONS: 2
             };
-            obj.EPAPER_ICON3  = {
+            obj.EPAPER_ICON3 = {
                 TYPE: 'EPAPER_ICON',
                 ID: 'ICON3',
                 STATES: {
@@ -1200,12 +1236,12 @@ function addEPaperToMeta() {
                 },
                 OPERATIONS: 2
             };
-            obj.EPAPER_LINE4  = {
+            obj.EPAPER_LINE4 = {
                 TYPE: 'EPAPER_LINE',
                 ID: 'LINE4',
                 OPERATIONS: 2
             };
-            obj.EPAPER_ICON4  = {
+            obj.EPAPER_ICON4 = {
                 TYPE: 'EPAPER_ICON',
                 ID: 'ICON4',
                 STATES: {
@@ -1233,7 +1269,7 @@ function addEPaperToMeta() {
                 },
                 OPERATIONS: 2
             };
-            obj.EPAPER_TONE   = {
+            obj.EPAPER_TONE = {
                 TYPE: 'EPAPER_TONE',
                 ID: 'EPAPER_TONE',
                 STATES: {
@@ -1288,7 +1324,13 @@ function createDevices(deviceArr, callback) {
         if (icon) obj.common.icon = icon;
 
         const dpID = adapter.namespace + '.' + obj._id;
-        dpTypes[dpID] = {UNIT: deviceArr[i].UNIT, TYPE: deviceArr[i].TYPE, MAX: deviceArr[i].MAX, MIN: deviceArr[i].MIN, role: role};
+        dpTypes[dpID] = {
+            UNIT: deviceArr[i].UNIT,
+            TYPE: deviceArr[i].TYPE,
+            MAX: deviceArr[i].MAX,
+            MIN: deviceArr[i].MIN,
+            role: role
+        };
         if (typeof dpTypes[dpID].MIN === 'number') {
             dpTypes[dpID].MIN = parseFloat(dpTypes[dpID].MIN);
             dpTypes[dpID].MAX = parseFloat(dpTypes[dpID].MAX);
@@ -1355,7 +1397,7 @@ function getCuxDevices(callback) {
                 if (adapter.config.forceReInit === false) {
                     adapter.objects.getObjectView('hm-rpc', 'listDevices', {
                         startkey: 'hm-rpc.' + adapter.instance + '.',
-                        endkey:   'hm-rpc.' + adapter.instance + '.\u9999'
+                        endkey: 'hm-rpc.' + adapter.instance + '.\u9999'
                     }, (err, doc) => {
                         if (doc && doc.rows) {
                             for (let i = 0; i < doc.rows.length; i++) {
