@@ -13,8 +13,19 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.8.2",
+        "version": "1.8.3",
         "news": {
+            "1.8.3": {
+                "en": "added metas and icons",
+                "de": "Metas und Icons hinzugefügt",
+                "ru": "добавлены мета и иконки",
+                "pt": "adicionou metas e ícones",
+                "nl": "toegevoegde metas en pictogrammen",
+                "fr": "metas et icones ajoutés",
+                "it": "aggiunto metas e icone",
+                "es": "metas e iconos añadidos",
+                "pl": "dodano metas i ikony"
+            },
             "1.8.2": {
                 "en": "added icons, added meta information, minor improvements",
                 "de": "Icons hinzugefügt, Metainformationen hinzugefügt, kleinere Verbesserungen",
@@ -23507,6 +23518,195 @@
                     "TAB_ORDER": 3,
                     "TYPE": "BOOL",
                     "UNIT": ""
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HmIP-SMI.MAINTENANCE.2",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "SABOTAGE": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 9,
+                    "ID": "SABOTAGE",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "CONFIG_PENDING": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 9,
+                    "ID": "CONFIG_PENDING",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "DUTY_CYCLE": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 1,
+                    "ID": "DUTY_CYCLE",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "LOW_BAT": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 9,
+                    "ID": "LOW_BAT",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "INSTALL_TEST": {
+                    "MIN": false,
+                    "OPERATIONS": 3,
+                    "MAX": true,
+                    "FLAGS": 2,
+                    "ID": "INSTALL_TEST",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "UNREACH": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 25,
+                    "ID": "UNREACH",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "OPERATING_VOLTAGE_STATUS": {
+                    "MIN": "NORMAL",
+                    "OPERATIONS": 5,
+                    "MAX": "OVERFLOW",
+                    "FLAGS": 1,
+                    "ID": "OPERATING_VOLTAGE_STATUS",
+                    "TYPE": "ENUM",
+                    "DEFAULT": "NORMAL",
+                    "VALUE_LIST": [
+                        "NORMAL",
+                        "UNKNOWN",
+                        "OVERFLOW"
+                    ]
+                },
+                "RSSI_DEVICE": {
+                    "MIN": -128,
+                    "OPERATIONS": 5,
+                    "MAX": 127,
+                    "FLAGS": 1,
+                    "ID": "RSSI_DEVICE",
+                    "TYPE": "INTEGER",
+                    "DEFAULT": 0
+                },
+                "OPERATING_VOLTAGE": {
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "MAX": 25.2,
+                    "FLAGS": 1,
+                    "ID": "OPERATING_VOLTAGE",
+                    "TYPE": "FLOAT",
+                    "DEFAULT": 0
+                },
+                "RSSI_PEER": {
+                    "MIN": -128,
+                    "OPERATIONS": 5,
+                    "MAX": 127,
+                    "FLAGS": 1,
+                    "ID": "RSSI_PEER",
+                    "TYPE": "INTEGER",
+                    "DEFAULT": 0
+                },
+                "ERROR_CODE": {
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "MAX": 255,
+                    "FLAGS": 9,
+                    "ID": "ERROR_CODE",
+                    "TYPE": "INTEGER",
+                    "DEFAULT": 0
+                },
+                "UPDATE_PENDING": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 9,
+                    "ID": "UPDATE_PENDING",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HmIP-SMI.MOTIONDETECTOR_TRANSCEIVER.2",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "MOTION": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 1,
+                    "ID": "MOTION",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false,
+                    "CONTROL": "MOTIONDETECTOR_TRANSCEIVER.MOTION_DETECTION_STATE"
+                },
+                "RESET_MOTION": {
+                    "MIN": false,
+                    "OPERATIONS": 2,
+                    "MAX": true,
+                    "FLAGS": 1,
+                    "ID": "RESET_MOTION",
+                    "TYPE": "ACTION",
+                    "DEFAULT": false,
+                    "CONTROL": "MOTIONDETECTOR_TRANSCEIVER.RESET_MOTION"
+                },
+                "ILLUMINATION": {
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "MAX": 163830,
+                    "FLAGS": 1,
+                    "ID": "ILLUMINATION",
+                    "TYPE": "FLOAT",
+                    "DEFAULT": 0,
+                    "CONTROL": "MOTIONDETECTOR_TRANSCEIVER.ILLUMINATION"
+                },
+                "ILLUMINATION_STATUS": {
+                    "MIN": "NORMAL",
+                    "OPERATIONS": 5,
+                    "MAX": "OVERFLOW",
+                    "FLAGS": 1,
+                    "ID": "ILLUMINATION_STATUS",
+                    "TYPE": "ENUM",
+                    "DEFAULT": "NORMAL",
+                    "VALUE_LIST": [
+                        "NORMAL",
+                        "UNKNOWN",
+                        "OVERFLOW"
+                    ]
+                },
+                "MOTION_DETECTION_ACTIVE": {
+                    "MIN": false,
+                    "OPERATIONS": 7,
+                    "MAX": true,
+                    "FLAGS": 1,
+                    "ID": "MOTION_DETECTION_ACTIVE",
+                    "TYPE": "BOOL",
+                    "DEFAULT": true,
+                    "CONTROL": "MOTIONDETECTOR_TRANSCEIVER.MOTION_DETECTION_ACTIVE"
                 }
             }
         }
