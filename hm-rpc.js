@@ -460,7 +460,7 @@ const adapter = utils.Adapter({
     },
     // Add messagebox Function for ioBroker.occ
     message: function (obj) {
-        adapter.log.warn('[MSSG] Received: ' + JSON.stringify(obj)); //test
+        adapter.log.debug('[MSSG] Received: ' + JSON.stringify(obj));
         if (obj.command === 'stopInstance') {
             if (rpcServer && rpcServer.server) {
                 try {
