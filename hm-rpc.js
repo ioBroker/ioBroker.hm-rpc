@@ -1,13 +1,40 @@
+/*
+ * Copyright (c) 2014-2019 bluefox <dogafox@gmail.com>
+ *
+ * Copyright (c) 2014 hobbyquaker
+ *
+ * The MIT License (MIT)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+*/
 /* jshint -W097 */
 /* jshint strict: false */
 /*jslint node: true */
 'use strict';
 
-const utils = require('@iobroker/adapter-core'); // Get common adapter utils
-const images = require(__dirname + '/lib/images');
-const crypto = require(__dirname + '/lib/crypto'); // Provides encrypt and decrypt
-let connected = false;
-const displays = {};
+const utils       = require('@iobroker/adapter-core'); // Get common adapter utils
+const adapterName = require('./package.json').name.split('.').pop();
+const images      = require('./lib/images');
+const crypto      = require('./lib/crypto'); // Provides encrypt and decrypt
+let connected     = false;
+const displays    = {};
+let adapter;
 
 const FORBIDDEN_CHARS = /[\]\[*,;'"`<>\\\s?]/g;
 // msgBuffer = [{line: line2, icon: icon2}, {line: line3, icon: icon3}, {line: '', icon: ''}];
@@ -378,199 +405,208 @@ function readSettings(id) {
 } // endReadSettings
 
 // the adapter object
-const adapter = utils.Adapter({
 
-    name: 'hm-rpc',
+function startAdapter(options) {
+    options = options || {};
 
-    ready: function () {
-        adapter.subscribeStates('*');
-        main();
-    },
-    stateChange: function (id, state) {
-        if (state && state.ack !== true) {
-            const tmp = id.split('.');
-            let val;
+    Object.assign(options, {
 
-            if (id === adapter.namespace + '.updated') return;
+        name: adapterName,
 
-            adapter.log.debug(adapter.config.type + 'rpc -> setValue ' + tmp[3] + ' ' + tmp[4] + ': ' + state.val);
+        ready: () => {
+            adapter.subscribeStates('*');
+            main();
+        },
+        stateChange: (id, state) => {
+            if (state && state.ack !== true) {
+                const tmp = id.split('.');
+                let val;
 
-            if (!dpTypes[id]) {
-                adapter.log.error(adapter.config.type + 'rpc -> setValue: no dpType for ' + id + '!');
-                return;
-            }
+                if (id === adapter.namespace + '.updated') return;
 
-            if (dpTypes[id].UNIT === '%' && dpTypes[id].MIN !== undefined) {
-                state.val = (state.val / 100) * (dpTypes[id].MAX - dpTypes[id].MIN) + dpTypes[id].MIN;
-                state.val = Math.round(state.val * 1000) / 1000;
-            } else if (dpTypes[id].UNIT === '100%') {
-                state.val = state.val / 100;
-            }
+                adapter.log.debug(adapter.config.type + 'rpc -> setValue ' + tmp[3] + ' ' + tmp[4] + ': ' + state.val);
 
-            const type = dpTypes[id].TYPE;
+                if (!dpTypes[id]) {
+                    adapter.log.error(adapter.config.type + 'rpc -> setValue: no dpType for ' + id + '!');
+                    return;
+                }
 
-            if (type === 'EPAPER_LINE' || type === 'EPAPER_ICON') {
-                const _id = tmp[0] + '.' + tmp[1] + '.' + tmp[2];
-                if (displays[_id] && displays[_id].timer) {
-                    clearTimeout(displays[_id].timer);
-                    if (displays[_id].withTone) {
-                        displays[_id] = {timer: setTimeout(readSignals, 300, _id), withTone: true};
-                        return;
+                if (dpTypes[id].UNIT === '%' && dpTypes[id].MIN !== undefined) {
+                    state.val = (state.val / 100) * (dpTypes[id].MAX - dpTypes[id].MIN) + dpTypes[id].MIN;
+                    state.val = Math.round(state.val * 1000) / 1000;
+                } else if (dpTypes[id].UNIT === '100%') {
+                    state.val = state.val / 100;
+                }
+
+                const type = dpTypes[id].TYPE;
+
+                if (type === 'EPAPER_LINE' || type === 'EPAPER_ICON') {
+                    const _id = tmp[0] + '.' + tmp[1] + '.' + tmp[2];
+                    if (displays[_id] && displays[_id].timer) {
+                        clearTimeout(displays[_id].timer);
+                        if (displays[_id].withTone) {
+                            displays[_id] = {timer: setTimeout(readSignals, 300, _id), withTone: true};
+                            return;
+                        }
+                    }
+                    displays[_id] = {timer: setTimeout(readSettings, 300, _id), withTone: false};
+                    return;
+                } else if (type === 'EPAPER_SIGNAL' || type === 'EPAPER_TONE') {
+                    const _id = tmp[0] + '.' + tmp[1] + '.' + tmp[2];
+                    if (displays[_id] && displays[_id].timer) {
+                        clearTimeout(displays[_id].timer);
+                    }
+                    displays[_id] = {timer: setTimeout(readSignals, 300, _id), withTone: true};
+                    return;
+                } else {
+                    switch (type) {
+                        case 'BOOL':
+                            val = (state.val === 'false' || state.val === '0') ? false : !!state.val;
+                            break;
+                        case 'FLOAT':
+                            val = {explicitDouble: state.val};
+                            break;
+                        default:
+                            val = state.val;
                     }
                 }
-                displays[_id] = {timer: setTimeout(readSettings, 300, _id), withTone: false};
-                return;
-            } else if (type === 'EPAPER_SIGNAL' || type === 'EPAPER_TONE') {
-                const _id = tmp[0] + '.' + tmp[1] + '.' + tmp[2];
-                if (displays[_id] && displays[_id].timer) {
-                    clearTimeout(displays[_id].timer);
+
+                adapter.log.debug('setValue ' + JSON.stringify([tmp[2] + ':' + tmp[3], tmp[4], val]) + ' ' + type);
+
+                try {
+                    if (rpcClient && connected) {
+                        rpcClient.methodCall('setValue', [tmp[2] + ':' + tmp[3], tmp[4], val], (err, data) => {
+                            if (err) {
+                                adapter.log.error(adapter.config.type + 'rpc -> setValue ' + JSON.stringify([tmp[3], tmp[4], state.val]) + ' ' + type);
+                                adapter.log.error(err);
+                            }
+                        });
+                    } else {
+                        adapter.log.warn('Cannot setValue "' + id + '", because not connected.');
+                    }
+                } catch (err) {
+                    adapter.log.error('Cannot call setValue: :' + err);
                 }
-                displays[_id] = {timer: setTimeout(readSignals, 300, _id), withTone: true};
-                return;
+            }
+        },
+        // Add messagebox Function for ioBroker.occ
+        message: obj => {
+            adapter.log.debug('[MSSG] Received: ' + JSON.stringify(obj));
+            if (obj.command === 'stopInstance') {
+                if (rpcServer && rpcServer.server) {
+                    try {
+                        rpcServer.server.close(() => {
+                            console.log('server closed.');
+                            rpcServer.server.unref();
+                        });
+                    } catch (e) {
+
+                    }
+                }
+                if (rpcClient && rpcClient.socket) {
+                    try {
+                        rpcClient.socket.destroy();
+                    } catch (e) {
+
+                    }
+                }
+                // force close
+                setTimeout(() => adapter.terminate ? adapter.terminate(): process.exit(), 3000);
+            } else if (obj.message.params === undefined || obj.message.params === null) {
+                try {
+                    if (rpcClient && connected) {
+                        rpcClient.methodCall(obj.command, [obj.message.ID, obj.message.paramType], (err, data) => {
+                            if (obj.callback) adapter.sendTo(obj.from, obj.command, {
+                                result: data,
+                                error: err
+                            }, obj.callback);
+                        });
+                    } else {
+                        adapter.log.warn('Cannot send "' + obj.command + '" "' + obj.message.ID + '": because not connected');
+                        if (obj.callback) adapter.sendTo(obj.from, obj.command, {error: 'not connected'}, obj.callback);
+                    }
+                } catch (err) {
+                    adapter.log.error('Cannot call ' + obj.command + ': ' + err);
+                    adapter.sendTo(obj.from, obj.command, {error: err}, obj.callback);
+                }
             } else {
-                switch (type) {
-                    case 'BOOL':
-                        val = (state.val === 'false' || state.val === '0') ? false : !!state.val;
-                        break;
-                    case 'FLOAT':
-                        val = {explicitDouble: state.val};
-                        break;
-                    default:
-                        val = state.val;
-                }
-            }
-
-            adapter.log.debug('setValue ' + JSON.stringify([tmp[2] + ':' + tmp[3], tmp[4], val]) + ' ' + type);
-
-            try {
-                if (rpcClient && connected) {
-                    rpcClient.methodCall('setValue', [tmp[2] + ':' + tmp[3], tmp[4], val], (err, data) => {
-                        if (err) {
-                            adapter.log.error(adapter.config.type + 'rpc -> setValue ' + JSON.stringify([tmp[3], tmp[4], state.val]) + ' ' + type);
-                            adapter.log.error(err);
-                        }
-                    });
-                } else {
-                    adapter.log.warn('Cannot setValue "' + id + '", because not connected.');
-                }
-            } catch (err) {
-                adapter.log.error('Cannot call setValue: :' + err);
-            }
-        }
-    },
-    // Add messagebox Function for ioBroker.occ
-    message: function (obj) {
-        adapter.log.debug('[MSSG] Received: ' + JSON.stringify(obj));
-        if (obj.command === 'stopInstance') {
-            if (rpcServer && rpcServer.server) {
                 try {
-                    rpcServer.server.close(() => {
-                        console.log('server closed.');
-                        rpcServer.server.unref();
-                    });
-                } catch (e) {
-
+                    if (rpcClient && connected) {
+                        rpcClient.methodCall(obj.command, [obj.message.ID, obj.message.paramType, obj.message.params], (err, data) => {
+                            if (obj.callback) adapter.sendTo(obj.from, obj.command, {
+                                result: data,
+                                error: err
+                            }, obj.callback);
+                        });
+                    } else {
+                        adapter.log.warn('Cannot send "' + obj.command + '" "' + obj.message.ID + '": because not connected');
+                        if (obj.callback) adapter.sendTo(obj.from, obj.command, {error: 'not connected'}, obj.callback);
+                    }
+                } catch (err) {
+                    adapter.log.error('Cannot call ' + obj.command + ': ' + err);
+                    adapter.sendTo(obj.from, obj.command, {error: err}, obj.callback);
                 }
             }
-            if (rpcClient && rpcClient.socket) {
-                try {
-                    rpcClient.socket.destroy();
-                } catch (e) {
-
-                }
-            }
-            // force close
-            setTimeout(() => process.exit(), 3000);
-        } else if (obj.message.params === undefined || obj.message.params === null) {
+        },
+        unload: callback => {
             try {
-                if (rpcClient && connected) {
-                    rpcClient.methodCall(obj.command, [obj.message.ID, obj.message.paramType], (err, data) => {
-                        if (obj.callback) adapter.sendTo(obj.from, obj.command, {
-                            result: data,
-                            error: err
-                        }, obj.callback);
-                    });
-                } else {
-                    adapter.log.warn('Cannot send "' + obj.command + '" "' + obj.message.ID + '": because not connected');
-                    if (obj.callback) adapter.sendTo(obj.from, obj.command, {error: 'not connected'}, obj.callback);
+                if (eventInterval) {
+                    clearInterval(eventInterval);
+                    eventInterval = null;
                 }
-            } catch (err) {
-                adapter.log.error('Cannot call ' + obj.command + ': ' + err);
-                adapter.sendTo(obj.from, obj.command, {error: err}, obj.callback);
-            }
-        } else {
-            try {
-                if (rpcClient && connected) {
-                    rpcClient.methodCall(obj.command, [obj.message.ID, obj.message.paramType, obj.message.params], (err, data) => {
-                        if (obj.callback) adapter.sendTo(obj.from, obj.command, {
-                            result: data,
-                            error: err
-                        }, obj.callback);
-                    });
-                } else {
-                    adapter.log.warn('Cannot send "' + obj.command + '" "' + obj.message.ID + '": because not connected');
-                    if (obj.callback) adapter.sendTo(obj.from, obj.command, {error: 'not connected'}, obj.callback);
+
+                if (connInterval) {
+                    clearInterval(connInterval);
+                    connInterval = null;
                 }
-            } catch (err) {
-                adapter.log.error('Cannot call ' + obj.command + ': ' + err);
-                adapter.sendTo(obj.from, obj.command, {error: err}, obj.callback);
-            }
-        }
-    },
-    unload: function (callback) {
-        try {
-            if (eventInterval) {
-                clearInterval(eventInterval);
-                eventInterval = null;
-            }
+                if (connTimeout) {
+                    clearTimeout(connTimeout);
+                    connTimeout = null;
+                }
 
-            if (connInterval) {
-                clearInterval(connInterval);
-                connInterval = null;
-            }
-            if (connTimeout) {
-                clearTimeout(connTimeout);
-                connTimeout = null;
-            }
-
-            if (adapter.config && rpcClient) {
-                adapter.log.info(adapter.config.type + 'rpc -> ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + adapter.config.homematicPath + ' init ' + JSON.stringify([daemonURL, '']));
-                try {
-                    rpcClient.methodCall('init', [daemonURL, ''], (err, data) => {
+                if (adapter.config && rpcClient) {
+                    adapter.log.info(adapter.config.type + 'rpc -> ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + adapter.config.homematicPath + ' init ' + JSON.stringify([daemonURL, '']));
+                    try {
+                        rpcClient.methodCall('init', [daemonURL, ''], (err, data) => {
+                            if (connected) {
+                                adapter.log.info('Disconnected');
+                                connected = false;
+                                adapter.setState('info.connection', false, true);
+                            }
+                            if (callback) callback();
+                            callback = null;
+                        });
+                    } catch (err) {
                         if (connected) {
                             adapter.log.info('Disconnected');
                             connected = false;
                             adapter.setState('info.connection', false, true);
                         }
+                        adapter.log.error('Cannot call init: [' + daemonURL + ', ""]' + err);
                         if (callback) callback();
                         callback = null;
-                    });
-                } catch (err) {
-                    if (connected) {
-                        adapter.log.info('Disconnected');
-                        connected = false;
-                        adapter.setState('info.connection', false, true);
                     }
-                    adapter.log.error('Cannot call init: [' + daemonURL + ', ""]' + err);
+
+                } else {
                     if (callback) callback();
                     callback = null;
                 }
-
-            } else {
+            } catch (e) {
+                if (adapter && adapter.log) {
+                    adapter.log.error('Unload error: ' + e);
+                } else {
+                    console.log(e);
+                }
                 if (callback) callback();
                 callback = null;
             }
-        } catch (e) {
-            if (adapter && adapter.log) {
-                adapter.log.error('Unload error: ' + e);
-            } else {
-                console.log(e);
-            }
-            if (callback) callback();
-            callback = null;
         }
-    }
-});
+    });
+
+    adapter = new utils.Adapter(options);
+
+    return adapter;
+}
 
 let rpc;
 let rpcClient;
@@ -1588,4 +1624,12 @@ function keepAlive() {
         // Send every half interval ping to CCU
         sendPing();
     }
+}
+
+// If started as allInOne/compact mode => return function to create instance
+if (typeof module !== undefined && module.parent) {
+    module.exports = startAdapter;
+} else {
+    // or start the instance directly
+    startAdapter();
 }

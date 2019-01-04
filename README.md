@@ -143,7 +143,7 @@ In case the CCU needs authentication on the API, you have to provide the credent
 
 The MIT License (MIT)
 
-Copyright (c) 2014-2018 bluefox <dogafox@gmail.com>
+Copyright (c) 2014-2019 bluefox <dogafox@gmail.com>
 
 Copyright (c) 2014 hobbyquaker
 
