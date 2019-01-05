@@ -103,6 +103,14 @@ sendTo('hm-rpc.0', 'listDevices', {}, res => {
 
 ## Changelog
 
+### 1.9.0 (2019-01-05)
+* (foxriver76) adding custom commands to documentation and logging
+* (bluefox) enabling compact mode
+* (marvingrieger) adjusting HmIP shutters to a max value of 1
+
+### 1.8.3 (2019-01-04)
+* (foxriver76) fixing dependency
+
 ### 1.8.2 (2018-12-30)
 * (foxriver76) Added meta information
 * (foxriver76) Added new icons

@@ -13,8 +13,19 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.8.3",
+        "version": "1.9.0",
         "news": {
+            "1.9.0": {
+                "en": "compact mode added, fix for hmip shutters max value, custom commands documented",
+                "de": "Kompaktmodus hinzugefügt, Fix für Hmip-Shutter-Maximalwert, benutzerdefinierte Befehle dokumentiert",
+                "ru": "добавлен компактный режим, исправлено максимальное значение жалюзи hmip, задокументированы пользовательские команды",
+                "pt": "modo compacto adicionado, correção para valor máximo de obturadores hmip, comandos personalizados documentados",
+                "nl": "compacte modus toegevoegd, fix voor max waarde van hmip shutters, aangepaste commando's gedocumenteerd",
+                "fr": "Mode compact ajouté, correction de la valeur maximale pour les volets hmip, commandes personnalisées documentées",
+                "it": "aggiunta modalità compatta, correzione per hmip shutters valore massimo, comandi personalizzati documentati",
+                "es": "se agregó el modo compacto, solución para el valor máximo de los obturadores hmip, comandos personalizados documentados",
+                "pl": "dodano tryb kompaktowy, poprawiono wartość maksymalnej wartości migawki hmip, udokumentowano niestandardowe polecenia"
+            },
             "1.8.3": {
                 "en": "added metas and icons",
                 "de": "Metas und Icons hinzugefügt",
@@ -352,8 +363,10 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
-            "native": {}
+            "common": {
+            },
+            "native": {
+            }
         },
         {
             "_id": "hm-rpc.meta.VALUES.HM-CC-RT-DN.CLIMATECONTROL_RT_RECEIVER.19",
@@ -543,7 +556,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "AES_KEY": {
                     "DEFAULT": 0,
@@ -665,8 +679,10 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
-            "native": {}
+            "common": {
+            },
+            "native": {
+            }
         },
         {
             "_id": "hm-rpc.meta.VALUES.HM-CC-RT-DN.WEATHER_RECEIVER.19",
@@ -705,8 +721,10 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
-            "native": {}
+            "common": {
+            },
+            "native": {
+            }
         },
         {
             "_id": "hm-rpc.meta.VALUES.HM-CC-RT-DN.CLIMATECONTROL_RT_TRANSCEIVER.27",
@@ -715,7 +733,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "ACTUAL_TEMPERATURE": {
                     "CONTROL": "HEATING_CONTROL.TEMPERATURE",
@@ -1006,8 +1025,10 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
-            "native": {}
+            "common": {
+            },
+            "native": {
+            }
         },
         {
             "_id": "hm-rpc.meta.VALUES.HM-CC-RT-DN.CLIMATECONTROL_RECEIVER.27",
@@ -1227,7 +1248,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "ADJUSTING_COMMAND": {
                     "CONTROL": "NONE",
@@ -1296,7 +1318,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "CONFIG_PENDING": {
                     "DEFAULT": false,
@@ -1520,8 +1543,10 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
-            "native": {}
+            "common": {
+            },
+            "native": {
+            }
         },
         {
             "_id": "hm-rpc.meta.VALUES.HM-CC-TC.WINDOW_SWITCH_RECEIVER.15",
@@ -1658,7 +1683,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "DECISION_VALUE": {
                     "CONTROL": "NONE",
@@ -1681,7 +1707,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "DECISION_VALUE": {
                     "CONTROL": "NONE",
@@ -1704,7 +1731,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "AES_KEY": {
                     "DEFAULT": 0,
@@ -1995,7 +2023,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "DIRECTION": {
                     "DEFAULT": 0,
@@ -2309,7 +2338,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "CONFIG_PENDING": {
                     "DEFAULT": false,
@@ -2526,7 +2556,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "CONFIG_PENDING": {
                     "DEFAULT": false,
@@ -2828,7 +2859,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "DIRECTION": {
                     "DEFAULT": 0,
@@ -3166,7 +3198,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "AES_KEY": {
                     "DEFAULT": 0,
@@ -3367,7 +3400,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "COUNTER": {
                     "ID": "COUNTER",
@@ -3598,7 +3632,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "INHIBIT": {
                     "CONTROL": "NONE",
@@ -3667,7 +3702,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "AES_KEY": {
                     "DEFAULT": 0,
@@ -3923,7 +3959,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "INSTALL_TEST": {
                     "DEFAULT": false,
@@ -4503,7 +4540,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "STATE": {
                     "ID": "STATE",
@@ -4581,7 +4619,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "INSTALL_MODE": {
                     "DEFAULT": false,
@@ -4738,7 +4777,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "INSTALL_TEST": {
                     "DEFAULT": false,
@@ -4872,7 +4912,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "INSTALL_TEST": {
                     "DEFAULT": false,
@@ -5039,7 +5080,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "BRIGHTNESS": {
                     "DEFAULT": 0,
@@ -5270,7 +5312,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "AES_KEY": {
                     "DEFAULT": 0,
@@ -5519,7 +5562,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "ERROR": {
                     "CONTROL": "NONE",
@@ -5675,7 +5719,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "ERROR": {
                     "CONTROL": "NONE",
@@ -6458,7 +6503,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "UNREACH": {
                     "ID": "UNREACH",
@@ -6733,7 +6779,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "AES_KEY": {
                     "DEFAULT": 0,
@@ -6876,7 +6923,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "BRIGHTNESS": {
                     "DEFAULT": 0,
@@ -7066,7 +7114,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "INSTALL_TEST": {
                     "DEFAULT": false,
@@ -7136,7 +7185,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "TEMPERATURE": {
                     "ID": "TEMPERATURE",
@@ -7457,7 +7507,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "INSTALL_TEST": {
                     "DEFAULT": false,
@@ -7547,7 +7598,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "INHIBIT": {
                     "CONTROL": "NONE",
@@ -7837,7 +7889,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "AES_KEY": {
                     "DEFAULT": 0,
@@ -8004,7 +8057,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "CONFIG_PENDING": {
                     "DEFAULT": false,
@@ -8105,8 +8159,10 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
-            "native": {}
+            "common": {
+            },
+            "native": {
+            }
         },
         {
             "_id": "hm-rpc.meta.VALUES.HMW-RCV-50.VIRTUAL_KEY.3",
@@ -8400,7 +8456,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "ERROR_SABOTAGE": {
                     "CONTROL": "NONE",
@@ -8497,7 +8554,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "ARMSTATE": {
                     "CONTROL": "ARMING.ARMSTATE",
@@ -8779,7 +8837,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "BOOT": {
                     "CONTROL": "POWERMETER.BOOT",
@@ -8862,7 +8921,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "DECISION_VALUE": {
                     "CONTROL": "NONE",
@@ -8885,7 +8945,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "DECISION_VALUE": {
                     "CONTROL": "NONE",
@@ -8908,7 +8969,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "DECISION_VALUE": {
                     "CONTROL": "NONE",
@@ -8931,7 +8993,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "DECISION_VALUE": {
                     "CONTROL": "NONE",
@@ -8954,7 +9017,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "CONFIG_PENDING": {
                     "DEFAULT": false,
@@ -9054,7 +9118,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "TEMPERATURE": {
                     "AutoconfRoles": "WEATHER",
@@ -9077,7 +9142,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "AES_KEY": {
                     "DEFAULT": 0,
@@ -9199,7 +9265,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "ACTUAL_TEMPERATURE": {
                     "CONTROL": "HEATING_CONTROL.TEMPERATURE",
@@ -9490,7 +9557,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "AES_KEY": {
                     "DEFAULT": 0,
@@ -9778,7 +9846,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "INHIBIT": {
                     "CONTROL": "NONE",
@@ -10212,7 +10281,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "AES_KEY": {
                     "DEFAULT": 0,
@@ -10334,7 +10404,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "HUMIDITY": {
                     "AutoconfRoles": "WEATHER",
@@ -10698,7 +10769,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "SABOTAGE": {
                     "MIN": false,
@@ -10910,7 +10982,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "SABOTAGE": {
                     "MIN": false,
@@ -11729,7 +11802,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "LOWBAT": {
                     "ID": "LOWBAT",
@@ -11806,7 +11880,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "SETPOINT": {
                     "ID": "SETPOINT",
@@ -12205,7 +12280,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "CONFIG_PENDING": {
                     "MIN": false,
@@ -12362,7 +12438,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "PRESS_SHORT": {
                     "MIN": false,
@@ -12393,7 +12470,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "SECTION_STATUS": {
                     "MIN": "NORMAL",
@@ -12634,7 +12712,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "CONFIG_PENDING": {
                     "MIN": false,
@@ -12773,7 +12852,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "PRESS_SHORT": {
                     "MIN": false,
@@ -12894,7 +12974,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "SECTION_STATUS": {
                     "MIN": "NORMAL",
@@ -12994,7 +13075,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "WEEK_PROGRAM_TARGET_CHANNEL_LOCK": {
                     "MIN": "MANU_MODE",
@@ -13040,7 +13122,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "STATE": {
                     "MIN": "CLOSED",
@@ -13067,7 +13150,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "SABOTAGE": {
                     "MIN": false,
@@ -13330,7 +13414,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "PRESS_SHORT": {
                     "MIN": false,
@@ -13756,7 +13841,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "PRESS_SHORT": {
                     "MIN": false,
@@ -13955,7 +14041,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "CONFIG_PENDING": {
                     "MIN": false,
@@ -14120,7 +14207,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "AES_KEY": {
                     "DEFAULT": 0,
@@ -14276,7 +14364,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "AES_KEY": {
                     "DEFAULT": 0,
@@ -14410,7 +14499,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "AES_KEY": {
                     "DEFAULT": 0,
@@ -14566,7 +14656,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "AES_KEY": {
                     "DEFAULT": 0,
@@ -15137,7 +15228,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "INHIBIT": {
                     "CONTROL": "NONE",
@@ -15206,7 +15298,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "AES_KEY": {
                     "DEFAULT": 0,
@@ -15362,7 +15455,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "AES_KEY": {
                     "DEFAULT": 0,
@@ -15770,7 +15864,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "CONFIG_PENDING": {
                     "DEFAULT": false,
@@ -15882,7 +15977,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "AES_KEY": {
                     "DEFAULT": 0,
@@ -16124,7 +16220,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "DIRECTION": {
                     "DEFAULT": 0,
@@ -16334,7 +16431,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "INSTALL_TEST": {
                     "DEFAULT": false,
@@ -16501,7 +16599,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "INHIBIT": {
                     "CONTROL": "NONE",
@@ -16570,7 +16669,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "AES_KEY": {
                     "DEFAULT": 0,
@@ -16826,7 +16926,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "ERROR": {
                     "CONTROL": "NONE",
@@ -16987,7 +17088,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "ERROR": {
                     "CONTROL": "NONE",
@@ -17170,7 +17272,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "INSTALL_TEST": {
                     "DEFAULT": false,
@@ -17373,7 +17476,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "AES_KEY": {
                     "DEFAULT": 0,
@@ -17826,7 +17930,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "INSTALL_TEST": {
                     "DEFAULT": false,
@@ -18053,7 +18158,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "BRIGHTNESS": {
                     "DEFAULT": 0,
@@ -18218,7 +18324,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "INHIBIT": {
                     "CONTROL": "NONE",
@@ -18409,7 +18516,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "INSTALL_TEST": {
                     "DEFAULT": false,
@@ -18576,7 +18684,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "INSTALL_TEST": {
                     "DEFAULT": false,
@@ -18765,7 +18874,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "DIRECTION": {
                     "DEFAULT": 0,
@@ -18887,7 +18997,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "ACT_BRIGHTNESS": {
                     "CONTROL": "NONE",
@@ -19030,7 +19141,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "ACT_BRIGHTNESS": {
                     "CONTROL": "RGBW_AUTOMATIC.BRIGHTNESS",
@@ -19209,7 +19321,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "AES_KEY": {
                     "DEFAULT": 0,
@@ -19387,7 +19500,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "BRIGHTNESS": {
                     "DEFAULT": 0,
@@ -20174,7 +20288,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "INSTALL_TEST": {
                     "DEFAULT": false,
@@ -20288,7 +20403,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "AES_KEY": {
                     "DEFAULT": 0,
@@ -21508,7 +21624,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "AES_KEY": {
                     "DEFAULT": 0,
@@ -21630,7 +21747,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "HUMIDITY": {
                     "AutoconfRoles": "WEATHER",
@@ -21667,7 +21785,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "AES_KEY": {
                     "DEFAULT": 0,
@@ -22109,7 +22228,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "DIRECTION": {
                     "DEFAULT": 0,
@@ -22722,7 +22842,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "CONFIG_PENDING": {
                     "DEFAULT": false,
@@ -22979,7 +23100,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "CONFIG_PENDING": {
                     "MIN": false,
@@ -23349,7 +23471,8 @@
                 "adapter": "hm-rpc",
                 "type": "paramsetDescription"
             },
-            "common": {},
+            "common": {
+            },
             "native": {
                 "ACTUAL_HUMIDITY": {
                     "CONTROL": "THERMAL_CONTROL.HUMIDITY",
