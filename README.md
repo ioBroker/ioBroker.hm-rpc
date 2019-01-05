@@ -71,6 +71,36 @@ This only works with XML-RPC protocol.
 If 'use https' is activated you can fill in the username and password of a CCU user.
 In case the CCU needs authentication on the API, you have to provide the credentials here.
 
+## Custom commands
+It is possible to send custom commands, e. g. to read and control the master area of a device which allows the user 
+to configure heating week programs and more.
+
+This is done by sending a message to the adapter, which contains the method as first parameter, followed by an object which 
+has to contain the ``ID`` of the target device as well as optional the ``paramType``, which specifies e. g. the MASTER area.
+Additional parameters have to be sent in the ``params`` object.
+
+**Examples:**
+
+Log all values of the MASTER area of a device:
+```javascript
+sendTo('hm-rpc.0', 'getParamset', {ID: 'OEQ1861203', paramType: 'MASTER'}, res => {
+    log(JSON.stringify(res));
+});
+```
+Set an attribute of the MASTER area to a specific value:
+```javascript
+sendTo('hm-rpc.0', 'putParamset', {ID: 'OEQ1861203', paramType: 'MASTER', params: {'ENDTIME_FRIDAY_1': 700}}, res => {
+    log(JSON.stringify(res));
+});
+```
+
+List all devices:
+```javascript
+sendTo('hm-rpc.0', 'listDevices', {}, res => {
+    log(JSON.stringify(res));
+});
+```
+
 ## Changelog
 
 ### 1.8.2 (2018-12-30)

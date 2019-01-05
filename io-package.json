@@ -231,6 +231,10 @@
         "useHttps": false,
         "dontDelete": false
     },
+    "protectedNative": [
+        "username",
+        "password"
+    ],
     "objects": [
         {
             "_id": "_design/hm-rpc",
