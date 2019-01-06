@@ -318,7 +318,7 @@
                     "CONFIG_PENDING": "indicator",
                     "INSTALL_MODE": "indicator",
                     "RSSI_PEER": "value.rssi",
-                    "RSSI_DEVICE": "value",
+                    "RSSI_DEVICE": "value.rssi",
                     "AES_KEY": "value",
                     "STICKY_UNREACH": "indicator.unreach",
                     "ERROR": "indicator.error",
