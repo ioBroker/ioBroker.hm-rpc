@@ -1622,7 +1622,10 @@ function keepAlive() {
         connect();
     } else {
         // Send every half interval ping to CCU
-        sendPing();
+		// exclude Virtual Devices, because Virtual Devices API not support ping
+        if (adapter.config.daemon !== 'virtual-devices') {
+            sendPing();
+        }
     }
 }
 
