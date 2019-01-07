@@ -28,12 +28,12 @@
 /*jslint node: true */
 'use strict';
 
-const utils       = require('@iobroker/adapter-core'); // Get common adapter utils
+const utils = require('@iobroker/adapter-core'); // Get common adapter utils
 const adapterName = require('./package.json').name.split('.').pop();
-const images      = require('./lib/images');
-const crypto      = require('./lib/crypto'); // Provides encrypt and decrypt
-let connected     = false;
-const displays    = {};
+const images = require('./lib/images');
+const crypto = require('./lib/crypto'); // Provides encrypt and decrypt
+let connected = false;
+const displays = {};
 let adapter;
 
 const FORBIDDEN_CHARS = /[\]\[*,;'"`<>\\\s?]/g;
@@ -511,7 +511,7 @@ function startAdapter(options) {
                     }
                 }
                 // force close
-                setTimeout(() => adapter.terminate ? adapter.terminate(): process.exit(), 3000);
+                setTimeout(() => adapter.terminate ? adapter.terminate() : process.exit(), 3000);
             } else if (obj.message.params === undefined || obj.message.params === null) {
                 try {
                     if (rpcClient && connected) {
@@ -1618,21 +1618,18 @@ function keepAlive() {
     const _now = Date.now();
     // Check last event time. If timeout => send init again
     if (!lastEvent || (_now - lastEvent) >= adapter.config.checkInitInterval * 1000) {
-        adapter.log.warn('[KEEPALIVE] Connection timed out');
+        adapter.log.debug('[KEEPALIVE] Connection timed out, initializing new connection');
         connect();
-    } else {
-        // Send every half interval ping to CCU
-		// exclude Virtual Devices, because Virtual Devices API not support ping
-        if (adapter.config.daemon !== 'virtual-devices') {
-            sendPing();
-        }
+    } else if (adapter.config.daemon !== 'virtual-devices') {
+        // Send every half interval ping to CCU except for Virtual Devices, because Virtual Devices API not support ping
+        sendPing();
     }
-}
+} // endKeepAlive
 
 // If started as allInOne/compact mode => return function to create instance
-if (typeof module !== 'undefined' && module.parent) {
+if (module && module.parent) {
     module.exports = startAdapter;
 } else {
     // or start the instance directly
     startAdapter();
-}
+} // endElse

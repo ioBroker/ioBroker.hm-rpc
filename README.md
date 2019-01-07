@@ -103,8 +103,9 @@ sendTo('hm-rpc.0', 'listDevices', {}, res => {
 
 ## Changelog
 
-### 1.9.0 (2019-01-05)
+### 1.9.0 (2019-01-07)
 * (foxriver76) adding custom commands to documentation and logging
+* (Holuba & foxriver76) fixes for virtual devices API
 * (bluefox) enabling compact mode
 * (marvingrieger) adjusting HmIP shutters to a max value of 1
 
