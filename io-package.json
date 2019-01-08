@@ -2,6 +2,7 @@
     "common": {
         "name": "hm-rpc",
         "title": "HomeMatic RPC",
+        "compact": true,
         "desc": {
             "en": "Connects HomeMatic Interface-Processes (BidCos-Services, Homegear and CUxD) via XML-RPC or BIN-RPC to ioBroker",
             "de": "Verbindet HomeMatic Interface-Prozesse (BidCos-Services, Homegear und CUxD) via XML-RPC oder BIN-RPC mit ioBroker",
@@ -13,9 +14,9 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.9.0",
+        "version": "1.9.1",
         "news": {
-            "1.9.0": {
+            "1.9.1": {
                 "en": "compact mode added, fix for hmip shutters max value, custom commands documented",
                 "de": "Kompaktmodus hinzugefügt, Fix für Hmip-Shutter-Maximalwert, benutzerdefinierte Befehle dokumentiert",
                 "ru": "добавлен компактный режим, исправлено максимальное значение жалюзи hmip, задокументированы пользовательские команды",
