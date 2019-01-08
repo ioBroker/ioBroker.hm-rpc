@@ -36,7 +36,7 @@ let connected = false;
 const displays = {};
 let adapter;
 
-const FORBIDDEN_CHARS = /[\]\[*,;'"`<>\\\s?]/g;
+const FORBIDDEN_CHARS = /[\][*,;'"`<>\\\s?]/g;
 // msgBuffer = [{line: line2, icon: icon2}, {line: line3, icon: icon3}, {line: '', icon: ''}];
 // Icons:
 //      0x80 AUS

@@ -2,7 +2,6 @@
     "common": {
         "name": "hm-rpc",
         "title": "HomeMatic RPC",
-        "compact": true,
         "desc": {
             "en": "Connects HomeMatic Interface-Processes (BidCos-Services, Homegear and CUxD) via XML-RPC or BIN-RPC to ioBroker",
             "de": "Verbindet HomeMatic Interface-Prozesse (BidCos-Services, Homegear und CUxD) via XML-RPC oder BIN-RPC mit ioBroker",
@@ -203,6 +202,7 @@
         "readme": "https://github.com/ioBroker/ioBroker.hm-rpc/blob/master/README.md",
         "icon": "homematic.png",
         "materialize": true,
+        "compact": true,
         "extIcon": "https://raw.githubusercontent.com/ioBroker/ioBroker.hm-rpc/master/admin/homematic.png",
         "keywords": [
             "homematic",

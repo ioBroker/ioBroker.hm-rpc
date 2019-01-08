@@ -14,6 +14,10 @@
     {
       "name": "hobbyquaker",
       "email": "hq@ccu.io"
+    },
+    {
+      "name": "Moritz Heusinger",
+      "email": "moritz.heusinger@gmail.com"
     }
   ],
   "homepage": "https://github.com/ioBroker/ioBroker.hm-rpc",
@@ -31,7 +35,7 @@
   "dependencies": {
     "homematic-xmlrpc": "^1.0.2",
     "binrpc": "^3.3.1",
-    "@iobroker/adapter-core": "^1.0.2"
+    "@iobroker/adapter-core": "^1.0.3"
   },
   "devDependencies": {
     "gulp": "^4.0.0",
