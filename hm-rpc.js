@@ -1512,8 +1512,8 @@ function updateConnection() {
         connTimeout = null;
     }
 
-    // CUxD does not support ping
-    if (!eventInterval) {
+    // Virtual Devices API does not support PING
+    if (!eventInterval && adapter.config.daemon !== 'virtual-devices') {
         adapter.log.debug('start ping interval');
         eventInterval = setInterval(keepAlive, adapter.config.checkInitInterval * 1000 / 2);
     }
@@ -1620,8 +1620,7 @@ function keepAlive() {
     if (!lastEvent || (_now - lastEvent) >= adapter.config.checkInitInterval * 1000) {
         adapter.log.debug('[KEEPALIVE] Connection timed out, initializing new connection');
         connect();
-    } else if (adapter.config.daemon !== 'virtual-devices') {
-        // Send every half interval ping to CCU except for Virtual Devices, because Virtual Devices API not support ping
+    } else {
         sendPing();
     }
 } // endKeepAlive
