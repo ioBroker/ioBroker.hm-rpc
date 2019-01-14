@@ -103,6 +103,10 @@ sendTo('hm-rpc.0', 'listDevices', {}, res => {
 
 ## Changelog
 
+### 1.9.2 (2019-01-14)
+* (foxriver76) added chinese
+* (foxriver76) minor optimizations
+
 ### 1.9.1 (2019-01-08)
 * (foxriver76) fix compact mode
 

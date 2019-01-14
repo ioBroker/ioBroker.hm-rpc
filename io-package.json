@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.9.1",
+        "version": "1.9.2",
         "news": {
+            "1.9.2": {
+                "en": "add chinese and minor fixes",
+                "de": "Chinesisch hinzufgefügt und kleinere Optimierungen",
+                "ru": "добавить китайские и мелкие исправления",
+                "pt": "adicionar correções chinesas e menores",
+                "nl": "voeg Chinese en kleine fixes toe",
+                "fr": "ajouter des corrections chinoises et mineures",
+                "it": "aggiungere correzioni cinesi e minori",
+                "es": "añadir arreglos chinos y menores",
+                "pl": "dodaj chińskie i drobne poprawki",
+                "zh-cn": "添加中文和次要修复"
+            },
             "1.9.1": {
                 "en": "compact mode added, fix for hmip shutters max value, custom commands documented",
                 "de": "Kompaktmodus hinzugefügt, Fix für Hmip-Shutter-Maximalwert, benutzerdefinierte Befehle dokumentiert",
