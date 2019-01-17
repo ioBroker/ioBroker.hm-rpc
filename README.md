@@ -101,6 +101,10 @@ sendTo('hm-rpc.0', 'listDevices', {}, res => {
 });
 ```
 
+### Additional information
+If you use HomeMatic switches or remotes their button states will only be acknowledged by CCU and thus 
+by ioBroker, when you have a running 'dummy' program on the CCU which depends on the related switch or remote.
+
 ## Changelog
 
 ### 1.9.2 (2019-01-14)
