@@ -24573,6 +24573,67 @@
                     "CONTROL": "BUTTON_NO_FUNCTION.LONG"
                 }
             }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HmIP-STHO.CLIMATE_TRANSCEIVER.1",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "HUMIDITY": {
+                    "MIN": 0,
+                    "UNIT": "%",
+                    "OPERATIONS": 5,
+                    "MAX": 100,
+                    "FLAGS": 1,
+                    "ID": "HUMIDITY",
+                    "TYPE": "INTEGER",
+                    "DEFAULT": 0
+                },
+                "HUMIDITY_STATUS": {
+                    "MIN": "NORMAL",
+                    "OPERATIONS": 5,
+                    "MAX": "UNDERFLOW",
+                    "FLAGS": 1,
+                    "ID": "HUMIDITY_STATUS",
+                    "TYPE": "ENUM",
+                    "DEFAULT": "NORMAL",
+                    "VALUE_LIST": [
+                        "NORMAL",
+                        "UNKNOWN",
+                        "OVERFLOW",
+                        "UNDERFLOW"
+                    ]
+                },
+                "ACTUAL_TEMPERATURE": {
+                    "MIN": -3276.8,
+                    "UNIT": "°C",
+                    "OPERATIONS": 5,
+                    "MAX": 3276.7,
+                    "FLAGS": 1,
+                    "ID": "ACTUAL_TEMPERATURE",
+                    "TYPE": "FLOAT",
+                    "DEFAULT": 0
+                },
+                "ACTUAL_TEMPERATURE_STATUS": {
+                    "MIN": "NORMAL",
+                    "OPERATIONS": 5,
+                    "MAX": "UNDERFLOW",
+                    "FLAGS": 1,
+                    "ID": "ACTUAL_TEMPERATURE_STATUS",
+                    "TYPE": "ENUM",
+                    "DEFAULT": "NORMAL",
+                    "VALUE_LIST": [
+                        "NORMAL",
+                        "UNKNOWN",
+                        "OVERFLOW",
+                        "UNDERFLOW"
+                    ]
+                }
+            }
         }
     ],
     "instanceObjects": [
