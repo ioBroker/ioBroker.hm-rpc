@@ -25224,7 +25224,7 @@
                 },
                 "SET_POINT_TEMPERATURE": {
                     "MIN": 4.5,
-                    "UNIT": "�C",
+                    "UNIT": "°C",
                     "OPERATIONS": 7,
                     "MAX": 30.5,
                     "FLAGS": 1,
