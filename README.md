@@ -23,6 +23,7 @@ Usually:
 - 2000 for wired devices (https: 42000),
 - 8701 for CUxD daemon,
 - 2010 for Homematic IP devices (https: 42010)
+- 9292 for Virtual Devices (https: 49292)
 
 ### Daemon
 CCU/Homematic can support different types of devices (wired, wireless, hmip, CUxD) and for every type you should create the instance of adapter separately.
@@ -106,6 +107,10 @@ If you use HomeMatic switches or remotes their button states will only be acknow
 by ioBroker, when you have a running 'dummy' program on the CCU which depends on the related switch or remote.
 
 ## Changelog
+### 1.9.4 (2019-01-26)
+* (foxriver76) added image
+* (foxriver76) removed homematic path from ui
+
 ### 1.9.3 (2019-01-25)
 * (foxriver76) added meta data
 

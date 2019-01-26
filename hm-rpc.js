@@ -565,7 +565,7 @@ function startAdapter(options) {
                 }
 
                 if (adapter.config && rpcClient) {
-                    adapter.log.info(adapter.config.type + 'rpc -> ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + adapter.config.homematicPath + ' init ' + JSON.stringify([daemonURL, '']));
+                    adapter.log.info(adapter.config.type + 'rpc -> ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + homematicPath + ' init ' + JSON.stringify([daemonURL, '']));
                     try {
                         rpcClient.methodCall('init', [daemonURL, ''], (err, data) => {
                             if (connected) {
@@ -623,8 +623,11 @@ let connInterval;
 let connTimeout;
 let daemonURL = '';
 let daemonProto = '';
+let homematicPath;
 
 function main() {
+    homematicPath = adapter.config.daemon === 'virtual-devices' ? '/groups/' : '/';
+
     adapter.config.reconnectInterval = parseInt(adapter.config.reconnectInterval, 10) || 30;
     if (adapter.config.reconnectInterval < 10) {
         adapter.log.error('Reconnect interval is less than 10 seconds. Set reconnect interval to 10 seconds.');
@@ -645,11 +648,7 @@ function main() {
     } else {
         rpc = require('homematic-xmlrpc');
         adapter.config.type = 'xml';
-        if (adapter.config.useHttps) {
-            daemonProto = 'https://';
-        } else {
-            daemonProto = 'http://';
-        } // endElse
+        daemonProto = adapter.config.useHttps ? 'https://' : 'http://';
     }
 
     // Load VALUE paramsetDescriptions (needed to create state objects)
@@ -711,8 +710,8 @@ function main() {
 function sendInit() {
     try {
         if (rpcClient && (rpcClient.connected === undefined || rpcClient.connected)) {
-            adapter.log.debug(adapter.config.type + 'rpc -> ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + adapter.config.homematicPath + ' init ' + JSON.stringify([daemonURL, adapter.namespace]));
-            rpcClient.methodCall('init', [daemonURL, adapter.namespace], function handleInit(err, data) {
+            adapter.log.debug(adapter.config.type + 'rpc -> ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + homematicPath + ' init ' + JSON.stringify([daemonURL, adapter.namespace]));
+            rpcClient.methodCall('init', [daemonURL, adapter.namespace], (err, data) => {
                 if (!err) {
                     if (adapter.config.daemon === 'CUxD') {
                         getCuxDevices(function handleCuxDevices(err2) {
@@ -784,7 +783,7 @@ function initRpcServer() {
         });
 
         adapter.log.info(adapter.config.type + 'rpc server is trying to listen on ' + adapter.config.adapterAddress + ':' + port);
-        adapter.log.info(adapter.config.type + 'rpc client is trying to connect to ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + adapter.config.homematicPath + ' with ' + JSON.stringify([daemonURL, adapter.namespace]));
+        adapter.log.info(adapter.config.type + 'rpc client is trying to connect to ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + homematicPath + ' with ' + JSON.stringify([daemonURL, adapter.namespace]));
 
         connect(true);
 
@@ -1524,7 +1523,7 @@ function connect(isFirst) {
         rpcClient = rpc.createClient({
             host: adapter.config.homematicAddress,
             port: adapter.config.homematicPort,
-            path: adapter.config.homematicPath || '/',
+            path: homematicPath,
             reconnectTimeout: adapter.config.reconnectInterval * 1000
         });
 
@@ -1580,7 +1579,7 @@ function connect(isFirst) {
             rpcClient = rpc.createSecureClient({
                 host: adapter.config.homematicAddress,
                 port: adapter.config.homematicPort,
-                path: adapter.config.homematicPath || '/',
+                path: homematicPath,
                 reconnectTimeout: adapter.config.reconnectInterval * 1000,
                 basic_auth: {user: username, pass: password},
                 rejectUnauthorized: false

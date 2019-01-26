@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.9.3",
+        "version": "1.9.4",
         "news": {
+            "1.9.4": {
+                "en": "removed homematic path from user interface and added device image",
+                "de": "Homematic Pfad von der Benutzeroberfläche entfernt und Gerätebild hinzugefügt",
+                "ru": "удален homematic path из пользовательского интерфейса и добавлен образ устройства",
+                "pt": "removeu caminho homematic da interface do usuário e adicionou a imagem do dispositivo",
+                "nl": "verwijderd homematic pad van gebruikersinterface en toegevoegde apparaatafbeelding",
+                "fr": "Suppression du chemin homematic de l'interface utilisateur et ajout d'une image de périphérique",
+                "it": "rimosso percorso omonimo dall'interfaccia utente e aggiunta l'immagine del dispositivo",
+                "es": "se eliminó la ruta homemática de la interfaz de usuario y se agregó la imagen del dispositivo",
+                "pl": "usunięto ścieżkę homematic z interfejsu użytkownika i dodano obraz urządzenia",
+                "zh-cn": "从用户界面删除了主页路径并添加了设备图像"
+            },
             "1.9.3": {
                 "en": "added meta data",
                 "de": "Metadaten hinzugefügt",
@@ -254,7 +266,6 @@
         "homematicAddress": "192.168.0.100",
         "adapterAddress": "0.0.0.0",
         "homematicPort": "2001",
-        "homematicPath": "/",
         "callbackAddress": "",
         "port": "0",
         "type": "xml",

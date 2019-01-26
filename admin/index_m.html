@@ -221,7 +221,6 @@
                 var $daemon = $('#daemon');
                 var $useHttps = $('#useHttps');
                 var $port = $('#homematicPort');
-                var $path = $('#homematicPath');
                 var $type = $('#type');
                 var $dontDelete = $('#dontDelete');
                 switch ($daemon.val()) {
@@ -231,7 +230,6 @@
                         } else {
                             $port.val('2001');
                         } // endElse
-                        $path.val('/');
                         $type.val('xml').select();
                         $useHttps.prop('disabled', false);
                         $dontDelete.prop('checked', false);
@@ -243,7 +241,6 @@
                         } else {
                             $port.val('9292');
                         } // endElse
-                        $path.val('/groups');
                         $type.val('xml').select();
                         $useHttps.prop('disabled', false);
                         $dontDelete.prop('checked', false);
@@ -255,7 +252,6 @@
                         } else {
                             $port.val('2000');
                         } // endElse
-                        $path.val('/');
                         $dontDelete.prop('checked', false);
                         break;
 
@@ -265,7 +261,6 @@
                         $password.prop('disabled', true);
                         $username.prop('disabled', true);
                         $port.val('8701');
-                        $path.val('/');
                         $type.val('bin').select();
                         $dontDelete.prop('checked', false);
                         break;
@@ -276,7 +271,6 @@
                         } else {
                             $port.val('2010');
                         } // endElse
-                        $path.val('/');
                         $type.val('xml').select();
                         $useHttps.prop('disabled', false);
                         $dontDelete.prop('checked', true);
@@ -369,10 +363,6 @@
             </div>
             <div class="row">
                 <div class="input-field col s12 m8">
-                </div>
-                <div class="input-field col s12 m4">
-                    <input type="text" id="homematicPath" class="value"/>
-                    <label for="homematicPath" class="translate">HomeMatic Path</label>
                 </div>
             </div>
             <div class="row">

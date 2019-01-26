@@ -39,18 +39,6 @@ systemDictionary = {
         'pl': 'Daemon',
         'zh-cn': '守护进程'
     },
-    'HomeMatic Port': {
-        'en': 'HomeMatic Port',
-        'de': 'HomeMatic Port',
-        'ru': 'Порт HomeMatic',
-        'pt': 'HomeMatic Port',
-        'nl': 'HomeMatic-poort',
-        'fr': 'AccueilMatic Port',
-        'it': 'HomeMatic Port',
-        'es': 'Puerto HomeMatic',
-        'pl': 'Port HomeMatic',
-        'zh-cn': 'HomeMatic港口'
-    },
     'HomeMatic Path': {
         'en': 'HomeMatic Path',
         'de': 'HomeMatic Path',
