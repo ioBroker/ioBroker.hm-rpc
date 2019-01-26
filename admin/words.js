@@ -39,17 +39,17 @@ systemDictionary = {
         'pl': 'Daemon',
         'zh-cn': '守护进程'
     },
-    'HomeMatic Path': {
-        'en': 'HomeMatic Path',
-        'de': 'HomeMatic Path',
-        'ru': 'путь HomeMatic',
-        'pt': 'HomeMatic Path',
-        'nl': 'HomeMatic Path',
-        'fr': 'Chemin HomeMatic',
-        'it': 'Percorso HomeMatic',
-        'es': 'HomeMatic Path',
-        'pl': 'HomeMatic Path',
-        'zh-cn': 'HomeMatic Path'
+    'HomeMatic Port': {
+        'en': 'HomeMatic Port',
+        'de': 'HomeMatic Port',
+        'ru': 'Порт HomeMatic',
+        'pt': 'HomeMatic Port',
+        'nl': 'HomeMatic-poort',
+        'fr': 'AccueilMatic Port',
+        'it': 'HomeMatic Port',
+        'es': 'Puerto HomeMatic',
+        'pl': 'Port HomeMatic',
+        'zh-cn': 'HomeMatic港口'
     },
     'Adapter Callback Address': {
         'en': 'Adapter Callback Address',
