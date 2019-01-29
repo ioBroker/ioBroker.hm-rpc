@@ -107,6 +107,9 @@ If you use HomeMatic switches or remotes their button states will only be acknow
 by ioBroker, when you have a running 'dummy' program on the CCU which depends on the related switch or remote.
 
 ## Changelog
+### 1.9.5 (2019-01-29)
+* (foxriver76) ignore alarm states because handled by rega
+
 ### 1.9.4 (2019-01-26)
 * (foxriver76) added image
 * (foxriver76) removed homematic path from ui

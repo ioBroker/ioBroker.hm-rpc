@@ -422,7 +422,7 @@ function startAdapter(options) {
                 const tmp = id.split('.');
                 let val;
 
-                if (id === adapter.namespace + '.updated') return;
+                if (id === adapter.namespace + '.updated' || /_ALARM$/.test(id)) return;
 
                 adapter.log.debug(adapter.config.type + 'rpc -> setValue ' + tmp[3] + ' ' + tmp[4] + ': ' + state.val);
 

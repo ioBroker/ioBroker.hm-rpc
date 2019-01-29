@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.9.4",
+        "version": "1.9.5",
         "news": {
+            "1.9.5": {
+                "en": "ignore alarm states because handled by rega",
+                "de": "Alarmzustände werden ignoriert, da von rega verarbeitet",
+                "ru": "игнорировать состояния тревоги, потому что обрабатывается rega",
+                "pt": "ignorar estados de alarme porque manipulados por rega",
+                "nl": "negeer alarmtoestanden omdat behandeld door rega",
+                "fr": "ignorer les états d'alarme car gérée par la rega",
+                "it": "ignorare gli stati di allarme perché gestiti da rega",
+                "es": "ignorar los estados de alarma porque manejados por rega",
+                "pl": "ignoruj ​​stany alarmowe, ponieważ są obsługiwane przez regę",
+                "zh-cn": "忽略警报状态，因为由rega处理"
+            },
             "1.9.4": {
                 "en": "removed homematic path from user interface and added device image",
                 "de": "Homematic Pfad von der Benutzeroberfläche entfernt und Gerätebild hinzugefügt",
