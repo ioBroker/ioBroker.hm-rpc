@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.9.5",
+        "version": "1.9.6",
         "news": {
+            "1.9.6": {
+                "en": "fix meta for virtual devices",
+                "de": "Meta für virtuelle Geräte korrigiert",
+                "ru": "исправить мета для виртуальных устройств",
+                "pt": "meta de correção para dispositivos virtuais",
+                "nl": "repareer meta voor virtuele apparaten",
+                "fr": "corriger méta pour les périphériques virtuels",
+                "it": "fix meta per dispositivi virtuali",
+                "es": "arreglar meta para dispositivos virtuales",
+                "pl": "napraw meta dla urządzeń wirtualnych",
+                "zh-cn": "修复虚拟设备的元数据"
+            },
             "1.9.5": {
                 "en": "ignore alarm states because handled by rega",
                 "de": "Alarmzustände werden ignoriert, da von rega verarbeitet",
@@ -22392,14 +22404,14 @@
                 },
                 "SET_TEMPERATURE": {
                     "UNIT": "°C",
-                    "MIN": "5.0",
-                    "MAX": "30.0",
+                    "MIN": 5.0,
+                    "MAX": 30.0,
                     "OPERATIONS": 7,
                     "FLAGS": 1,
                     "ID": "SET_TEMPERATURE",
                     "TAB_ORDER": 4,
                     "TYPE": "FLOAT",
-                    "DEFAULT": "20.0",
+                    "DEFAULT": 20.0,
                     "CONTROL": "HEATING_CONTROL.SETPOINT"
                 },
                 "COMFORT_MODE": {
@@ -22494,8 +22506,8 @@
                 },
                 "ACTUAL_HUMIDITY": {
                     "UNIT": "%",
-                    "MIN": "0.0",
-                    "MAX": "99.0",
+                    "MIN": 0.0,
+                    "MAX": 99.0,
                     "OPERATIONS": 5,
                     "FLAGS": 1,
                     "ID": "ACTUAL_HUMIDITY",

@@ -107,6 +107,9 @@ If you use HomeMatic switches or remotes their button states will only be acknow
 by ioBroker, when you have a running 'dummy' program on the CCU which depends on the related switch or remote.
 
 ## Changelog
+### 1.9.6 (2019-02-02)
+* (foxriver76) fix meta for virtual devices
+
 ### 1.9.5 (2019-01-29)
 * (foxriver76) ignore alarm states because handled by rega
 
