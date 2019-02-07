@@ -21,7 +21,7 @@ tests.integration(path.join(__dirname, '..'), {
                     // Create a fresh harness instance each test!
                     const harness = getHarness();
                     // Start the adapter and wait until it has started
-                    harness.startAdapterAndWait.then(() => {
+                    harness.startAdapterAndWait().then(() => {
 
                         harness.sendTo('hm-rpc.0', 'test', 'message', (resp) => {
                             console.dir(resp);
