@@ -10,3 +10,4 @@ test
 .travis.yml
 appveyor.yml
 .eslintrc.json
+.github
