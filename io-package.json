@@ -25476,6 +25476,240 @@
                     "DEFAULT": 0
                 }
             }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HmIP-SMI55.MAINTENANCE.1",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "CONFIG_PENDING": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 9,
+                    "ID": "CONFIG_PENDING",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "DUTY_CYCLE": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 1,
+                    "ID": "DUTY_CYCLE",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "LOW_BAT": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 9,
+                    "ID": "LOW_BAT",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "INSTALL_TEST": {
+                    "MIN": false,
+                    "OPERATIONS": 3,
+                    "MAX": true,
+                    "FLAGS": 2,
+                    "ID": "INSTALL_TEST",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "UNREACH": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 25,
+                    "ID": "UNREACH",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "OPERATING_VOLTAGE_STATUS": {
+                    "MIN": "NORMAL",
+                    "OPERATIONS": 5,
+                    "MAX": "OVERFLOW",
+                    "FLAGS": 1,
+                    "ID": "OPERATING_VOLTAGE_STATUS",
+                    "TYPE": "ENUM",
+                    "DEFAULT": "NORMAL",
+                    "VALUE_LIST": [
+                        "NORMAL",
+                        "UNKNOWN",
+                        "OVERFLOW"
+                    ]
+                },
+                "RSSI_DEVICE": {
+                    "MIN": -128,
+                    "OPERATIONS": 5,
+                    "MAX": 127,
+                    "FLAGS": 1,
+                    "ID": "RSSI_DEVICE",
+                    "TYPE": "INTEGER",
+                    "DEFAULT": 0
+                },
+                "OPERATING_VOLTAGE": {
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "MAX": 25.2,
+                    "FLAGS": 1,
+                    "ID": "OPERATING_VOLTAGE",
+                    "TYPE": "FLOAT",
+                    "DEFAULT": 0
+                },
+                "RSSI_PEER": {
+                    "MIN": -128,
+                    "OPERATIONS": 5,
+                    "MAX": 127,
+                    "FLAGS": 1,
+                    "ID": "RSSI_PEER",
+                    "TYPE": "INTEGER",
+                    "DEFAULT": 0
+                },
+                "ERROR_CODE": {
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "MAX": 255,
+                    "FLAGS": 9,
+                    "ID": "ERROR_CODE",
+                    "TYPE": "INTEGER",
+                    "DEFAULT": 0
+                },
+                "UPDATE_PENDING": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 9,
+                    "ID": "UPDATE_PENDING",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HmIP-SMI55.KEY_TRANSCEIVER.1",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "PRESS_SHORT": {
+                    "MIN": false,
+                    "OPERATIONS": 4,
+                    "MAX": true,
+                    "FLAGS": 1,
+                    "ID": "PRESS_SHORT",
+                    "TYPE": "ACTION",
+                    "DEFAULT": false,
+                    "CONTROL": "BUTTON_NO_FUNCTION.SHORT"
+                },
+                "PRESS_LONG": {
+                    "MIN": false,
+                    "OPERATIONS": 4,
+                    "MAX": true,
+                    "FLAGS": 1,
+                    "ID": "PRESS_LONG",
+                    "TYPE": "ACTION",
+                    "DEFAULT": false,
+                    "CONTROL": "BUTTON_NO_FUNCTION.LONG"
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HmIP-SMI55.MOTIONDETECTOR_TRANSCEIVER.1",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "MOTION": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 1,
+                    "ID": "MOTION",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false,
+                    "CONTROL": "MOTIONDETECTOR_TRANSCEIVER.MOTION_DETECTION_STATE"
+                },
+                "RESET_MOTION": {
+                    "MIN": false,
+                    "OPERATIONS": 2,
+                    "MAX": true,
+                    "FLAGS": 1,
+                    "ID": "RESET_MOTION",
+                    "TYPE": "ACTION",
+                    "DEFAULT": false,
+                    "CONTROL": "MOTIONDETECTOR_TRANSCEIVER.RESET_MOTION"
+                },
+                "ILLUMINATION": {
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "MAX": 163830,
+                    "FLAGS": 1,
+                    "ID": "ILLUMINATION",
+                    "TYPE": "FLOAT",
+                    "DEFAULT": 0,
+                    "CONTROL": "MOTIONDETECTOR_TRANSCEIVER.ILLUMINATION"
+                },
+                "CURRENT_ILLUMINATION": {
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "MAX": 163830,
+                    "FLAGS": 1,
+                    "ID": "CURRENT_ILLUMINATION",
+                    "TYPE": "FLOAT",
+                    "DEFAULT": 0
+                },
+                "CURRENT_ILLUMINATION_STATUS": {
+                    "MIN": "NORMAL",
+                    "OPERATIONS": 5,
+                    "MAX": "OVERFLOW",
+                    "FLAGS": 1,
+                    "ID": "CURRENT_ILLUMINATION_STATUS",
+                    "TYPE": "ENUM",
+                    "DEFAULT": "NORMAL",
+                    "VALUE_LIST": [
+                        "NORMAL",
+                        "UNKNOWN",
+                        "OVERFLOW"
+                    ]
+                },
+                "ILLUMINATION_STATUS": {
+                    "MIN": "NORMAL",
+                    "OPERATIONS": 5,
+                    "MAX": "OVERFLOW",
+                    "FLAGS": 1,
+                    "ID": "ILLUMINATION_STATUS",
+                    "TYPE": "ENUM",
+                    "DEFAULT": "NORMAL",
+                    "VALUE_LIST": [
+                        "NORMAL",
+                        "UNKNOWN",
+                        "OVERFLOW"
+                    ]
+                },
+                "MOTION_DETECTION_ACTIVE": {
+                    "MIN": false,
+                    "OPERATIONS": 7,
+                    "MAX": true,
+                    "FLAGS": 1,
+                    "ID": "MOTION_DETECTION_ACTIVE",
+                    "TYPE": "BOOL",
+                    "DEFAULT": true,
+                    "CONTROL": "MOTIONDETECTOR_TRANSCEIVER.MOTION_DETECTION_ACTIVE"
+                }
+            }
         }
     ],
     "instanceObjects": [
