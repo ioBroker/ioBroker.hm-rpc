@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.9.6",
+        "version": "1.9.7",
         "news": {
+            "1.9.7": {
+                "en": "when max is 1.005 then set max to 1",
+                "de": "Wenn max 1.005 ist, dann wird max auf 1 gesetzt",
+                "ru": "когда максимальное значение равно 1,005, тогда установите максимальное значение на 1",
+                "pt": "quando max é 1.005, então ajuste max para 1",
+                "nl": "wanneer max is 1.005 stel dan max in op 1",
+                "fr": "quand max est 1,005, définissez max sur 1",
+                "it": "quando max è 1.005, impostare max su 1",
+                "es": "cuando el máximo es 1.005, establezca el máximo en 1",
+                "pl": "kiedy max wynosi 1.005, ustaw max na 1",
+                "zh-cn": "当max为1.005时，则将max设置为1"
+            },
             "1.9.6": {
                 "en": "fix meta for virtual devices",
                 "de": "Meta für virtuelle Geräte korrigiert",
@@ -11192,7 +11204,7 @@
                 "LEVEL": {
                     "MIN": 0,
                     "OPERATIONS": 7,
-                    "MAX": 1.005,
+                    "MAX": 1,
                     "FLAGS": 1,
                     "ID": "LEVEL",
                     "TYPE": "FLOAT",
@@ -12511,7 +12523,7 @@
                 "LEVEL": {
                     "MIN": 0,
                     "OPERATIONS": 5,
-                    "MAX": 1.005,
+                    "MAX": 1,
                     "FLAGS": 1,
                     "ID": "LEVEL",
                     "TYPE": "FLOAT",
@@ -12619,7 +12631,7 @@
                     "MIN": 0,
                     "UNIT": "100%",
                     "OPERATIONS": 7,
-                    "MAX": 1.005,
+                    "MAX": 1,
                     "FLAGS": 1,
                     "ID": "LEVEL",
                     "TYPE": "FLOAT",
@@ -21434,7 +21446,7 @@
                 "LEVEL": {
                     "MIN": 0,
                     "OPERATIONS": 7,
-                    "MAX": 1.005,
+                    "MAX": 1,
                     "FLAGS": 1,
                     "ID": "LEVEL",
                     "TYPE": "FLOAT",
@@ -23275,7 +23287,7 @@
                 "LEVEL": {
                     "MIN": 0,
                     "OPERATIONS": 7,
-                    "MAX": 1.005,
+                    "MAX": 1,
                     "FLAGS": 1,
                     "ID": "LEVEL",
                     "TYPE": "FLOAT",
@@ -25708,6 +25720,435 @@
                     "TYPE": "BOOL",
                     "DEFAULT": true,
                     "CONTROL": "MOTIONDETECTOR_TRANSCEIVER.MOTION_DETECTION_ACTIVE"
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HmIP-BDT.MAINTENANCE.2",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "CONFIG_PENDING": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 9,
+                    "ID": "CONFIG_PENDING",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "DUTY_CYCLE": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 1,
+                    "ID": "DUTY_CYCLE",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "INSTALL_TEST": {
+                    "MIN": false,
+                    "OPERATIONS": 3,
+                    "MAX": true,
+                    "FLAGS": 2,
+                    "ID": "INSTALL_TEST",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "ERROR_OVERHEAT": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 9,
+                    "ID": "ERROR_OVERHEAT",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "OPERATING_VOLTAGE_STATUS": {
+                    "MIN": "NORMAL",
+                    "OPERATIONS": 5,
+                    "MAX": "OVERFLOW",
+                    "FLAGS": 1,
+                    "ID": "OPERATING_VOLTAGE_STATUS",
+                    "TYPE": "ENUM",
+                    "DEFAULT": "NORMAL",
+                    "VALUE_LIST": [
+                        "NORMAL",
+                        "UNKNOWN",
+                        "OVERFLOW"
+                    ]
+                },
+                "ERROR_UPDATE": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 1,
+                    "ID": "ERROR_UPDATE",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "ACTUAL_TEMPERATURE_STATUS": {
+                    "MIN": "NORMAL",
+                    "OPERATIONS": 5,
+                    "MAX": "UNDERFLOW",
+                    "FLAGS": 1,
+                    "ID": "ACTUAL_TEMPERATURE_STATUS",
+                    "TYPE": "ENUM",
+                    "DEFAULT": "NORMAL",
+                    "VALUE_LIST": [
+                        "NORMAL",
+                        "UNKNOWN",
+                        "OVERFLOW",
+                        "UNDERFLOW"
+                    ]
+                },
+                "RSSI_PEER": {
+                    "MIN": -128,
+                    "OPERATIONS": 5,
+                    "MAX": 127,
+                    "FLAGS": 1,
+                    "ID": "RSSI_PEER",
+                    "TYPE": "INTEGER",
+                    "DEFAULT": 0
+                },
+                "ERROR_OVERLOAD": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 1,
+                    "ID": "ERROR_OVERLOAD",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "ERROR_CODE": {
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "MAX": 255,
+                    "FLAGS": 9,
+                    "ID": "ERROR_CODE",
+                    "TYPE": "INTEGER",
+                    "DEFAULT": 0
+                },
+                "UPDATE_PENDING": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 9,
+                    "ID": "UPDATE_PENDING",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "UNREACH": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 25,
+                    "ID": "UNREACH",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "RSSI_DEVICE": {
+                    "MIN": -128,
+                    "OPERATIONS": 5,
+                    "MAX": 127,
+                    "FLAGS": 1,
+                    "ID": "RSSI_DEVICE",
+                    "TYPE": "INTEGER",
+                    "DEFAULT": 0
+                },
+                "ACTUAL_TEMPERATURE": {
+                    "MIN": -3276.8,
+                    "OPERATIONS": 5,
+                    "MAX": 3276.7,
+                    "FLAGS": 1,
+                    "ID": "ACTUAL_TEMPERATURE",
+                    "TYPE": "FLOAT",
+                    "DEFAULT": 0
+                },
+                "OPERATING_VOLTAGE": {
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "MAX": 25.2,
+                    "FLAGS": 1,
+                    "ID": "OPERATING_VOLTAGE",
+                    "TYPE": "FLOAT",
+                    "DEFAULT": 0
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HmIP-BDT.KEY_TRANSCEIVER.2",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "PRESS_SHORT": {
+                    "MIN": false,
+                    "OPERATIONS": 4,
+                    "MAX": true,
+                    "FLAGS": 1,
+                    "ID": "PRESS_SHORT",
+                    "TYPE": "ACTION",
+                    "DEFAULT": false,
+                    "CONTROL": "BUTTON_NO_FUNCTION.SHORT"
+                },
+                "PRESS_LONG": {
+                    "MIN": false,
+                    "OPERATIONS": 4,
+                    "MAX": true,
+                    "FLAGS": 1,
+                    "ID": "PRESS_LONG",
+                    "TYPE": "ACTION",
+                    "DEFAULT": false,
+                    "CONTROL": "BUTTON_NO_FUNCTION.LONG"
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HmIP-BDT.DIMMER_TRANSMITTER.2",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "SECTION_STATUS": {
+                    "MIN": "NORMAL",
+                    "OPERATIONS": 5,
+                    "MAX": "UNKNOWN",
+                    "FLAGS": 1,
+                    "ID": "SECTION_STATUS",
+                    "TYPE": "ENUM",
+                    "DEFAULT": "NORMAL",
+                    "VALUE_LIST": [
+                        "NORMAL",
+                        "UNKNOWN"
+                    ]
+                },
+                "LEVEL_STATUS": {
+                    "MIN": "NORMAL",
+                    "OPERATIONS": 5,
+                    "MAX": "ERROR",
+                    "FLAGS": 1,
+                    "ID": "LEVEL_STATUS",
+                    "TYPE": "ENUM",
+                    "DEFAULT": "NORMAL",
+                    "VALUE_LIST": [
+                        "NORMAL",
+                        "UNKNOWN",
+                        "OVERFLOW",
+                        "UNDERFLOW",
+                        "ERROR"
+                    ]
+                },
+                "PROCESS": {
+                    "MIN": "STABLE",
+                    "OPERATIONS": 5,
+                    "MAX": "NOT_STABLE",
+                    "FLAGS": 1,
+                    "ID": "PROCESS",
+                    "TYPE": "ENUM",
+                    "DEFAULT": "STABLE",
+                    "VALUE_LIST": [
+                        "STABLE",
+                        "NOT_STABLE"
+                    ]
+                },
+                "LEVEL": {
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "MAX": 1,
+                    "FLAGS": 1,
+                    "ID": "LEVEL",
+                    "TYPE": "FLOAT",
+                    "DEFAULT": 0,
+                    "CONTROL": "DIMMER_REAL.LEVEL"
+                },
+                "SECTION": {
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "MAX": 15,
+                    "FLAGS": 1,
+                    "ID": "SECTION",
+                    "TYPE": "INTEGER",
+                    "DEFAULT": 0
+                },
+                "ACTIVITY_STATE": {
+                    "MIN": "UNKNOWN",
+                    "OPERATIONS": 5,
+                    "MAX": "STABLE",
+                    "FLAGS": 1,
+                    "ID": "ACTIVITY_STATE",
+                    "TYPE": "ENUM",
+                    "DEFAULT": "UNKNOWN",
+                    "VALUE_LIST": [
+                        "UNKNOWN",
+                        "UP",
+                        "DOWN",
+                        "STABLE"
+                    ]
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HmIP-BDT.DIMMER_VIRTUAL_RECEIVER.2",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "SECTION_STATUS": {
+                    "MIN": "NORMAL",
+                    "OPERATIONS": 5,
+                    "MAX": "UNKNOWN",
+                    "FLAGS": 1,
+                    "ID": "SECTION_STATUS",
+                    "TYPE": "ENUM",
+                    "DEFAULT": "NORMAL",
+                    "VALUE_LIST": [
+                        "NORMAL",
+                        "UNKNOWN"
+                    ]
+                },
+                "LEVEL_STATUS": {
+                    "MIN": "NORMAL",
+                    "OPERATIONS": 5,
+                    "MAX": "ERROR",
+                    "FLAGS": 1,
+                    "ID": "LEVEL_STATUS",
+                    "TYPE": "ENUM",
+                    "DEFAULT": "NORMAL",
+                    "VALUE_LIST": [
+                        "NORMAL",
+                        "UNKNOWN",
+                        "OVERFLOW",
+                        "UNDERFLOW",
+                        "ERROR"
+                    ]
+                },
+                "ON_TIME": {
+                    "MIN": 0,
+                    "UNIT": "s",
+                    "OPERATIONS": 2,
+                    "MAX": 8580000,
+                    "FLAGS": 1,
+                    "ID": "ON_TIME",
+                    "TYPE": "FLOAT",
+                    "DEFAULT": 0
+                },
+                "PROCESS": {
+                    "MIN": "STABLE",
+                    "OPERATIONS": 5,
+                    "MAX": "NOT_STABLE",
+                    "FLAGS": 1,
+                    "ID": "PROCESS",
+                    "TYPE": "ENUM",
+                    "DEFAULT": "STABLE",
+                    "VALUE_LIST": [
+                        "STABLE",
+                        "NOT_STABLE"
+                    ]
+                },
+                "RAMP_TIME": {
+                    "MIN": 0,
+                    "UNIT": "s",
+                    "OPERATIONS": 2,
+                    "MAX": 8580000,
+                    "FLAGS": 1,
+                    "ID": "RAMP_TIME",
+                    "TYPE": "FLOAT",
+                    "DEFAULT": 0.5
+                },
+                "LEVEL": {
+                    "MIN": 0,
+                    "UNIT": "100%",
+                    "OPERATIONS": 7,
+                    "MAX": 1,
+                    "FLAGS": 1,
+                    "ID": "LEVEL",
+                    "TYPE": "FLOAT",
+                    "DEFAULT": 0,
+                    "CONTROL": "DIMMER.LEVEL"
+                },
+                "SECTION": {
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "MAX": 15,
+                    "FLAGS": 1,
+                    "ID": "SECTION",
+                    "TYPE": "INTEGER",
+                    "DEFAULT": 0
+                },
+                "ACTIVITY_STATE": {
+                    "MIN": "UNKNOWN",
+                    "OPERATIONS": 5,
+                    "MAX": "STABLE",
+                    "FLAGS": 1,
+                    "ID": "ACTIVITY_STATE",
+                    "TYPE": "ENUM",
+                    "DEFAULT": "UNKNOWN",
+                    "VALUE_LIST": [
+                        "UNKNOWN",
+                        "UP",
+                        "DOWN",
+                        "STABLE"
+                    ]
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HmIP-BDT.DIMMER_WEEK_PROFILE.2",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "WEEK_PROGRAM_TARGET_CHANNEL_LOCK": {
+                    "MIN": "MANU_MODE",
+                    "OPERATIONS": 2,
+                    "MAX": "AUTO_MODE_WITHOUT_RESET",
+                    "FLAGS": 1,
+                    "ID": "WEEK_PROGRAM_TARGET_CHANNEL_LOCK",
+                    "TYPE": "ENUM",
+                    "DEFAULT": "MANU_MODE",
+                    "VALUE_LIST": [
+                        "MANU_MODE",
+                        "AUTO_MODE_WITH_RESET",
+                        "AUTO_MODE_WITHOUT_RESET"
+                    ],
+                    "CONTROL": "WEEK_PROFILE.TARGET_CHANNEL_LOCK"
+                },
+                "WEEK_PROGRAM_TARGET_CHANNEL_LOCKS": {
+                    "MIN": 0,
+                    "OPERATIONS": 2,
+                    "MAX": 16777215,
+                    "FLAGS": 1,
+                    "ID": "WEEK_PROGRAM_TARGET_CHANNEL_LOCKS",
+                    "TYPE": "INTEGER",
+                    "DEFAULT": 0,
+                    "CONTROL": "WEEK_PROFILE.TARGET_CHANNEL_LOCKS"
+                },
+                "WEEK_PROGRAM_CHANNEL_LOCKS": {
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "MAX": 16777215,
+                    "FLAGS": 1,
+                    "ID": "WEEK_PROGRAM_CHANNEL_LOCKS",
+                    "TYPE": "INTEGER",
+                    "DEFAULT": 0,
+                    "CONTROL": "WEEK_PROFILE.CHANNEL_LOCKS"
                 }
             }
         }

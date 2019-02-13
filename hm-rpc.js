@@ -699,6 +699,8 @@ function main() {
                         }
                         if (dpTypes[res.rows[i].id].MAX === 99) {
                             dpTypes[res.rows[i].id].MAX = 100;
+                        } else if (dpTypes[res.rows[i].id].MAX === 1.005) {
+                            dpTypes[res.rows[i].id].MAX = 1;
                         }
                     }
                 }
