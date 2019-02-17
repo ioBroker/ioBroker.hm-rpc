@@ -42,7 +42,7 @@
         "mocha": "^5.2.0",
         "chai": "4.2.0",
         "eslint": "^5.11.1",
-        "@iobroker/testing": "^1.0.4"
+        "@iobroker/testing": "^1.1.1"
     },
     "bugs": {
         "url": "https://github.com/ioBroker/ioBroker.hm-rpc/issues"

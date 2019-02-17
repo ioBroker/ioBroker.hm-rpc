@@ -1,5 +1,4 @@
 'use strict';
-
 const path = require('path');
 const {tests} = require('@iobroker/testing');
 
@@ -25,5 +24,9 @@ tests.unit(path.join(__dirname, '..'), {
     additionalMockedModules: {
         'noble': nobleMock,
         '@abandonware/noble': nobleMock,
+    },
+
+    defineMockBehavior(db, adapter) {
+        adapter.objects.getObjectView.returns({rows: []});
     }
 });
