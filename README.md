@@ -107,6 +107,10 @@ If you use HomeMatic switches or remotes their button states will only be acknow
 by ioBroker, when you have a running 'dummy' program on the CCU which depends on the related switch or remote.
 
 ## Changelog
+### 1.9.8 (2019-02-27)
+* (foxriver76) fixes for epaper line and icon type
+* (foxriver76) metas added
+
 ### 1.9.7 (2019-02-13)
 * (foxriver76) added metas
 * (foxriver76) when max is 1.005 then set max to 1
