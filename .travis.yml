@@ -1,6 +1,7 @@
 os:
   - linux
   - osx
+  - windows
 language: node_js
 node_js:
   - '6'
@@ -11,15 +12,15 @@ before_script:
   - 'if [[ $NPMVERSION == 5 ]]; then npm install -g npm@5; fi'
   - npm -v
 script:
-  - npm run test:unit
-  - export DEBUG=testing:*
-  - npm run test:integration
-  - npm run test:package
+  - 'npm run test:unit'
+  - 'export DEBUG=testing:*'
+  - 'npm run test:integration'
+  - 'npm run test:package'
 env:
-  - CXX=g++-4.8
+  - CXX=g++-4.9
 addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
     packages:
-      - g++-4.8
+      - g++-4.9
