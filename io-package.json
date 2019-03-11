@@ -22428,8 +22428,8 @@
                 },
                 "SET_TEMPERATURE": {
                     "UNIT": "°C",
-                    "MIN": 5.0,
-                    "MAX": 30.0,
+                    "MIN": 4.5,
+                    "MAX": 30.5,
                     "OPERATIONS": 7,
                     "FLAGS": 1,
                     "ID": "SET_TEMPERATURE",
