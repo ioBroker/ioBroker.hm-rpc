@@ -475,7 +475,7 @@ function startAdapter(options) {
 
                 try {
                     if (rpcClient && connected) {
-                        rpcClient.methodCall('setValue', [tmp[2] + ':' + tmp[3], tmp[4], val], (err, data) => {
+                        rpcClient.methodCall('setValue', [tmp[2] + ':' + tmp[3], tmp[4], val], (err/*, data*/) => {
                             if (err) {
                                 adapter.log.error(adapter.config.type + 'rpc -> setValue ' + JSON.stringify([tmp[3], tmp[4], state.val]) + ' ' + type);
                                 adapter.log.error(err);
@@ -500,14 +500,14 @@ function startAdapter(options) {
                             rpcServer.server.unref();
                         });
                     } catch (e) {
-
+                        //
                     }
                 }
                 if (rpcClient && rpcClient.socket) {
                     try {
                         rpcClient.socket.destroy();
                     } catch (e) {
-
+                        //
                     }
                 }
                 // force close
@@ -567,7 +567,7 @@ function startAdapter(options) {
                 if (adapter.config && rpcClient) {
                     adapter.log.info(adapter.config.type + 'rpc -> ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + homematicPath + ' init ' + JSON.stringify([daemonURL, '']));
                     try {
-                        rpcClient.methodCall('init', [daemonURL, ''], (err, data) => {
+                        rpcClient.methodCall('init', [daemonURL, ''], (/*err, data*/) => {
                             if (connected) {
                                 adapter.log.info('Disconnected');
                                 connected = false;
@@ -658,9 +658,9 @@ function main() {
     }, function handleValueParamSetDescriptions(err, doc) {
         if (err) adapter.log.error('getObjectView hm-rpc: ' + err);
         if (doc && doc.rows) {
-            for (let i = 0; i < doc.rows.length; i++) {
-                const channel = doc.rows[i].id.slice(19);
-                metaValues[channel] = doc.rows[i].value.native;
+            for (const row of doc.rows) {
+                const channel = row.id.slice(19);
+                metaValues[channel] = row.value.native;
             }
         }
         // Load common.role assignments
@@ -678,29 +678,29 @@ function main() {
         endkey: adapter.namespace + '\u9999'
     }, function handleStateViews(err, res) {
         if (!err && res.rows) {
-            for (let i = 0; i < res.rows.length; i++) {
-                if (res.rows[i].id === adapter.namespace + '.updated') continue;
-                if (!res.rows[i].value.native) {
-                    adapter.log.warn('State ' + res.rows[i].id + ' does not have native.');
-                    dpTypes[res.rows[i].id] = {UNIT: '', TYPE: ''};
+            for (const row of res.rows) {
+                if (row.id === adapter.namespace + '.updated') continue;
+                if (!row.value.native) {
+                    adapter.log.warn('State ' + row.id + ' does not have native.');
+                    dpTypes[row.id] = {UNIT: '', TYPE: ''};
                 } else {
-                    dpTypes[res.rows[i].id] = {
-                        UNIT: res.rows[i].value.native.UNIT,
-                        TYPE: res.rows[i].value.native.TYPE,
-                        MIN: res.rows[i].value.native.MIN,
-                        MAX: res.rows[i].value.native.MAX
+                    dpTypes[row.id] = {
+                        UNIT: row.value.native.UNIT,
+                        TYPE: row.value.native.TYPE,
+                        MIN: row.value.native.MIN,
+                        MAX: row.value.native.MAX
                     };
 
-                    if (typeof dpTypes[res.rows[i].id].MIN === 'number') {
-                        dpTypes[res.rows[i].id].MIN = parseFloat(dpTypes[res.rows[i].id].MIN);
-                        dpTypes[res.rows[i].id].MAX = parseFloat(dpTypes[res.rows[i].id].MAX);
-                        if (dpTypes[res.rows[i].id].UNIT === '100%') {
-                            dpTypes[res.rows[i].id].UNIT = '%';
+                    if (typeof dpTypes[row.id].MIN === 'number') {
+                        dpTypes[row.id].MIN = parseFloat(dpTypes[row.id].MIN);
+                        dpTypes[row.id].MAX = parseFloat(dpTypes[row.id].MAX);
+                        if (dpTypes[row.id].UNIT === '100%') {
+                            dpTypes[row.id].UNIT = '%';
                         }
-                        if (dpTypes[res.rows[i].id].MAX === 99) {
-                            dpTypes[res.rows[i].id].MAX = 100;
-                        } else if (dpTypes[res.rows[i].id].MAX === 1.005) {
-                            dpTypes[res.rows[i].id].MAX = 1;
+                        if (dpTypes[row.id].MAX === 99) {
+                            dpTypes[row.id].MAX = 100;
+                        } else if (dpTypes[row.id].MAX === 1.005) {
+                            dpTypes[row.id].MAX = 1;
                         }
                     }
                 }
@@ -713,7 +713,7 @@ function sendInit() {
     try {
         if (rpcClient && (rpcClient.connected === undefined || rpcClient.connected)) {
             adapter.log.debug(adapter.config.type + 'rpc -> ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + homematicPath + ' init ' + JSON.stringify([daemonURL, adapter.namespace]));
-            rpcClient.methodCall('init', [daemonURL, adapter.namespace], (err, data) => {
+            rpcClient.methodCall('init', [daemonURL, adapter.namespace], (err/*, data*/) => {
                 if (!err) {
                     if (adapter.config.daemon === 'CUxD') {
                         getCuxDevices(function handleCuxDevices(err2) {
@@ -741,7 +741,7 @@ function sendPing() {
     if (rpcClient) {
         adapter.log.debug('Send PING...');
         try {
-            rpcClient.methodCall('ping', [adapter.namespace], (err, data) => {
+            rpcClient.methodCall('ping', [adapter.namespace], (err/*, data*/) => {
                 if (!err) {
                     adapter.log.debug('PING ok');
                 } else {
@@ -842,11 +842,11 @@ function initRpcServer() {
                     endkey: 'hm-rpc.' + adapter.instance + '.\u9999'
                 }, (err, doc) => {
                     if (doc && doc.rows) {
-                        for (let i = 0; i < doc.rows.length; i++) {
-                            if (doc.rows[i].id === adapter.namespace + '.updated') continue;
+                        for (const row of doc.rows) {
+                            if (row.id === adapter.namespace + '.updated') continue;
 
                             // lets get the device description
-                            const val = doc.rows[i].value;
+                            const val = row.value;
 
                             if (typeof val.ADDRESS === 'undefined') continue;
 
@@ -1034,20 +1034,19 @@ function addParamsetObjects(channel, paramset, callback) {
         };
 
         if (obj.common.type === 'number') {
-            let i;
             obj.common.min = paramset[key].MIN;
             obj.common.max = paramset[key].MAX;
 
             if (paramset[key].TYPE === 'ENUM') {
                 obj.common.states = {};
-                for (i = 0; i < paramset[key].VALUE_LIST.length; i++) {
+                for (let i = 0; i < paramset[key].VALUE_LIST.length; i++) {
                     obj.common.states[i] = paramset[key].VALUE_LIST[i];
                 }
             }
 
             if (paramset[key].SPECIAL) {
                 if (!obj.common.states) obj.common.states = {};
-                for (i = 0; i < paramset[key].SPECIAL.length; i++) {
+                for (let i = 0; i < paramset[key].SPECIAL.length; i++) {
                     obj.common.states[paramset[key].SPECIAL[i].VALUE] = paramset[key].SPECIAL[i].ID;
                 }
             }
@@ -1164,7 +1163,6 @@ function getValueParamsets() {
         adapter.log.debug('paramset cache hit');
         addParamsetObjects(obj, metaValues[cid], () => setImmediate(getValueParamsets));
     } else {
-
         const key = 'hm-rpc.meta.VALUES.' + cid;
         adapter.objects.getObject(key, (err, res) => {
 

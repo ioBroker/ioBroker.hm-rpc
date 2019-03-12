@@ -1,58 +1,58 @@
 {
-  "name": "iobroker.hm-rpc",
-  "version": "1.9.8",
-  "description": "Connects HomeMatic Interface-Processes (BidCos-Services, Homegear and CUxD) via XML-RPC or BIN-RPC to ioBroker",
-  "author": {
-    "name": "hobbyquaker",
-    "email": "hq@ccu.io"
-  },
-  "contributors": [
-    {
-      "name": "bluefox",
-      "email": "dogafox@gmail.com"
+    "name": "iobroker.hm-rpc",
+    "version": "1.9.8",
+    "description": "Connects HomeMatic Interface-Processes (BidCos-Services, Homegear and CUxD) via XML-RPC or BIN-RPC to ioBroker",
+    "author": {
+        "name": "hobbyquaker",
+        "email": "hq@ccu.io"
     },
-    {
-      "name": "hobbyquaker",
-      "email": "hq@ccu.io"
+    "contributors": [
+        {
+            "name": "bluefox",
+            "email": "dogafox@gmail.com"
+        },
+        {
+            "name": "hobbyquaker",
+            "email": "hq@ccu.io"
+        },
+        {
+            "name": "Moritz Heusinger",
+            "email": "moritz.heusinger@gmail.com"
+        }
+    ],
+    "homepage": "https://github.com/ioBroker/ioBroker.hm-rpc",
+    "license": "MIT",
+    "keywords": [
+        "ioBroker",
+        "hm-rpc",
+        "homematic",
+        "home automation"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/ioBroker/ioBroker.hm-rpc"
     },
-    {
-      "name": "Moritz Heusinger",
-      "email": "moritz.heusinger@gmail.com"
-    }
-  ],
-  "homepage": "https://github.com/ioBroker/ioBroker.hm-rpc",
-  "license": "MIT",
-  "keywords": [
-    "ioBroker",
-    "hm-rpc",
-    "homematic",
-    "home automation"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ioBroker/ioBroker.hm-rpc"
-  },
-  "dependencies": {
-    "homematic-xmlrpc": "^1.0.2",
-    "binrpc": "^3.3.1",
-    "@iobroker/adapter-core": "^1.0.3"
-  },
-  "devDependencies": {
-    "gulp": "^4.0.0",
-    "mocha": "^6.0.2",
-    "chai": "^4.2.0",
-    "eslint": "^5.11.1",
-    "@iobroker/testing": "^1.1.1"
-  },
-  "bugs": {
-    "url": "https://github.com/ioBroker/ioBroker.hm-rpc/issues"
-  },
-  "main": "hm-rpc.js",
-  "scripts": {
-    "test:unit": "node_modules/.bin/mocha test/unitAdapter --exit",
-    "test:package": "node_modules/.bin/mocha test/packageFiles --exit",
-    "test:integration": "node_modules/.bin/mocha test/integrationAdapter --exit",
-    "test": "node node_modules/mocha/bin/mocha --exit"
-  },
-  "readmeFilename": "README.md"
+    "dependencies": {
+        "homematic-xmlrpc": "^1.0.2",
+        "binrpc": "^3.3.1",
+        "@iobroker/adapter-core": "^1.0.3"
+    },
+    "devDependencies": {
+        "gulp": "^4.0.0",
+        "mocha": "^6.0.2",
+        "chai": "^4.2.0",
+        "eslint": "^5.11.1",
+        "@iobroker/testing": "^1.1.1"
+    },
+    "bugs": {
+        "url": "https://github.com/ioBroker/ioBroker.hm-rpc/issues"
+    },
+    "main": "hm-rpc.js",
+    "scripts": {
+        "test:unit": "node_modules/.bin/mocha test/unitAdapter --exit",
+        "test:package": "node_modules/.bin/mocha test/packageFiles --exit",
+        "test:integration": "node_modules/.bin/mocha test/integrationAdapter --exit",
+        "test": "node node_modules/mocha/bin/mocha --exit"
+    },
+    "readmeFilename": "README.md"
 }
