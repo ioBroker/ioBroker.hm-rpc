@@ -1095,6 +1095,8 @@ function addParamsetObjects(channel, paramset, callback) {
         if (obj.native.CONTROL === 'LOCK.STATE') {
             obj.native.LOCK_VALUE = false;
             obj.common.role = 'switch.lock';
+        } else if (obj.native.CONTROL === 'DOOR_SENSOR.STATE') {
+            obj.common.role = 'value.window';
         }
 
         if (typeof obj.common.role !== 'string' && typeof obj.common.role !== 'undefined') {

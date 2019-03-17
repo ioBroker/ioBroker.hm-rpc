@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.9.8",
+        "version": "1.9.9",
         "news": {
+            "1.9.9": {
+                "en": "window states are now role `value.window`",
+                "de": "Fensterzustände sind jetzt vom Typ Rolle `value.window`",
+                "ru": "состояния окна теперь являются ролью `value.window`",
+                "pt": "estados da janela agora são role `value.window`",
+                "nl": "venstertoestanden zijn nu rol `value.window`",
+                "fr": "les états de fenêtre sont maintenant le rôle `valeur.window`",
+                "it": "gli stati della finestra ora hanno il ruolo `value.window`",
+                "es": "los estados de ventana ahora son rol `value.window`",
+                "pl": "stany okien są teraz rolą `value.window`",
+                "zh-cn": "窗口状态现在是角色`value.window`"
+            },
             "1.9.8": {
                 "en": "fixes for epaper line and icon type and meta data added",
                 "de": "Korrekturen für Epaper-Zeilen- und -Symboltypen und Metadaten hinzugefügt",
@@ -209,6 +221,7 @@
                     "LOWBAT": "indicator.lowbat",
                     "INSTALL_TEST": "indicator",
                     "UNREACH": "indicator.unreach",
+                    "WINDOW_STATE": "value.window",
                     "WORKING": "indicator.working",
                     "DIRECTION": "indicator.direction",
                     "CONFIG_PENDING": "indicator",
