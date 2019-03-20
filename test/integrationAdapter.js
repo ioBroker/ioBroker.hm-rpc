@@ -15,7 +15,6 @@ tests.integration(path.join(__dirname, '..'), {
     defineAdditionalTests(getHarness) {
 
         describe('Test sendTo()', () => {
-
             it('Should work', () => {
                 return new Promise(resolve => {
                     // Create a fresh harness instance each test!
