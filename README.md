@@ -1,8 +1,9 @@
 ![Logo](admin/homematic.png)
 # ioBroker HomeMatic RPC Adapter
-==================
 
-![Number of Installations](http://iobroker.live/badges/hm-rpc-installed.svg) ![Number of Installations](http://iobroker.live/badges/hm-rpc-stable.svg) [![NPM version](http://img.shields.io/npm/v/iobroker.hm-rpc.svg)](https://www.npmjs.com/package/iobroker.hm-rpc)
+![Number of Installations](http://iobroker.live/badges/hm-rpc-installed.svg) 
+![Number of Installations](http://iobroker.live/badges/hm-rpc-stable.svg) 
+[![NPM version](http://img.shields.io/npm/v/iobroker.hm-rpc.svg)](https://www.npmjs.com/package/iobroker.hm-rpc)
 [![Downloads](https://img.shields.io/npm/dm/iobroker.hm-rpc.svg)](https://www.npmjs.com/package/iobroker.hm-rpc)
 
 [![NPM](https://nodei.co/npm/iobroker.hm-rpc.png?downloads=true)](https://nodei.co/npm/iobroker.hm-rpc/)
