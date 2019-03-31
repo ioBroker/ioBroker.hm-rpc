@@ -110,6 +110,13 @@ sendTo('hm-rpc.1', 'setValue', {ID: '000453D77B9EDF:1', paramType: 'SET_POINT_TE
 });
 ```
 
+Get the paramsetDescription of a devices channel:
+```javascript
+sendTo('hm-rpc.1', 'getParamsetDescription', {ID: '000453D77B9EDF:1', paramType: 'VALUES'}, res => {
+    log(JSON.stringify(res));
+});
+```
+
 ## Additional information
 If you use HomeMatic switches or remotes their button states will only be acknowledged by CCU and thus 
 by ioBroker, when you have a running 'dummy' program on the CCU which depends on the related switch or remote.
