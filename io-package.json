@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.9.9",
+        "version": "1.9.10",
         "news": {
+            "1.9.10": {
+                "en": "added new meta data and corrected some meta data",
+                "de": "Neue Metadaten hinzugefügt und einige Metadaten korrigiert",
+                "ru": "добавлены новые метаданные и исправлены некоторые метаданные",
+                "pt": "adicionou novos metadados e corrigiu alguns metadados",
+                "nl": "nieuwe metadata toegevoegd en enkele metadata gecorrigeerd",
+                "fr": "ajout de nouvelles métadonnées et correction de certaines métadonnées",
+                "it": "ha aggiunto nuovi metadati e corretto alcuni metadati",
+                "es": "Se agregaron nuevos metadatos y se corrigieron algunos metadatos.",
+                "pl": "dodano nowe metadane i poprawiono niektóre metadane",
+                "zh-cn": "添加了新的元数据并更正了一些元数据"
+            },
             "1.9.9": {
                 "en": "window states are now role `value.window`",
                 "de": "Fensterzustände sind jetzt vom Typ Rolle `value.window`",
@@ -86,18 +98,6 @@
                 "es": "se eliminó la ruta homemática de la interfaz de usuario y se agregó la imagen del dispositivo",
                 "pl": "usunięto ścieżkę homematic z interfejsu użytkownika i dodano obraz urządzenia",
                 "zh-cn": "从用户界面删除了主页路径并添加了设备图像"
-            },
-            "1.9.3": {
-                "en": "added meta data",
-                "de": "Metadaten hinzugefügt",
-                "ru": "добавлены метаданные",
-                "pt": "metadados adicionados",
-                "nl": "toegevoegde metagegevens",
-                "fr": "ajout de métadonnées",
-                "it": "aggiunto metadati",
-                "es": "metadatos añadidos",
-                "pl": "dodano metadane",
-                "zh-cn": "添加了元数据"
             }
         },
         "authors": [
@@ -27086,39 +27086,6 @@
                     "UNIT": ""
                 }
             }
-        }
-    ],
-    "instanceObjects": [
-        {
-            "_id": "updated",
-            "type": "state",
-            "common": {
-                "name": "Some new devices added",
-                "type": "boolean",
-                "read": true,
-                "write": true
-            }
-        },
-        {
-            "_id": "info",
-            "type": "channel",
-            "common": {
-                "name": "Information"
-            },
-            "native": {}
-        },
-        {
-            "_id": "info.connection",
-            "type": "state",
-            "common": {
-                "role": "indicator.connected",
-                "name": "If connected to CCU",
-                "type": "boolean",
-                "read": true,
-                "write": false,
-                "def": false
-            },
-            "native": {}
         },
         {
             "_id": "hm-rpc.meta.VALUES.HmIP-HEATING.MAINTENANCE.65536",
@@ -27624,6 +27591,189 @@
                     "DEFAULT": 0
                 }
             }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HmIP-SRH.MAINTENANCE.2",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "SABOTAGE": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 9,
+                    "ID": "SABOTAGE",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "CONFIG_PENDING": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 9,
+                    "ID": "CONFIG_PENDING",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "DUTY_CYCLE": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 1,
+                    "ID": "D UTY_CYCLE",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "LOW_BAT": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 9,
+                    "ID": "LOW_BAT",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "INSTALL_TEST": {
+                    "MIN": false,
+                    "OPERATIONS": 3,
+                    "MAX": true,
+                    "FLAGS": 2,
+                    "ID": "INSTALL_TEST",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "UNREACH": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 25,
+                    "ID": "UNREACH",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "OPERATING_VOLTAGE_STATUS": {
+                    "MIN": "NORMAL",
+                    "OPERATIONS": 5,
+                    "MAX": "OVERFLOW",
+                    "FLAGS": 1,
+                    "ID": "O PERATING_VOLTAGE_STATUS",
+                    "TYPE": "ENUM",
+                    "DEFAULT": "NORMAL",
+                    "VALUE_LIST": [
+                        "NORMAL",
+                        "UNKNOWN",
+                        "OVERFLOW"
+                    ]
+                },
+                "RSSI_DEVICE": {
+                    "MIN": -128,
+                    "OPERATIONS": 5,
+                    "MAX": 127,
+                    "FLAGS": 1,
+                    "ID": "RSSI_DEVICE",
+                    "TYPE": "INTEGER",
+                    "DEFAULT": 0
+                },
+                "OPERATING_VOLTA GE": {
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "MAX": 25.2,
+                    "FLAGS": 1,
+                    "ID": "OPERATING_VOLTAGE",
+                    "TYPE": "FLOAT",
+                    "DEFAULT": 0
+                },
+                "RSSI_PEER": {
+                    "MIN": -128,
+                    "OPERATIONS": 5,
+                    "MAX": 127,
+                    "FLAGS": 1,
+                    "ID": "RSSI_PEER",
+                    "TYPE": "INTEGER",
+                    "DEFAULT": 0
+                },
+                "ERROR_CODE": {
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "MAX": 255,
+                    "FLAGS": 9,
+                    "ID": "ERROR_CODE",
+                    "TYPE": "INTEGER",
+                    "DEFAULT": 0
+                },
+                "UPDATE_PENDING": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 9,
+                    "ID": "UPDATE_PENDING",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HmIP-SRH.ROTARY_HANDLE_TRANSCEIVER.2",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "STATE": {
+                    "MIN": "CLOSED",
+                    "OPERATIONS": 5,
+                    "MAX": "OPEN",
+                    "FLAGS": 1,
+                    "ID ": "STATE",
+                    "TYPE": "ENUM",
+                    "DEFAULT": "CLOSED",
+                    "VALUE_LIST": [
+                        "CLOSED",
+                        "TILTED",
+                        "OPEN"
+                    ],
+                    "CONTROL": "RHS.STATE"
+                }
+            }
+        }
+    ],
+    "instanceObjects": [
+        {
+            "_id": "updated",
+            "type": "state",
+            "common": {
+                "name": "Some new devices added",
+                "type": "boolean",
+                "read": true,
+                "write": true
+            }
+        },
+        {
+            "_id": "info",
+            "type": "channel",
+            "common": {
+                "name": "Information"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.connection",
+            "type": "state",
+            "common": {
+                "role": "indicator.connected",
+                "name": "If connected to CCU",
+                "type": "boolean",
+                "read": true,
+                "write": false,
+                "def": false
+            },
+            "native": {}
         }
     ]
 }
