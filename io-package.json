@@ -11058,7 +11058,8 @@
                     "FLAGS": 1,
                     "ID": "LEVEL",
                     "TYPE": "FLOAT",
-                    "DEFAULT": 0
+                    "DEFAULT": 0,
+                    "UNIT": "100%"
                 },
                 "ACTUAL_TEMPERATURE_STATUS": {
                     "MIN": "NORMAL",
@@ -11268,7 +11269,8 @@
                     "FLAGS": 1,
                     "ID": "RSSI_DEVICE",
                     "TYPE": "INTEGER",
-                    "DEFAULT": 0
+                    "DEFAULT": 0,
+                    "UNIT": "dBm"
                 },
                 "OPERATING_VOLTAGE": {
                     "MIN": 0,
@@ -11277,7 +11279,8 @@
                     "FLAGS": 1,
                     "ID": "OPERATING_VOLTAGE",
                     "TYPE": "FLOAT",
-                    "DEFAULT": 0
+                    "DEFAULT": 0,
+                    "UNIT": "V"
                 },
                 "RSSI_PEER": {
                     "MIN": -128,
@@ -11286,7 +11289,8 @@
                     "FLAGS": 1,
                     "ID": "RSSI_PEER",
                     "TYPE": "INTEGER",
-                    "DEFAULT": 0
+                    "DEFAULT": 0,
+                    "UNIT": "dBm"
                 },
                 "UPDATE_PENDING": {
                     "MIN": false,
@@ -13077,7 +13081,8 @@
                     "FLAGS": 1,
                     "ID": "RSSI_DEVICE",
                     "TYPE": "INTEGER",
-                    "DEFAULT": 0
+                    "DEFAULT": 0,
+                    "UNIT": "dBm"
                 },
                 "OPERATING_VOLTAGE": {
                     "MIN": 0,
@@ -13086,7 +13091,8 @@
                     "FLAGS": 1,
                     "ID": "OPERATING_VOLTAGE",
                     "TYPE": "FLOAT",
-                    "DEFAULT": 0
+                    "DEFAULT": 0,
+                    "UNIT": "V"
                 },
                 "RSSI_PEER": {
                     "MIN": -128,
@@ -13095,7 +13101,8 @@
                     "FLAGS": 1,
                     "ID": "RSSI_PEER",
                     "TYPE": "INTEGER",
-                    "DEFAULT": 0
+                    "DEFAULT": 0,
+                    "UNIT": "dBm"
                 },
                 "ERROR_CODE": {
                     "MIN": 0,
@@ -13956,7 +13963,8 @@
                     "FLAGS": 1,
                     "ID": "RSSI_DEVICE",
                     "TYPE": "INTEGER",
-                    "DEFAULT": 0
+                    "DEFAULT": 0,
+                    "UNIT": "dBm"
                 },
                 "ERROR_NON_FLAT_POSITIONING": {
                     "MIN": false,
@@ -13974,7 +13982,8 @@
                     "FLAGS": 1,
                     "ID": "OPERATING_VOLTAGE",
                     "TYPE": "FLOAT",
-                    "DEFAULT": 0
+                    "DEFAULT": 0,
+                    "UNIT": "V"
                 },
                 "RSSI_PEER": {
                     "MIN": -128,
@@ -13983,7 +13992,8 @@
                     "FLAGS": 1,
                     "ID": "RSSI_PEER",
                     "TYPE": "INTEGER",
-                    "DEFAULT": 0
+                    "DEFAULT": 0,
+                    "UNIT": "V"
                 },
                 "ERROR_CODE": {
                     "MIN": 0,
@@ -21130,7 +21140,8 @@
                     "FLAGS": 1,
                     "ID": "RSSI_DEVICE",
                     "TYPE": "INTEGER",
-                    "DEFAULT": 0
+                    "DEFAULT": 0,
+                    "UNIT": "dBm"
                 },
                 "OPERATING_VOLTAGE": {
                     "MIN": 0,
@@ -21139,7 +21150,8 @@
                     "FLAGS": 1,
                     "ID": "OPERATING_VOLTAGE",
                     "TYPE": "FLOAT",
-                    "DEFAULT": 0
+                    "DEFAULT": 0,
+                    "UNIT": "V"
                 },
                 "RSSI_PEER": {
                     "MIN": -128,
@@ -21148,7 +21160,8 @@
                     "FLAGS": 1,
                     "ID": "RSSI_PEER",
                     "TYPE": "INTEGER",
-                    "DEFAULT": 0
+                    "DEFAULT": 0,
+                    "UNIT": "dBm"
                 },
                 "ERROR_CODE": {
                     "MIN": 0,
@@ -21300,7 +21313,8 @@
                     "FLAGS": 1,
                     "ID": "LEVEL",
                     "TYPE": "FLOAT",
-                    "DEFAULT": 0
+                    "DEFAULT": 0,
+                    "UNIT": "100%"
                 },
                 "ACTUAL_TEMPERATURE_STATUS": {
                     "MIN": "NORMAL",
@@ -21411,6 +21425,7 @@
                     "ID": "ACTUAL_TEMPERATURE",
                     "TYPE": "FLOAT",
                     "DEFAULT": 0,
+                    "UNIT": "°C",
                     "CONTROL": "HEATING_CONTROL_HMIP.TEMPERATURE"
                 },
                 "BOOST_MODE": {
@@ -22586,7 +22601,8 @@
                     "FLAGS": 1,
                     "ID": "RSSI_DEVICE",
                     "TYPE": "INTEGER",
-                    "DEFAULT": 0
+                    "DEFAULT": 0,
+                    "UNIT": "dBm"
                 },
                 "OPERATING_VOLTAGE": {
                     "MIN": 0,
@@ -22595,7 +22611,8 @@
                     "FLAGS": 1,
                     "ID": "OPERATING_VOLTAGE",
                     "TYPE": "FLOAT",
-                    "DEFAULT": 0
+                    "DEFAULT": 0,
+                    "UNIT": "V"
                 },
                 "RSSI_PEER": {
                     "MIN": -128,
@@ -22604,7 +22621,8 @@
                     "FLAGS": 1,
                     "ID": "RSSI_PEER",
                     "TYPE": "INTEGER",
-                    "DEFAULT": 0
+                    "DEFAULT": 0,
+                    "UNIT": "dBm"
                 },
                 "UPDATE_PENDING": {
                     "MIN": false,
@@ -22980,7 +22998,8 @@
                     "FLAGS": 1,
                     "ID": "RSSI_DEVICE",
                     "TYPE": "INTEGER",
-                    "DEFAULT": 0
+                    "DEFAULT": 0,
+                    "UNIT": "dBm"
                 },
                 "OPERATING_VOLTAGE": {
                     "MIN": 0,
@@ -22989,7 +23008,8 @@
                     "FLAGS": 1,
                     "ID": "OPERATING_VOLTAGE",
                     "TYPE": "FLOAT",
-                    "DEFAULT": 0
+                    "DEFAULT": 0,
+                    "UNIT": "V"
                 },
                 "RSSI_PEER": {
                     "MIN": -128,
@@ -22998,7 +23018,8 @@
                     "FLAGS": 1,
                     "ID": "RSSI_PEER",
                     "TYPE": "INTEGER",
-                    "DEFAULT": 0
+                    "DEFAULT": 0,
+                    "UNIT": "dBm"
                 },
                 "UPDATE_PENDING": {
                     "MIN": false,
@@ -23141,7 +23162,8 @@
                     "FLAGS": 1,
                     "ID": "LEVEL",
                     "TYPE": "FLOAT",
-                    "DEFAULT": 0
+                    "DEFAULT": 0,
+                    "UNIT": "100%"
                 },
                 "ACTUAL_TEMPERATURE_STATUS": {
                     "MIN": "NORMAL",
@@ -23252,6 +23274,7 @@
                     "ID": "ACTUAL_TEMPERATURE",
                     "TYPE": "FLOAT",
                     "DEFAULT": 0,
+                    "UNIT": "°C",
                     "CONTROL": "HEATING_CONTROL_HMIP.TEMPERATURE"
                 },
                 "BOOST_MODE": {
@@ -25060,7 +25083,8 @@
                     "FLAGS": 1,
                     "ID": "RSSI_DEVICE",
                     "TYPE": "INTEGER",
-                    "DEFAULT": 0
+                    "DEFAULT": 0,
+                    "UNIT": "dBm"
                 },
                 "OPERATING_VOLTAGE": {
                     "MIN": 0,
@@ -25069,7 +25093,8 @@
                     "FLAGS": 1,
                     "ID": "OPERATING_VOLTAGE",
                     "TYPE": "FLOAT",
-                    "DEFAULT": 0
+                    "DEFAULT": 0,
+                    "UNIT": "V"
                 },
                 "RSSI_PEER": {
                     "MIN": -128,
@@ -25078,7 +25103,8 @@
                     "FLAGS": 1,
                     "ID": "RSSI_PEER",
                     "TYPE": "INTEGER",
-                    "DEFAULT": 0
+                    "DEFAULT": 0,
+                    "UNIT": "dBm"
                 },
                 "UPDATE_PENDING": {
                     "MIN": false,
@@ -25138,7 +25164,8 @@
                     "ID": "HUMIDITY",
                     "TYPE": "INTEGER",
                     "DEFAULT": 0,
-                    "CONTROL": "HEATING_CONTROL_HMIP.HUMIDITY"
+                    "CONTROL": "HEATING_CONTROL_HMIP.HUMIDITY",
+                    "UNIT": "%"
                 },
                 "PARTY_TIME_START": {
                     "MIN": "2000_01_01  00:00",
@@ -25316,7 +25343,8 @@
                     "ID": "ACTUAL_TEMPERATURE",
                     "TYPE": "FLOAT",
                     "DEFAULT": 0,
-                    "CONTROL": "HEATING_CONTROL_HMIP.TEMPERATURE"
+                    "CONTROL": "HEATING_CONTROL_HMIP.TEMPERATURE",
+                    "UNIT": "°C"
                 },
                 "BOOST_MODE": {
                     "MIN": false,
@@ -25414,7 +25442,8 @@
                     "FLAGS": 1,
                     "ID": "RSSI_DEVICE",
                     "TYPE": "INTEGER",
-                    "DEFAULT": 0
+                    "DEFAULT": 0,
+                    "UNIT": "dBm"
                 },
                 "OPERATING_VOLTAGE": {
                     "MIN": 0,
@@ -25423,7 +25452,8 @@
                     "FLAGS": 1,
                     "ID": "OPERATING_VOLTAGE",
                     "TYPE": "FLOAT",
-                    "DEFAULT": 0
+                    "DEFAULT": 0,
+                    "UNIT": "V"
                 },
                 "RSSI_PEER": {
                     "MIN": -128,
@@ -25432,7 +25462,8 @@
                     "FLAGS": 1,
                     "ID": "RSSI_PEER",
                     "TYPE": "INTEGER",
-                    "DEFAULT": 0
+                    "DEFAULT": 0,
+                    "UNIT": "dBm"
                 },
                 "ERROR_CODE": {
                     "MIN": 0,
@@ -25663,7 +25694,8 @@
                     "FLAGS": 1,
                     "ID": "RSSI_PEER",
                     "TYPE": "INTEGER",
-                    "DEFAULT": 0
+                    "DEFAULT": 0,
+                    "UNIT": "dBm"
                 },
                 "ERROR_OVERLOAD": {
                     "MIN": false,
@@ -25708,7 +25740,8 @@
                     "FLAGS": 1,
                     "ID": "RSSI_DEVICE",
                     "TYPE": "INTEGER",
-                    "DEFAULT": 0
+                    "DEFAULT": 0,
+                    "UNIT": "dBm"
                 },
                 "ACTUAL_TEMPERATURE": {
                     "MIN": -3276.8,
@@ -27752,6 +27785,781 @@
                         "OPEN"
                     ],
                     "CONTROL": "RHS.STATE"
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HmIP-BROLL.MAINTENANCE.3",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "CONFIG_PENDING": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 9,
+                    "ID": "CONFIG_PENDING",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "DUTY_CYCLE": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 1,
+                    "ID": "DUTY_CYCLE",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "INSTALL_TEST": {
+                    "MIN": false,
+                    "OPERATIONS": 3,
+                    "MAX": true,
+                    "FLAGS": 2,
+                    "ID": "INSTALL_TEST",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "ERROR_OVERHEAT": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 9,
+                    "ID": "ERROR_OVERHEAT",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "OPERATING_VOLTAGE_STATUS": {
+                    "MIN": "NORMAL",
+                    "OPERATIONS": 5,
+                    "MAX": "OVERFLOW",
+                    "FLAGS": 1,
+                    "ID": "OPERATING_VOLTAGE_STATUS",
+                    "TYPE": "ENUM",
+                    "DEFAULT": "NORMAL",
+                    "VALUE_LIST": [
+                        "NORMAL",
+                        "UNKNOWN",
+                        "OVERFLOW"
+                    ]
+                },
+                "ACTUAL_TEMPERATURE_STATUS": {
+                    "MIN": "NORMAL",
+                    "OPERATIONS": 5,
+                    "MAX": "UNDERFLOW",
+                    "FLAGS": 1,
+                    "ID": "ACTUAL_TEMPERATURE_STATUS",
+                    "TYPE": "ENUM",
+                    "DEFAULT": "NORMAL",
+                    "VALUE_LIST": [
+                        "NORMAL",
+                        "UNKNOWN",
+                        "OVERFLOW",
+                        "UNDERFLOW"
+                    ]
+                },
+                "RSSI_PEER": {
+                    "MIN": -128,
+                    "OPERATIONS": 5,
+                    "MAX": 127,
+                    "FLAGS": 1,
+                    "ID": "RSSI_PEER",
+                    "TYPE": "INTEGER",
+                    "DEFAULT": 0,
+                    "UNIT": "dBm"
+                },
+                "ERROR_CODE": {
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "MAX": 255,
+                    "FLAGS": 9,
+                    "ID": "ERROR_CODE",
+                    "TYPE": "INTEGER",
+                    "DEFAULT": 0
+                },
+                "UPDATE_PENDING": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 9,
+                    "ID": "UPDATE_PENDING",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "UNREACH": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 25,
+                    "ID": "UNREACH",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "RSSI_DEVICE": {
+                    "MIN": -128,
+                    "OPERATIONS": 5,
+                    "MAX": 127,
+                    "FLAGS": 1,
+                    "ID": "RSSI_DEVICE",
+                    "TYPE": "INTEGER",
+                    "DEFAULT": 0,
+                    "UNIT": "dBm"
+                },
+                "ACTUAL_TEMPERATURE": {
+                    "MIN": -3276.8,
+                    "OPERATIONS": 5,
+                    "MAX": 3276.7,
+                    "FLAGS": 1,
+                    "ID": "ACTUAL_TEMPERATURE",
+                    "TYPE": "FLOAT",
+                    "DEFAULT": 0,
+                    "UNIT": "°C"
+                },
+                "OPERATING_VOLTAGE": {
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "MAX": 25.2,
+                    "FLAGS": 1,
+                    "ID": "OPERATING_VOLTAGE",
+                    "TYPE": "FLOAT",
+                    "DEFAULT": 0
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HmIP-BROLL.KEY_TRANSCEIVER.3",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "PRESS_SHORT": {
+                    "MIN": false,
+                    "OPERATIONS": 4,
+                    "MAX": true,
+                    "FLAGS": 1,
+                    "ID": "PRESS_SHORT",
+                    "TYPE": "ACTION",
+                    "DEFAULT": false,
+                    "CONTROL": "BUTTON_NO_FUNCTION.SHORT"
+                },
+                "PRESS_LONG": {
+                    "MIN": false,
+                    "OPERATIONS": 4,
+                    "MAX": true,
+                    "FLAGS": 1,
+                    "ID": "PRESS_LONG",
+                    "TYPE": "ACTION",
+                    "DEFAULT": false,
+                    "CONTROL": "BUTTON_NO_FUNCTION.LONG"
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HmIP-BROLL.SHUTTER_TRANSMITTER.3",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "SECTION_STATUS": {
+                    "MIN": "NORMAL",
+                    "OPERATIONS": 5,
+                    "MAX": "UNKNOWN",
+                    "FLAGS": 1,
+                    "ID": "SECTION_STATUS",
+                    "TYPE": "ENUM",
+                    "DEFAULT": "NORMAL",
+                    "VALUE_LIST": [
+                        "NORMAL",
+                        "UNKNOWN"
+                    ]
+                },
+                "LEVEL_STATUS": {
+                    "MIN": "NORMAL",
+                    "OPERATIONS": 5,
+                    "MAX": "ERROR",
+                    "FLAGS": 1,
+                    "ID": "LEVEL_STATUS",
+                    "TYPE": "ENUM",
+                    "DEFAULT": "NORMAL",
+                    "VALUE_LIST": [
+                        "NORMAL",
+                        "UNKNOWN",
+                        "OVERFLOW",
+                        "UNDERFLOW",
+                        "ERROR"
+                    ],
+                    "CONTROL": "SHUTTER_TRANSMITTER.LEVEL_STATUS"
+                },
+                "PROCESS": {
+                    "MIN": "STABLE",
+                    "OPERATIONS": 5,
+                    "MAX": "NOT_STABLE",
+                    "FLAGS": 1,
+                    "ID": "PROCESS",
+                    "TYPE": "ENUM",
+                    "DEFAULT": "STABLE",
+                    "VALUE_LIST": [
+                        "STABLE",
+                        "NOT_STABLE"
+                    ]
+                },
+                "LEVEL": {
+                    "MIN": 0,
+                    "UNIT": "100%",
+                    "OPERATIONS": 5,
+                    "MAX": 1,
+                    "FLAGS": 1,
+                    "ID": "LEVEL",
+                    "TYPE": "FLOAT",
+                    "DEFAULT": 0,
+                    "CONTROL": "SHUTTER_TRANSMITTER.LEVEL"
+                },
+                "SECTION": {
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "MAX": 15,
+                    "FLAGS": 1,
+                    "ID": "SECTION",
+                    "TYPE": "INTEGER",
+                    "DEFAULT": 0
+                },
+                "ACTIVITY_STATE": {
+                    "MIN": "UNKNOWN",
+                    "OPERATIONS": 5,
+                    "MAX": "STABLE",
+                    "FLAGS": 1,
+                    "ID": "ACTIVITY_STATE",
+                    "TYPE": "ENUM",
+                    "DEFAULT": "UNKNOWN",
+                    "VALUE_LIST": [
+                        "UNKNOWN",
+                        "UP",
+                        "DOWN",
+                        "STABLE"
+                    ],
+                    "CONTROL": "SHUTTER_TRANSMITTER.ACTIVITY_STATE"
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HmIP-BROLL.SHUTTER_VIRTUAL_RECEIVER.3",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "SECTION_STATUS": {
+                    "MIN": "NORMAL",
+                    "OPERATIONS": 5,
+                    "MAX": "UNKNOWN",
+                    "FLAGS": 1,
+                    "ID": "SECTION_STATUS",
+                    "TYPE": "ENUM",
+                    "DEFAULT": "NORMAL",
+                    "VALUE_LIST": [
+                        "NORMAL",
+                        "UNKNOWN"
+                    ]
+                },
+                "LEVEL_STATUS": {
+                    "MIN": "NORMAL",
+                    "OPERATIONS": 5,
+                    "MAX": "ERROR",
+                    "FLAGS": 1,
+                    "ID": "LEVEL_STATUS",
+                    "TYPE": "ENUM",
+                    "DEFAULT": "NORMAL",
+                    "VALUE_LIST": [
+                        "NORMAL",
+                        "UNKNOWN",
+                        "OVERFLOW",
+                        "UNDERFLOW",
+                        "ERROR"
+                    ],
+                    "CONTROL": "SHUTTER_VIRTUAL_RECEIVER.LEVEL"
+                },
+                "STOP": {
+                    "MIN": false,
+                    "OPERATIONS": 2,
+                    "MAX": true,
+                    "FLAGS": 1,
+                    "ID": "STOP",
+                    "TYPE": "ACTION",
+                    "DEFAULT": false,
+                    "CONTROL": "SHUTTER_VIRTUAL_RECEIVER.STOP"
+                },
+                "PROCESS": {
+                    "MIN": "STABLE",
+                    "OPERATIONS": 5,
+                    "MAX": "NOT_STABLE",
+                    "FLAGS": 1,
+                    "ID": "PROCESS",
+                    "TYPE": "ENUM",
+                    "DEFAULT": "STABLE",
+                    "VALUE_LIST": [
+                        "STABLE",
+                        "NOT_STABLE"
+                    ]
+                },
+                "LEVEL": {
+                    "MIN": 0,
+                    "UNIT": "100%",
+                    "OPERATIONS": 7,
+                    "MAX": 1,
+                    "FLAGS": 1,
+                    "ID": "LEVEL",
+                    "TYPE": "FLOAT",
+                    "DEFAULT": 0,
+                    "CONTROL": "SHUTTER_VIRTUAL_RECEIVER.LEVEL"
+                },
+                "SECTION": {
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "MAX": 15,
+                    "FLAGS": 1,
+                    "ID": "SECTION",
+                    "TYPE": "INTEGER",
+                    "DEFAULT": 0
+                },
+                "ACTIVITY_STATE": {
+                    "MIN": "UNKNOWN",
+                    "OPERATIONS": 5,
+                    "MAX": "STABLE",
+                    "FLAGS": 1,
+                    "ID": "ACTIVITY_STATE",
+                    "TYPE": "ENUM",
+                    "DEFAULT": "UNKNOWN",
+                    "VALUE_LIST": [
+                        "UNKNOWN",
+                        "UP",
+                        "DOWN",
+                        "STABLE"
+                    ],
+                    "CONTROL": "SHUTTER_VIRTUAL_RECEIVER.ACTIVITY_STATE"
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HmIP-BROLL.BLIND_WEEK_PROFILE.3",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "WEEK_PROGRAM_TARGET_CHANNEL_LOCK": {
+                    "MIN": "MANU_MODE",
+                    "OPERATIONS": 2,
+                    "MAX": "AUTO_MODE_WITHOUT_RESET",
+                    "FLAGS": 1,
+                    "ID": "WEEK_PROGRAM_TARGET_CHANNEL_LOCK",
+                    "TYPE": "ENUM",
+                    "DEFAULT": "MANU_MODE",
+                    "VALUE_LIST": [
+                        "MANU_MODE",
+                        "AUTO_MODE_WITH_RESET",
+                        "AUTO_MODE_WITHOUT_RESET"
+                    ],
+                    "CONTROL": "WEEK_PROFILE.TARGET_CHANNEL_LOCK"
+                },
+                "WEEK_PROGRAM_TARGET_CHANNEL_LOCKS": {
+                    "MIN": 0,
+                    "OPERATIONS": 2,
+                    "MAX": 16777215,
+                    "FLAGS": 1,
+                    "ID": "WEEK_PROGRAM_TARGET_CHANNEL_LOCKS",
+                    "TYPE": "INTEGER",
+                    "DEFAULT": 0,
+                    "CONTROL": "WEEK_PROFILE.TARGET_CHANNEL_LOCKS"
+                },
+                "WEEK_PROGRAM_CHANNEL_LOCKS": {
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "MAX": 16777215,
+                    "FLAGS": 1,
+                    "ID": "WEEK_PROGRAM_CHANNEL_LOCKS",
+                    "TYPE": "INTEGER",
+                    "DEFAULT": 0,
+                    "CONTROL": "WEEK_PROFILE.CHANNEL_LOCKS"
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HmIP-eTRV-2.HEATING_CLIMATECONTROL_TRANSCEIVER.3",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "VALVE_ADAPTION": {
+                    "MIN": false,
+                    "OPERATIONS": 7,
+                    "MAX": true,
+                    "FLAGS": 1,
+                    "ID": "VALVE_ADAPTION",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "BOOST_TIME": {
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "MAX": 2048,
+                    "FLAGS": 1,
+                    "ID": "BOOST_TIME",
+                    "TYPE": "INTEGER",
+                    "DEFAULT": 0
+                },
+                "PARTY_MODE": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 1,
+                    "ID": "PARTY_MODE",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false,
+                    "CONTROL": "HEATING_CONTROL_HMIP.PARTY_MODE"
+                },
+                "SET_POINT_TEMPERATURE": {
+                    "MIN": 4.5,
+                    "UNIT": "°C",
+                    "OPERATIONS": 7,
+                    "MAX": 30.5,
+                    "FLAGS": 1,
+                    "ID": "SET_POINT_TEMPERATURE",
+                    "TYPE": "FLOAT",
+                    "DEFAULT": 4.5,
+                    "CONTROL": "HEATING_CONTROL_HMIP.SETPOINT"
+                },
+                "LEVEL_STATUS": {
+                    "MIN": "NORMAL",
+                    "OPERATIONS": 5,
+                    "MAX": "ERROR",
+                    "FLAGS": 1,
+                    "ID": "LEVEL_STATUS",
+                    "TYPE": "ENUM",
+                    "DEFAULT": "NORMAL",
+                    "VALUE_LIST": [
+                        "NORMAL",
+                        "UNKNOWN",
+                        "OVERFLOW",
+                        "UNDERFLOW",
+                        "ERROR"
+                    ]
+                },
+                "PARTY_TIME_START": {
+                    "MIN": "2000_01_01 00:00",
+                    "OPERATIONS": 7,
+                    "MAX": "2255_12_31 23:55",
+                    "FLAGS": 1,
+                    "ID": "PARTY_TIME_START",
+                    "TYPE": "STRING",
+                    "DEFAULT": "2000_01_01 00:00",
+                    "CONTROL": "HEATING_CONTROL_HMIP.PARTY_TIME_START"
+                },
+                "CONTROL_MODE": {
+                    "MIN": 0,
+                    "OPERATIONS": 2,
+                    "MAX": 3,
+                    "FLAGS": 1,
+                    "ID": "CONTROL_MODE",
+                    "TYPE": "INTEGER",
+                    "DEFAULT": 0,
+                    "CONTROL": "HEATING_CONTROL_HMIP.CONTROL_MODE"
+                },
+                "FROST_PROTECTION": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 1,
+                    "ID": "FROST_PROTECTION",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false,
+                    "CONTROL": "HEATING_CONTROL_HMIP.FROST_PROTECTION"
+                },
+                "PARTY_SET_POINT_TEMPERATURE": {
+                    "MIN": 4.5,
+                    "OPERATIONS": 5,
+                    "MAX": 30.5,
+                    "FLAGS": 1,
+                    "ID": "PARTY_SET_POINT_TEMPERATURE",
+                    "TYPE": "FLOAT",
+                    "DEFAULT": 4.5,
+                    "CONTROL": "HEATING_CONTROL_HMIP.PARTY_SETPOINT_TEMP"
+                },
+                "SET_POINT_MODE": {
+                    "MIN": 0,
+                    "OPERATIONS": 7,
+                    "MAX": 3,
+                    "FLAGS": 1,
+                    "ID": "SET_POINT_MODE",
+                    "TYPE": "INTEGER",
+                    "DEFAULT": 0,
+                    "CONTROL": "HEATING_CONTROL_HMIP.SETPOINT_MODE"
+                },
+                "LEVEL": {
+                    "MIN": 0,
+                    "OPERATIONS": 7,
+                    "MAX": 1,
+                    "FLAGS": 1,
+                    "ID": "LEVEL",
+                    "TYPE": "FLOAT",
+                    "DEFAULT": 0,
+                    "UNIT": "100%"
+                },
+                "ACTUAL_TEMPERATURE_STATUS": {
+                    "MIN": "NORMAL",
+                    "OPERATIONS": 5,
+                    "MAX": "UNDERFLOW",
+                    "FLAGS": 1,
+                    "ID": "ACTUAL_TEMPERATURE_STATUS",
+                    "TYPE": "ENUM",
+                    "DEFAULT": "NORMAL",
+                    "VALUE_LIST": [
+                        "NORMAL",
+                        "UNKNOWN",
+                        "OVERFLOW",
+                        "UNDERFLOW"
+                    ]
+                },
+                "DURATION_UNIT": {
+                    "MIN": "S",
+                    "OPERATIONS": 2,
+                    "MAX": "H",
+                    "FLAGS": 1,
+                    "ID": "DURATION_UNIT",
+                    "TYPE": "ENUM",
+                    "DEFAULT": "S",
+                    "VALUE_LIST": [
+                        "S",
+                        "M",
+                        "H"
+                    ]
+                },
+                "SWITCH_POINT_OCCURED": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 1,
+                    "ID": "SWITCH_POINT_OCCURED",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "CONTROL_DIFFERENTIAL_TEMPERATURE": {
+                    "MIN": -10,
+                    "OPERATIONS": 2,
+                    "MAX": 10,
+                    "FLAGS": 1,
+                    "ID": "CONTROL_DIFFERENTIAL_TEMPERATURE",
+                    "TYPE": "FLOAT",
+                    "DEFAULT": 0
+                },
+                "VALVE_STATE": {
+                    "MIN": "STATE_NOT_AVAILABLE",
+                    "OPERATIONS": 5,
+                    "MAX": "ERROR_POSITION",
+                    "FLAGS": 1,
+                    "ID": "VALVE_STATE",
+                    "TYPE": "ENUM",
+                    "DEFAULT": "STATE_NOT_AVAILABLE",
+                    "VALUE_LIST": [
+                        "STATE_NOT_AVAILABLE",
+                        "RUN_TO_START",
+                        "WAIT_FOR_ADAPTION",
+                        "ADAPTION_IN_PROGRESS",
+                        "ADAPTION_DONE",
+                        "TOO_TIGHT",
+                        "ADJUSTMENT_TOO_BIG",
+                        "ADJUSTMENT_TOO_SMALL",
+                        "ERROR_POSITION"
+                    ]
+                },
+                "ACTIVE_PROFILE": {
+                    "MIN": 1,
+                    "OPERATIONS": 7,
+                    "MAX": 3,
+                    "FLAGS": 1,
+                    "ID": "ACTIVE_PROFILE",
+                    "TYPE": "INTEGER",
+                    "DEFAULT": 1,
+                    "CONTROL": "HEATING_CONTROL_HMIP.ACTIVE_PROFILE"
+                },
+                "WINDOW_STATE": {
+                    "MIN": "CLOSED",
+                    "OPERATIONS": 7,
+                    "MAX": "OPEN",
+                    "FLAGS": 1,
+                    "ID": "WINDOW_STATE",
+                    "TYPE": "ENUM",
+                    "DEFAULT": "CLOSED",
+                    "VALUE_LIST": [
+                        "CLOSED",
+                        "OPEN"
+                    ],
+                    "CONTROL": "HEATING_CONTROL_HMIP.WINDOW_STATE"
+                },
+                "PARTY_TIME_END": {
+                    "MIN": "2000_01_01 00:00",
+                    "OPERATIONS": 7,
+                    "MAX": "2255_12_31 23:55",
+                    "FLAGS": 1,
+                    "ID": "PARTY_TIME_END",
+                    "TYPE": "STRING",
+                    "DEFAULT": "2000_01_01 00:00",
+                    "CONTROL": "HEATING_CONTROL_HMIP.PARTY_TIME_END"
+                },
+                "ACTUAL_TEMPERATURE": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "ACTUAL_TEMPERATURE",
+                    "MAX": 50,
+                    "MIN": -10,
+                    "OPERATIONS": 5,
+                    "TYPE": "FLOAT",
+                    "UNIT": "°C",
+                    "CONTROL": "HEATING_CONTROL_HMIP.TEMPERATURE"
+                },
+                "BOOST_MODE": {
+                    "MIN": false,
+                    "OPERATIONS": 6,
+                    "MAX": true,
+                    "FLAGS": 1,
+                    "ID": "BOOST_MODE",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false,
+                    "CONTROL": "HEATING_CONTROL_HMIP.BOOST_MODE"
+                },
+                "DURATION_VALUE": {
+                    "MIN": 0,
+                    "OPERATIONS": 2,
+                    "MAX": 16343,
+                    "FLAGS": 1,
+                    "ID": "DURATION_VALUE",
+                    "TYPE": "INTEGER",
+                    "DEFAULT": 0
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HmIP-eTRV-2.MAINTENANCE.3",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "CONFIG_PENDING": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 9,
+                    "ID": "CONFIG_PENDING",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "DUTY_CYCLE": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 1,
+                    "ID": "DUTY_CYCLE",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "LOW_BAT": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 9,
+                    "ID": "LOW_BAT",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "INSTALL_TEST": {
+                    "MIN": false,
+                    "OPERATIONS": 3,
+                    "MAX": true,
+                    "FLAGS": 2,
+                    "ID": "INSTALL_TEST",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "UNREACH": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 25,
+                    "ID": "UNREACH",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
+                },
+                "OPERATING_VOLTAGE_STATUS": {
+                    "MIN": "NORMAL",
+                    "OPERATIONS": 5,
+                    "MAX": "OVERFLOW",
+                    "FLAGS": 1,
+                    "ID": "OPERATING_VOLTAGE_STATUS",
+                    "TYPE": "ENUM",
+                    "DEFAULT": "NORMAL",
+                    "VALUE_LIST": [
+                        "NORMAL",
+                        "UNKNOWN",
+                        "OVERFLOW"
+                    ]
+                },
+                "RSSI_DEVICE": {
+                    "MIN": -128,
+                    "OPERATIONS": 5,
+                    "MAX": 127,
+                    "FLAGS": 1,
+                    "ID": "RSSI_DEVICE",
+                    "TYPE": "INTEGER",
+                    "DEFAULT": 0,
+                    "UNIT": "dBm"
+                },
+                "OPERATING_VOLTAGE": {
+                    "MIN": 0,
+                    "OPERATIONS": 5,
+                    "MAX": 25.2,
+                    "FLAGS": 1,
+                    "ID": "OPERATING_VOLTAGE",
+                    "TYPE": "FLOAT",
+                    "DEFAULT": 0,
+                    "UNIT": "V"
+                },
+                "RSSI_PEER": {
+                    "MIN": -128,
+                    "OPERATIONS": 5,
+                    "MAX": 127,
+                    "FLAGS": 1,
+                    "ID": "RSSI_PEER",
+                    "TYPE": "INTEGER",
+                    "DEFAULT": 0,
+                    "UNIT": "dBm"
+                },
+                "UPDATE_PENDING": {
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "MAX": true,
+                    "FLAGS": 9,
+                    "ID": "UPDATE_PENDING",
+                    "TYPE": "BOOL",
+                    "DEFAULT": false
                 }
             }
         }
