@@ -702,7 +702,7 @@ function main() {
                         } else if (dpTypes[row.id].MAX === 1.005) {
                             dpTypes[row.id].MAX = 1;
                         }
-                    }
+                    } // endIf
                 }
             }
         }
@@ -1085,6 +1085,14 @@ function addParamsetObjects(channel, paramset, callback) {
 
         if (obj.common.role === 'level.color.hue') {
             obj.common.max = 200;
+        }
+
+        if (obj.common.role === 'value.rssi') {
+            obj.common.unit = 'dBm';
+        }
+
+        if (obj.common.role === 'value.voltage') {
+            obj.common.unit = 'V';
         }
 
         if (paramset[key].OPERATIONS & 8) {
