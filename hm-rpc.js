@@ -173,9 +173,9 @@ function combineEPaperCommand(lines, signal, ton, repeats, offset) {
     repeats = 1;
 
     let command = '0x02,0x0A';
-    for (let m = 0; m < lines.length; m++) {
-        const line = lines[m].line;
-        const icon = lines[m].icon;
+    for (const li of lines) {
+        const line = li.line;
+        const icon = li.icon;
         if (line || icon) {
             command = command + ',0x12';
             let i;
@@ -794,10 +794,10 @@ function initRpcServer() {
         rpcServer.on('system.multicall', (method, params, callback) => {
             updateConnection();
             const response = [];
-            for (let i = 0; i < params[0].length; i++) {
-                if (methods[params[0][i].methodName]) {
-                    adapter.log.debug(adapter.config.type + ' multicall <' + params[0][i].methodName + '>: ' + params[0][i].params);
-                    response.push(methods[params[0][i].methodName](null, params[0][i].params));
+            for (const param of params[0]) {
+                if (methods[param.methodName]) {
+                    adapter.log.debug(`${adapter.config.type} multicall <${param.methodName}>: ${param.params}`);
+                    response.push(methods[param.methodName](null, param.params));
                 } else {
                     response.push('');
                 }
@@ -1161,13 +1161,13 @@ function getValueParamsets() {
         return;
     }
     const obj = queueValueParamsets.pop();
-    const cid = obj.native.PARENT_TYPE + '.' + obj.native.TYPE + '.' + obj.native.VERSION;
+    const cid = `${obj.native.PARENT_TYPE}.${obj.native.TYPE}.${obj.native.VERSION}`;
 
     if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
         addEPaperToMeta();
     }
 
-    adapter.log.debug('getValueParamsets ' + cid);
+    adapter.log.debug(`getValueParamsets ${cid}`);
 
     if (metaValues[cid]) {
         adapter.log.debug('paramset cache hit');
@@ -1177,7 +1177,7 @@ function getValueParamsets() {
         adapter.objects.getObject(key, (err, res) => {
 
             if (res && res.native) {
-                adapter.log.debug(key + ' found');
+                adapter.log.debug(`${key} found`);
                 metaValues[cid] = res.native;
 
                 if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
@@ -1236,8 +1236,9 @@ function getValueParamsets() {
 function addEPaperToMeta() {
     // Check all versions from 9 to 12
     for (let i = 9; i < 13; i++) {
-        const id = 'HM-Dis-EP-WM55.MAINTENANCE.' + i;
+        const id = `HM-Dis-EP-WM55.MAINTENANCE.${i}`;
         if (!metaValues[id] || !metaValues[id].EPAPER_LINE2) {
+            // Add the EPAPER States to the Maintenance channel if they are non-existent
             metaValues[id] = metaValues[id] || {};
 
             adapter.log.debug(`[EPAPER] Add E-Paper to Meta for version ${i} with ${JSON.stringify(metaValues[id])}`);
@@ -1454,11 +1455,11 @@ function getCuxDevices(callback) {
                         endkey: 'hm-rpc.' + adapter.instance + '.\u9999'
                     }, (err, doc) => {
                         if (doc && doc.rows) {
-                            for (let i = 0; i < doc.rows.length; i++) {
-                                if (doc.rows[i].id === adapter.namespace + '.updated') continue;
+                            for (const row of doc.rows) {
+                                if (row.id === adapter.namespace + '.updated') continue;
 
                                 // lets get the device description
-                                const val = doc.rows[i].value;
+                                const val = row.value;
 
                                 if (typeof val.ADDRESS === 'undefined') continue;
 
