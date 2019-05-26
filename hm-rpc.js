@@ -1240,7 +1240,7 @@ function addEPaperToMeta() {
         if (!metaValues[id] || !metaValues[id].EPAPER_LINE2) {
             metaValues[id] = metaValues[id] || {};
 
-            adapter.log.debug(`[EPAPER] Add E-Paper to Meta for version ${i} with ${metaValues[id]}`);
+            adapter.log.debug(`[EPAPER] Add E-Paper to Meta for version ${i} with ${JSON.stringify(metaValues[id]})`);
 
             const obj = metaValues[id];
 
