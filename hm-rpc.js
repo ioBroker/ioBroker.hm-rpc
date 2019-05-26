@@ -1239,7 +1239,11 @@ function addEPaperToMeta() {
         const id = 'HM-Dis-EP-WM55.MAINTENANCE.' + i;
         if (!metaValues[id] || !metaValues[id].EPAPER_LINE2) {
             metaValues[id] = metaValues[id] || {};
+
+            adapter.log.debug(`[EPAPER] Add E-Paper to Meta for version ${i} with ${metaValues[id]}`);
+
             const obj = metaValues[id];
+
             obj.EPAPER_LINE2 = {
                 TYPE: 'EPAPER_LINE',
                 ID: 'LINE2',
@@ -1341,42 +1345,43 @@ function addEPaperToMeta() {
 function createDevices(deviceArr, callback) {
     const objs = [];
 
-    for (let i = 0; i < deviceArr.length; i++) {
+    for (const device of deviceArr) {
         let type;
         let role;
         let icon;
 
-        if (deviceArr[i].PARENT) {
+        if (device.PARENT) {
             type = 'channel';
-            role = metaRoles.chTYPE && metaRoles.chTYPE[deviceArr[i].TYPE] ? metaRoles.chTYPE && metaRoles.chTYPE[deviceArr[i].TYPE] : undefined;
+            role = metaRoles.chTYPE && metaRoles.chTYPE[device.TYPE] ? metaRoles.chTYPE && metaRoles.chTYPE[device.TYPE] : undefined;
         } else {
             type = 'device';
-            if (!images[deviceArr[i].TYPE]) {
-                adapter.log.warn('No image for "' + deviceArr[i].TYPE + '" found.');
+            if (!images[device.TYPE]) {
+                adapter.log.warn('No image for "' + device.TYPE + '" found.');
             }
 
-            icon = images[deviceArr[i].TYPE] ? ('/icons/' + images[deviceArr[i].TYPE]) : '';
+            icon = images[device.TYPE] ? ('/icons/' + images[device.TYPE]) : '';
         }
 
         const obj = {
-            _id: deviceArr[i].ADDRESS.replace(':', '.').replace(FORBIDDEN_CHARS, '_'),
+            _id: device.ADDRESS.replace(':', '.').replace(FORBIDDEN_CHARS, '_'),
             type: type,
             common: {
                 // FIXME strange bug - LEVEL and WORKING datapoint of Dimmers have name of first dimmer device?!?
-                name: deviceArr[i].ADDRESS,
+                name: device.ADDRESS,
                 role: role
             },
-            native: deviceArr[i]
+            native: device
         };
 
         if (icon) obj.common.icon = icon;
 
-        const dpID = adapter.namespace + '.' + obj._id;
+        const dpID = `${adapter.namespace}.${obj._id}`;
+
         dpTypes[dpID] = {
-            UNIT: deviceArr[i].UNIT,
-            TYPE: deviceArr[i].TYPE,
-            MAX: deviceArr[i].MAX,
-            MIN: deviceArr[i].MIN,
+            UNIT: device.UNIT,
+            TYPE: device.TYPE,
+            MAX: device.MAX,
+            MIN: device.MIN,
             role: role
         };
         if (typeof dpTypes[dpID].MIN === 'number') {
@@ -1388,6 +1393,7 @@ function createDevices(deviceArr, callback) {
                 dpTypes[dpID].MAX = 100;
             }
 
+            // Soemtimes unit is 100%, sometimes % it's the same
             if (dpTypes[dpID].UNIT === '100%') {
                 dpTypes[dpID].UNIT = '%';
             }
