@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.9.11",
+        "version": "1.9.12",
         "news": {
+            "1.9.12": {
+                "en": "fix maintenance channel of HM-Dis-EP-WM55 and metas added",
+                "de": "Wartungskanal von HM-Dis-EP-WM55 korrigiert und Metas hinzugefügt",
+                "ru": "исправлен канал обслуживания HM-Dis-EP-WM55 и добавлены метас",
+                "pt": "corrigir o canal de manutenção do HM-Dis-EP-WM55 e metas adicionadas",
+                "nl": "fixeer onderhoudskanaal van HM-Dis-EP-WM55 en metas toegevoegd",
+                "fr": "correction du canal de maintenance du HM-Dis-EP-WM55 et ajout de métas",
+                "it": "fissare il canale di manutenzione di HM-Dis-EP-WM55 e le metriche aggiunte",
+                "es": "Reparar el canal de mantenimiento de HM-Dis-EP-WM55 y las metas agregadas.",
+                "pl": "naprawiono kanał konserwacji HM-Dis-EP-WM55 i dodano metas",
+                "zh-cn": "修复了HM-Dis-EP-WM55和metas的维护通道"
+            },
             "1.9.11": {
                 "en": "usage of meaningful units for RSSI and OPERATING_VOLTAGE states",
                 "de": "Verwendung sinnvoller Einheiten für die Zustände RSSI und OPERATING_VOLTAGE",
@@ -98,18 +110,6 @@
                 "es": "ignorar los estados de alarma porque manejados por rega",
                 "pl": "ignoruj ​​stany alarmowe, ponieważ są obsługiwane przez regę",
                 "zh-cn": "忽略警报状态，因为由rega处理"
-            },
-            "1.9.4": {
-                "en": "removed homematic path from user interface and added device image",
-                "de": "Homematic Pfad von der Benutzeroberfläche entfernt und Gerätebild hinzugefügt",
-                "ru": "удален homematic path из пользовательского интерфейса и добавлен образ устройства",
-                "pt": "removeu caminho homematic da interface do usuário e adicionou a imagem do dispositivo",
-                "nl": "verwijderd homematic pad van gebruikersinterface en toegevoegde apparaatafbeelding",
-                "fr": "Suppression du chemin homematic de l'interface utilisateur et ajout d'une image de périphérique",
-                "it": "rimosso percorso omonimo dall'interfaccia utente e aggiunta l'immagine del dispositivo",
-                "es": "se eliminó la ruta homemática de la interfaz de usuario y se agregó la imagen del dispositivo",
-                "pl": "usunięto ścieżkę homematic z interfejsu użytkownika i dodano obraz urządzenia",
-                "zh-cn": "从用户界面删除了主页路径并添加了设备图像"
             }
         },
         "authors": [
@@ -19858,6 +19858,116 @@
                     "OPERATIONS": 6,
                     "TAB_ORDER": 0,
                     "TYPE": "ACTION",
+                    "UNIT": ""
+                }
+            }
+        },
+        {
+            "_id": "hm-rpc.meta.VALUES.HM-Dis-EP-WM55.MAINTENANCE.11",
+            "type": "meta",
+            "meta": {
+                "adapter": "hm-rpc",
+                "type": "paramsetDescription"
+            },
+            "common": {},
+            "native": {
+                "AES_KEY": {
+                    "DEFAULT": 0,
+                    "FLAGS": 0,
+                    "ID": "AES_KEY",
+                    "MAX": 127,
+                    "MIN": 0,
+                    "OPERATIONS": 1,
+                    "TAB_ORDER": 8,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
+                },
+                "CONFIG_PENDING": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "CONFIG_PENDING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 2,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "DEVICE_IN_BOOTLOADER": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "DEVICE_IN_BOOTLOADER",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 6,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "LOWBAT": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "LOWBAT",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 3,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "RSSI_DEVICE": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "RSSI_DEVICE",
+                    "MAX": 2147483647,
+                    "MIN": -2147483648,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 4,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
+                },
+                "RSSI_PEER": {
+                    "DEFAULT": 0,
+                    "FLAGS": 1,
+                    "ID": "RSSI_PEER",
+                    "MAX": 2147483647,
+                    "MIN": -2147483648,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 5,
+                    "TYPE": "INTEGER",
+                    "UNIT": ""
+                },
+                "STICKY_UNREACH": {
+                    "DEFAULT": false,
+                    "FLAGS": 25,
+                    "ID": "STICKY_UNREACH",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 7,
+                    "TAB_ORDER": 1,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "UNREACH": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "UNREACH",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 0,
+                    "TYPE": "BOOL",
+                    "UNIT": ""
+                },
+                "UPDATE_PENDING": {
+                    "DEFAULT": false,
+                    "FLAGS": 9,
+                    "ID": "UPDATE_PENDING",
+                    "MAX": true,
+                    "MIN": false,
+                    "OPERATIONS": 5,
+                    "TAB_ORDER": 7,
+                    "TYPE": "BOOL",
                     "UNIT": ""
                 }
             }
