@@ -1183,6 +1183,7 @@ function getValueParamsets() {
                 metaValues[cid] = res.native;
 
                 if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
+                    adapter.log.debug('[EPAPER] Create Epaper because of no paramset cache hit but meta hit');//test
                     addEPaperToMeta();
                 }
 
@@ -1206,6 +1207,7 @@ function getValueParamsets() {
                             metaValues[key] = res;
 
                             if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
+                                adapter.log.debug('[EPAPER] Create Epaper because of no paramset cache hit and no meta hit');//test
                                 addEPaperToMeta();
                             }
 
@@ -1426,6 +1428,7 @@ function createDevices(deviceArr, callback) {
                 // var cid = obj.native.PARENT_TYPE + '.' + obj.native.TYPE + '.' + obj.native.VERSION;
                 //channelParams[obj._id] = cid;
                 if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
+                    adapter.log.debug('[EPAPER] Create Epaper because of CHANNEL');//test
                     addEPaperToMeta();
                 }
                 queueValueParamsets.push(obj);
