@@ -1425,12 +1425,12 @@ function createDevices(deviceArr, callback) {
             });
 
             if (obj.type === 'channel') {
-                // var cid = obj.native.PARENT_TYPE + '.' + obj.native.TYPE + '.' + obj.native.VERSION;
-                //channelParams[obj._id] = cid;
+                /*
                 if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
                     adapter.log.debug('[EPAPER] Create Epaper because of CHANNEL');//test
                     addEPaperToMeta();
                 }
+                 */
                 queueValueParamsets.push(obj);
             }
 
