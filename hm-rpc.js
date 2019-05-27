@@ -1163,9 +1163,11 @@ function getValueParamsets() {
     const obj = queueValueParamsets.pop();
     const cid = `${obj.native.PARENT_TYPE}.${obj.native.TYPE}.${obj.native.VERSION}`;
 
+    /*
     if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
         addEPaperToMeta();
     }
+    */
 
     adapter.log.debug(`getValueParamsets ${cid}`);
 
