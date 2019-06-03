@@ -1192,7 +1192,7 @@ function getValueParamsets() {
                 try {
                     rpcClient.methodCall('getParamsetDescription', [obj.native.ADDRESS, 'VALUES'], (err, res) => {
                         if (err) {
-                            adapter.log.error('Error on getParamsetDescription: ' + err);
+                            adapter.log.error(`Error on getParamsetDescription: ${err}`);
                         } else {
                             metaValues[cid] = res;
 
@@ -1200,7 +1200,6 @@ function getValueParamsets() {
                                 addEPaperToMeta();
                             }
 
-                            // we have to use metaValues[cid] instead of res because it could have been extended (EPAPER)
                             const paramset = {
                                 'type': 'meta',
                                 'meta': {
@@ -1215,8 +1214,8 @@ function getValueParamsets() {
                                 // if not empty
                                 for (const attr in res) {
                                     if (res.hasOwnProperty(attr)) {
-                                        adapter.log.warn('Send this info to developer: "_id": "' + key + '"');
-                                        adapter.log.warn('Send this info to developer: ' + JSON.stringify(paramset));
+                                        adapter.log.warn(`Send this info to developer: "_id": "${key}"`);
+                                        adapter.log.warn(`Send this info to developer: ${JSON.stringify(paramset)}`);
                                         break;
                                     }
                                 }
