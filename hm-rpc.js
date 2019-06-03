@@ -1163,12 +1163,6 @@ function getValueParamsets() {
     const obj = queueValueParamsets.pop();
     const cid = `${obj.native.PARENT_TYPE}.${obj.native.TYPE}.${obj.native.VERSION}`;
 
-    /*
-    if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
-        addEPaperToMeta();
-    }
-    */
-
     adapter.log.debug(`getValueParamsets ${cid}`);
 
     if (metaValues[cid]) {
@@ -1424,11 +1418,6 @@ function createDevices(deviceArr, callback) {
             });
 
             if (obj.type === 'channel') {
-                /*
-                if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
-                    addEPaperToMeta();
-                }
-                 */
                 queueValueParamsets.push(obj);
             }
 
