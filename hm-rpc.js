@@ -1175,7 +1175,7 @@ function getValueParamsets() {
         adapter.log.debug('paramset cache hit');
         addParamsetObjects(obj, metaValues[cid], () => setImmediate(getValueParamsets));
     } else {
-        const key = 'hm-rpc.meta.VALUES.' + cid;
+        const key = `hm-rpc.meta.VALUES.${cid}`;
         adapter.objects.getObject(key, (err, res) => {
 
             if (res && res.native) {
@@ -1186,7 +1186,7 @@ function getValueParamsets() {
                     addEPaperToMeta();
                 }
 
-                addParamsetObjects(obj, res.native, () => setImmediate(getValueParamsets));
+                addParamsetObjects(obj, metaValues[cid], () => setImmediate(getValueParamsets));
             } else {
                 adapter.log.info(adapter.config.type + 'rpc -> getParamsetDescription ' + JSON.stringify([obj.native.ADDRESS, 'VALUES']));
                 try {
@@ -1194,6 +1194,13 @@ function getValueParamsets() {
                         if (err) {
                             adapter.log.error('Error on getParamsetDescription: ' + err);
                         } else {
+                            metaValues[key] = res;
+
+                            if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
+                                addEPaperToMeta();
+                            }
+
+                            // we have to use metaValues[key] instead of res because it could have been extended (EPAPER)
                             const paramset = {
                                 'type': 'meta',
                                 'meta': {
@@ -1201,19 +1208,14 @@ function getValueParamsets() {
                                     type: 'paramsetDescription'
                                 },
                                 'common': {},
-                                'native': res
+                                'native': metaValues[key]
                             };
-                            metaValues[key] = res;
-
-                            if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
-                                addEPaperToMeta();
-                            }
 
                             if (res) {
                                 // if not empty
                                 for (const attr in res) {
                                     if (res.hasOwnProperty(attr)) {
-                                        adapter.log.warn('Send this info to developer: _id: "' + key + '"');
+                                        adapter.log.warn('Send this info to developer: "_id": "' + key + '"');
                                         adapter.log.warn('Send this info to developer: ' + JSON.stringify(paramset));
                                         break;
                                     }
@@ -1221,14 +1223,14 @@ function getValueParamsets() {
                             }
 
                             adapter.objects.setObject(key, paramset, () => {
-                                addParamsetObjects(obj, res, () => {
+                                addParamsetObjects(obj, metaValues[key], () => {
                                     setImmediate(getValueParamsets);
                                 });
                             });
                         }
                     });
                 } catch (err) {
-                    adapter.log.error('Cannot call getParamsetDescription: :' + err);
+                    adapter.log.error(`Cannot call getParamsetDescription: ${err}`);
                 }
             }
         });
