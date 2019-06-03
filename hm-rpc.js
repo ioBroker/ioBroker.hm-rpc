@@ -1194,13 +1194,13 @@ function getValueParamsets() {
                         if (err) {
                             adapter.log.error('Error on getParamsetDescription: ' + err);
                         } else {
-                            metaValues[key] = res;
+                            metaValues[cid] = res;
 
                             if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
                                 addEPaperToMeta();
                             }
 
-                            // we have to use metaValues[key] instead of res because it could have been extended (EPAPER)
+                            // we have to use metaValues[cid] instead of res because it could have been extended (EPAPER)
                             const paramset = {
                                 'type': 'meta',
                                 'meta': {
@@ -1208,7 +1208,7 @@ function getValueParamsets() {
                                     type: 'paramsetDescription'
                                 },
                                 'common': {},
-                                'native': metaValues[key]
+                                'native': metaValues[cid]
                             };
 
                             if (res) {
@@ -1223,7 +1223,7 @@ function getValueParamsets() {
                             }
 
                             adapter.objects.setObject(key, paramset, () => {
-                                addParamsetObjects(obj, metaValues[key], () => {
+                                addParamsetObjects(obj, metaValues[cid], () => {
                                     setImmediate(getValueParamsets);
                                 });
                             });
@@ -1245,7 +1245,7 @@ function addEPaperToMeta() {
             // Add the EPAPER States to the Maintenance channel if they are non-existent
             metaValues[id] = metaValues[id] || {};
 
-            adapter.log.debug(`[EPAPER] Add E-Paper to Meta for version ${i} with ${JSON.stringify(metaValues[id])}`);
+            adapter.log.debug(`[EPAPER] Add E-Paper to Meta on ${JSON.stringify(metaValues[id])}`);
 
             const obj = metaValues[id];
 
