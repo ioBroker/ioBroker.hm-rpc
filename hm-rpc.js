@@ -1165,6 +1165,11 @@ function getValueParamsets() {
 
     adapter.log.debug(`getValueParamsets ${cid}`);
 
+    // if meta values are cached for Epaper we extend this cached meta values by epaper states
+    if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
+        addEPaperToMeta();
+    }
+
     if (metaValues[cid]) {
         adapter.log.debug('paramset cache hit');
         addParamsetObjects(obj, metaValues[cid], () => setImmediate(getValueParamsets));
