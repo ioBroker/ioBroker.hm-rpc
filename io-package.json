@@ -113,7 +113,8 @@
             }
         },
         "authors": [
-            "hobbyquaker <hq@ccu.io>"
+            "hobbyquaker <hq@ccu.io>",
+            "Moritz Heusinger <moritz.heusinger@gmail.com>"
         ],
         "license": "MIT",
         "mode": "daemon",
