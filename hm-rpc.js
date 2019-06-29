@@ -1543,14 +1543,17 @@ function connect(isFirst) {
             reconnectTimeout: adapter.config.reconnectInterval * 1000
         });
 
+        // If we have bin-rpc, only need it here because bin-rpc cant have https
+        if (rpcClient.on) {
+            rpcClient.on('error', err => {
+                adapter.log.error(`Socket error: ${err}`);
+            });
+        } // endIf
+        
         // if bin-rpc
         /*        if (rpcClient.on) {
             rpcClient.on('connect', function (err) {
                 sendInit();
-            });
-
-            rpcClient.on('error', function (err) {
-                adapter.log.error('Socket error: ' + err);
             });
 
             rpcClient.on('close', function () {
