@@ -122,6 +122,10 @@ If you use HomeMatic switches or remotes their button states will only be acknow
 by ioBroker, when you have a running 'dummy' program on the CCU which depends on the related switch or remote.
 
 ## Changelog
+### 1.9.14 (2019-06-29)
+* (foxriver76) small bug fix for HM-Dis-EP-WM55
+* (foxriver76) catch async errors on bin-rpc connection
+
 ### 1.9.13 (2019-06-03)
 * (foxriver76) fixed bug where some meta values where stored in the wrong index
 

@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.9.13",
+        "version": "1.9.14",
         "news": {
+            "1.9.14": {
+                "en": "small bug fix for HM-Dis-EP-WM55 and catch asynchron errors on bin-rpc connection",
+                "de": "kleiner Bugfix für HM-Dis-EP-WM55 und Abfangen von Asynchronfehlern bei der Bin-RPC-Verbindung",
+                "ru": "Небольшое исправление ошибки для HM-Dis-EP-WM55 и перехват асинхронных ошибок при подключении bin-rpc",
+                "pt": "pequena correção de bug para o HM-Dis-EP-WM55 e capturar erros assíncronos na conexão bin-rpc",
+                "nl": "kleine bugfix voor HM-Dis-EP-WM55 en asynchrone fouten opvangen bij bin-rpc-verbinding",
+                "fr": "petit bogue pour HM-Dis-EP-WM55 et correction des erreurs asynchrones sur la connexion bin-rpc",
+                "it": "piccola correzione di bug per HM-Dis-EP-WM55 e cattura errori asincroni sulla connessione bin-rpc",
+                "es": "pequeña corrección de errores para HM-Dis-EP-WM55 y captura errores asíncronos en la conexión bin-rpc",
+                "pl": "mała poprawka błędów dla HM-Dis-EP-WM55 i błędy asynchroniczne catch na połączeniu bin-rpc",
+                "zh-cn": "HM-Dis-EP-WM55的小错误修复，并在bin-rpc连接上捕获异步错误"
+            },
             "1.9.13": {
                 "en": "fixed bug where some meta values where stored in the wrong index",
                 "ru": "исправлена ​​ошибка, при которой некоторые мета значения хранятся в неверном индексе",
@@ -98,18 +110,6 @@
                 "es": "cuando el máximo es 1.005, establezca el máximo en 1",
                 "pl": "kiedy max wynosi 1.005, ustaw max na 1",
                 "zh-cn": "当max为1.005时，则将max设置为1"
-            },
-            "1.9.6": {
-                "en": "fix meta for virtual devices",
-                "de": "Meta für virtuelle Geräte korrigiert",
-                "ru": "исправить мета для виртуальных устройств",
-                "pt": "meta de correção para dispositivos virtuais",
-                "nl": "repareer meta voor virtuele apparaten",
-                "fr": "corriger méta pour les périphériques virtuels",
-                "it": "fix meta per dispositivi virtuali",
-                "es": "arreglar meta para dispositivos virtuales",
-                "pl": "napraw meta dla urządzeń wirtualnych",
-                "zh-cn": "修复虚拟设备的元数据"
             }
         },
         "authors": [
