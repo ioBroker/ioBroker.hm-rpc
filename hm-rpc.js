@@ -1019,7 +1019,8 @@ function addParamsetObjects(channel, paramset, callback) {
             INTEGER: 'number',
             STRING: 'string',
             EPAPER_LINE: 'string',
-            EPAPER_ICON: 'string'
+            EPAPER_ICON: 'string',
+            EPAPER_TONE: 'string'
         };
 
         const obj = {

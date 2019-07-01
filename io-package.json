@@ -13,8 +13,20 @@
       "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
       "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
     },
-    "version": "1.9.14",
+    "version": "1.9.15",
     "news": {
+      "1.9.15": {
+        "en": "added icon and meta for HB-UNI-Sen-CAP-MOIST and fix EPAPER_TONE type",
+        "de": "Symbol und Meta für HB-UNI-Sen-CAP-MOIST hinzugefügt und Typ EPAPER_TONE korrigiert",
+        "ru": "добавлен значок и мета для HB-UNI-Sen-CAP-MOIST и исправлен тип EPAPER_TONE",
+        "pt": "ícone e meta adicionados para o HB-UNI-Sen-CAP-MOIST e correção do tipo EPAPER_TONE",
+        "nl": "toegevoegd pictogram en meta voor HB-UNI-Sen-CAP-MOIST en fixeer het type EPAPER_TONE",
+        "fr": "ajout d'une icône et d'une méta pour HB-UNI-Sen-CAP-MOIST et correction du type EPAPER_TONE",
+        "it": "aggiunto icona e meta per HB-UNI-Sen-CAP-MOIST e correggere il tipo EPAPER_TONE",
+        "es": "se agregaron el ícono y el meta para HB-UNI-Sen-CAP-MOIST y se corrigió el tipo EPAPER_TONE",
+        "pl": "dodano ikonę i meta dla HB-UNI-Sen-CAP-MOIST i poprawiono typ EPAPER_TONE",
+        "zh-cn": "为HB-UNI-Sen-CAP-MOIST添加了图标和元数据并修复了EPAPER_TONE类型"
+      },
       "1.9.14": {
         "en": "small bug fix for HM-Dis-EP-WM55 and catch asynchron errors on bin-rpc connection",
         "de": "kleiner Bugfix für HM-Dis-EP-WM55 und Abfangen von Asynchronfehlern bei der Bin-RPC-Verbindung",
@@ -98,18 +110,6 @@
         "es": "correcciones para la línea epaper y el tipo de icono y los metadatos agregados",
         "pl": "poprawki do epaper line i typu ikony oraz danych meta",
         "zh-cn": "修复了epaper线和图标类型以及添加的元数据"
-      },
-      "1.9.7": {
-        "en": "when max is 1.005 then set max to 1",
-        "de": "Wenn max 1.005 ist, dann wird max auf 1 gesetzt",
-        "ru": "когда максимальное значение равно 1,005, тогда установите максимальное значение на 1",
-        "pt": "quando max é 1.005, então ajuste max para 1",
-        "nl": "wanneer max is 1.005 stel dan max in op 1",
-        "fr": "quand max est 1,005, définissez max sur 1",
-        "it": "quando max è 1.005, impostare max su 1",
-        "es": "cuando el máximo es 1.005, establezca el máximo en 1",
-        "pl": "kiedy max wynosi 1.005, ustaw max na 1",
-        "zh-cn": "当max为1.005时，则将max设置为1"
       }
     },
     "authors": [
