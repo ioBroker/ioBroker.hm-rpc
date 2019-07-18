@@ -13,8 +13,20 @@
       "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
       "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
     },
-    "version": "1.9.15",
+    "version": "1.9.16",
     "news": {
+      "1.9.16": {
+        "en": "no longer use adapter.objects if not necessary and added meta data",
+        "de": "Verwenden Sie keine adapter.objects mehr, wenn dies nicht erforderlich ist, und fügen Sie Metadaten hinzu",
+        "ru": "больше не использовать adapter.objects, если не нужно, и добавлены метаданные",
+        "pt": "não use mais adapter.objects se não for necessário e inclua metadados",
+        "nl": "gebruik geen adapter.objects meer als dat niet nodig is en voeg metadata toe",
+        "fr": "n'utilise plus adapter.objects sinon nécessaire et ajout de métadonnées",
+        "it": "non utilizzare più adapter.objects se non necessario e aggiungere metadati",
+        "es": "ya no usa adapter.objects si no es necesario y agrega metadatos",
+        "pl": "nie używaj już adapter.objects, jeśli nie jest to konieczne, i dodaj metadane",
+        "zh-cn": "如果没有必要，不再使用adapter.objects并添加元数据"
+      },
       "1.9.15": {
         "en": "added icon and meta for HB-UNI-Sen-CAP-MOIST and fix EPAPER_TONE type",
         "de": "Symbol und Meta für HB-UNI-Sen-CAP-MOIST hinzugefügt und Typ EPAPER_TONE korrigiert",
@@ -98,18 +110,6 @@
         "es": "los estados de ventana ahora son rol `value.window`",
         "pl": "stany okien są teraz rolą `value.window`",
         "zh-cn": "窗口状态现在是角色`value.window`"
-      },
-      "1.9.8": {
-        "en": "fixes for epaper line and icon type and meta data added",
-        "de": "Korrekturen für Epaper-Zeilen- und -Symboltypen und Metadaten hinzugefügt",
-        "ru": "добавлены исправления для линии бумаги и типа значка и метаданных",
-        "pt": "correções para linha de epapel e tipo de ícone e metadados adicionados",
-        "nl": "oplossingen voor e-paperlijn en pictogramtype en metadata toegevoegd",
-        "fr": "corrections pour la ligne epaper et le type d'icône et les métadonnées ajoutées",
-        "it": "correzioni per la linea epaper e il tipo di icona e metadati aggiunti",
-        "es": "correcciones para la línea epaper y el tipo de icono y los metadatos agregados",
-        "pl": "poprawki do epaper line i typu ikony oraz danych meta",
-        "zh-cn": "修复了epaper线和图标类型以及添加的元数据"
       }
     },
     "authors": [
