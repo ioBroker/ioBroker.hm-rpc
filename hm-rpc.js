@@ -664,7 +664,7 @@ function main() {
             }
         }
         // Load common.role assignments
-        adapter.objects.getObject('hm-rpc.meta.roles', (err, res) => {
+        adapter.getForeignObject('hm-rpc.meta.roles', (err, res) => {
             if (err) adapter.log.error('hm-rpc.meta.roles: ' + err);
             if (res) metaRoles = res.native;
 
@@ -1176,7 +1176,7 @@ function getValueParamsets() {
         addParamsetObjects(obj, metaValues[cid], () => setImmediate(getValueParamsets));
     } else {
         const key = `hm-rpc.meta.VALUES.${cid}`;
-        adapter.objects.getObject(key, (err, res) => {
+        adapter.getForeignObject(key, (err, res) => {
 
             if (res && res.native) {
                 adapter.log.debug(`${key} found`);
@@ -1221,7 +1221,7 @@ function getValueParamsets() {
                                 }
                             }
 
-                            adapter.objects.setObject(key, paramset, () => {
+                            adapter.setForeignObject(key, paramset, () => {
                                 addParamsetObjects(obj, metaValues[cid], () => {
                                     setImmediate(getValueParamsets);
                                 });
