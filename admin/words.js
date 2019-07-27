@@ -197,7 +197,7 @@ systemDictionary = {
     },
     'Force objects re-init': {
         'en': 'Synchronize objects (once)',
-        'de': 'Synchronisiere Geräte neu (einmalig)',
+        'de': 'Geräte neu einlesen (einmalig)',
         'ru': 'Синхронизировать объекты (один раз)',
         'pt': 'Sincronizar objetos (uma vez)',
         'nl': 'Synchroniseer objecten (één keer)',
