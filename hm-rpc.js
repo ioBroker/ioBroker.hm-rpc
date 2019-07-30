@@ -1005,12 +1005,10 @@ const methods = {
 const queueValueParamsets = [];
 
 function addParamsetObjects(channel, paramset, callback) {
-    const channelChildren = [];
     const promises = [];
 
     for (const key in paramset) {
         if (!paramset.hasOwnProperty(key)) continue;
-        channelChildren.push(channel._id + '.' + key);
         const commonType = {
             ACTION: 'boolean',
             BOOL: 'boolean',
