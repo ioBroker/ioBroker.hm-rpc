@@ -635,8 +635,8 @@ function main() {
     adapter.objects.getObjectView('hm-rpc', 'paramsetDescription', {
         startkey: 'hm-rpc.meta.VALUES',
         endkey: 'hm-rpc.meta.VALUES.\u9999'
-    }, function handleValueParamSetDescriptions(err, doc) {
-        if (err) adapter.log.error('getObjectView hm-rpc: ' + err);
+    }, (err, doc) => {
+        if (err) adapter.log.error(`getObjectView hm-rpc: ${err}`);
         if (doc && doc.rows) {
             for (const row of doc.rows) {
                 const channel = row.id.slice(19);
@@ -656,7 +656,7 @@ function main() {
     adapter.objects.getObjectView('system', 'state', {
         startkey: adapter.namespace,
         endkey: adapter.namespace + '\u9999'
-    }, function handleStateViews(err, res) {
+    }, (err, res) => {
         if (!err && res.rows) {
             for (const row of res.rows) {
                 if (row.id === adapter.namespace + '.updated') continue;
@@ -687,7 +687,7 @@ function main() {
             }
         }
     });
-}
+} // endMain
 
 function sendInit() {
     try {
@@ -715,7 +715,7 @@ function sendInit() {
         adapter.log.error('Init not possible, going to stop: ' + err);
         adapter.stop();
     }
-}
+} // endSendInit
 
 function sendPing() {
     if (rpcClient) {
@@ -746,14 +746,14 @@ function sendPing() {
             connect();
         }
     }
-}
+} // endSendPing
 
 function initRpcServer() {
     adapter.config.homematicPort = parseInt(adapter.config.homematicPort, 10);
     adapter.config.port = parseInt(adapter.config.port, 10);
     adapter.config.useHttps = adapter.config.useHttps || false;
 
-    //adapterPort was introduced in v1.0.1. If not set yet then try 2000
+    // adapterPort was introduced in v1.0.1. If not set yet then try 2000
     const adapterPort = parseInt(adapter.config.port || adapter.config.homematicPort, 10) || 2000;
     const callbackAddress = adapter.config.callbackAddress || adapter.config.adapterAddress;
     adapter.getPort(adapterPort, port => {
@@ -888,14 +888,11 @@ function initRpcServer() {
                         if (doc.rows[i].id === adapter.namespace + '.updated') continue;
                         const val = doc.rows[i].value;
 
-                        /*if (val.PARENT_TYPE) {
-                         channelParams[val.ADDRESS] = val.PARENT_TYPE + '.' + val.TYPE + '.' + val.VERSION;
-                         }*/
                         if (val.ADDRESS) response.push({ADDRESS: val.ADDRESS, VERSION: val.VERSION});
                     }
                 }
                 adapter.log.info(adapter.config.type + 'rpc -> ' + response.length + ' devices');
-                //log.info(JSON.stringify(response));
+
                 try {
                     for (let r = response.length - 1; r >= 0; r--) {
                         if (!response[r].ADDRESS) {
@@ -948,7 +945,7 @@ function initRpcServer() {
         });
 
     });
-}
+} // endInitRPCServer
 
 const methods = {
 
@@ -1050,27 +1047,19 @@ function addParamsetObjects(channel, paramset, callback) {
 
         if (metaRoles.dpCONTROL && metaRoles.dpCONTROL[obj.native.CONTROL]) {
             obj.common.role = metaRoles.dpCONTROL[obj.native.CONTROL];
-
         } else if (metaRoles.chTYPE_dpNAME && metaRoles.chTYPE_dpNAME[channel.native.TYPE + '.' + key]) {
             obj.common.role = metaRoles.chTYPE_dpNAME[channel.native.TYPE + '.' + key];
-
         } else if (metaRoles.dpNAME && metaRoles.dpNAME[key]) {
             obj.common.role = metaRoles.dpNAME[key];
         }
 
         if (obj.common.role === 'state' && obj.common.write) {
             obj.common.role = 'switch';
-        }
-
-        if (obj.common.role === 'level.color.hue') {
+        } else if (obj.common.role === 'level.color.hue') {
             obj.common.max = 200;
-        }
-
-        if (obj.common.role === 'value.rssi') {
+        } else if (obj.common.role === 'value.rssi') {
             obj.common.unit = 'dBm';
-        }
-
-        if (obj.common.role === 'value.voltage') {
+        } else if (obj.common.role === 'value.voltage') {
             obj.common.unit = 'V';
         }
 
@@ -1212,7 +1201,7 @@ function getValueParamsets() {
             }
         });
     }
-}
+} // endGetValueParamsets
 
 function addEPaperToMeta() {
     // Check all versions from 9 to 12
@@ -1348,7 +1337,6 @@ function createDevices(deviceArr, callback) {
             _id: device.ADDRESS.replace(':', '.').replace(FORBIDDEN_CHARS, '_'),
             type: type,
             common: {
-                // FIXME strange bug - LEVEL and WORKING datapoint of Dimmers have name of first dimmer device?!?
                 name: device.ADDRESS,
                 role: role
             },
@@ -1370,12 +1358,12 @@ function createDevices(deviceArr, callback) {
             dpTypes[dpID].MIN = parseFloat(dpTypes[dpID].MIN);
             dpTypes[dpID].MAX = parseFloat(dpTypes[dpID].MAX);
 
-            // Humidity is from 0 to 99. It is wrong.
+            // e. g. Humidity is from 0 to 99. It is wrong.
             if (dpTypes[dpID].MAX === 99) {
                 dpTypes[dpID].MAX = 100;
             }
 
-            // Soemtimes unit is 100%, sometimes % it's the same
+            // Sometimes unit is 100%, sometimes % it's the same
             if (dpTypes[dpID].UNIT === '100%') {
                 dpTypes[dpID].UNIT = '%';
             }
