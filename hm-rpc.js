@@ -200,58 +200,38 @@ function combineEPaperCommand(lines, signal, ton, repeats, offset) {
 
     if (repeats < 1) {
         command = command + '0xDF,0x1D,';
+    } else if (repeats < 11) {
+        command = command + '0xD' + (repeats - 1) + ',0x1D,';
+    } else if (repeats === 11) {
+        command = command + '0xDA,0x1D,';
+    } else if (repeats === 12) {
+        command = command + '0xDB,0x1D,';
+    } else if (repeats === 13) {
+        command = command + '0xDC,0x1D,';
+    } else if (repeats === 14) {
+        command = command + '0xDD,0x1D,';
     } else {
-        if (repeats < 11) {
-            command = command + '0xD' + (repeats - 1) + ',0x1D,';
-        } else {
-            if (repeats === 11) {
-                command = command + '0xDA,0x1D,';
-            } else {
-                if (repeats === 12) {
-                    command = command + '0xDB,0x1D,';
-                } else {
-                    if (repeats === 13) {
-                        command = command + '0xDC,0x1D,';
-                    } else {
-                        if (repeats === 14) {
-                            command = command + '0xDD,0x1D,';
-                        } else {
-                            command = command + '0xDE,0x1D,';
-                        }
-                    }
-                }
-            }
-        }
+        command = command + '0xDE,0x1D,';
     }
+
     if (offset <= 10) {
         command = command + '0xE0,0x16,';
+    } else if (offset <= 100) {
+        command = command + '0xE' + (offset - 1 / 10) + ',0x16,';
+    } else if (offset <= 110) {
+        command = command + '0xEA,0x16,';
+    } else if (offset <= 120) {
+        command = command + '0xEB,0x16,';
+    } else if (offset <= 130) {
+        command = command + '0xEC,0x16,';
+    } else if (offset <= 140) {
+        command = command + '0xED,0x16,';
+    } else if (offset <= 150) {
+        command = command + '0xEE,0x16,';
     } else {
-        if (offset <= 100) {
-            command = command + '0xE' + (offset - 1 / 10) + ',0x16,';
-        } else {
-            if (offset <= 110) {
-                command = command + '0xEA,0x16,';
-            } else {
-                if (offset <= 120) {
-                    command = command + '0xEB,0x16,';
-                } else {
-                    if (offset <= 130) {
-                        command = command + '0xEC,0x16,';
-                    } else {
-                        if (offset <= 140) {
-                            command = command + '0xED,0x16,';
-                        } else {
-                            if (offset <= 150) {
-                                command = command + '0xEE,0x16,';
-                            } else {
-                                command = command + '0xEF,0x16,';
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        command = command + '0xEF,0x16,';
     }
+
     command = command + signal + ',0x03';
     return command;
 }
@@ -271,10 +251,10 @@ function controlEPaper(id, data) {
                 }
             });
         } else {
-            adapter.log.warn('Cannot setValue "' + id + '", because not connected.');
+            adapter.log.warn(`Cannot setValue "${id}", because not connected.`);
         }
     } catch (err) {
-        adapter.log.error('Cannot call setValue: :' + err);
+        adapter.log.error(`Cannot call setValue: ${err}`);
     }
 }
 
@@ -1548,7 +1528,7 @@ function connect(isFirst) {
                 adapter.log.error(`Socket error: ${err}`);
             });
         } // endIf
-        
+
         // if bin-rpc
         /*        if (rpcClient.on) {
             rpcClient.on('connect', function (err) {
