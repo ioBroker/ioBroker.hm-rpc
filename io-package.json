@@ -13,8 +13,20 @@
       "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
       "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
     },
-    "version": "1.9.16",
+    "version": "1.9.17",
     "news": {
+      "1.9.17": {
+        "en": "now handling max values of 1.01 as 1",
+        "de": "Jetzt werden die Maximalwerte von 1,01 als 1 behandelt",
+        "ru": "теперь обрабатывает максимальные значения 1,01 как 1",
+        "pt": "agora lidando com valores máximos de 1,01 como 1",
+        "nl": "behandelt nu max. waarden van 1.01 als 1",
+        "fr": "gère maintenant les valeurs maximales de 1,01 en tant que 1",
+        "it": "gestendo ora i valori massimi di 1,01 come 1",
+        "es": "ahora manejando valores máximos de 1.01 como 1",
+        "pl": "teraz obsługuje max wartości 1.01 jako 1",
+        "zh-cn": "现在将最大值1.01处理为1"
+      },
       "1.9.16": {
         "en": "no longer use adapter.objects if not necessary and added meta data",
         "de": "Verwenden Sie keine adapter.objects mehr, wenn dies nicht erforderlich ist, und fügen Sie Metadaten hinzu",
@@ -98,18 +110,6 @@
         "es": "Se agregaron nuevos metadatos y se corrigieron algunos metadatos.",
         "pl": "dodano nowe metadane i poprawiono niektóre metadane",
         "zh-cn": "添加了新的元数据并更正了一些元数据"
-      },
-      "1.9.9": {
-        "en": "window states are now role `value.window`",
-        "de": "Fensterzustände sind jetzt vom Typ Rolle `value.window`",
-        "ru": "состояния окна теперь являются ролью `value.window`",
-        "pt": "estados da janela agora são role `vanpmlue.window`",
-        "nl": "venstertoestanden zijn nu rol `value.window`",
-        "fr": "les états de fenêtre sont maintenant le rôle `valeur.window`",
-        "it": "gli stati della finestra ora hanno il ruolo `value.window`",
-        "es": "los estados de ventana ahora son rol `value.window`",
-        "pl": "stany okien są teraz rolą `value.window`",
-        "zh-cn": "窗口状态现在是角色`value.window`"
       }
     },
     "authors": [
@@ -29252,6 +29252,468 @@
           "TYPE": "ACTION",
           "DEFAULT": false,
           "CONTROL": "BUTTON_NO_FUNCTION.LONG"
+        }
+      }
+    },
+    {
+      "_id": "hm-rpc.meta.VALUES.HmIP-FBL.MAINTENANCE.1",
+      "type": "meta",
+      "meta": {
+        "adapter": "hm-rpc",
+        "type": "paramsetDescription"
+      },
+      "common": {},
+      "native": {
+        "CONFIG_PENDING": {
+          "MIN": false,
+          "OPERATIONS": 5,
+          "MAX": true,
+          "FLAGS": 9,
+          "ID": "CONFIG_PENDING",
+          "TYPE": "BOOL",
+          "DEFAULT": false
+        },
+        "DUTY_CYCLE": {
+          "MIN": false,
+          "OPERATIONS": 5,
+          "MAX": true,
+          "FLAGS": 1,
+          "ID": "DUTY_CYCLE",
+          "TYPE": "BOOL",
+          "DEFAULT": false
+        },
+        "INSTALL_TEST": {
+          "MIN": false,
+          "OPERATIONS": 3,
+          "MAX": true,
+          "FLAGS": 2,
+          "ID": "INSTALL_TEST",
+          "TYPE": "BOOL",
+          "DEFAULT": false
+        },
+        "ERROR_OVERHEAT": {
+          "MIN": false,
+          "OPERATIONS": 5,
+          "MAX": true,
+          "FLAGS": 9,
+          "ID": "ERROR_OVERHEAT",
+          "TYPE": "BOOL",
+          "DEFAULT": false
+        },
+        "OPERATING_VOLTAGE_STATUS": {
+          "MIN": "NORMAL",
+          "OPERATIONS": 5,
+          "MAX": "OVERFLOW",
+          "FLAGS": 1,
+          "ID": "OPERATING_VOLTAGE_STATUS",
+          "TYPE": "ENUM",
+          "DEFAULT": "NORMAL",
+          "VALUE_LIST": [
+            "NORMAL",
+            "UNKNOWN",
+            "OVERFLOW"
+          ]
+        },
+        "ACTUAL_TEMPERATURE_STATUS": {
+          "MIN": "NORMAL",
+          "OPERATIONS": 5,
+          "MAX": "UNDERFLOW",
+          "FLAGS": 1,
+          "ID": "ACTUAL_TEMPERATURE_STATUS",
+          "TYPE": "ENUM",
+          "DEFAULT": "NORMAL",
+          "VALUE_LIST": [
+            "NORMAL",
+            "UNKNOWN",
+            "OVERFLOW",
+            "UNDERFLOW"
+          ]
+        },
+        "RSSI_PEER": {
+          "MIN": -128,
+          "OPERATIONS": 5,
+          "MAX": 127,
+          "FLAGS": 1,
+          "ID": "RSSI_PEER",
+          "TYPE": "INTEGER",
+          "DEFAULT": 0
+        },
+        "ERROR_CODE": {
+          "MIN": 0,
+          "OPERATIONS": 5,
+          "MAX": 255,
+          "FLAGS": 9,
+          "ID": "ERROR_CODE",
+          "TYPE": "INTEGER",
+          "DEFAULT": 0
+        },
+        "UPDATE_PENDING": {
+          "MIN": false,
+          "OPERATIONS": 5,
+          "MAX": true,
+          "FLAGS": 9,
+          "ID": "UPDATE_PENDING",
+          "TYPE": "BOOL",
+          "DEFAULT": false
+        },
+        "UNREACH": {
+          "MIN": false,
+          "OPERATIONS": 5,
+          "MAX": true,
+          "FLAGS": 25,
+          "ID": "UNREACH",
+          "TYPE": "BOOL",
+          "DEFAULT": false
+        },
+        "RSSI_DEVICE": {
+          "MIN": -128,
+          "OPERATIONS": 5,
+          "MAX": 127,
+          "FLAGS": 1,
+          "ID": "RSSI_DEVICE",
+          "TYPE": "INTEGER",
+          "DEFAULT": 0
+        },
+        "ACTUAL_TEMPERATURE": {
+          "MIN": -3276.8,
+          "OPERATIONS": 5,
+          "MAX": 3276.7,
+          "FLAGS": 1,
+          "ID": "ACTUAL_TEMPERATURE",
+          "TYPE": "FLOAT",
+          "DEFAULT": 0
+        },
+        "OPERATING_VOLTAGE": {
+          "MIN": 0,
+          "OPERATIONS": 5,
+          "MAX": 25.2,
+          "FLAGS": 1,
+          "ID": "OPERATING_VOLTAGE",
+          "TYPE": "FLOAT",
+          "DEFAULT": 0
+        }
+      }
+    },
+    {
+      "_id": "hm-rpc.meta.VALUES.HmIP-FBL.KEY_TRANSCEIVER.1",
+      "type": "meta",
+      "meta": {
+        "adapter": "hm-rpc",
+        "type": "paramsetDescription"
+      },
+      "common": {},
+      "native": {
+        "PRESS_SHORT": {
+          "MIN": false,
+          "OPERATIONS": 4,
+          "MAX": true,
+          "FLAGS": 1,
+          "ID": "PRESS_SHORT",
+          "TYPE": "ACTION",
+          "DEFAULT": false,
+          "CONTROL": "BUTTON_NO_FUNCTION.SHORT"
+        },
+        "PRESS_LONG": {
+          "MIN": false,
+          "OPERATIONS": 4,
+          "MAX": true,
+          "FLAGS": 1,
+          "ID": "PRESS_LONG",
+          "TYPE": "ACTION",
+          "DEFAULT": false,
+          "CONTROL": "BUTTON_NO_FUNCTION.LONG"
+        }
+      }
+    },
+    {
+      "_id": "hm-rpc.meta.VALUES.HmIP-FBL.BLIND_TRANSMITTER.1",
+      "type": "meta",
+      "meta": {
+        "adapter": "hm-rpc",
+        "type": "paramsetDescription"
+      },
+      "common": {},
+      "native": {
+        "SECTION_STATUS": {
+          "MIN": "NORMAL",
+          "OPERATIONS": 5,
+          "MAX": "UNKNOWN",
+          "FLAGS": 1,
+          "ID": "SECTION_STATUS",
+          "TYPE": "ENUM",
+          "DEFAULT": "NORMAL",
+          "VALUE_LIST": [
+            "NORMAL",
+            "UNKNOWN"
+          ]
+        },
+        "LEVEL_2_STATUS": {
+          "MIN": "NORMAL",
+          "OPERATIONS": 5,
+          "MAX": "ERROR",
+          "FLAGS": 1,
+          "ID": "LEVEL_2_STATUS",
+          "TYPE": "ENUM",
+          "DEFAULT": "NORMAL",
+          "VALUE_LIST": [
+            "NORMAL",
+            "UNKNOWN",
+            "OVERFLOW",
+            "UNDERFLOW",
+            "ERROR"
+          ],
+          "CONTROL": "BLIND_TRANSMITTER.LEVEL_2_STATUS"
+        },
+        "LEVEL_2": {
+          "MIN": 0,
+          "UNIT": "100%",
+          "OPERATIONS": 5,
+          "MAX": 1.01,
+          "FLAGS": 1,
+          "ID": "LEVEL_2",
+          "TYPE": "FLOAT",
+          "DEFAULT": 0,
+          "CONTROL": "BLIND_TRANSMITTER.LEVEL_2"
+        },
+        "LEVEL_STATUS": {
+          "MIN": "NORMAL",
+          "OPERATIONS": 5,
+          "MAX": "ERROR",
+          "FLAGS": 1,
+          "ID": "LEVEL_STATUS",
+          "TYPE": "ENUM",
+          "DEFAULT": "NORMAL",
+          "VALUE_LIST": [
+            "NORMAL",
+            "UNKNOWN",
+            "OVERFLOW",
+            "UNDERFLOW",
+            "ERROR"
+          ],
+          "CONTROL": "BLIND_TRANSMITTER.LEVEL_STATUS"
+        },
+        "PROCESS": {
+          "MIN": "STABLE",
+          "OPERATIONS": 5,
+          "MAX": "NOT_STABLE",
+          "FLAGS": 1,
+          "ID": "PROCESS",
+          "TYPE": "ENUM",
+          "DEFAULT": "STABLE",
+          "VALUE_LIST": [
+            "STABLE",
+            "NOT_STABLE"
+          ]
+        },
+        "LEVEL": {
+          "MIN": 0,
+          "UNIT": "100%",
+          "OPERATIONS": 5,
+          "MAX": 1.01,
+          "FLAGS": 1,
+          "ID": "LEVEL",
+          "TYPE": "FLOAT",
+          "DEFAULT": 0,
+          "CONTROL": "BLIND_TRANSMITTER.LEVEL"
+        },
+        "SECTION": {
+          "MIN": 0,
+          "OPERATIONS": 5,
+          "MAX": 15,
+          "FLAGS": 1,
+          "ID": "SECTION",
+          "TYPE": "INTEGER",
+          "DEFAULT": 0
+        },
+        "ACTIVITY_STATE": {
+          "MIN": "UNKNOWN",
+          "OPERATIONS": 5,
+          "MAX": "STABLE",
+          "FLAGS": 1,
+          "ID": "ACTIVITY_STATE",
+          "TYPE": "ENUM",
+          "DEFAULT": "UNKNOWN",
+          "VALUE_LIST": [
+            "UNKNOWN",
+            "UP",
+            "DOWN",
+            "STABLE"
+          ],
+          "CONTROL": "BLIND_TRANSMITTER.ACTIVITY_STATE"
+        }
+      }
+    },
+    {
+      "_id": "hm-rpc.meta.VALUES.HmIP-FBL.BLIND_VIRTUAL_RECEIVER.1",
+      "type": "meta",
+      "meta": {
+        "adapter": "hm-rpc",
+        "type": "paramsetDescription"
+      },
+      "common": {},
+      "native": {
+        "SECTION_STATUS": {
+          "MIN": "NORMAL",
+          "OPERATIONS": 5,
+          "MAX": "UNKNOWN",
+          "FLAGS": 1,
+          "ID": "SECTION_STATUS",
+          "TYPE": "ENUM",
+          "DEFAULT": "NORMAL",
+          "VALUE_LIST": [
+            "NORMAL",
+            "UNKNOWN"
+          ]
+        },
+        "LEVEL_2_STATUS": {
+          "MIN": "NORMAL",
+          "OPERATIONS": 5,
+          "MAX": "ERROR",
+          "FLAGS": 1,
+          "ID": "LEVEL_2_STATUS",
+          "TYPE": "ENUM",
+          "DEFAULT": "NORMAL",
+          "VALUE_LIST": [
+            "NORMAL",
+            "UNKNOWN",
+            "OVERFLOW",
+            "UNDERFLOW",
+            "ERROR"
+          ],
+          "CONTROL": "BLIND_VIRTUAL_RECEIVER.LEVEL_2_STATUS"
+        },
+        "LEVEL_2": {
+          "MIN": 0,
+          "UNIT": "100%",
+          "OPERATIONS": 7,
+          "MAX": 1.01,
+          "FLAGS": 1,
+          "ID": "LEVEL_2",
+          "TYPE": "FLOAT",
+          "DEFAULT": 0,
+          "CONTROL": "BLIND_VIRTUAL_RECEIVER.LEVEL_2"
+        },
+        "LEVEL_STATUS": {
+          "MIN": "NORMAL",
+          "OPERATIONS": 5,
+          "MAX": "ERROR",
+          "FLAGS": 1,
+          "ID": "LEVEL_STATUS",
+          "TYPE": "ENUM",
+          "DEFAULT": "NORMAL",
+          "VALUE_LIST": [
+            "NORMAL",
+            "UNKNOWN",
+            "OVERFLOW",
+            "UNDERFLOW",
+            "ERROR"
+          ],
+          "CONTROL": "BLIND_VIRTUAL_RECEIVER.LEVEL_STATUS"
+        },
+        "STOP": {
+          "MIN": false,
+          "OPERATIONS": 2,
+          "MAX": true,
+          "FLAGS": 1,
+          "ID": "STOP",
+          "TYPE": "ACTION",
+          "DEFAULT": false,
+          "CONTROL": "BLIND_VIRTUAL_RECEIVER.STOP"
+        },
+        "PROCESS": {
+          "MIN": "STABLE",
+          "OPERATIONS": 5,
+          "MAX": "NOT_STABLE",
+          "FLAGS": 1,
+          "ID": "PROCESS",
+          "TYPE": "ENUM",
+          "DEFAULT": "STABLE",
+          "VALUE_LIST": [
+            "STABLE",
+            "NOT_STABLE"
+          ]
+        },
+        "LEVEL": {
+          "MIN": 0,
+          "UNIT": "100%",
+          "OPERATIONS": 7,
+          "MAX": 1.01,
+          "FLAGS": 1,
+          "ID": "LEVEL",
+          "TYPE": "FLOAT",
+          "DEFAULT": 0,
+          "CONTROL": "BLIND_VIRTUAL_RECEIVER.LEVEL"
+        },
+        "SECTION": {
+          "MIN": 0,
+          "OPERATIONS": 5,
+          "MAX": 15,
+          "FLAGS": 1,
+          "ID": "SECTION",
+          "TYPE": "INTEGER",
+          "DEFAULT": 0
+        },
+        "ACTIVITY_STATE": {
+          "MIN": "UNKNOWN",
+          "OPERATIONS": 5,
+          "MAX": "STABLE",
+          "FLAGS": 1,
+          "ID": "ACTIVITY_STATE",
+          "TYPE": "ENUM",
+          "DEFAULT": "UNKNOWN",
+          "VALUE_LIST": [
+            "UNKNOWN",
+            "UP",
+            "DOWN",
+            "STABLE"
+          ],
+          "CONTROL": "BLIND_VIRTUAL_RECEIVER.ACTIVITY_STATE"
+        }
+      }
+    },
+    {
+      "_id": "hm-rpc.meta.VALUES.HmIP-FBL.BLIND_WEEK_PROFILE.1",
+      "type": "meta",
+      "meta": {
+        "adapter": "hm-rpc",
+        "type": "paramsetDescription"
+      },
+      "common": {},
+      "native": {
+        "WEEK_PROGRAM_TARGET_CHANNEL_LOCK": {
+          "MIN": "MANU_MODE",
+          "OPERATIONS": 2,
+          "MAX": "AUTO_MODE_WITHOUT_RESET",
+          "FLAGS": 1,
+          "ID": "WEEK_PROGRAM_TARGET_CHANNEL_LOCK",
+          "TYPE": "ENUM",
+          "DEFAULT": "MANU_MODE",
+          "VALUE_LIST": [
+            "MANU_MODE",
+            "AUTO_MODE_WITH_RESET",
+            "AUTO_MODE_WITHOUT_RESET"
+          ],
+          "CONTROL": "WEEK_PROFILE.TARGET_CHANNEL_LOCK"
+        },
+        "WEEK_PROGRAM_TARGET_CHANNEL_LOCKS": {
+          "MIN": 0,
+          "OPERATIONS": 2,
+          "MAX": 16777215,
+          "FLAGS": 1,
+          "ID": "WEEK_PROGRAM_TARGET_CHANNEL_LOCKS",
+          "TYPE": "INTEGER",
+          "DEFAULT": 0,
+          "CONTROL": "WEEK_PROFILE.TARGET_CHANNEL_LOCKS"
+        },
+        "WEEK_PROGRAM_CHANNEL_LOCKS": {
+          "MIN": 0,
+          "OPERATIONS": 5,
+          "MAX": 16777215,
+          "FLAGS": 1,
+          "ID": "WEEK_PROGRAM_CHANNEL_LOCKS",
+          "TYPE": "INTEGER",
+          "DEFAULT": 0,
+          "CONTROL": "WEEK_PROFILE.CHANNEL_LOCKS"
         }
       }
     }

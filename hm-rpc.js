@@ -679,9 +679,9 @@ function main() {
                         }
                         if (dpTypes[row.id].MAX === 99) {
                             dpTypes[row.id].MAX = 100;
-                        } else if (dpTypes[row.id].MAX === 1.005) {
+                        } else if (dpTypes[row.id].MAX === 1.005 || dpTypes[row.id].MAX === 1.01) {
                             dpTypes[row.id].MAX = 1;
-                        }
+                        } // endElseIf
                     } // endIf
                 }
             }
