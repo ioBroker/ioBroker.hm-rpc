@@ -13,8 +13,20 @@
       "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
       "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
     },
-    "version": "1.9.17",
+    "version": "1.9.18",
     "news": {
+      "1.9.18": {
+        "en": "new meta data handling strategy",
+        "de": "neue Strategie für den Umgang mit Metadaten",
+        "ru": "новая стратегия обработки метаданных",
+        "pt": "nova estratégia de manuseio de metadados",
+        "nl": "nieuwe meta-gegevensverwerkingsstrategie",
+        "fr": "nouvelle stratégie de traitement des métadonnées",
+        "it": "nuova strategia di gestione dei metadati",
+        "es": "nueva estrategia de manejo de metadatos",
+        "pl": "nowa strategia przetwarzania metadanych",
+        "zh-cn": "新的元数据处理策略"
+      },
       "1.9.17": {
         "en": "now handling max values of 1.01 as 1",
         "de": "Jetzt werden die Maximalwerte von 1,01 als 1 behandelt",
@@ -98,18 +110,6 @@
         "es": "uso de unidades significativas para los estados RSSI y OPERATING_VOLTAGE",
         "pl": "użycie znaczących jednostek dla stanów RSSI i OPERATING_VOLTAGE",
         "zh-cn": "对RSSI和OPERATING_VOLTAGE状态使用有意义的单位"
-      },
-      "1.9.10": {
-        "en": "added new meta data and corrected some meta data",
-        "de": "Neue Metadaten hinzugefügt und einige Metadaten korrigiert",
-        "ru": "добавлены новые метаданные и исправлены некоторые метаданные",
-        "pt": "adicionou novos metadados e corrigiu alguns metadados",
-        "nl": "nieuwe metadata toegevoegd en enkele metadata gecorrigeerd",
-        "fr": "ajout de nouvelles métadonnées et correction de certaines métadonnées",
-        "it": "ha aggiunto nuovi metadati e corretto alcuni metadati",
-        "es": "Se agregaron nuevos metadatos y se corrigieron algunos metadatos.",
-        "pl": "dodano nowe metadane i poprawiono niektóre metadane",
-        "zh-cn": "添加了新的元数据并更正了一些元数据"
       }
     },
     "authors": [
