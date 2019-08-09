@@ -1181,8 +1181,8 @@ function getValueParamsets() {
                                 // if not empty
                                 for (const attr in res) {
                                     if (res.hasOwnProperty(attr)) {
-                                        adapter.log.warn(`Send this info to developer: "_id": "${key}"`);
-                                        adapter.log.warn(`Send this info to developer: ${JSON.stringify(paramset)}`);
+                                        adapter.log.debug(`New metadata added: "_id": "${key}"`);
+                                        adapter.log.debug(`New metadata added: ${JSON.stringify(paramset)}`);
                                         break;
                                     }
                                 }
