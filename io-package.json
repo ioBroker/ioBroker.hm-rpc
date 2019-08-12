@@ -13,9 +13,9 @@
       "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
       "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
     },
-    "version": "1.9.19",
+    "version": "1.10.0",
     "news": {
-      "1.9.19": {
+      "1.10.0": {
         "en": "new meta data handling strategy",
         "de": "neue Strategie für den Umgang mit Metadaten",
         "ru": "новая стратегия обработки метаданных",
@@ -145,7 +145,12 @@
     ],
     "type": "iot-systems",
     "supportStopInstance": true,
-    "messagebox": true
+    "messagebox": true,
+    "dependencies": [
+      {
+        "js-controller": ">=1.4.2"
+      }
+    ]
   },
   "native": {
     "homematicAddress": "192.168.0.100",
