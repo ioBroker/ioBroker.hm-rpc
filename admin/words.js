@@ -89,7 +89,7 @@ systemDictionary = {
     },
     'Check communication interval (sec)': {
         'en': 'Check communication interval(sec)',
-        'de': 'Verbindungs-Check Interval(sek)',
+        'de': 'Verbindungs-Test Intervall(s)',
         'ru': 'Интервал проверки соединения(сек)',
         'pt': 'Verifique o intervalo de comunicação (seg)',
         'nl': 'Controleer communicatie-interval (sec)',
@@ -101,7 +101,7 @@ systemDictionary = {
     },
     'Reconnect interval (sec)': {
         'en': 'Reconnect interval (sec)',
-        'de': 'Wiederverbindungs-Interval(sek)',
+        'de': 'Wiederverbindungs-Intervall(sek)',
         'ru': 'Интервал повтора соединения(сек)',
         'pt': 'Intervalo de Reconexão (segundo)',
         'nl': 'Verbindingsinterval opnieuw verbinden (sec)',
@@ -173,7 +173,7 @@ systemDictionary = {
     },
     'Please specify callback address': {
         'en': 'Please specify callback address.',
-        'de': 'Bitte callback IP-Adresse eingeben.',
+        'de': 'Bitte Callback IP-Adresse eingeben.',
         'ru': 'Введите IP адрес для callback.',
         'pt': 'Por favor, especifique o endereço de retorno de chamada.',
         'nl': 'Geef het callback-adres op.',
@@ -197,7 +197,7 @@ systemDictionary = {
     },
     'Force objects re-init': {
         'en': 'Synchronize objects (once)',
-        'de': 'Synchronisiere Geräte neu (einmalig)',
+        'de': 'Geräte neu einlesen (einmalig)',
         'ru': 'Синхронизировать объекты (один раз)',
         'pt': 'Sincronizar objetos (uma vez)',
         'nl': 'Synchroniseer objecten (één keer)',

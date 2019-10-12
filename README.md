@@ -122,6 +122,32 @@ If you use HomeMatic switches or remotes their button states will only be acknow
 by ioBroker, when you have a running 'dummy' program on the CCU which depends on the related switch or remote.
 
 ## Changelog
+### 1.10.0 (2019-08-12)
+* (foxriver76) new meta data handling procedure
+* __js-controller >= 1.4.2 required__
+
+### 1.9.17 (2019-08-04)
+* (foxriver76) handle meta values with max 1.01 as 1
+
+### 1.9.16 (2019-07-18)
+* (foxriver76) no longer use adapter.objects if not necessary
+* (foxriver76) added meta data
+
+### 1.9.15 (2019-07-01)
+* (foxriver76) added meta and icon for HB-UNI-Sen-CAP-MOIST
+* (foxriver76) fix type of EPAPER_TONE to string
+
+### 1.9.14 (2019-06-29)
+* (foxriver76) small bug fix for HM-Dis-EP-WM55
+* (foxriver76) catch async errors on bin-rpc connection
+
+### 1.9.13 (2019-06-03)
+* (foxriver76) fixed bug where some meta values where stored in the wrong index
+
+### 1.9.12 (2019-05-27)
+* (foxriver76) fix maintenance channel of HM-Dis-EP-WM55
+* (foxriver76) meta data added
+
 ### 1.9.11 (2019-04-21)
 * (foxriver76) create OPERATING_VOLTAGE with unit V
 * (foxriver76) create RSSI_* with unit dBm

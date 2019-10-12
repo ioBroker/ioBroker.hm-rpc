@@ -32,6 +32,7 @@ const utils = require('@iobroker/adapter-core'); // Get common adapter utils
 const adapterName = require('./package.json').name.split('.').pop();
 const images = require('./lib/images');
 const crypto = require('./lib/crypto'); // Provides encrypt and decrypt
+const meta = require('./lib/meta');
 let connected = false;
 const displays = {};
 let adapter;
@@ -173,9 +174,9 @@ function combineEPaperCommand(lines, signal, ton, repeats, offset) {
     repeats = 1;
 
     let command = '0x02,0x0A';
-    for (let m = 0; m < lines.length; m++) {
-        const line = lines[m].line;
-        const icon = lines[m].icon;
+    for (const li of lines) {
+        const line = li.line;
+        const icon = li.icon;
         if (line || icon) {
             command = command + ',0x12';
             let i;
@@ -200,58 +201,38 @@ function combineEPaperCommand(lines, signal, ton, repeats, offset) {
 
     if (repeats < 1) {
         command = command + '0xDF,0x1D,';
+    } else if (repeats < 11) {
+        command = command + '0xD' + (repeats - 1) + ',0x1D,';
+    } else if (repeats === 11) {
+        command = command + '0xDA,0x1D,';
+    } else if (repeats === 12) {
+        command = command + '0xDB,0x1D,';
+    } else if (repeats === 13) {
+        command = command + '0xDC,0x1D,';
+    } else if (repeats === 14) {
+        command = command + '0xDD,0x1D,';
     } else {
-        if (repeats < 11) {
-            command = command + '0xD' + (repeats - 1) + ',0x1D,';
-        } else {
-            if (repeats === 11) {
-                command = command + '0xDA,0x1D,';
-            } else {
-                if (repeats === 12) {
-                    command = command + '0xDB,0x1D,';
-                } else {
-                    if (repeats === 13) {
-                        command = command + '0xDC,0x1D,';
-                    } else {
-                        if (repeats === 14) {
-                            command = command + '0xDD,0x1D,';
-                        } else {
-                            command = command + '0xDE,0x1D,';
-                        }
-                    }
-                }
-            }
-        }
+        command = command + '0xDE,0x1D,';
     }
+
     if (offset <= 10) {
         command = command + '0xE0,0x16,';
+    } else if (offset <= 100) {
+        command = command + '0xE' + (offset - 1 / 10) + ',0x16,';
+    } else if (offset <= 110) {
+        command = command + '0xEA,0x16,';
+    } else if (offset <= 120) {
+        command = command + '0xEB,0x16,';
+    } else if (offset <= 130) {
+        command = command + '0xEC,0x16,';
+    } else if (offset <= 140) {
+        command = command + '0xED,0x16,';
+    } else if (offset <= 150) {
+        command = command + '0xEE,0x16,';
     } else {
-        if (offset <= 100) {
-            command = command + '0xE' + (offset - 1 / 10) + ',0x16,';
-        } else {
-            if (offset <= 110) {
-                command = command + '0xEA,0x16,';
-            } else {
-                if (offset <= 120) {
-                    command = command + '0xEB,0x16,';
-                } else {
-                    if (offset <= 130) {
-                        command = command + '0xEC,0x16,';
-                    } else {
-                        if (offset <= 140) {
-                            command = command + '0xED,0x16,';
-                        } else {
-                            if (offset <= 150) {
-                                command = command + '0xEE,0x16,';
-                            } else {
-                                command = command + '0xEF,0x16,';
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        command = command + '0xEF,0x16,';
     }
+
     command = command + signal + ',0x03';
     return command;
 }
@@ -271,10 +252,10 @@ function controlEPaper(id, data) {
                 }
             });
         } else {
-            adapter.log.warn('Cannot setValue "' + id + '", because not connected.');
+            adapter.log.warn(`Cannot setValue "${id}", because not connected.`);
         }
     } catch (err) {
-        adapter.log.error('Cannot call setValue: :' + err);
+        adapter.log.error(`Cannot call setValue: ${err}`);
     }
 }
 
@@ -415,7 +396,7 @@ function startAdapter(options) {
 
         ready: () => {
             adapter.subscribeStates('*');
-            main();
+            createMeta().then(main);
         },
         stateChange: (id, state) => {
             if (state && state.ack !== true) {
@@ -655,8 +636,8 @@ function main() {
     adapter.objects.getObjectView('hm-rpc', 'paramsetDescription', {
         startkey: 'hm-rpc.meta.VALUES',
         endkey: 'hm-rpc.meta.VALUES.\u9999'
-    }, function handleValueParamSetDescriptions(err, doc) {
-        if (err) adapter.log.error('getObjectView hm-rpc: ' + err);
+    }, (err, doc) => {
+        if (err) adapter.log.error(`getObjectView hm-rpc: ${err}`);
         if (doc && doc.rows) {
             for (const row of doc.rows) {
                 const channel = row.id.slice(19);
@@ -664,7 +645,7 @@ function main() {
             }
         }
         // Load common.role assignments
-        adapter.objects.getObject('hm-rpc.meta.roles', (err, res) => {
+        adapter.getForeignObject('hm-rpc.meta.roles', (err, res) => {
             if (err) adapter.log.error('hm-rpc.meta.roles: ' + err);
             if (res) metaRoles = res.native;
 
@@ -676,7 +657,7 @@ function main() {
     adapter.objects.getObjectView('system', 'state', {
         startkey: adapter.namespace,
         endkey: adapter.namespace + '\u9999'
-    }, function handleStateViews(err, res) {
+    }, (err, res) => {
         if (!err && res.rows) {
             for (const row of res.rows) {
                 if (row.id === adapter.namespace + '.updated') continue;
@@ -699,15 +680,15 @@ function main() {
                         }
                         if (dpTypes[row.id].MAX === 99) {
                             dpTypes[row.id].MAX = 100;
-                        } else if (dpTypes[row.id].MAX === 1.005) {
+                        } else if (dpTypes[row.id].MAX === 1.005 || dpTypes[row.id].MAX === 1.01) {
                             dpTypes[row.id].MAX = 1;
-                        }
+                        } // endElseIf
                     } // endIf
                 }
             }
         }
     });
-}
+} // endMain
 
 function sendInit() {
     try {
@@ -735,7 +716,7 @@ function sendInit() {
         adapter.log.error('Init not possible, going to stop: ' + err);
         adapter.stop();
     }
-}
+} // endSendInit
 
 function sendPing() {
     if (rpcClient) {
@@ -766,14 +747,14 @@ function sendPing() {
             connect();
         }
     }
-}
+} // endSendPing
 
 function initRpcServer() {
     adapter.config.homematicPort = parseInt(adapter.config.homematicPort, 10);
     adapter.config.port = parseInt(adapter.config.port, 10);
     adapter.config.useHttps = adapter.config.useHttps || false;
 
-    //adapterPort was introduced in v1.0.1. If not set yet then try 2000
+    // adapterPort was introduced in v1.0.1. If not set yet then try 2000
     const adapterPort = parseInt(adapter.config.port || adapter.config.homematicPort, 10) || 2000;
     const callbackAddress = adapter.config.callbackAddress || adapter.config.adapterAddress;
     adapter.getPort(adapterPort, port => {
@@ -794,10 +775,10 @@ function initRpcServer() {
         rpcServer.on('system.multicall', (method, params, callback) => {
             updateConnection();
             const response = [];
-            for (let i = 0; i < params[0].length; i++) {
-                if (methods[params[0][i].methodName]) {
-                    adapter.log.debug(adapter.config.type + ' multicall <' + params[0][i].methodName + '>: ' + params[0][i].params);
-                    response.push(methods[params[0][i].methodName](null, params[0][i].params));
+            for (const param of params[0]) {
+                if (methods[param.methodName]) {
+                    adapter.log.debug(`${adapter.config.type} multicall <${param.methodName}>: ${param.params}`);
+                    response.push(methods[param.methodName](null, param.params));
                 } else {
                     response.push('');
                 }
@@ -908,14 +889,11 @@ function initRpcServer() {
                         if (doc.rows[i].id === adapter.namespace + '.updated') continue;
                         const val = doc.rows[i].value;
 
-                        /*if (val.PARENT_TYPE) {
-                         channelParams[val.ADDRESS] = val.PARENT_TYPE + '.' + val.TYPE + '.' + val.VERSION;
-                         }*/
                         if (val.ADDRESS) response.push({ADDRESS: val.ADDRESS, VERSION: val.VERSION});
                     }
                 }
                 adapter.log.info(adapter.config.type + 'rpc -> ' + response.length + ' devices');
-                //log.info(JSON.stringify(response));
+
                 try {
                     for (let r = response.length - 1; r >= 0; r--) {
                         if (!response[r].ADDRESS) {
@@ -968,7 +946,7 @@ function initRpcServer() {
         });
 
     });
-}
+} // endInitRPCServer
 
 const methods = {
 
@@ -1005,12 +983,10 @@ const methods = {
 const queueValueParamsets = [];
 
 function addParamsetObjects(channel, paramset, callback) {
-    const channelChildren = [];
     const promises = [];
 
     for (const key in paramset) {
         if (!paramset.hasOwnProperty(key)) continue;
-        channelChildren.push(channel._id + '.' + key);
         const commonType = {
             ACTION: 'boolean',
             BOOL: 'boolean',
@@ -1019,7 +995,8 @@ function addParamsetObjects(channel, paramset, callback) {
             INTEGER: 'number',
             STRING: 'string',
             EPAPER_LINE: 'string',
-            EPAPER_ICON: 'string'
+            EPAPER_ICON: 'string',
+            EPAPER_TONE: 'string'
         };
 
         const obj = {
@@ -1071,27 +1048,19 @@ function addParamsetObjects(channel, paramset, callback) {
 
         if (metaRoles.dpCONTROL && metaRoles.dpCONTROL[obj.native.CONTROL]) {
             obj.common.role = metaRoles.dpCONTROL[obj.native.CONTROL];
-
         } else if (metaRoles.chTYPE_dpNAME && metaRoles.chTYPE_dpNAME[channel.native.TYPE + '.' + key]) {
             obj.common.role = metaRoles.chTYPE_dpNAME[channel.native.TYPE + '.' + key];
-
         } else if (metaRoles.dpNAME && metaRoles.dpNAME[key]) {
             obj.common.role = metaRoles.dpNAME[key];
         }
 
         if (obj.common.role === 'state' && obj.common.write) {
             obj.common.role = 'switch';
-        }
-
-        if (obj.common.role === 'level.color.hue') {
+        } else if (obj.common.role === 'level.color.hue') {
             obj.common.max = 200;
-        }
-
-        if (obj.common.role === 'value.rssi') {
+        } else if (obj.common.role === 'value.rssi') {
             obj.common.unit = 'dBm';
-        }
-
-        if (obj.common.role === 'value.voltage') {
+        } else if (obj.common.role === 'value.voltage') {
             obj.common.unit = 'V';
         }
 
@@ -1161,37 +1130,44 @@ function getValueParamsets() {
         return;
     }
     const obj = queueValueParamsets.pop();
-    const cid = obj.native.PARENT_TYPE + '.' + obj.native.TYPE + '.' + obj.native.VERSION;
+    const cid = `${obj.native.PARENT_TYPE}.${obj.native.TYPE}.${obj.native.VERSION}`;
 
+    adapter.log.debug(`getValueParamsets ${cid}`);
+
+    // if meta values are cached for Epaper we extend this cached meta values by epaper states
     if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
         addEPaperToMeta();
     }
-
-    adapter.log.debug('getValueParamsets ' + cid);
 
     if (metaValues[cid]) {
         adapter.log.debug('paramset cache hit');
         addParamsetObjects(obj, metaValues[cid], () => setImmediate(getValueParamsets));
     } else {
-        const key = 'hm-rpc.meta.VALUES.' + cid;
-        adapter.objects.getObject(key, (err, res) => {
+        const key = `hm-rpc.meta.VALUES.${cid}`;
+        adapter.getForeignObject(key, (err, res) => {
 
             if (res && res.native) {
-                adapter.log.debug(key + ' found');
+                adapter.log.debug(`${key} found`);
                 metaValues[cid] = res.native;
 
                 if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
                     addEPaperToMeta();
                 }
 
-                addParamsetObjects(obj, res.native, () => setImmediate(getValueParamsets));
+                addParamsetObjects(obj, metaValues[cid], () => setImmediate(getValueParamsets));
             } else {
                 adapter.log.info(adapter.config.type + 'rpc -> getParamsetDescription ' + JSON.stringify([obj.native.ADDRESS, 'VALUES']));
                 try {
                     rpcClient.methodCall('getParamsetDescription', [obj.native.ADDRESS, 'VALUES'], (err, res) => {
                         if (err) {
-                            adapter.log.error('Error on getParamsetDescription: ' + err);
+                            adapter.log.error(`Error on getParamsetDescription: ${err}`);
                         } else {
+                            metaValues[cid] = res;
+
+                            if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
+                                addEPaperToMeta();
+                            }
+
                             const paramset = {
                                 'type': 'meta',
                                 'meta': {
@@ -1199,47 +1175,47 @@ function getValueParamsets() {
                                     type: 'paramsetDescription'
                                 },
                                 'common': {},
-                                'native': res
+                                'native': metaValues[cid]
                             };
-                            metaValues[key] = res;
-
-                            if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
-                                addEPaperToMeta();
-                            }
 
                             if (res) {
                                 // if not empty
                                 for (const attr in res) {
                                     if (res.hasOwnProperty(attr)) {
-                                        adapter.log.warn('Send this info to developer: _id: "' + key + '"');
-                                        adapter.log.warn('Send this info to developer: ' + JSON.stringify(paramset));
+                                        adapter.log.warn(`Send this info to developer: "_id": "${key}"`);
+                                        adapter.log.warn(`Send this info to developer: ${JSON.stringify(paramset)}`);
                                         break;
                                     }
                                 }
                             }
 
-                            adapter.objects.setObject(key, paramset, () => {
-                                addParamsetObjects(obj, res, () => {
+                            adapter.setForeignObject(key, paramset, () => {
+                                addParamsetObjects(obj, metaValues[cid], () => {
                                     setImmediate(getValueParamsets);
                                 });
                             });
                         }
                     });
                 } catch (err) {
-                    adapter.log.error('Cannot call getParamsetDescription: :' + err);
+                    adapter.log.error(`Cannot call getParamsetDescription: ${err}`);
                 }
             }
         });
     }
-}
+} // endGetValueParamsets
 
 function addEPaperToMeta() {
     // Check all versions from 9 to 12
     for (let i = 9; i < 13; i++) {
-        const id = 'HM-Dis-EP-WM55.MAINTENANCE.' + i;
+        const id = `HM-Dis-EP-WM55.MAINTENANCE.${i}`;
         if (!metaValues[id] || !metaValues[id].EPAPER_LINE2) {
+            // Add the EPAPER States to the Maintenance channel if they are non-existent
             metaValues[id] = metaValues[id] || {};
+
+            adapter.log.debug(`[EPAPER] Add E-Paper to Meta on ${JSON.stringify(metaValues[id])}`);
+
             const obj = metaValues[id];
+
             obj.EPAPER_LINE2 = {
                 TYPE: 'EPAPER_LINE',
                 ID: 'LINE2',
@@ -1341,53 +1317,54 @@ function addEPaperToMeta() {
 function createDevices(deviceArr, callback) {
     const objs = [];
 
-    for (let i = 0; i < deviceArr.length; i++) {
+    for (const device of deviceArr) {
         let type;
         let role;
         let icon;
 
-        if (deviceArr[i].PARENT) {
+        if (device.PARENT) {
             type = 'channel';
-            role = metaRoles.chTYPE && metaRoles.chTYPE[deviceArr[i].TYPE] ? metaRoles.chTYPE && metaRoles.chTYPE[deviceArr[i].TYPE] : undefined;
+            role = metaRoles.chTYPE && metaRoles.chTYPE[device.TYPE] ? metaRoles.chTYPE && metaRoles.chTYPE[device.TYPE] : undefined;
         } else {
             type = 'device';
-            if (!images[deviceArr[i].TYPE]) {
-                adapter.log.warn('No image for "' + deviceArr[i].TYPE + '" found.');
+            if (!images[device.TYPE]) {
+                adapter.log.warn('No image for "' + device.TYPE + '" found.');
             }
 
-            icon = images[deviceArr[i].TYPE] ? ('/icons/' + images[deviceArr[i].TYPE]) : '';
+            icon = images[device.TYPE] ? ('/icons/' + images[device.TYPE]) : '';
         }
 
         const obj = {
-            _id: deviceArr[i].ADDRESS.replace(':', '.').replace(FORBIDDEN_CHARS, '_'),
+            _id: device.ADDRESS.replace(':', '.').replace(FORBIDDEN_CHARS, '_'),
             type: type,
             common: {
-                // FIXME strange bug - LEVEL and WORKING datapoint of Dimmers have name of first dimmer device?!?
-                name: deviceArr[i].ADDRESS,
+                name: device.ADDRESS,
                 role: role
             },
-            native: deviceArr[i]
+            native: device
         };
 
         if (icon) obj.common.icon = icon;
 
-        const dpID = adapter.namespace + '.' + obj._id;
+        const dpID = `${adapter.namespace}.${obj._id}`;
+
         dpTypes[dpID] = {
-            UNIT: deviceArr[i].UNIT,
-            TYPE: deviceArr[i].TYPE,
-            MAX: deviceArr[i].MAX,
-            MIN: deviceArr[i].MIN,
+            UNIT: device.UNIT,
+            TYPE: device.TYPE,
+            MAX: device.MAX,
+            MIN: device.MIN,
             role: role
         };
         if (typeof dpTypes[dpID].MIN === 'number') {
             dpTypes[dpID].MIN = parseFloat(dpTypes[dpID].MIN);
             dpTypes[dpID].MAX = parseFloat(dpTypes[dpID].MAX);
 
-            // Humidity is from 0 to 99. It is wrong.
+            // e. g. Humidity is from 0 to 99. It is wrong.
             if (dpTypes[dpID].MAX === 99) {
                 dpTypes[dpID].MAX = 100;
             }
 
+            // Sometimes unit is 100%, sometimes % it's the same
             if (dpTypes[dpID].UNIT === '100%') {
                 dpTypes[dpID].UNIT = '%';
             }
@@ -1414,11 +1391,6 @@ function createDevices(deviceArr, callback) {
             });
 
             if (obj.type === 'channel') {
-                // var cid = obj.native.PARENT_TYPE + '.' + obj.native.TYPE + '.' + obj.native.VERSION;
-                //channelParams[obj._id] = cid;
-                if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
-                    addEPaperToMeta();
-                }
                 queueValueParamsets.push(obj);
             }
 
@@ -1448,11 +1420,11 @@ function getCuxDevices(callback) {
                         endkey: 'hm-rpc.' + adapter.instance + '.\u9999'
                     }, (err, doc) => {
                         if (doc && doc.rows) {
-                            for (let i = 0; i < doc.rows.length; i++) {
-                                if (doc.rows[i].id === adapter.namespace + '.updated') continue;
+                            for (const row of doc.rows) {
+                                if (row.id === adapter.namespace + '.updated') continue;
 
                                 // lets get the device description
-                                const val = doc.rows[i].value;
+                                const val = row.value;
 
                                 if (typeof val.ADDRESS === 'undefined') continue;
 
@@ -1539,14 +1511,17 @@ function connect(isFirst) {
             reconnectTimeout: adapter.config.reconnectInterval * 1000
         });
 
+        // If we have bin-rpc, only need it here because bin-rpc cant have https
+        if (rpcClient.on) {
+            rpcClient.on('error', err => {
+                adapter.log.error(`Socket error: ${err}`);
+            });
+        } // endIf
+
         // if bin-rpc
         /*        if (rpcClient.on) {
             rpcClient.on('connect', function (err) {
                 sendInit();
-            });
-
-            rpcClient.on('error', function (err) {
-                adapter.log.error('Socket error: ' + err);
             });
 
             rpcClient.on('close', function () {
@@ -1635,6 +1610,17 @@ function keepAlive() {
         sendPing();
     }
 } // endKeepAlive
+
+function createMeta() {
+    return new Promise(resolve => {
+        const promises = [];
+        for (const data of meta) {
+            promises.push(adapter.setForeignObjectAsync(data._id, data));
+        } // endFor
+        adapter.log.info('[META] Meta data updated');
+        Promise.all(promises).then(resolve);
+    });
+}  // endCreateMeta
 
 // If started as allInOne/compact mode => return function to create instance
 if (module && module.parent) {
