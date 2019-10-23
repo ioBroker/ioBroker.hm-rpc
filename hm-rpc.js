@@ -646,7 +646,7 @@ function main() {
         }
         // Load common.role assignments
         adapter.getForeignObject('hm-rpc.meta.roles', (err, res) => {
-            if (err) adapter.log.error('hm-rpc.meta.roles: ' + err);
+            if (err) adapter.log.error(`hm-rpc.meta.roles: ${err}`);
             if (res) metaRoles = res.native;
 
             // Start Adapter
@@ -662,7 +662,7 @@ function main() {
             for (const row of res.rows) {
                 if (row.id === adapter.namespace + '.updated') continue;
                 if (!row.value.native) {
-                    adapter.log.warn('State ' + row.id + ' does not have native.');
+                    adapter.log.warn(`State ${row.id} does not have native.`);
                     dpTypes[row.id] = {UNIT: '', TYPE: ''};
                 } else {
                     dpTypes[row.id] = {
@@ -1053,6 +1053,15 @@ function addParamsetObjects(channel, paramset, callback) {
         } else if (metaRoles.dpNAME && metaRoles.dpNAME[key]) {
             obj.common.role = metaRoles.dpNAME[key];
         }
+
+        // replace min max values like MAX: OPEN (mapped to 1)
+        if (metaRoles.dpMinMax && metaRoles.dpMinMax[paramset[key].MIN] !== undefined) {
+            obj.common.min = metaRoles.dpMinMax[paramset[key].MIN];
+        } // endIf
+
+        if (metaRoles.dpMinMax && metaRoles.dpMinMax[paramset[key].MAX] !== undefined) {
+            obj.common.max = metaRoles.dpMinMax[paramset[key].MAX];
+        } // endIf
 
         if (obj.common.role === 'state' && obj.common.write) {
             obj.common.role = 'switch';
