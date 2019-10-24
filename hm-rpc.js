@@ -1054,7 +1054,13 @@ function addParamsetObjects(channel, paramset, callback) {
             obj.common.role = metaRoles.dpNAME[key];
         }
 
-        // replace min max values like MAX: OPEN (mapped to 1)
+        // sometimes min max is string on hmip meta in combination with value_list
+        if (typeof paramset[key].MIN === 'string' && paramset[key].VALUE_LIST) {
+            obj.common.min = paramset[key].VALUE_LIST.indexOf(paramset[key].MIN);
+        }
+        if (typeof paramset[key.MAX === 'string'] && paramset[key].VALUE_LIST) {
+            obj.common.min = paramset[key].VALUE_LIST.indexOf(paramset[key].MAX);
+        }
         if (metaRoles.dpMinMax && metaRoles.dpMinMax[paramset[key].MIN] !== undefined) {
             obj.common.min = metaRoles.dpMinMax[paramset[key].MIN];
         } // endIf
