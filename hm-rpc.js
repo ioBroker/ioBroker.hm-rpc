@@ -1059,15 +1059,8 @@ function addParamsetObjects(channel, paramset, callback) {
             obj.common.min = paramset[key].VALUE_LIST.indexOf(paramset[key].MIN);
         }
         if (typeof paramset[key.MAX === 'string'] && paramset[key].VALUE_LIST) {
-            obj.common.min = paramset[key].VALUE_LIST.indexOf(paramset[key].MAX);
+            obj.common.max = paramset[key].VALUE_LIST.indexOf(paramset[key].MAX);
         }
-        if (metaRoles.dpMinMax && metaRoles.dpMinMax[paramset[key].MIN] !== undefined) {
-            obj.common.min = metaRoles.dpMinMax[paramset[key].MIN];
-        } // endIf
-
-        if (metaRoles.dpMinMax && metaRoles.dpMinMax[paramset[key].MAX] !== undefined) {
-            obj.common.max = metaRoles.dpMinMax[paramset[key].MAX];
-        } // endIf
 
         if (obj.common.role === 'state' && obj.common.write) {
             obj.common.role = 'switch';
