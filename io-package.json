@@ -13,8 +13,20 @@
       "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
       "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
     },
-    "version": "1.10.2",
+    "version": "1.10.3",
     "news": {
+      "1.10.3": {
+        "en": "fixed info channel",
+        "de": "fester Infokanal",
+        "ru": "фиксированный информационный канал",
+        "pt": "canal de informação fixo",
+        "nl": "vast infokanaal",
+        "fr": "canal d'information fixe",
+        "it": "canale informativo fisso",
+        "es": "canal de información fijo",
+        "pl": "naprawiono kanał informacyjny",
+        "zh-cn": "固定信息频道"
+      },
       "1.10.2": {
         "en": "replaced min max values of HMIP with correct numbers ",
         "de": "Min-Max-Werte von HMIP durch korrekte Zahlen ersetzt",
@@ -86,30 +98,6 @@
         "es": "pequeña corrección de errores para HM-Dis-EP-WM55 y captura errores asíncronos en la conexión bin-rpc",
         "pl": "mała poprawka błędów dla HM-Dis-EP-WM55 i błędy asynchroniczne catch na połączeniu bin-rpc",
         "zh-cn": "HM-Dis-EP-WM55的小错误修复，并在bin-rpc连接上捕获异步错误"
-      },
-      "1.9.13": {
-        "en": "fixed bug where some meta values where stored in the wrong index",
-        "ru": "исправлена ​​ошибка, при которой некоторые мета значения хранятся в неверном индексе",
-        "de": "Fehler behoben, durch den einige Meta-Werte im falschen Index gespeichert wurden",
-        "fr": "bug corrigé où certaines méta-valeurs étaient stockées dans le mauvais index",
-        "nl": "bug gerepareerd waarbij sommige metawaarden in de verkeerde index zijn opgeslagen",
-        "pl": "naprawiono błąd, w którym niektóre wartości meta były przechowywane w niewłaściwym indeksie",
-        "pt": "bug fixo onde alguns valores meta onde armazenados no índice errado",
-        "es": "error corregido donde algunos valores meta estaban almacenados en el índice incorrecto",
-        "it": "bug corretto in cui alcuni meta valori erano memorizzati nell'indice sbagliato",
-        "zh-cn": "修复了某些元值存储在错误索引中的bug"
-      },
-      "1.9.12": {
-        "en": "fix maintenance channel of HM-Dis-EP-WM55 and metas added",
-        "de": "Wartungskanal von HM-Dis-EP-WM55 korrigiert und Metas hinzugefügt",
-        "ru": "исправлен канал обслуживания HM-Dis-EP-WM55 и добавлены метас",
-        "pt": "corrigir o canal de manutenção do HM-Dis-EP-WM55 e metas adicionadas",
-        "nl": "fixeer onderhoudskanaal van HM-Dis-EP-WM55 en metas toegevoegd",
-        "fr": "correction du canal de maintenance du HM-Dis-EP-WM55 et ajout de métas",
-        "it": "fissare il canale di manutenzione di HM-Dis-EP-WM55 e le metriche aggiunte",
-        "es": "Reparar el canal de mantenimiento de HM-Dis-EP-WM55 y las metas agregadas.",
-        "pl": "naprawiono kanał konserwacji HM-Dis-EP-WM55 i dodano metas",
-        "zh-cn": "修复了HM-Dis-EP-WM55和metas的维护通道"
       }
     },
     "authors": [
@@ -184,6 +172,39 @@
           "map": "function(doc) {\n  if (doc._id.match(/^hm-rpc\\.meta/) && doc.meta.type === 'paramsetDescription') {\n   emit(doc._id, doc);\n  }\n}"
         }
       }
+    }
+  ],
+  "instanceObjects": [
+    {
+      "_id": "updated",
+      "type": "state",
+      "common": {
+        "name": "Some new devices added",
+        "type": "boolean",
+        "read": true,
+        "write": true
+      }
+    },
+    {
+      "_id": "info",
+      "type": "channel",
+      "common": {
+        "name": "Information"
+      },
+      "native": {}
+    },
+    {
+      "_id": "info.connection",
+      "type": "state",
+      "common": {
+        "role": "indicator.connected",
+        "name": "If connected to CCU",
+        "type": "boolean",
+        "read": true,
+        "write": false,
+        "def": false
+      },
+      "native": {}
     }
   ]
 }
