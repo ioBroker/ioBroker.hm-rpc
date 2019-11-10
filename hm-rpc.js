@@ -1023,7 +1023,9 @@ function addParamsetObjects(channel, paramset, callback) {
             EPAPER_LINE: 'string',
             EPAPER_ICON: 'string',
             EPAPER_TONE: 'string',
-            EPAPER_SIGNAL: 'string'
+            EPAPER_SIGNAL: 'string',
+            EPAPER_OFFSET: 'number',
+            EPAPER_REPEATS: 'number'
         };
 
         const obj = {
@@ -1346,7 +1348,7 @@ function addEPaperToMeta() {
                 OPERATIONS: 2
             };
             obj.EPAPER_OFFSET = {
-                TYPE: 'number',
+                TYPE: 'EPAPER_OFFSET',
                 ID: 'EPAPER_OFFSET',
                 MIN: 10,
                 MAX: 160,
@@ -1354,7 +1356,7 @@ function addEPaperToMeta() {
                 DEFAULT: 10
             };
             obj.EPAPER_REPEATS = {
-                TYPE: 'number',
+                TYPE: 'EPAPER_REPEATS',
                 ID: 'EPAPER_REPEATS',
                 MIN: 0,
                 MAX: 15,
