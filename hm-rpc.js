@@ -435,7 +435,7 @@ function startAdapter(options) {
                     // repeats have to be between 0 and 15 -> 0 is unlimited
                     if (typeof state.val !== 'number') state.val = 1;
                     val = Math.min(Math.max(state.val, 0), 15);
-                    adapter.setForeignState(id, val);
+                    adapter.setForeignState(id, val, true);
                     return;
                 } // endIf
 
@@ -443,7 +443,7 @@ function startAdapter(options) {
                     // offset has to be between 0 and 160
                     if (typeof state.val !== 'number') state.val = 0;
                     val = Math.min(Math.max(Math.round(state.val / 10) * 10, 10), 160);
-                    adapter.setForeignState(id, val);
+                    adapter.setForeignState(id, val, true);
                     return;
                 } // endIf
 
