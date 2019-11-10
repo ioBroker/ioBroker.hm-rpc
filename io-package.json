@@ -13,8 +13,20 @@
       "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
       "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
     },
-    "version": "1.10.3",
+    "version": "1.10.4",
     "news": {
+      "1.10.4": {
+        "en": "'EPAPER_SIGNAL' is now of type string",
+        "de": "'EPAPER_SIGNAL' hat jetzt den Typ string",
+        "ru": "«EPAPER_SIGNAL» теперь имеет тип string",
+        "pt": "'EPAPER_SIGNAL' agora é do tipo string",
+        "nl": "'EPAPER_SIGNAL' is nu van het type string",
+        "fr": "'EPAPER_SIGNAL' est maintenant du type chaîne",
+        "it": "'EPAPER_SIGNAL' è ora di tipo stringa",
+        "es": "'EPAPER_SIGNAL' ahora es de tipo cadena",
+        "pl": "„EPAPER_SIGNAL” ma teraz ciąg typu",
+        "zh-cn": "“ EPAPER_SIGNAL”现在为字符串类型"
+      },
       "1.10.3": {
         "en": "fixed info channel",
         "de": "fester Infokanal",
@@ -86,18 +98,6 @@
         "es": "se agregaron el ícono y el meta para HB-UNI-Sen-CAP-MOIST y se corrigió el tipo EPAPER_TONE",
         "pl": "dodano ikonę i meta dla HB-UNI-Sen-CAP-MOIST i poprawiono typ EPAPER_TONE",
         "zh-cn": "为HB-UNI-Sen-CAP-MOIST添加了图标和元数据并修复了EPAPER_TONE类型"
-      },
-      "1.9.14": {
-        "en": "small bug fix for HM-Dis-EP-WM55 and catch asynchron errors on bin-rpc connection",
-        "de": "kleiner Bugfix für HM-Dis-EP-WM55 und Abfangen von Asynchronfehlern bei der Bin-RPC-Verbindung",
-        "ru": "Небольшое исправление ошибки для HM-Dis-EP-WM55 и перехват асинхронных ошибок при подключении bin-rpc",
-        "pt": "pequena correção de bug para o HM-Dis-EP-WM55 e capturar erros assíncronos na conexão bin-rpc",
-        "nl": "kleine bugfix voor HM-Dis-EP-WM55 en asynchrone fouten opvangen bij bin-rpc-verbinding",
-        "fr": "petit bogue pour HM-Dis-EP-WM55 et correction des erreurs asynchrones sur la connexion bin-rpc",
-        "it": "piccola correzione di bug per HM-Dis-EP-WM55 e cattura errori asincroni sulla connessione bin-rpc",
-        "es": "pequeña corrección de errores para HM-Dis-EP-WM55 y captura errores asíncronos en la conexión bin-rpc",
-        "pl": "mała poprawka błędów dla HM-Dis-EP-WM55 i błędy asynchroniczne catch na połączeniu bin-rpc",
-        "zh-cn": "HM-Dis-EP-WM55的小错误修复，并在bin-rpc连接上捕获异步错误"
       }
     },
     "authors": [

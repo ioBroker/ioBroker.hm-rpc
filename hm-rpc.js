@@ -996,7 +996,8 @@ function addParamsetObjects(channel, paramset, callback) {
             STRING: 'string',
             EPAPER_LINE: 'string',
             EPAPER_ICON: 'string',
-            EPAPER_TONE: 'string'
+            EPAPER_TONE: 'string',
+            EPAPER_SIGNAL: 'string'
         };
 
         const obj = {
