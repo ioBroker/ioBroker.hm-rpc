@@ -13,9 +13,9 @@
       "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
       "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
     },
-    "version": "1.10.4",
+    "version": "1.11.0",
     "news": {
-      "1.10.4": {
+      "1.11.0": {
         "en": "'EPAPER_SIGNAL' is now of type string and made OFFSET and REPEATS of EPAPER configurable",
         "de": "'EPAPER_SIGNAL' ist jetzt vom Typ string und OFFSET und REPEATS von EPAPER konfigurierbar",
         "ru": "«EPAPER_SIGNAL» теперь имеет строковый тип и настроен на «OFFSET» и «REPEATS of EPAPER».",

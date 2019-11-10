@@ -212,10 +212,8 @@ function combineEPaperCommand(lines, signal, ton, repeats, offset) {
         command = `${command}0xDE,0x1D,`;
     }
 
-    if (offset <= 10) {
-        command = `${command}0xE0,0x16,`;
-    } else if (offset <= 100) {
-        command = `${command}0xE${offset - 1 / 10},0x16,`;
+    if (offset <= 100) {
+        command = `${command}0xE${offset / 10 - 1},0x16,`;
     } else if (offset <= 110) {
         command = `${command}0xEA,0x16,`;
     } else if (offset <= 120) {
@@ -230,7 +228,7 @@ function combineEPaperCommand(lines, signal, ton, repeats, offset) {
         command = `${command}0xEF,0x16,`;
     }
 
-    command = command + signal + ',0x03';
+    command = `${command + signal},0x03`;
     return command;
 }
 
@@ -446,6 +444,7 @@ function startAdapter(options) {
                     if (typeof state.val !== 'number') state.val = 0;
                     val = Math.min(Math.max(Math.round(state.val / 10) * 10, 10), 160);
                     adapter.setState(id, val);
+                    return;
                 } // endIf
 
                 if (type === 'EPAPER_LINE' || type === 'EPAPER_ICON') {
