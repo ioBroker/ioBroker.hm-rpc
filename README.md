@@ -123,6 +123,7 @@ by ioBroker, when you have a running 'dummy' program on the CCU which depends on
 
 ## Changelog
 ### 1.10.4 (2019-11-10)
+* (foxriver76) make OFFSET and REPEATS of epaper configurable
 * (foxriver76) EPAPER_SIGNAL is now type string
 
 ### 1.10.3 (2019-10-27)

@@ -16,16 +16,16 @@
     "version": "1.10.4",
     "news": {
       "1.10.4": {
-        "en": "'EPAPER_SIGNAL' is now of type string",
-        "de": "'EPAPER_SIGNAL' hat jetzt den Typ string",
-        "ru": "«EPAPER_SIGNAL» теперь имеет тип string",
-        "pt": "'EPAPER_SIGNAL' agora é do tipo string",
-        "nl": "'EPAPER_SIGNAL' is nu van het type string",
-        "fr": "'EPAPER_SIGNAL' est maintenant du type chaîne",
-        "it": "'EPAPER_SIGNAL' è ora di tipo stringa",
-        "es": "'EPAPER_SIGNAL' ahora es de tipo cadena",
-        "pl": "„EPAPER_SIGNAL” ma teraz ciąg typu",
-        "zh-cn": "“ EPAPER_SIGNAL”现在为字符串类型"
+        "en": "'EPAPER_SIGNAL' is now of type string and made OFFSET and REPEATS of EPAPER configurable",
+        "de": "'EPAPER_SIGNAL' ist jetzt vom Typ string und OFFSET und REPEATS von EPAPER konfigurierbar",
+        "ru": "«EPAPER_SIGNAL» теперь имеет строковый тип и настроен на «OFFSET» и «REPEATS of EPAPER».",
+        "pt": "'EPAPER_SIGNAL' agora é do tipo string e tornou OFFSET e REPEATS do EPAPER configurável",
+        "nl": "'EPAPER_SIGNAL' is nu van het type string en is OFFSET en REPEATS van EPAPER configureerbaar gemaakt",
+        "fr": "'EPAPER_SIGNAL' est maintenant du type chaîne et permet de configurer OFFSET et REPEATS of EPAPER",
+        "it": "'EPAPER_SIGNAL' è ora di tipo stringa e reso OFFSET e REPEATS di EPAPER configurabile",
+        "es": "'EPAPER_SIGNAL' ahora es de tipo cadena y se configura como OFFSET y REPEATS de EPAPER",
+        "pl": "„EPAPER_SIGNAL” jest teraz typu ciąg i umożliwia konfigurację OFFSET i REPEATS z EPAPER",
+        "zh-cn": "“ EPAPER_SIGNAL”现在为字符串类型，并且可以配置EPAPER的OFFSET和REPEATS"
       },
       "1.10.3": {
         "en": "fixed info channel",

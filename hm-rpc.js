@@ -71,7 +71,7 @@ const FORBIDDEN_CHARS = /[\][*,;'"`<>\\\s?]/g;
 function number2hex(num) {
     if (typeof num === 'number') {
         num = num.toString(16).toUpperCase();
-        if (num.length < 2) num = '0' + num;
+        if (num.length < 2) num = `0${num}`;
         num = '0x' + num;
     }
     return num;
@@ -170,67 +170,64 @@ function combineEPaperCommand(lines, signal, ton, repeats, offset) {
         '>': '0x3E'
     };
 
-    offset = 10;
-    repeats = 1;
-
     let command = '0x02,0x0A';
     for (const li of lines) {
         const line = li.line;
         const icon = li.icon;
         if (line || icon) {
-            command = command + ',0x12';
+            command = `${command},0x12`;
             let i;
             if ((line.substring(0, 2) === '0x') && (line.length === 4)) {
-                command = command + ',' + line;
+                command = `${command},${line}`;
                 i = 12;
             } else {
                 i = 0;
             }
             while ((i < line.length) && (i < 12)) {
-                command += ',' + substitutions[line[i]] || '0x2A';
+                command += `,${substitutions[line[i]]}` || '0x2A';
                 i++;
             }
             if (icon) {
-                command += ',0x13,' + number2hex(icon);
+                command += `,0x13,${number2hex(icon)}`;
             }
         }
-        command = command + ',0x0A';
+        command = `${command},0x0A`;
     }
 
-    command = command + ',0x14,' + ton + ',0x1C,';
+    command = `${command},0x14,${ton},0x1C,`;
 
     if (repeats < 1) {
-        command = command + '0xDF,0x1D,';
+        command = `${command}0xDF,0x1D,`;
     } else if (repeats < 11) {
-        command = command + '0xD' + (repeats - 1) + ',0x1D,';
+        command = `${command}0xD${repeats - 1},0x1D,`;
     } else if (repeats === 11) {
-        command = command + '0xDA,0x1D,';
+        command = `${command}0xDA,0x1D,`;
     } else if (repeats === 12) {
-        command = command + '0xDB,0x1D,';
+        command = `${command}0xDB,0x1D,`;
     } else if (repeats === 13) {
-        command = command + '0xDC,0x1D,';
+        command = `${command}0xDC,0x1D,`;
     } else if (repeats === 14) {
-        command = command + '0xDD,0x1D,';
+        command = `${command}0xDD,0x1D,`;
     } else {
-        command = command + '0xDE,0x1D,';
+        command = `${command}0xDE,0x1D,`;
     }
 
     if (offset <= 10) {
-        command = command + '0xE0,0x16,';
+        command = `${command}0xE0,0x16,`;
     } else if (offset <= 100) {
-        command = command + '0xE' + (offset - 1 / 10) + ',0x16,';
+        command = `${command}0xE${offset - 1 / 10},0x16,`;
     } else if (offset <= 110) {
-        command = command + '0xEA,0x16,';
+        command = `${command}0xEA,0x16,`;
     } else if (offset <= 120) {
-        command = command + '0xEB,0x16,';
+        command = `${command}0xEB,0x16,`;
     } else if (offset <= 130) {
-        command = command + '0xEC,0x16,';
+        command = `${command}0xEC,0x16,`;
     } else if (offset <= 140) {
-        command = command + '0xED,0x16,';
+        command = `${command}0xED,0x16,`;
     } else if (offset <= 150) {
-        command = command + '0xEE,0x16,';
+        command = `${command}0xEE,0x16,`;
     } else {
-        command = command + '0xEF,0x16,';
+        command = `${command}0xEF,0x16,`;
     }
 
     command = command + signal + ',0x03';
@@ -241,13 +238,14 @@ function controlEPaper(id, data) {
     const tmp = id.split('.');
     tmp[3] = '3';
     tmp[4] = 'SUBMIT';
-    const val = combineEPaperCommand(data.lines, data.signal || '0xF0', data.tone || '0xC0');
+
+    const val = combineEPaperCommand(data.lines, data.signal || '0xF0', data.tone || '0xC0', data.repeats, data.offset);
 
     try {
         if (rpcClient && connected) {
-            rpcClient.methodCall('setValue', [tmp[2] + ':' + tmp[3], tmp[4], val], err => {
+            rpcClient.methodCall('setValue', [`${tmp[2]}:${tmp[3]}`, tmp[4], val], err => {
                 if (err) {
-                    adapter.log.error(adapter.config.type + 'rpc -> setValue ' + JSON.stringify([tmp[3], tmp[4], val]));
+                    adapter.log.error(`${adapter.config.type}rpc -> setValue ${JSON.stringify([tmp[3], tmp[4], val])}`);
                     adapter.log.error(err);
                 }
             });
@@ -270,57 +268,71 @@ function readSignals(id) {
     const promises = [];
 
     promises.push(new Promise(resolve => {
-        adapter.getForeignState(id + '.0.EPAPER_LINE2', (err, state) => {
+        adapter.getForeignState(`${id}.0.EPAPER_LINE2`, (err, state) => {
             data.lines[0].line = state ? state.val || '' : '';
             resolve();
         });
     }));
 
     promises.push(new Promise(resolve => {
-        adapter.getForeignState(id + '.0.EPAPER_ICON2', (err, state) => {
+        adapter.getForeignState(`${id}.0.EPAPER_ICON2`, (err, state) => {
             data.lines[0].icon = state ? state.val || '' : '';
             resolve();
         });
     }));
 
     promises.push(new Promise(resolve => {
-        adapter.getForeignState(id + '.0.EPAPER_LINE3', (err, state) => {
+        adapter.getForeignState(`${id}.0.EPAPER_LINE3`, (err, state) => {
             data.lines[1].line = state ? state.val || '' : '';
             resolve();
         });
     }));
 
     promises.push(new Promise(resolve => {
-        adapter.getForeignState(id + '.0.EPAPER_ICON3', (err, state) => {
+        adapter.getForeignState(`${id}.0.EPAPER_ICON3`, (err, state) => {
             data.lines[1].icon = state ? state.val || '' : '';
             resolve();
         });
     }));
 
     promises.push(new Promise(resolve => {
-        adapter.getForeignState(id + '.0.EPAPER_LINE4', (err, state) => {
+        adapter.getForeignState(`${id}.0.EPAPER_LINE4`, (err, state) => {
             data.lines[2].line = state ? state.val || '' : '';
             resolve();
         });
     }));
 
     promises.push(new Promise(resolve => {
-        adapter.getForeignState(id + '.0.EPAPER_ICON4', (err, state) => {
+        adapter.getForeignState(`${id}.0.EPAPER_ICON4`, (err, state) => {
             data.lines[2].icon = state ? state.val || '' : '';
             resolve();
         });
     }));
 
     promises.push(new Promise(resolve => {
-        adapter.getForeignState(id + '.0.EPAPER_SIGNAL', (err, state) => {
+        adapter.getForeignState(`${id}.0.EPAPER_SIGNAL`, (err, state) => {
             data.signal = state ? state.val || '0xF0' : '0xF0';
             resolve();
         });
     }));
 
     promises.push(new Promise(resolve => {
-        adapter.getForeignState(id + '.0.EPAPER_TONE', (err, state) => {
+        adapter.getForeignState(`${id}.0.EPAPER_TONE`, (err, state) => {
             data.tone = state ? state.val || '0xC0' : '0xC0';
+            resolve();
+        });
+    }));
+
+    promises.push(new Promise(resolve => {
+        adapter.getForeignState(`${id}.0.EPAPER_OFFSET`, (err, state) => {
+            data.offset = state ? state.val || 10;
+            resolve();
+        });
+    }));
+
+    promises.push(new Promise(resolve => {
+        adapter.getForeignState(`${id}.0.EPAPER_REPEATS`, (err, state) => {
+            data.repeats = state ? state.val || 1;
             resolve();
         });
     }));
@@ -403,12 +415,12 @@ function startAdapter(options) {
                 const tmp = id.split('.');
                 let val;
 
-                if (id === adapter.namespace + '.updated' || /_ALARM$/.test(id)) return;
+                if (id === `${adapter.namespace}.updated` || /_ALARM$/.test(id)) return;
 
-                adapter.log.debug(adapter.config.type + 'rpc -> setValue ' + tmp[3] + ' ' + tmp[4] + ': ' + state.val);
+                adapter.log.debug(`${adapter.config.type}rpc -> setValue ${tmp[3]} ${tmp[4]}: ${state.val}`);
 
                 if (!dpTypes[id]) {
-                    adapter.log.error(adapter.config.type + 'rpc -> setValue: no dpType for ' + id + '!');
+                    adapter.log.error(`${adapter.config.type}rpc -> setValue: no dpType for ${id}!`);
                     return;
                 }
 
@@ -421,8 +433,23 @@ function startAdapter(options) {
 
                 const type = dpTypes[id].TYPE;
 
+                if (type === 'EPAPER_REPEATS') {
+                    // repeats have to be between 0 and 15 -> 0 is unlimited
+                    if (typeof state.val !== 'number') state.val = 1;
+                    val = Math.min(Math.max(state.val, 0), 15);
+                    adapter.setState(id, val);
+                    return;
+                } // endIf
+
+                if (type === 'EPAPER_OFFSET') {
+                    // offset has to be between 0 and 160
+                    if (typeof state.val !== 'number') state.val = 0;
+                    val = Math.min(Math.max(state.val, 0), 160);
+                    adapter.setState(id, val);
+                } // endIf
+
                 if (type === 'EPAPER_LINE' || type === 'EPAPER_ICON') {
-                    const _id = tmp[0] + '.' + tmp[1] + '.' + tmp[2];
+                    const _id = `${tmp[0]}.${tmp[1]}.${tmp[2]}`;
                     if (displays[_id] && displays[_id].timer) {
                         clearTimeout(displays[_id].timer);
                         if (displays[_id].withTone) {
@@ -1319,6 +1346,18 @@ function addEPaperToMeta() {
                 },
                 OPERATIONS: 2
             };
+            obj.EPAPER_OFFSET = {
+                TYPE: 'number',
+                ID: 'EPAPER_OFFSET',
+                MIN: 0,
+                MAX: 160
+            };
+            obj.EPAPER_REPEATS = {
+                TYPE: 'number',
+                ID: 'EPAPER_REPEATS',
+                MIN: 0,
+                MAX: 15
+            }
         }
     }
 }
