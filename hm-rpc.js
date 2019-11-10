@@ -325,14 +325,14 @@ function readSignals(id) {
 
     promises.push(new Promise(resolve => {
         adapter.getForeignState(`${id}.0.EPAPER_OFFSET`, (err, state) => {
-            data.offset = state ? state.val || 10;
+            data.offset = state ? state.val : 10;
             resolve();
         });
     }));
 
     promises.push(new Promise(resolve => {
         adapter.getForeignState(`${id}.0.EPAPER_REPEATS`, (err, state) => {
-            data.repeats = state ? state.val || 1;
+            data.repeats = state ? state.val : 1;
             resolve();
         });
     }));
@@ -444,7 +444,7 @@ function startAdapter(options) {
                 if (type === 'EPAPER_OFFSET') {
                     // offset has to be between 0 and 160
                     if (typeof state.val !== 'number') state.val = 0;
-                    val = Math.min(Math.max(state.val, 0), 160);
+                    val = Math.min(Math.max(Math.round(state.val / 10) * 10, 10), 160);
                     adapter.setState(id, val);
                 } // endIf
 
@@ -460,7 +460,7 @@ function startAdapter(options) {
                     displays[_id] = {timer: setTimeout(readSettings, 300, _id), withTone: false};
                     return;
                 } else if (type === 'EPAPER_SIGNAL' || type === 'EPAPER_TONE') {
-                    const _id = tmp[0] + '.' + tmp[1] + '.' + tmp[2];
+                    const _id = `${tmp[0]}.${tmp[1]}.${tmp[2]}`;
                     if (displays[_id] && displays[_id].timer) {
                         clearTimeout(displays[_id].timer);
                     }
@@ -1349,15 +1349,19 @@ function addEPaperToMeta() {
             obj.EPAPER_OFFSET = {
                 TYPE: 'number',
                 ID: 'EPAPER_OFFSET',
-                MIN: 0,
-                MAX: 160
+                MIN: 10,
+                MAX: 160,
+                OPERATIONS: 2,
+                DEFAULT: 10
             };
             obj.EPAPER_REPEATS = {
                 TYPE: 'number',
                 ID: 'EPAPER_REPEATS',
                 MIN: 0,
-                MAX: 15
-            }
+                MAX: 15,
+                OPERATIONS: 2,
+                DEFAULT: 1
+            };
         }
     }
 }
