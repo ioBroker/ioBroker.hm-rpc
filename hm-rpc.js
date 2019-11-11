@@ -322,14 +322,14 @@ function readSignals(id) {
     }));
 
     promises.push(new Promise(resolve => {
-        adapter.getForeignState(`${id}.0.EPAPER_OFFSET`, (err, state) => {
+        adapter.getForeignState(`${id}.0.EPAPER_TONE_INTERVAL`, (err, state) => {
             data.offset = state ? state.val : 10;
             resolve();
         });
     }));
 
     promises.push(new Promise(resolve => {
-        adapter.getForeignState(`${id}.0.EPAPER_REPEATS`, (err, state) => {
+        adapter.getForeignState(`${id}.0.EPAPER_TONE_REPETITIONS`, (err, state) => {
             data.repeats = state ? state.val : 1;
             resolve();
         });
@@ -431,7 +431,7 @@ function startAdapter(options) {
 
                 const type = dpTypes[id].TYPE;
 
-                if (type === 'EPAPER_REPEATS') {
+                if (type === 'EPAPER_TONE_REPETITIONS') {
                     // repeats have to be between 0 and 15 -> 0 is unlimited
                     if (typeof state.val !== 'number') state.val = 1;
                     val = Math.min(Math.max(state.val, 0), 15);
@@ -439,7 +439,7 @@ function startAdapter(options) {
                     return;
                 } // endIf
 
-                if (type === 'EPAPER_OFFSET') {
+                if (type === 'EPAPER_TONE_INTERVAL') {
                     // offset has to be between 0 and 160
                     if (typeof state.val !== 'number') state.val = 0;
                     val = Math.min(Math.max(Math.round(state.val / 10) * 10, 10), 160);
@@ -1024,8 +1024,8 @@ function addParamsetObjects(channel, paramset, callback) {
             EPAPER_ICON: 'string',
             EPAPER_TONE: 'string',
             EPAPER_SIGNAL: 'string',
-            EPAPER_OFFSET: 'number',
-            EPAPER_REPEATS: 'number'
+            EPAPER_TONE_INTERVAL: 'number',
+            EPAPER_TONE_REPETITIONS: 'number'
         };
 
         const obj = {
@@ -1340,24 +1340,21 @@ function addEPaperToMeta() {
                     '0xC3': 'Long Short Short',
                     '0xC4': 'Short',
                     '0xC5': 'Short Short',
-                    '0xC6': 'Long',
-                    '0xC7': '7',
-                    '0xC9': '9',
-                    '0xCA': 'A'
+                    '0xC6': 'Long'
                 },
                 OPERATIONS: 2
             };
-            obj.EPAPER_OFFSET = {
-                TYPE: 'EPAPER_OFFSET',
-                ID: 'EPAPER_OFFSET',
+            obj.EPAPER_TONE_INTERVAL = {
+                TYPE: 'EPAPER_TONE_INTERVAL',
+                ID: 'EPAPER_TONE_INTERVAL',
                 MIN: 10,
                 MAX: 160,
                 OPERATIONS: 2,
                 DEFAULT: 10
             };
-            obj.EPAPER_REPEATS = {
-                TYPE: 'EPAPER_REPEATS',
-                ID: 'EPAPER_REPEATS',
+            obj.EPAPER_TONE_REPETITIONS = {
+                TYPE: 'EPAPER_TONE_REPETITIONS',
+                ID: 'EPAPER_TONE_REPETITIONS',
                 MIN: 0,
                 MAX: 15,
                 OPERATIONS: 2,
