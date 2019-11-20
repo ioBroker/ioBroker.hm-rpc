@@ -13,8 +13,20 @@
       "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
       "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
     },
-    "version": "1.11.0",
+    "version": "1.11.1",
     "news": {
+      "1.11.1": {
+        "en": "LOCK.OPEN is now of type button to prevent misunderstandings",
+        "de": "LOCK.OPEN ist jetzt vom Typ button, um Missverständnissen vorzubeugen",
+        "ru": "LOCK.OPEN теперь имеет тип кнопки для предотвращения недопонимания",
+        "pt": "LOCK.OPEN agora é do tipo botão para evitar mal-entendidos",
+        "nl": "LOCK.OPEN is nu van het type knop om misverstanden te voorkomen",
+        "fr": "LOCK.OPEN est maintenant du type bouton pour éviter les malentendus",
+        "it": "LOCK.OPEN è ora di tipo pulsante per evitare incomprensioni",
+        "es": "LOCK.OPEN ahora es de tipo botón para evitar malentendidos",
+        "pl": "LOCK.OPEN jest teraz przyciskiem typu, aby uniknąć nieporozumień",
+        "zh-cn": "LOCK.OPEN现在是按钮类型，可防止误解"
+      },
       "1.11.0": {
         "en": "'EPAPER_SIGNAL' is now of type string and made OFFSET and REPEATS of EPAPER configurable",
         "de": "'EPAPER_SIGNAL' ist jetzt vom Typ string und OFFSET und REPEATS von EPAPER konfigurierbar",
@@ -86,18 +98,6 @@
         "es": "ya no usa adapter.objects si no es necesario y agrega metadatos",
         "pl": "nie używaj już adapter.objects, jeśli nie jest to konieczne, i dodaj metadane",
         "zh-cn": "如果没有必要，不再使用adapter.objects并添加元数据"
-      },
-      "1.9.15": {
-        "en": "added icon and meta for HB-UNI-Sen-CAP-MOIST and fix EPAPER_TONE type",
-        "de": "Symbol und Meta für HB-UNI-Sen-CAP-MOIST hinzugefügt und Typ EPAPER_TONE korrigiert",
-        "ru": "добавлен значок и мета для HB-UNI-Sen-CAP-MOIST и исправлен тип EPAPER_TONE",
-        "pt": "ícone e meta adicionados para o HB-UNI-Sen-CAP-MOIST e correção do tipo EPAPER_TONE",
-        "nl": "toegevoegd pictogram en meta voor HB-UNI-Sen-CAP-MOIST en fixeer het type EPAPER_TONE",
-        "fr": "ajout d'une icône et d'une méta pour HB-UNI-Sen-CAP-MOIST et correction du type EPAPER_TONE",
-        "it": "aggiunto icona e meta per HB-UNI-Sen-CAP-MOIST e correggere il tipo EPAPER_TONE",
-        "es": "se agregaron el ícono y el meta para HB-UNI-Sen-CAP-MOIST y se corrigió el tipo EPAPER_TONE",
-        "pl": "dodano ikonę i meta dla HB-UNI-Sen-CAP-MOIST i poprawiono typ EPAPER_TONE",
-        "zh-cn": "为HB-UNI-Sen-CAP-MOIST添加了图标和元数据并修复了EPAPER_TONE类型"
       }
     },
     "authors": [
