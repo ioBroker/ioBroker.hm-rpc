@@ -61,11 +61,11 @@ Send pings to CCU/Homematic with such intervall.
 ### Reconnect interval (sec)
 How many seconds will be waited before connect attempts.
 
-### Don't delete devices on adapter startage
-If this flag is not activated, the ioBroker will remove devices from configuration if device is not found at adapter startage in CCU/Homematic.
+### Don't delete devices on adapter start
+If this flag is not activated, the ioBroker will remove devices from configuration if device is not found at adapter start in CCU/Homematic.
 Activate this flag to do *not* delete such a devices. This is to avoid a bug on CCU side, where hmip devices are not correctly transmitted to
-ioBroker and thus will be deleted on adapter startage and be recreated when transmitted some milliseconds later. The flag is autochecked
-when you selected hmip as daemon. However, when you delete devices while adapter is running, the adapter will be notfied by CCU and will remove devices 
+ioBroker and thus will be deleted on adapter startage and be recreated when transmitted some milliseconds later. The flag is automatically checked
+when you selected hmip as daemon. However, when you delete devices while adapter is running, the adapter will be notified by CCU and will remove devices 
 which are removed on CCU.
 
 ### Use https

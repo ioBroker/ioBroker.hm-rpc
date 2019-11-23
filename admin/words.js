@@ -124,7 +124,7 @@ systemDictionary = {
         'zh-cn': '收听所有IP'
     },
     "Don't delete devices": {
-        'en': "Don't delete devices on adapter startage",
+        'en': "Don't delete devices on adapter start",
         'de': 'Geräte nicht löschen bei Adapterstart',
         'ru': 'Не удаляйте устройства при старте адаптера',
         'pt': 'Não exclua dispositivos na inicialização do adaptador',
