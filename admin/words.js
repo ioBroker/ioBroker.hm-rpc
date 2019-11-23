@@ -124,16 +124,16 @@ systemDictionary = {
         'zh-cn': '收听所有IP'
     },
     "Don't delete devices": {
-        'en': "Don't delete devices",
-        'de': 'Geräte nicht löschen',
-        'ru': 'Не удалять устройства',
-        'pt': 'Não exclua dispositivos',
-        'nl': 'Verwijder geen apparaten',
-        'fr': 'Ne pas supprimer les appareils',
-        'it': 'Non eliminare i dispositivi',
-        'es': 'No eliminar dispositivos',
-        'pl': 'Nie usuwaj urządzeń',
-        'zh-cn': '不要删除设备'
+        'en': "Don't delete devices on adapter startage",
+        'de': 'Geräte nicht löschen bei Adapterstart',
+        'ru': 'Не удаляйте устройства при старте адаптера',
+        'pt': 'Não exclua dispositivos na inicialização do adaptador',
+        'nl': 'Verwijder geen apparaten bij het starten van de adapter',
+        'fr': "Ne supprimez pas les périphériques au démarrage de l'adaptateur",
+        'it': "Non eliminare i dispositivi all'avvio dell'adattatore",
+        'es': 'No elimine dispositivos al iniciar el adaptador',
+        'pl': 'Nie usuwaj urządzeń przy uruchamianiu adaptera',
+        'zh-cn': '不要在适配器启动时删除设备'
     },
     'Additional settings': {
         'en': 'Additional settings',
