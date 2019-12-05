@@ -13,8 +13,20 @@
       "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
       "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
     },
-    "version": "1.11.1",
+    "version": "1.12.0",
     "news": {
+      "1.12.0": {
+        "en": "we no longer use adapter.objects directly",
+        "de": "Wir verwenden adapter.objects nicht mehr direkt",
+        "ru": "мы больше не используем адаптер.объекты напрямую",
+        "pt": "não usamos mais o adapter.objects diretamente",
+        "nl": "we gebruiken adapter.objects niet langer rechtstreeks",
+        "fr": "nous n'utilisons plus directement adapter.objects",
+        "it": "non utilizziamo più adapter.objects direttamente",
+        "es": "ya no usamos adaptador.objetos directamente",
+        "pl": "nie używamy już bezpośrednio adapter.objects",
+        "zh-cn": "我们不再直接使用adapter.objects"
+      },
       "1.11.1": {
         "en": "LOCK.OPEN is now of type button to prevent misunderstandings",
         "de": "LOCK.OPEN ist jetzt vom Typ button, um Missverständnissen vorzubeugen",
@@ -136,7 +148,7 @@
     "messagebox": true,
     "dependencies": [
       {
-        "js-controller": ">=1.4.2"
+        "js-controller": ">=2.0.0"
       }
     ]
   },

@@ -659,7 +659,7 @@ function main() {
     }
 
     // Load VALUE paramsetDescriptions (needed to create state objects)
-    adapter.objects.getObjectView('hm-rpc', 'paramsetDescription', {
+    adapter.getObjectView('hm-rpc', 'paramsetDescription', {
         startkey: 'hm-rpc.meta.VALUES',
         endkey: 'hm-rpc.meta.VALUES.\u9999'
     }, (err, doc) => {
@@ -680,7 +680,7 @@ function main() {
         });
     });
 
-    adapter.objects.getObjectView('system', 'state', {
+    adapter.getObjectView('system', 'state', {
         startkey: adapter.namespace,
         endkey: adapter.namespace + '\u9999'
     }, (err, res) => {
@@ -719,7 +719,7 @@ function main() {
 function sendInit() {
     try {
         if (rpcClient && (rpcClient.connected === undefined || rpcClient.connected)) {
-            adapter.log.debug(adapter.config.type + 'rpc -> ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + homematicPath + ' init ' + JSON.stringify([daemonURL, adapter.namespace]));
+            adapter.log.debug(`${adapter.config.type}rpc -> ${adapter.config.homematicAddress}:${adapter.config.homematicPort}${homematicPath} init ${JSON.stringify([daemonURL, adapter.namespace])}`);
             rpcClient.methodCall('init', [daemonURL, adapter.namespace], (err/*, data*/) => {
                 if (!err) {
                     if (adapter.config.daemon === 'CUxD') {
@@ -727,7 +727,7 @@ function sendInit() {
                             if (!err2) {
                                 updateConnection();
                             } else {
-                                adapter.log.error('getCuxDevices error: ' + err2);
+                                adapter.log.error(`getCuxDevices error: ${err2}`);
                             }
                         });
                     } else {
@@ -844,7 +844,7 @@ function initRpcServer() {
             // for a HmIP-adapter we have to filter out the devices that
             // are already present if forceReinit is not set
             if (adapter.config.forceReInit === false && adapter.config.daemon === 'HMIP') {
-                adapter.objects.getObjectView('hm-rpc', 'listDevices', {
+                adapter.getObjectView('hm-rpc', 'listDevices', {
                     startkey: 'hm-rpc.' + adapter.instance + '.',
                     endkey: 'hm-rpc.' + adapter.instance + '.\u9999'
                 }, (err, doc) => {
@@ -902,7 +902,7 @@ function initRpcServer() {
                 adapter.log.warn('Error on system.listMethods: ' + err);
             }
             adapter.log.info(adapter.config.type + 'rpc <- listDevices ' + JSON.stringify(params));
-            adapter.objects.getObjectView('hm-rpc', 'listDevices', {
+            adapter.getObjectView('hm-rpc', 'listDevices', {
                 startkey: 'hm-rpc.' + adapter.instance + '.',
                 endkey: 'hm-rpc.' + adapter.instance + '.\u9999'
             }, (err, doc) => {
@@ -1465,7 +1465,7 @@ function getCuxDevices(callback) {
                 adapter.log.info(adapter.config.type + 'rpc -> listDevices ' + newDevices.length);
 
                 if (adapter.config.forceReInit === false) {
-                    adapter.objects.getObjectView('hm-rpc', 'listDevices', {
+                    adapter.getObjectView('hm-rpc', 'listDevices', {
                         startkey: 'hm-rpc.' + adapter.instance + '.',
                         endkey: 'hm-rpc.' + adapter.instance + '.\u9999'
                     }, (err, doc) => {
