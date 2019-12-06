@@ -1,222 +1,222 @@
 {
-  "common": {
-    "name": "hm-rpc",
-    "title": "HomeMatic RPC",
-    "desc": {
-      "en": "Connects HomeMatic Interface-Processes (BidCos-Services, Homegear and CUxD) via XML-RPC or BIN-RPC to ioBroker",
-      "de": "Verbindet HomeMatic Interface-Prozesse (BidCos-Services, Homegear und CUxD) via XML-RPC oder BIN-RPC mit ioBroker",
-      "ru": "Подключает HomeMatic интерфейсы (BidCos-сервисы, Homegear и CUxD) через XML-RPC или BIN-RPC к ioBroker",
-      "pt": "Conecta HomeMatic Interface-Processes (BidCos-Services, Homegear e CUxD) via XML-RPC ou BIN-RPC para ioBroker",
-      "nl": "Verbindt HomeMatic Interface-processen (BidCos-Services, Homegear en CUxD) via XML-RPC of BIN-RPC met ioBroker",
-      "fr": "Connecte les processus d'interface HomeMatic (BidCos-Services, Homegear et CUxD) via XML-RPC ou BIN-RPC à ioBroker",
-      "it": "Collega l'interfaccia HomeMatic: i processi (BidCos-Services, Homegear e CUxD) tramite XML-RPC o BIN-RPC su ioBroker",
-      "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
-      "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
-    },
-    "version": "1.12.0",
-    "news": {
-      "1.12.0": {
-        "en": "we no longer use adapter.objects directly",
-        "de": "Wir verwenden adapter.objects nicht mehr direkt",
-        "ru": "мы больше не используем адаптер.объекты напрямую",
-        "pt": "não usamos mais o adapter.objects diretamente",
-        "nl": "we gebruiken adapter.objects niet langer rechtstreeks",
-        "fr": "nous n'utilisons plus directement adapter.objects",
-        "it": "non utilizziamo più adapter.objects direttamente",
-        "es": "ya no usamos adaptador.objetos directamente",
-        "pl": "nie używamy już bezpośrednio adapter.objects",
-        "zh-cn": "我们不再直接使用adapter.objects"
-      },
-      "1.11.1": {
-        "en": "LOCK.OPEN is now of type button to prevent misunderstandings",
-        "de": "LOCK.OPEN ist jetzt vom Typ button, um Missverständnissen vorzubeugen",
-        "ru": "LOCK.OPEN теперь имеет тип кнопки для предотвращения недопонимания",
-        "pt": "LOCK.OPEN agora é do tipo botão para evitar mal-entendidos",
-        "nl": "LOCK.OPEN is nu van het type knop om misverstanden te voorkomen",
-        "fr": "LOCK.OPEN est maintenant du type bouton pour éviter les malentendus",
-        "it": "LOCK.OPEN è ora di tipo pulsante per evitare incomprensioni",
-        "es": "LOCK.OPEN ahora es de tipo botón para evitar malentendidos",
-        "pl": "LOCK.OPEN jest teraz przyciskiem typu, aby uniknąć nieporozumień",
-        "zh-cn": "LOCK.OPEN现在是按钮类型，可防止误解"
-      },
-      "1.11.0": {
-        "en": "'EPAPER_SIGNAL' is now of type string and made OFFSET and REPEATS of EPAPER configurable",
-        "de": "'EPAPER_SIGNAL' ist jetzt vom Typ string und OFFSET und REPEATS von EPAPER konfigurierbar",
-        "ru": "«EPAPER_SIGNAL» теперь имеет строковый тип и настроен на «OFFSET» и «REPEATS of EPAPER».",
-        "pt": "'EPAPER_SIGNAL' agora é do tipo string e tornou OFFSET e REPEATS do EPAPER configurável",
-        "nl": "'EPAPER_SIGNAL' is nu van het type string en is OFFSET en REPEATS van EPAPER configureerbaar gemaakt",
-        "fr": "'EPAPER_SIGNAL' est maintenant du type chaîne et permet de configurer OFFSET et REPEATS of EPAPER",
-        "it": "'EPAPER_SIGNAL' è ora di tipo stringa e reso OFFSET e REPEATS di EPAPER configurabile",
-        "es": "'EPAPER_SIGNAL' ahora es de tipo cadena y se configura como OFFSET y REPEATS de EPAPER",
-        "pl": "„EPAPER_SIGNAL” jest teraz typu ciąg i umożliwia konfigurację OFFSET i REPEATS z EPAPER",
-        "zh-cn": "“ EPAPER_SIGNAL”现在为字符串类型，并且可以配置EPAPER的OFFSET和REPEATS"
-      },
-      "1.10.3": {
-        "en": "fixed info channel",
-        "de": "fester Infokanal",
-        "ru": "фиксированный информационный канал",
-        "pt": "canal de informação fixo",
-        "nl": "vast infokanaal",
-        "fr": "canal d'information fixe",
-        "it": "canale informativo fisso",
-        "es": "canal de información fijo",
-        "pl": "naprawiono kanał informacyjny",
-        "zh-cn": "固定信息频道"
-      },
-      "1.10.2": {
-        "en": "replaced min max values of HMIP with correct numbers ",
-        "de": "Min-Max-Werte von HMIP durch korrekte Zahlen ersetzt",
-        "ru": "заменены минимальные максимальные значения HMIP правильными номерами",
-        "pt": "valores máximos mínimos substituídos do HMIP por números corretos",
-        "nl": "min max max waarden van HMIP vervangen door juiste getallen",
-        "fr": "a remplacé les valeurs min max de HMIP par des nombres corrects",
-        "it": "ha sostituito i valori max min di HMIP con i numeri corretti",
-        "es": "reemplazó los valores mínimos máximos de HMIP con números correctos",
-        "pl": "zastąpiono minimalne wartości HMIP prawidłowymi liczbami",
-        "zh-cn": "用正确的数字替换HMIP的最小值最大值"
-      },
-      "1.10.0": {
-        "en": "new meta data handling strategy",
-        "de": "neue Strategie für den Umgang mit Metadaten",
-        "ru": "новая стратегия обработки метаданных",
-        "pt": "nova estratégia de manuseio de metadados",
-        "nl": "nieuwe meta-gegevensverwerkingsstrategie",
-        "fr": "nouvelle stratégie de traitement des métadonnées",
-        "it": "nuova strategia di gestione dei metadati",
-        "es": "nueva estrategia de manejo de metadatos",
-        "pl": "nowa strategia przetwarzania metadanych",
-        "zh-cn": "新的元数据处理策略"
-      },
-      "1.9.17": {
-        "en": "now handling max values of 1.01 as 1",
-        "de": "Jetzt werden die Maximalwerte von 1,01 als 1 behandelt",
-        "ru": "теперь обрабатывает максимальные значения 1,01 как 1",
-        "pt": "agora lidando com valores máximos de 1,01 como 1",
-        "nl": "behandelt nu max. waarden van 1.01 als 1",
-        "fr": "gère maintenant les valeurs maximales de 1,01 en tant que 1",
-        "it": "gestendo ora i valori massimi di 1,01 come 1",
-        "es": "ahora manejando valores máximos de 1.01 como 1",
-        "pl": "teraz obsługuje max wartości 1.01 jako 1",
-        "zh-cn": "现在将最大值1.01处理为1"
-      },
-      "1.9.16": {
-        "en": "no longer use adapter.objects if not necessary and added meta data",
-        "de": "Verwenden Sie keine adapter.objects mehr, wenn dies nicht erforderlich ist, und fügen Sie Metadaten hinzu",
-        "ru": "больше не использовать adapter.objects, если не нужно, и добавлены метаданные",
-        "pt": "não use mais adapter.objects se não for necessário e inclua metadados",
-        "nl": "gebruik geen adapter.objects meer als dat niet nodig is en voeg metadata toe",
-        "fr": "n'utilise plus adapter.objects sinon nécessaire et ajout de métadonnées",
-        "it": "non utilizzare più adapter.objects se non necessario e aggiungere metadati",
-        "es": "ya no usa adapter.objects si no es necesario y agrega metadatos",
-        "pl": "nie używaj już adapter.objects, jeśli nie jest to konieczne, i dodaj metadane",
-        "zh-cn": "如果没有必要，不再使用adapter.objects并添加元数据"
-      }
-    },
-    "authors": [
-      "hobbyquaker <hq@ccu.io>",
-      "Moritz Heusinger <moritz.heusinger@gmail.com>"
-    ],
-    "license": "MIT",
-    "mode": "daemon",
-    "platform": "Javascript/Node.js",
-    "loglevel": "info",
-    "readme": "https://github.com/ioBroker/ioBroker.hm-rpc/blob/master/README.md",
-    "icon": "homematic.png",
-    "materialize": true,
-    "compact": true,
-    "extIcon": "https://raw.githubusercontent.com/ioBroker/ioBroker.hm-rpc/master/admin/homematic.png",
-    "keywords": [
-      "homematic",
-      "bidcos",
-      "eq3",
-      "ELV",
-      "CCU",
-      "CCU1",
-      "CCU2",
-      "rpc",
-      "xmlrpc",
-      "homegear",
-      "binrpc",
-      "CUxD",
-      "FS20",
-      "FHT",
-      "HMS",
-      "EnOcean"
-    ],
-    "type": "iot-systems",
-    "supportStopInstance": true,
-    "messagebox": true,
-    "dependencies": [
-      {
-        "js-controller": ">=2.0.0"
-      }
-    ]
-  },
-  "native": {
-    "homematicAddress": "192.168.0.100",
-    "adapterAddress": "0.0.0.0",
-    "homematicPort": "2001",
-    "callbackAddress": "",
-    "port": "0",
-    "type": "xml",
-    "daemon": "rfd",
-    "checkInitInterval": 180,
-    "reconnectInterval": 30,
-    "forceReInit": false,
-    "username": "",
-    "password": "",
-    "useHttps": false,
-    "dontDelete": false
-  },
-  "protectedNative": [
-    "username",
-    "password"
-  ],
-  "objects": [
-    {
-      "_id": "_design/hm-rpc",
-      "language": "javascript",
-      "views": {
-        "listDevices": {
-          "map": "function(doc) {\n  if (doc._id.match(/^hm-rpc\\.[0-9]+\\.\\*?[A-Za-z0-9_-]+(\\.[0-9]+)?$/)) {\n   emit(doc._id, {ADDRESS:(doc.native?doc.native.ADDRESS:''),VERSION:(doc.native?doc.native.VERSION:'')});\n  }\n}"
+    "common": {
+        "name": "hm-rpc",
+        "title": "HomeMatic RPC",
+        "desc": {
+            "en": "Connects HomeMatic Interface-Processes (BidCos-Services, Homegear and CUxD) via XML-RPC or BIN-RPC to ioBroker",
+            "de": "Verbindet HomeMatic Interface-Prozesse (BidCos-Services, Homegear und CUxD) via XML-RPC oder BIN-RPC mit ioBroker",
+            "ru": "Подключает HomeMatic интерфейсы (BidCos-сервисы, Homegear и CUxD) через XML-RPC или BIN-RPC к ioBroker",
+            "pt": "Conecta HomeMatic Interface-Processes (BidCos-Services, Homegear e CUxD) via XML-RPC ou BIN-RPC para ioBroker",
+            "nl": "Verbindt HomeMatic Interface-processen (BidCos-Services, Homegear en CUxD) via XML-RPC of BIN-RPC met ioBroker",
+            "fr": "Connecte les processus d'interface HomeMatic (BidCos-Services, Homegear et CUxD) via XML-RPC ou BIN-RPC à ioBroker",
+            "it": "Collega l'interfaccia HomeMatic: i processi (BidCos-Services, Homegear e CUxD) tramite XML-RPC o BIN-RPC su ioBroker",
+            "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
+            "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "paramsetDescription": {
-          "map": "function(doc) {\n  if (doc._id.match(/^hm-rpc\\.meta/) && doc.meta.type === 'paramsetDescription') {\n   emit(doc._id, doc);\n  }\n}"
+        "version": "1.12.1",
+        "news": {
+            "1.12.1": {
+                "en": "fixed problem with max values of value lists",
+                "de": "Problem mit Maximalwerten von Wertelisten behoben",
+                "ru": "исправлена проблема с максимальными значениями списков значений",
+                "pt": "problema corrigido com valores máximos de listas de valores",
+                "nl": "probleem opgelost met maximale waarden van waardenlijsten",
+                "fr": "problème résolu avec les valeurs maximales des listes de valeurs",
+                "it": "risolto problema con valori massimi di liste valori",
+                "es": "problema solucionado con valores máximos de listas de valores",
+                "pl": "naprawiono problem z maksymalnymi wartościami list wartości",
+                "zh-cn": "固定值列表最大值的问题"
+            },
+            "1.12.0": {
+                "en": "we no longer use adapter.objects directly",
+                "de": "Wir verwenden adapter.objects nicht mehr direkt",
+                "ru": "мы больше не используем адаптер.объекты напрямую",
+                "pt": "não usamos mais o adapter.objects diretamente",
+                "nl": "we gebruiken adapter.objects niet langer rechtstreeks",
+                "fr": "nous n'utilisons plus directement adapter.objects",
+                "it": "non utilizziamo più adapter.objects direttamente",
+                "es": "ya no usamos adaptador.objetos directamente",
+                "pl": "nie używamy już bezpośrednio adapter.objects",
+                "zh-cn": "我们不再直接使用adapter.objects"
+            },
+            "1.11.1": {
+                "en": "LOCK.OPEN is now of type button to prevent misunderstandings",
+                "de": "LOCK.OPEN ist jetzt vom Typ button, um Missverständnissen vorzubeugen",
+                "ru": "LOCK.OPEN теперь имеет тип кнопки для предотвращения недопонимания",
+                "pt": "LOCK.OPEN agora é do tipo botão para evitar mal-entendidos",
+                "nl": "LOCK.OPEN is nu van het type knop om misverstanden te voorkomen",
+                "fr": "LOCK.OPEN est maintenant du type bouton pour éviter les malentendus",
+                "it": "LOCK.OPEN è ora di tipo pulsante per evitare incomprensioni",
+                "es": "LOCK.OPEN ahora es de tipo botón para evitar malentendidos",
+                "pl": "LOCK.OPEN jest teraz przyciskiem typu, aby uniknąć nieporozumień",
+                "zh-cn": "LOCK.OPEN现在是按钮类型，可防止误解"
+            },
+            "1.11.0": {
+                "en": "'EPAPER_SIGNAL' is now of type string and made OFFSET and REPEATS of EPAPER configurable",
+                "de": "'EPAPER_SIGNAL' ist jetzt vom Typ string und OFFSET und REPEATS von EPAPER konfigurierbar",
+                "ru": "«EPAPER_SIGNAL» теперь имеет строковый тип и настроен на «OFFSET» и «REPEATS of EPAPER».",
+                "pt": "'EPAPER_SIGNAL' agora é do tipo string e tornou OFFSET e REPEATS do EPAPER configurável",
+                "nl": "'EPAPER_SIGNAL' is nu van het type string en is OFFSET en REPEATS van EPAPER configureerbaar gemaakt",
+                "fr": "'EPAPER_SIGNAL' est maintenant du type chaîne et permet de configurer OFFSET et REPEATS of EPAPER",
+                "it": "'EPAPER_SIGNAL' è ora di tipo stringa e reso OFFSET e REPEATS di EPAPER configurabile",
+                "es": "'EPAPER_SIGNAL' ahora es de tipo cadena y se configura como OFFSET y REPEATS de EPAPER",
+                "pl": "„EPAPER_SIGNAL” jest teraz typu ciąg i umożliwia konfigurację OFFSET i REPEATS z EPAPER",
+                "zh-cn": "“ EPAPER_SIGNAL”现在为字符串类型，并且可以配置EPAPER的OFFSET和REPEATS"
+            },
+            "1.10.3": {
+                "en": "fixed info channel",
+                "de": "fester Infokanal",
+                "ru": "фиксированный информационный канал",
+                "pt": "canal de informação fixo",
+                "nl": "vast infokanaal",
+                "fr": "canal d'information fixe",
+                "it": "canale informativo fisso",
+                "es": "canal de información fijo",
+                "pl": "naprawiono kanał informacyjny",
+                "zh-cn": "固定信息频道"
+            },
+            "1.10.2": {
+                "en": "replaced min max values of HMIP with correct numbers ",
+                "de": "Min-Max-Werte von HMIP durch korrekte Zahlen ersetzt",
+                "ru": "заменены минимальные максимальные значения HMIP правильными номерами",
+                "pt": "valores máximos mínimos substituídos do HMIP por números corretos",
+                "nl": "min max max waarden van HMIP vervangen door juiste getallen",
+                "fr": "a remplacé les valeurs min max de HMIP par des nombres corrects",
+                "it": "ha sostituito i valori max min di HMIP con i numeri corretti",
+                "es": "reemplazó los valores mínimos máximos de HMIP con números correctos",
+                "pl": "zastąpiono minimalne wartości HMIP prawidłowymi liczbami",
+                "zh-cn": "用正确的数字替换HMIP的最小值最大值"
+            },
+            "1.10.0": {
+                "en": "new meta data handling strategy",
+                "de": "neue Strategie für den Umgang mit Metadaten",
+                "ru": "новая стратегия обработки метаданных",
+                "pt": "nova estratégia de manuseio de metadados",
+                "nl": "nieuwe meta-gegevensverwerkingsstrategie",
+                "fr": "nouvelle stratégie de traitement des métadonnées",
+                "it": "nuova strategia di gestione dei metadati",
+                "es": "nueva estrategia de manejo de metadatos",
+                "pl": "nowa strategia przetwarzania metadanych",
+                "zh-cn": "新的元数据处理策略"
+            },
+            "1.9.17": {
+                "en": "now handling max values of 1.01 as 1",
+                "de": "Jetzt werden die Maximalwerte von 1,01 als 1 behandelt",
+                "ru": "теперь обрабатывает максимальные значения 1,01 как 1",
+                "pt": "agora lidando com valores máximos de 1,01 como 1",
+                "nl": "behandelt nu max. waarden van 1.01 als 1",
+                "fr": "gère maintenant les valeurs maximales de 1,01 en tant que 1",
+                "it": "gestendo ora i valori massimi di 1,01 come 1",
+                "es": "ahora manejando valores máximos de 1.01 como 1",
+                "pl": "teraz obsługuje max wartości 1.01 jako 1",
+                "zh-cn": "现在将最大值1.01处理为1"
+            }
+        },
+        "authors": [
+            "hobbyquaker <hq@ccu.io>",
+            "Moritz Heusinger <moritz.heusinger@gmail.com>"
+        ],
+        "license": "MIT",
+        "mode": "daemon",
+        "platform": "Javascript/Node.js",
+        "loglevel": "info",
+        "readme": "https://github.com/ioBroker/ioBroker.hm-rpc/blob/master/README.md",
+        "icon": "homematic.png",
+        "materialize": true,
+        "compact": true,
+        "extIcon": "https://raw.githubusercontent.com/ioBroker/ioBroker.hm-rpc/master/admin/homematic.png",
+        "keywords": [
+            "homematic",
+            "bidcos",
+            "eq3",
+            "ELV",
+            "CCU",
+            "CCU1",
+            "CCU2",
+            "rpc",
+            "xmlrpc",
+            "homegear",
+            "binrpc",
+            "CUxD",
+            "FS20",
+            "FHT",
+            "HMS",
+            "EnOcean"
+        ],
+        "type": "iot-systems",
+        "supportStopInstance": true,
+        "messagebox": true,
+        "dependencies": [
+            {
+                "js-controller": ">=2.0.0"
+            }
+        ]
+    },
+    "native": {
+        "homematicAddress": "192.168.0.100",
+        "adapterAddress": "0.0.0.0",
+        "homematicPort": "2001",
+        "callbackAddress": "",
+        "port": "0",
+        "type": "xml",
+        "daemon": "rfd",
+        "checkInitInterval": 180,
+        "reconnectInterval": 30,
+        "forceReInit": false,
+        "username": "",
+        "password": "",
+        "useHttps": false,
+        "dontDelete": false
+    },
+    "protectedNative": [
+        "username",
+        "password"
+    ],
+    "objects": [
+        {
+            "_id": "_design/hm-rpc",
+            "language": "javascript",
+            "views": {
+                "listDevices": {
+                    "map": "function(doc) {\n  if (doc._id.match(/^hm-rpc\\.[0-9]+\\.\\*?[A-Za-z0-9_-]+(\\.[0-9]+)?$/)) {\n   emit(doc._id, {ADDRESS:(doc.native?doc.native.ADDRESS:''),VERSION:(doc.native?doc.native.VERSION:'')});\n  }\n}"
+                },
+                "paramsetDescription": {
+                    "map": "function(doc) {\n  if (doc._id.match(/^hm-rpc\\.meta/) && doc.meta.type === 'paramsetDescription') {\n   emit(doc._id, doc);\n  }\n}"
+                }
+            }
         }
-      }
-    }
-  ],
-  "instanceObjects": [
-    {
-      "_id": "updated",
-      "type": "state",
-      "common": {
-        "name": "Some new devices added",
-        "type": "boolean",
-        "read": true,
-        "write": true
-      }
-    },
-    {
-      "_id": "info",
-      "type": "channel",
-      "common": {
-        "name": "Information"
-      },
-      "native": {}
-    },
-    {
-      "_id": "info.connection",
-      "type": "state",
-      "common": {
-        "role": "indicator.connected",
-        "name": "If connected to CCU",
-        "type": "boolean",
-        "read": true,
-        "write": false,
-        "def": false
-      },
-      "native": {}
-    }
-  ]
+    ],
+    "instanceObjects": [
+        {
+            "_id": "updated",
+            "type": "state",
+            "common": {
+                "name": "Some new devices added",
+                "type": "boolean",
+                "read": true,
+                "write": true
+            }
+        },
+        {
+            "_id": "info",
+            "type": "channel",
+            "common": {
+                "name": "Information"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.connection",
+            "type": "state",
+            "common": {
+                "role": "indicator.connected",
+                "name": "If connected to CCU",
+                "type": "boolean",
+                "read": true,
+                "write": false,
+                "def": false
+            },
+            "native": {}
+        }
+    ]
 }
