@@ -1087,7 +1087,7 @@ function addParamsetObjects(channel, paramset, callback) {
         if (typeof paramset[key].MIN === 'string' && paramset[key].VALUE_LIST) {
             obj.common.min = paramset[key].VALUE_LIST.indexOf(paramset[key].MIN);
         }
-        if (typeof paramset[key.MAX ]  === 'string' && paramset[key].VALUE_LIST) {
+        if (typeof paramset[key].MAX === 'string' && paramset[key].VALUE_LIST) {
             obj.common.max = paramset[key].VALUE_LIST.indexOf(paramset[key].MAX);
         }
 
