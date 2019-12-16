@@ -1,6 +1,7 @@
 ![Logo](admin/homematic.png)
 # ioBroker HomeMatic RPC Adapter
 
+![Build Status](https://github.com/ioBroker/ioBroker.hm-rpc/workflows/Test%20and%20Release/badge.svg)
 ![Number of Installations](http://iobroker.live/badges/hm-rpc-installed.svg) 
 ![Number of Installations](http://iobroker.live/badges/hm-rpc-stable.svg) 
 [![NPM version](http://img.shields.io/npm/v/iobroker.hm-rpc.svg)](https://www.npmjs.com/package/iobroker.hm-rpc)
