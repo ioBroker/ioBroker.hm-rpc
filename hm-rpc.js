@@ -783,16 +783,27 @@ function initRpcServer() {
     // adapterPort was introduced in v1.0.1. If not set yet then try 2000
     const adapterPort = parseInt(adapter.config.port || adapter.config.homematicPort, 10) || 2000;
     const callbackAddress = adapter.config.callbackAddress || adapter.config.adapterAddress;
-    adapter.getPort(adapterPort, port => {
-        daemonURL = daemonProto + callbackAddress + ':' + port;
-
-        rpcServer = rpc.createServer({
+    adapter.getPort(adapterPort, async port => {
+        const options = {
             host: adapter.config.adapterAddress,
-            port: port
-        });
+            port: port,
+            rejectUnauthorized: false
+        };
 
-        adapter.log.info(adapter.config.type + 'rpc server is trying to listen on ' + adapter.config.adapterAddress + ':' + port);
-        adapter.log.info(adapter.config.type + 'rpc client is trying to connect to ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + homematicPath + ' with ' + JSON.stringify([daemonURL, adapter.namespace]));
+        try {
+            const certs = await adapter.getCertificatesAsync();
+            options['key'] = certs[0].key;
+            options['cert'] = certs[0].cert;
+            daemonURL = `https://${callbackAddress}:${port}`;
+        } catch (e) {
+            adapter.log.error(`Cannot start secure server: ${e}`);
+            daemonURL = `http://${callbackAddress}:${port}`;
+        }
+
+        rpcServer = options.cert ? rpc.createSecureServer(options): rpc.createServer(options);
+
+        adapter.log.info(`${adapter.config.type}rpc server is trying to listen on ${adapter.config.adapterAddress}:${port}`);
+        adapter.log.info(`${adapter.config.type}rpc client is trying to connect to ${adapter.config.homematicAddress}:${adapter.config.homematicPort}${homematicPath} with ${JSON.stringify([daemonURL, adapter.namespace])}`);
 
         connect(true);
 

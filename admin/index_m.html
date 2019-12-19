@@ -282,7 +282,10 @@
             onChange(false);
             M.updateTextFields();
         });
-    }
+        fillSelectCertificates('#certPublic',  'public',  settings.certPublic);
+        fillSelectCertificates('#certPrivate', 'private', settings.certPrivate);
+        fillSelectCertificates('#certChained', 'chained', settings.certChained);
+    } // endLoad
 
     function getSettings() {
         var obj = {};
@@ -430,6 +433,18 @@
                     <input type="checkbox" id="useHttps" class="value" disabled />
                     <span for="useHttps"  class="translate">Use https</span>
                 </div>
+            </div>
+            <div class="input-field col s12 m6 l2 col-certPublic">
+                <select id="certPublic" class="value"></select>
+                <label class="translate" for="certPublic">Public certificate:</label>
+            </div>
+            <div class="input-field col s12 m6 l2 col-certPrivate">
+                <select id="certPrivate" class="value"></select>
+                <label class="translate" for="certPrivate">Private certificate:</label>
+            </div>
+            <div class="input-field col s12 m6 l2 col-certChained">
+                <select id="certChained" class="value"></select>
+                <label class="translate" for="certChained">Chained certificate:</label>
             </div>
             <div class="row">
                 <div class="input-field col s12 m6 l4">
