@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.12.1",
+        "version": "1.12.2",
         "news": {
+            "1.12.2":{
+                "en": "fix issue on https with less robust ccu emulations",
+                "de": "Problem bei https mit weniger robusten ccu-Emulationen behoben",
+                "ru": "исправить проблему на https с менее надежной эмуляцией ccu",
+                "pt": "corrigir problema em https com emulações de CPU menos robustas",
+                "nl": "probleem op https oplossen met minder robuuste ccu-emulaties",
+                "fr": "correction d'un problème sur https avec des émulations ccu moins robustes",
+                "it": "risolve il problema su https con emulazioni ccu meno robuste",
+                "es": "Solucione el problema en https con emulaciones ccu menos robustas",
+                "pl": "napraw problem na https przy mniej niezawodnych emulacjach ccu",
+                "zh-cn": "使用不太健壮的ccu仿真修复https上的问题"
+            },
             "1.12.1": {
                 "en": "fixed problem with max values of value lists",
                 "de": "Problem mit Maximalwerten von Wertelisten behoben",
@@ -98,18 +110,6 @@
                 "es": "nueva estrategia de manejo de metadatos",
                 "pl": "nowa strategia przetwarzania metadanych",
                 "zh-cn": "新的元数据处理策略"
-            },
-            "1.9.17": {
-                "en": "now handling max values of 1.01 as 1",
-                "de": "Jetzt werden die Maximalwerte von 1,01 als 1 behandelt",
-                "ru": "теперь обрабатывает максимальные значения 1,01 как 1",
-                "pt": "agora lidando com valores máximos de 1,01 como 1",
-                "nl": "behandelt nu max. waarden van 1.01 als 1",
-                "fr": "gère maintenant les valeurs maximales de 1,01 en tant que 1",
-                "it": "gestendo ora i valori massimi di 1,01 come 1",
-                "es": "ahora manejando valores máximos de 1.01 como 1",
-                "pl": "teraz obsługuje max wartości 1.01 jako 1",
-                "zh-cn": "现在将最大值1.01处理为1"
             }
         },
         "authors": [

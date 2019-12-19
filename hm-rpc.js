@@ -655,7 +655,7 @@ function main() {
     } else {
         rpc = require('homematic-xmlrpc');
         adapter.config.type = 'xml';
-        daemonProto = adapter.config.useHttps ? 'https://' : 'http://';
+        daemonProto = 'http://';
     }
 
     // Load VALUE paramsetDescriptions (needed to create state objects)
