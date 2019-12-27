@@ -35,14 +35,14 @@
     "dependencies": {
         "homematic-xmlrpc": "^1.0.2",
         "binrpc": "^3.3.1",
-        "@iobroker/adapter-core": "^1.0.3"
+        "@iobroker/adapter-core": "^2.0.0"
     },
     "devDependencies": {
-        "gulp": "^4.0.0",
-        "mocha": "^6.0.2",
+        "@iobroker/testing": "2.0.0",
         "chai": "^4.2.0",
         "eslint": "^5.11.1",
-        "@iobroker/testing": "^1.1.1"
+        "gulp": "^4.0.0",
+        "mocha": "^6.0.2"
     },
     "bugs": {
         "url": "https://github.com/ioBroker/ioBroker.hm-rpc/issues"
