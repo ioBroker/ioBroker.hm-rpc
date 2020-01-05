@@ -1047,15 +1047,15 @@ function addParamsetObjects(channel, paramset, callback) {
                 for (let i = 0; i < paramset[key].VALUE_LIST.length; i++) {
                     obj.common.states[i] = paramset[key].VALUE_LIST[i];
                 }
-            }
+            } // endIf
 
             if (paramset[key].SPECIAL) {
                 if (!obj.common.states) obj.common.states = {};
                 for (let i = 0; i < paramset[key].SPECIAL.length; i++) {
                     obj.common.states[paramset[key].SPECIAL[i].VALUE] = paramset[key].SPECIAL[i].ID;
                 }
-            }
-        }
+            } // endIf
+        } // endIf
 
         if (paramset[key].STATES) {
             obj.common.states = paramset[key].STATES;
@@ -1080,7 +1080,9 @@ function addParamsetObjects(channel, paramset, callback) {
             obj.common.role = metaRoles.chTYPE_dpNAME[`${channel.native.TYPE}.${key}`];
         } else if (metaRoles.dpNAME && metaRoles.dpNAME[key]) {
             obj.common.role = metaRoles.dpNAME[key];
-        }
+        } else if (paramset[key].TYPE === 'ACTION') {
+            obj.common.role = 'button';
+        } // endElseIf
 
         // sometimes min max is string on hmip meta in combination with value_list
         if (typeof paramset[key].MIN === 'string' && paramset[key].VALUE_LIST) {
