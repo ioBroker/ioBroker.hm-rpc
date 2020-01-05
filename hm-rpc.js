@@ -1080,7 +1080,7 @@ function addParamsetObjects(channel, paramset, callback) {
             obj.common.role = metaRoles.chTYPE_dpNAME[`${channel.native.TYPE}.${key}`];
         } else if (metaRoles.dpNAME && metaRoles.dpNAME[key]) {
             obj.common.role = metaRoles.dpNAME[key];
-        } else if (paramset[key].TYPE === 'ACTION') {
+        } else if (paramset[key].TYPE === 'ACTION' && !!(paramset[key].OPERATIONS & 2)) {
             obj.common.role = 'button';
         } // endElseIf
 
