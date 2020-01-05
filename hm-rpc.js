@@ -72,7 +72,7 @@ function number2hex(num) {
     if (typeof num === 'number') {
         num = num.toString(16).toUpperCase();
         if (num.length < 2) num = `0${num}`;
-        num = '0x' + num;
+        num = `0x${num}`;
     }
     return num;
 }
@@ -350,42 +350,42 @@ function readSettings(id) {
     const promises = [];
 
     promises.push(new Promise(resolve => {
-        adapter.getForeignState(id + '.0.EPAPER_LINE2', (err, state) => {
+        adapter.getForeignState(`${id}.0.EPAPER_LINE2`, (err, state) => {
             data.lines[0].line = state ? state.val || '' : '';
             resolve();
         });
     }));
 
     promises.push(new Promise(resolve => {
-        adapter.getForeignState(id + '.0.EPAPER_ICON2', (err, state) => {
+        adapter.getForeignState(`${id}.0.EPAPER_ICON2`, (err, state) => {
             data.lines[0].icon = state ? state.val || '' : '';
             resolve();
         });
     }));
 
     promises.push(new Promise(resolve => {
-        adapter.getForeignState(id + '.0.EPAPER_LINE3', (err, state) => {
+        adapter.getForeignState(`${id}.0.EPAPER_LINE3`, (err, state) => {
             data.lines[1].line = state ? state.val || '' : '';
             resolve();
         });
     }));
 
     promises.push(new Promise(resolve => {
-        adapter.getForeignState(id + '.0.EPAPER_ICON3', (err, state) => {
+        adapter.getForeignState(`${id}.0.EPAPER_ICON3`, (err, state) => {
             data.lines[1].icon = state ? state.val || '' : '';
             resolve();
         });
     }));
 
     promises.push(new Promise(resolve => {
-        adapter.getForeignState(id + '.0.EPAPER_LINE4', (err, state) => {
+        adapter.getForeignState(`${id}.0.EPAPER_LINE4`, (err, state) => {
             data.lines[2].line = state ? state.val || '' : '';
             resolve();
         });
     }));
 
     promises.push(new Promise(resolve => {
-        adapter.getForeignState(id + '.0.EPAPER_ICON4', (err, state) => {
+        adapter.getForeignState(`${id}.0.EPAPER_ICON4`, (err, state) => {
             data.lines[2].icon = state ? state.val || '' : '';
             resolve();
         });
@@ -478,27 +478,27 @@ function startAdapter(options) {
                     }
                 }
 
-                adapter.log.debug('setValue ' + JSON.stringify([tmp[2] + ':' + tmp[3], tmp[4], val]) + ' ' + type);
+                adapter.log.debug(`setValue ${JSON.stringify([`${tmp[2]}:${tmp[3]}`, tmp[4], val])} ${type}`);
 
                 try {
                     if (rpcClient && connected) {
-                        rpcClient.methodCall('setValue', [tmp[2] + ':' + tmp[3], tmp[4], val], (err/*, data*/) => {
+                        rpcClient.methodCall('setValue', [`${tmp[2]}:${tmp[3]}`, tmp[4], val], (err/*, data*/) => {
                             if (err) {
-                                adapter.log.error(adapter.config.type + 'rpc -> setValue ' + JSON.stringify([tmp[3], tmp[4], state.val]) + ' ' + type);
+                                adapter.log.error(`${adapter.config.type}rpc -> setValue ${JSON.stringify([tmp[3], tmp[4], state.val])} ${type}`);
                                 adapter.log.error(err);
                             }
                         });
                     } else {
-                        adapter.log.warn('Cannot setValue "' + id + '", because not connected.');
+                        adapter.log.warn(`Cannot setValue "${id}", because not connected.`);
                     }
                 } catch (err) {
-                    adapter.log.error('Cannot call setValue: :' + err);
+                    adapter.log.error(`Cannot call setValue: :${err}`);
                 }
             }
         },
         // Add messagebox Function for ioBroker.occ
         message: obj => {
-            adapter.log.debug('[MSSG] Received: ' + JSON.stringify(obj));
+            adapter.log.debug(`[MSSG] Received: ${JSON.stringify(obj)}`);
             if (obj.command === 'stopInstance') {
                 if (rpcServer && rpcServer.server) {
                     try {
@@ -529,11 +529,11 @@ function startAdapter(options) {
                             }, obj.callback);
                         });
                     } else {
-                        adapter.log.warn('Cannot send "' + obj.command + '" "' + obj.message.ID + '": because not connected');
+                        adapter.log.warn(`Cannot send "${obj.command}" "${obj.message.ID}": because not connected`);
                         if (obj.callback) adapter.sendTo(obj.from, obj.command, {error: 'not connected'}, obj.callback);
                     }
                 } catch (err) {
-                    adapter.log.error('Cannot call ' + obj.command + ': ' + err);
+                    adapter.log.error(`Cannot call ${obj.command}: ${err}`);
                     adapter.sendTo(obj.from, obj.command, {error: err}, obj.callback);
                 }
             } else {
@@ -546,11 +546,11 @@ function startAdapter(options) {
                             }, obj.callback);
                         });
                     } else {
-                        adapter.log.warn('Cannot send "' + obj.command + '" "' + obj.message.ID + '": because not connected');
+                        adapter.log.warn(`Cannot send "${obj.command}" "${obj.message.ID}": because not connected`);
                         if (obj.callback) adapter.sendTo(obj.from, obj.command, {error: 'not connected'}, obj.callback);
                     }
                 } catch (err) {
-                    adapter.log.error('Cannot call ' + obj.command + ': ' + err);
+                    adapter.log.error(`Cannot call ${obj.command}: ${err}`);
                     adapter.sendTo(obj.from, obj.command, {error: err}, obj.callback);
                 }
             }
@@ -572,7 +572,7 @@ function startAdapter(options) {
                 }
 
                 if (adapter.config && rpcClient) {
-                    adapter.log.info(adapter.config.type + 'rpc -> ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + homematicPath + ' init ' + JSON.stringify([daemonURL, '']));
+                    adapter.log.info(`${adapter.config.type}rpc -> ${adapter.config.homematicAddress}:${adapter.config.homematicPort}${homematicPath} init ${JSON.stringify([daemonURL, ''])}`);
                     try {
                         rpcClient.methodCall('init', [daemonURL, ''], (/*err, data*/) => {
                             if (connected) {
@@ -589,7 +589,7 @@ function startAdapter(options) {
                             connected = false;
                             adapter.setState('info.connection', false, true);
                         }
-                        adapter.log.error('Cannot call init: [' + daemonURL + ', ""]' + err);
+                        adapter.log.error(`Cannot call init: [${daemonURL}, ""]${err}`);
                         if (callback) callback();
                         callback = null;
                     }
@@ -600,7 +600,7 @@ function startAdapter(options) {
                 }
             } catch (e) {
                 if (adapter && adapter.log) {
-                    adapter.log.error('Unload error: ' + e);
+                    adapter.log.error(`Unload error: ${e}`);
                 } else {
                     console.log(e);
                 }
@@ -686,7 +686,7 @@ function main() {
     }, (err, res) => {
         if (!err && res.rows) {
             for (const row of res.rows) {
-                if (row.id === adapter.namespace + '.updated') continue;
+                if (row.id === `${adapter.namespace}.updated`) continue;
                 if (!row.value.native) {
                     adapter.log.warn(`State ${row.id} does not have native.`);
                     dpTypes[row.id] = {UNIT: '', TYPE: ''};
@@ -734,12 +734,12 @@ function sendInit() {
                         updateConnection();
                     }
                 } else {
-                    adapter.log.error('init error: ' + err);
+                    adapter.log.error(`init error: ${err}`);
                 }
             });
         }
     } catch (err) {
-        adapter.log.error('Init not possible, going to stop: ' + err);
+        adapter.log.error(`Init not possible, going to stop: ${err}`);
         adapter.stop();
     }
 } // endSendInit
@@ -752,7 +752,7 @@ function sendPing() {
                 if (!err) {
                     adapter.log.debug('PING ok');
                 } else {
-                    adapter.log.error('Ping error: ' + err);
+                    adapter.log.error(`Ping error: ${err}`);
                     if (connected) {
                         adapter.log.info('Disconnected');
                         connected = false;
@@ -762,7 +762,7 @@ function sendPing() {
                 }
             });
         } catch (err) {
-            adapter.log.error('Cannot call ping [' + adapter.namespace + ']: ' + err);
+            adapter.log.error(`Cannot call ping [${adapter.namespace}]: ${err}`);
         }
     } else {
         adapter.warn('Called PING, but client does not exist');
@@ -784,19 +784,19 @@ function initRpcServer() {
     const adapterPort = parseInt(adapter.config.port || adapter.config.homematicPort, 10) || 2000;
     const callbackAddress = adapter.config.callbackAddress || adapter.config.adapterAddress;
     adapter.getPort(adapterPort, port => {
-        daemonURL = daemonProto + callbackAddress + ':' + port;
+        daemonURL = `${daemonProto + callbackAddress}:${port}`;
 
         rpcServer = rpc.createServer({
             host: adapter.config.adapterAddress,
             port: port
         });
 
-        adapter.log.info(adapter.config.type + 'rpc server is trying to listen on ' + adapter.config.adapterAddress + ':' + port);
-        adapter.log.info(adapter.config.type + 'rpc client is trying to connect to ' + adapter.config.homematicAddress + ':' + adapter.config.homematicPort + homematicPath + ' with ' + JSON.stringify([daemonURL, adapter.namespace]));
+        adapter.log.info(`${adapter.config.type}rpc server is trying to listen on ${adapter.config.adapterAddress}:${port}`);
+        adapter.log.info(`${adapter.config.type}rpc client is trying to connect to ${adapter.config.homematicAddress}:${adapter.config.homematicPort}${homematicPath} with ${JSON.stringify([daemonURL, adapter.namespace])}`);
 
         connect(true);
 
-        rpcServer.on('NotFound', (method, params) => adapter.log.warn(adapter.config.type + 'rpc <- undefined method ' + method + ' ' + JSON.stringify(params).slice(0, 80)));
+        rpcServer.on('NotFound', (method, params) => adapter.log.warn(`${adapter.config.type}rpc <- undefined method ${method} ${JSON.stringify(params).slice(0, 80)}`));
 
         rpcServer.on('system.multicall', (method, params, callback) => {
             updateConnection();
@@ -814,43 +814,43 @@ function initRpcServer() {
 
         rpcServer.on('system.listMethods', (err, params, callback) => {
             if (err) {
-                adapter.log.warn(' Error on system.listMethods: ' + err);
+                adapter.log.warn(` Error on system.listMethods: ${err}`);
             }
-            adapter.log.info(adapter.config.type + 'rpc <- system.listMethods ' + JSON.stringify(params));
+            adapter.log.info(`${adapter.config.type}rpc <- system.listMethods ${JSON.stringify(params)}`);
             callback(null, ['event', 'deleteDevices', 'listDevices', 'newDevices', 'system.listMethods', 'system.multicall', 'setReadyConfig']);
         });
 
         rpcServer.on('event', (err, params, callback) => {
             if (err) {
-                adapter.log.warn(' Error on system.listMethods: ' + err);
+                adapter.log.warn(` Error on system.listMethods: ${err}`);
             }
             updateConnection();
             try {
                 callback(null, methods.event(err, params));
             } catch (err) {
-                adapter.log.error('Cannot response on event:' + err);
+                adapter.log.error(`Cannot response on event:${err}`);
             }
         });
 
         rpcServer.on('newDevices', (err, params, callback) => {
             if (err) {
-                adapter.log.warn(' Error on system.listMethods: ' + err);
+                adapter.log.warn(` Error on system.listMethods: ${err}`);
             }
 
             const newDevices = params[1];
 
-            adapter.log.info(adapter.config.type + 'rpc <- newDevices ' + newDevices.length);
+            adapter.log.info(`${adapter.config.type}rpc <- newDevices ${newDevices.length}`);
 
             // for a HmIP-adapter we have to filter out the devices that
             // are already present if forceReinit is not set
             if (adapter.config.forceReInit === false && adapter.config.daemon === 'HMIP') {
                 adapter.getObjectView('hm-rpc', 'listDevices', {
-                    startkey: 'hm-rpc.' + adapter.instance + '.',
+                    startkey: `hm-rpc.${adapter.instance}.`,
                     endkey: 'hm-rpc.' + adapter.instance + '.\u9999'
                 }, (err, doc) => {
                     if (doc && doc.rows) {
                         for (const row of doc.rows) {
-                            if (row.id === adapter.namespace + '.updated') continue;
+                            if (row.id === `${adapter.namespace}.updated`) continue;
 
                             // lets get the device description
                             const val = row.value;
@@ -875,10 +875,10 @@ function initRpcServer() {
                                         const address = val.ADDRESS.replace(':', '.').replace(FORBIDDEN_CHARS, '_');
                                         const parts = address.split('.');
                                         adapter.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
-                                        adapter.log.info('obsolete channel ' + address + ' ' + JSON.stringify(address) + ' deleted');
+                                        adapter.log.info(`obsolete channel ${address} ${JSON.stringify(address)} deleted`);
                                     } else {
                                         adapter.deleteDevice(val.ADDRESS);
-                                        adapter.log.info('obsolete device ' + val.ADDRESS + ' deleted');
+                                        adapter.log.info(`obsolete device ${val.ADDRESS} deleted`);
                                     }
                                 }
                             } else {
@@ -889,7 +889,7 @@ function initRpcServer() {
                         }
                     }
 
-                    adapter.log.info('new HmIP devices/channels after filter: ' + newDevices.length);
+                    adapter.log.info(`new HmIP devices/channels after filter: ${newDevices.length}`);
                     createDevices(newDevices, callback);
                 });
             } else {
@@ -899,11 +899,11 @@ function initRpcServer() {
 
         rpcServer.on('listDevices', (err, params, callback) => {
             if (err) {
-                adapter.log.warn('Error on system.listMethods: ' + err);
+                adapter.log.warn(`Error on system.listMethods: ${err}`);
             }
-            adapter.log.info(adapter.config.type + 'rpc <- listDevices ' + JSON.stringify(params));
+            adapter.log.info(`${adapter.config.type}rpc <- listDevices ${JSON.stringify(params)}`);
             adapter.getObjectView('hm-rpc', 'listDevices', {
-                startkey: 'hm-rpc.' + adapter.instance + '.',
+                startkey: `hm-rpc.${adapter.instance}.`,
                 endkey: 'hm-rpc.' + adapter.instance + '.\u9999'
             }, (err, doc) => {
                 const response = [];
@@ -912,62 +912,62 @@ function initRpcServer() {
                 // if the adapter instance is not bothering with HmIP (which seems to work slightly different in terms of XMLRPC)
                 if (!adapter.config.forceReInit && adapter.config.daemon !== 'HMIP' && doc && doc.rows) {
                     for (let i = 0; i < doc.rows.length; i++) {
-                        if (doc.rows[i].id === adapter.namespace + '.updated') continue;
+                        if (doc.rows[i].id === `${adapter.namespace}.updated`) continue;
                         const val = doc.rows[i].value;
 
                         if (val.ADDRESS) response.push({ADDRESS: val.ADDRESS, VERSION: val.VERSION});
                     }
                 }
-                adapter.log.info(adapter.config.type + 'rpc -> ' + response.length + ' devices');
+                adapter.log.info(`${adapter.config.type}rpc -> ${response.length} devices`);
 
                 try {
                     for (let r = response.length - 1; r >= 0; r--) {
                         if (!response[r].ADDRESS) {
-                            adapter.log.warn(adapter.config.type + 'rpc -> found empty entry at position ' + r + ' !');
+                            adapter.log.warn(`${adapter.config.type}rpc -> found empty entry at position ${r} !`);
                             response.splice(r, 1);
                         }
                     }
 
                     callback(null, response);
                 } catch (err) {
-                    adapter.log.error('Cannot response on listDevices:' + err);
-                    require('fs').writeFileSync(__dirname + '/problem.json', JSON.stringify(response));
+                    adapter.log.error(`Cannot response on listDevices:${err}`);
+                    require('fs').writeFileSync(`${__dirname}/problem.json`, JSON.stringify(response));
                 }
             });
         });
 
         rpcServer.on('deleteDevices', (err, params, callback) => {
             if (err) {
-                adapter.log.warn(' Error on system.listMethods: ' + err);
+                adapter.log.warn(` Error on system.listMethods: ${err}`);
             }
-            adapter.log.info(adapter.config.type + 'rpc <- deleteDevices ' + params[1].length);
+            adapter.log.info(`${adapter.config.type}rpc <- deleteDevices ${params[1].length}`);
             for (let i = 0; i < params[1].length; i++) {
                 if (params[1][i].indexOf(':') !== -1) {
                     params[1][i] = params[1][i].replace(':', '.').replace(FORBIDDEN_CHARS, '_');
-                    adapter.log.info('channel ' + params[1][i] + ' ' + JSON.stringify(params[1][i]) + ' deleted');
+                    adapter.log.info(`channel ${params[1][i]} ${JSON.stringify(params[1][i])} deleted`);
                     const parts = params[1][i].split('.');
                     adapter.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
                 } else {
-                    adapter.log.info('device ' + params[1][i] + ' deleted');
+                    adapter.log.info(`device ${params[1][i]} deleted`);
                     adapter.deleteDevice(params[1][i]);
                 }
             }
             try {
                 callback(null, '');
             } catch (err) {
-                adapter.log.error('Cannot response on deleteDevices:' + err);
+                adapter.log.error(`Cannot response on deleteDevices:${err}`);
             }
         });
 
         rpcServer.on('setReadyConfig', (err, params, callback) => {
             if (err) {
-                adapter.log.warn(' Error on setReadyConfig: ' + err);
+                adapter.log.warn(` Error on setReadyConfig: ${err}`);
             }
-            adapter.log.info(adapter.config.type + 'rpc <- setReadyConfig ' + JSON.stringify(params));
+            adapter.log.info(`${adapter.config.type}rpc <- setReadyConfig ${JSON.stringify(params)}`);
             try {
                 callback(null, '');
             } catch (err) {
-                adapter.log.error('Cannot response on setReadyConfig:' + err);
+                adapter.log.error(`Cannot response on setReadyConfig: ${err}`);
             }
         });
 
@@ -977,14 +977,14 @@ function initRpcServer() {
 const methods = {
 
     event: function (err, params) {
-        adapter.log.debug(adapter.config.type + 'rpc <- event ' + JSON.stringify(params));
+        adapter.log.debug(`${adapter.config.type}rpc <- event ${JSON.stringify(params)}`);
         let val;
         // CUxD ignores all prefixes!!
         if (params[0] === 'CUxD' || params[0].indexOf(adapter.name) === -1) {
             params[0] = adapter.namespace;
         }
         const channel = params[1].replace(':', '.').replace(FORBIDDEN_CHARS, '_');
-        const name = params[0] + '.' + channel + '.' + params[2];
+        const name = `${params[0]}.${channel}.${params[2]}`;
 
         if (dpTypes[name]) {
             if (dpTypes[name].MIN !== undefined && dpTypes[name].UNIT === '%') {
@@ -998,12 +998,11 @@ const methods = {
         } else {
             val = params[3];
         }
-        adapter.log.debug(name + ' ==> UNIT: "' + (dpTypes[name] ? dpTypes[name].UNIT : 'none') + '" (min: ' + (dpTypes[name] ? dpTypes[name].MIN : 'none') + ', max: ' + (dpTypes[name] ? dpTypes[name].MAX : 'none') + ') From "' + params[3] + '" => "' + val + '"');
+        adapter.log.debug(`${name} ==> UNIT: "${dpTypes[name] ? dpTypes[name].UNIT : 'none'}" (min: ${dpTypes[name] ? dpTypes[name].MIN : 'none'}, max: ${dpTypes[name] ? dpTypes[name].MAX : 'none'}) From "${params[3]}" => "${val}"`);
 
-        adapter.setState(channel + '.' + params[2], {val: val, ack: true});
+        adapter.setState(`${channel}.${params[2]}`, {val: val, ack: true});
         return '';
     }
-
 };
 
 const queueValueParamsets = [];
@@ -1077,8 +1076,8 @@ function addParamsetObjects(channel, paramset, callback) {
 
         if (metaRoles.dpCONTROL && metaRoles.dpCONTROL[obj.native.CONTROL]) {
             obj.common.role = metaRoles.dpCONTROL[obj.native.CONTROL];
-        } else if (metaRoles.chTYPE_dpNAME && metaRoles.chTYPE_dpNAME[channel.native.TYPE + '.' + key]) {
-            obj.common.role = metaRoles.chTYPE_dpNAME[channel.native.TYPE + '.' + key];
+        } else if (metaRoles.chTYPE_dpNAME && metaRoles.chTYPE_dpNAME[`${channel.native.TYPE}.${key}`]) {
+            obj.common.role = metaRoles.chTYPE_dpNAME[`${channel.native.TYPE}.${key}`];
         } else if (metaRoles.dpNAME && metaRoles.dpNAME[key]) {
             obj.common.role = metaRoles.dpNAME[key];
         }
@@ -1105,18 +1104,10 @@ function addParamsetObjects(channel, paramset, callback) {
             obj.common.role = 'indicator.service';
         }
 
-        // specify which value is LOCK
-        if (obj.native.CONTROL === 'LOCK.STATE') {
-            obj.native.LOCK_VALUE = false;
-            obj.common.role = 'switch.lock';
-        } else if (obj.native.CONTROL === 'DOOR_SENSOR.STATE') {
-            obj.common.role = 'value.window';
-        }
-
         if (typeof obj.common.role !== 'string' && typeof obj.common.role !== 'undefined') {
-            throw 'typeof obj.common.role ' + typeof obj.common.role;
+            throw `typeof obj.common.role ${typeof obj.common.role}`;
         }
-        const dpID = adapter.namespace + '.' + channel._id + '.' + key;
+        const dpID = `${adapter.namespace}.${channel._id}.${key}`;
 
         dpTypes[dpID] = {
             UNIT: paramset[key].UNIT,
@@ -1142,11 +1133,11 @@ function addParamsetObjects(channel, paramset, callback) {
         }
 
         promises.push(new Promise(resolve => {
-            adapter.extendObject(channel._id + '.' + key, obj, (err, res) => {
+            adapter.extendObject(`${channel._id}.${key}`, obj, (err, res) => {
                 if (!err) {
-                    adapter.log.debug('object ' + res.id + ' extended');
+                    adapter.log.debug(`object ${res.id} extended`);
                 } else {
-                    adapter.log.error('object ' + (res ? res.id : '?') + ' extend ' + err);
+                    adapter.log.error(`object ${res ? res.id : '?'} extend ${err}`);
                 }
                 resolve();
             });
@@ -1162,7 +1153,7 @@ function getValueParamsets() {
         adapter.setState('updated', true, false);
         // Inform hm-rega about new devices
         if (adapter.config.forceReInit) {
-            adapter.extendForeignObject('system.adapter.' + adapter.namespace, {native: {forceReInit: false}});
+            adapter.extendForeignObject(`system.adapter.${adapter.namespace}`, {native: {forceReInit: false}});
         }
         return;
     }
@@ -1193,7 +1184,7 @@ function getValueParamsets() {
 
                 addParamsetObjects(obj, metaValues[cid], () => setImmediate(getValueParamsets));
             } else {
-                adapter.log.info(adapter.config.type + 'rpc -> getParamsetDescription ' + JSON.stringify([obj.native.ADDRESS, 'VALUES']));
+                adapter.log.info(`${adapter.config.type}rpc -> getParamsetDescription ${JSON.stringify([obj.native.ADDRESS, 'VALUES'])}`);
                 try {
                     rpcClient.methodCall('getParamsetDescription', [obj.native.ADDRESS, 'VALUES'], (err, res) => {
                         if (err) {
@@ -1377,10 +1368,10 @@ function createDevices(deviceArr, callback) {
         } else {
             type = 'device';
             if (!images[device.TYPE]) {
-                adapter.log.warn('No image for "' + device.TYPE + '" found.');
+                adapter.log.warn(`No image for "${device.TYPE}" found.`);
             }
 
-            icon = images[device.TYPE] ? ('/icons/' + images[device.TYPE]) : '';
+            icon = images[device.TYPE] ? (`/icons/${images[device.TYPE]}`) : '';
         }
 
         const obj = {
@@ -1432,9 +1423,9 @@ function createDevices(deviceArr, callback) {
 
             adapter.setObject(obj._id, obj, (err, res) => {
                 if (!err) {
-                    adapter.log.debug('object ' + res.id + ' created');
+                    adapter.log.debug(`object ${res.id} created`);
                 } else {
-                    adapter.log.error('object ' + (res ? res.id : '?') + ' error on creation: ' + err);
+                    adapter.log.error(`object ${res ? res.id : '?'} error on creation: ${err}`);
                 }
                 setImmediate(queue);
             });
@@ -1458,19 +1449,19 @@ function getCuxDevices(callback) {
         try {
             rpcClient.methodCall('listDevices', [], (err, newDevices) => {
                 if (err) {
-                    adapter.log.error('Error on listDevices: ' + err);
+                    adapter.log.error(`Error on listDevices: ${err}`);
                     return;
                 }
-                adapter.log.info(adapter.config.type + 'rpc -> listDevices ' + newDevices.length);
+                adapter.log.info(`${adapter.config.type}rpc -> listDevices ${newDevices.length}`);
 
                 if (adapter.config.forceReInit === false) {
                     adapter.getObjectView('hm-rpc', 'listDevices', {
-                        startkey: 'hm-rpc.' + adapter.instance + '.',
+                        startkey: `hm-rpc.${adapter.instance}.`,
                         endkey: 'hm-rpc.' + adapter.instance + '.\u9999'
                     }, (err, doc) => {
                         if (doc && doc.rows) {
                             for (const row of doc.rows) {
-                                if (row.id === adapter.namespace + '.updated') continue;
+                                if (row.id === `${adapter.namespace}.updated`) continue;
 
                                 // lets get the device description
                                 const val = row.value;
@@ -1495,10 +1486,10 @@ function getCuxDevices(callback) {
                                             const address = val.ADDRESS.replace(':', '.').replace(FORBIDDEN_CHARS, '_');
                                             const parts = address.split('.');
                                             adapter.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
-                                            adapter.log.info('obsolete channel ' + address + ' ' + JSON.stringify(address) + ' deleted');
+                                            adapter.log.info(`obsolete channel ${address} ${JSON.stringify(address)} deleted`);
                                         } else {
                                             adapter.deleteDevice(val.ADDRESS);
-                                            adapter.log.info('obsolete device ' + val.ADDRESS + ' deleted');
+                                            adapter.log.info(`obsolete device ${val.ADDRESS} deleted`);
                                         }
                                     }
                                 } else {
@@ -1509,7 +1500,7 @@ function getCuxDevices(callback) {
                             }
                         }
 
-                        adapter.log.info('new CUxD devices/channels after filter: ' + newDevices.length);
+                        adapter.log.info(`new CUxD devices/channels after filter: ${newDevices.length}`);
                         createDevices(newDevices, callback);
                     });
                 } else {
@@ -1517,7 +1508,7 @@ function getCuxDevices(callback) {
                 }
             });
         } catch (err) {
-            adapter.log.error('Cannot call listDevices: ' + err);
+            adapter.log.error(`Cannot call listDevices: ${err}`);
         }
     } else {
         callback && callback();
@@ -1566,39 +1557,6 @@ function connect(isFirst) {
                 adapter.log.error(`Socket error: ${err}`);
             });
         } // endIf
-
-        // if bin-rpc
-        /*        if (rpcClient.on) {
-            rpcClient.on('connect', function (err) {
-                sendInit();
-            });
-
-            rpcClient.on('close', function () {
-                adapter.log.debug('Socket closed.');
-                if (connected) {
-                    adapter.log.info('Disconnected');
-                    connected = false;
-                    adapter.setState('info.connection', false, true);
-                }
-
-                if (eventInterval) {
-                    adapter.log.debug('clear ping interval');
-                    clearInterval(eventInterval);
-                    eventInterval = null;
-                }
-                // clear queue
-                if (rpcClient.queue) {
-                    while (rpcClient.queue.length) {
-                        rpcClient.queue.pop();
-                    }
-                    rpcClient.pending = false;
-                }
-
-                if (!connTimeout) {
-                    connTimeout = setTimeout(connect, adapter.config.reconnectInterval * 1000);
-                }
-            });
-        }*/
     } else if (!rpcClient) {
         adapter.getForeignObject('system.config', (err, obj) => {
             let password;
@@ -1666,7 +1624,7 @@ function createMeta() {
         for (const data of meta) {
             promises.push(adapter.setForeignObjectAsync(data._id, data));
         } // endFor
-        adapter.log.info('[META] Meta data updated');
+        adapter.log.debug('[META] Meta data updated');
         Promise.all(promises).then(resolve);
     });
 }  // endCreateMeta
