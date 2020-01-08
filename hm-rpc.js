@@ -1061,8 +1061,8 @@ function addParamsetObjects(channel, paramset, callback) {
             obj.common.states = paramset[key].STATES;
         }
 
-        // temporary fix for https://github.com/eq-3/occu/issues/105
-        if (paramset[key].CONTROL === 'DIMMER_REAL.LEVEL' && typeof paramset[key].MIN === 'number' && typeof paramset[key].MAX === 'number' && paramset[key].UNIT === undefined) {
+        // temporary fix for https://github.com/eq-3/occu/issues/105 and LEVEL w. o. %
+        if (key === 'LEVEL' && typeof paramset[key].MIN === 'number' && typeof paramset[key].MAX === 'number' && paramset[key].UNIT === undefined) {
             paramset[key].UNIT = '%';
         } // endIf
 

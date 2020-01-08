@@ -126,6 +126,9 @@ If you use HomeMatic switches or remotes their button states will only be acknow
 by ioBroker, when you have a running 'dummy' program on the CCU which depends on the related switch or remote.
 
 ## Changelog
+### 1.12.6 (2020-01-08)
+* (foxriver76) make all LEVEL dps of unit % if they are w.o. unit and have min/max
+
 ### 1.12.5 (2020-01-06)
 * (foxriver76) handle some meta data more abstract
 * (foxriver76) make DIMMER_REAL.LEVEL of unit '%' even it is not by definition
