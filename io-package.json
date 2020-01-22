@@ -144,6 +144,7 @@
             "EnOcean"
         ],
         "type": "iot-systems",
+        "connectionType": "local push",
         "supportStopInstance": true,
         "messagebox": true,
         "dependencies": [
