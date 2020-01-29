@@ -300,7 +300,7 @@ by ioBroker, when you have a running 'dummy' program on the CCU which depends on
 
 The MIT License (MIT)
 
-Copyright (c) 2014-2019 bluefox <dogafox@gmail.com>
+Copyright (c) 2014-2020 bluefox <dogafox@gmail.com>
 
 Copyright (c) 2014 hobbyquaker
 
