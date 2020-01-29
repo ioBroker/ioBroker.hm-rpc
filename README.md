@@ -121,6 +121,17 @@ sendTo('hm-rpc.1', 'getParamsetDescription', {ID: '000453D77B9EDF:1', paramType:
 });
 ```
 
+Get firmware information of a device (in this case we are logging the FW status):
+```javascript
+sendTo('hm-rpc.1', 'getDeviceDescription', {ID: '0000S8179E3DBE', paramType: 'FIRMWARE'}, res => {
+    if (!res.error) {
+        log(`FW status: ${res.result.FIRMWARE_UPDATE_STATE}`)
+    } else {
+        log(res.error)
+    }
+});
+```
+
 ## Additional information
 If you use HomeMatic switches or remotes their button states will only be acknowledged by CCU and thus 
 by ioBroker, when you have a running 'dummy' program on the CCU which depends on the related switch or remote.
