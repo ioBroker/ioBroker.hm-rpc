@@ -796,7 +796,13 @@ function initRpcServer() {
 
         connect(true);
 
-        rpcServer.on('NotFound', (method, params) => adapter.log.warn(`${adapter.config.type}rpc <- undefined method ${method} ${JSON.stringify(params).slice(0, 80)}`));
+        rpcServer.on('NotFound', (method, params) => {
+            if (method === 'firmwareUpdateStatusChanged') {
+                adapter.log.info(`Firmware update status of ${params[1]} changed to ${params[2]}`);
+            } else {
+                adapter.log.warn(`${adapter.config.type}rpc <- undefined method ${method} ${JSON.stringify(params).slice(0, 80)}`);
+            } // endElse
+        });
 
         rpcServer.on('system.multicall', (method, params, callback) => {
             updateConnection();
