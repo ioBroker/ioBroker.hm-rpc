@@ -26,22 +26,49 @@ tests.integration(path.join(__dirname, '..'), {
         /*
         describe('Test connection', () => {
             it('Should work', () => {
-                return new Promise(async resolve => {
+                return new Promise(resolve => {
                     const harness = getHarness();
 
                     // change the adapter config
-                    harness._objects.getObject('system.adapter.hm-rpc.0', (err, obj) => {
+                    harness._objects.getObject('system.adapter.hm-rpc.0', async (err, obj) => {
                         obj.native.homematicAddress = '127.0.0.1';
                         obj.native.homematicPort = 2010;
                         harness._objects.setObject(obj._id, obj);
 
-                        harness.startAdapterAndWait().then(() => {
-                            harness.on('objectChange', (obj) => {
-                                if (obj === 'hm-rpc.0.000393C98D0FF5.1.SET_POINT_TEMPERATURE') {
-                                    console.log('hm-rpc.0.000393C98D0FF5.1.SET_POINT_TEMPERATURE changed!');
-                                    resolve();
-                                }
-                            });
+                        await harness.startAdapterAndWait();
+                        harness.on('objectChange', obj => {
+                            if (obj === 'hm-rpc.0.000393C98D0FF5.1.SET_POINT_TEMPERATURE') {
+                                console.log('object hm-rpc.0.000393C98D0FF5.1.SET_POINT_TEMPERATURE changed!');
+                                resolve();
+                            } // endIf
+                        });
+                    });
+                });
+            });
+        });
+
+        describe('Test roles', () => {
+            it('Should work', () => {
+                return new Promise(resolve => {
+                    const harness = getHarness();
+
+                    // change the adapter config
+                    harness._objects.getObject('system.adapter.hm-rpc.0', async (err, obj) => {
+                        obj.native.homematicAddress = '127.0.0.1';
+                        obj.native.homematicPort = 2010;
+                        harness._objects.setObject(obj._id, obj);
+
+                        await harness.startAdapterAndWait();
+
+                        harness.on('objectChange', obj => {
+                            if (obj === 'hm-rpc.0.000213C990986A.1.PRESS_SHORT') {
+                                // object has been created, now check role
+                                harness._objects.getObject(obj, (err, testObj) => {
+                                    if (testObj.common.role === 'button') {
+                                        resolve();
+                                    } // endIf
+                                });
+                            } // endIf
                         });
                     });
                 });
