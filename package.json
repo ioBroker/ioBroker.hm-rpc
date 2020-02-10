@@ -42,7 +42,8 @@
         "chai": "^4.2.0",
         "eslint": "^5.11.1",
         "gulp": "^4.0.0",
-        "mocha": "^6.0.2"
+        "mocha": "^6.0.2",
+        "hm-simulator": "^0.1.1"
     },
     "bugs": {
         "url": "https://github.com/ioBroker/ioBroker.hm-rpc/issues"
