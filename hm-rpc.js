@@ -1110,6 +1110,9 @@ function addParamsetObjects(channel, paramset, callback) {
             obj.common.unit = 'dBm';
         } else if (obj.common.role === 'value.voltage') {
             obj.common.unit = 'V';
+        } else if (obj.common.role === 'value.window' && paramset[key].TYPE === 'BOOL') {
+            // if its value.window but its a boolean it should be sensor.window
+            obj.common.role = 'sensor.window';
         }
 
         if (paramset[key].OPERATIONS & 8) {

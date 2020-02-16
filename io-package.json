@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.12.6",
+        "version": "1.12.7",
         "news": {
+            "1.12.7": {
+                "en": "if role 'value.window' is a boolean it is now correctly a 'sensor.window'",
+                "de": "Wenn die Rolle 'value.window' ein Boolescher Wert ist, ist sie jetzt korrekterweise ein 'sensor.window'.",
+                "ru": "если роль 'value.window' является логическим значением, теперь это правильно 'sensor.window'",
+                "pt": "se o papel 'value.window' for um booleano, agora será corretamente um 'sensor.window'",
+                "nl": "als rol 'value.window' een boolean is, is het nu correct een 'sensor.window'",
+                "fr": "si le rôle 'value.window' est un booléen c'est maintenant correctement un 'sensor.window'",
+                "it": "se il ruolo 'value.window' è un valore booleano, ora è correttamente un 'sensor.window'",
+                "es": "si el rol 'value.window' es un booleano, ahora es correctamente un 'sensor.window'",
+                "pl": "jeśli rola „wartość. okno” jest wartością logiczną, jest teraz poprawnie „czujnikiem. okno”",
+                "zh-cn": "如果角色'value.window'是布尔值，则现在正确地是'sensor.window'"
+            },
             "1.12.6": {
                 "en": "now some meta data will be handled more abstract",
                 "de": "Jetzt werden einige Metadaten abstrakter behandelt",
@@ -98,18 +110,6 @@
                 "es": "canal de información fijo",
                 "pl": "naprawiono kanał informacyjny",
                 "zh-cn": "固定信息频道"
-            },
-            "1.10.2": {
-                "en": "replaced min max values of HMIP with correct numbers ",
-                "de": "Min-Max-Werte von HMIP durch korrekte Zahlen ersetzt",
-                "ru": "заменены минимальные максимальные значения HMIP правильными номерами",
-                "pt": "valores máximos mínimos substituídos do HMIP por números corretos",
-                "nl": "min max max waarden van HMIP vervangen door juiste getallen",
-                "fr": "a remplacé les valeurs min max de HMIP par des nombres corrects",
-                "it": "ha sostituito i valori max min di HMIP con i numeri corretti",
-                "es": "reemplazó los valores mínimos máximos de HMIP con números correctos",
-                "pl": "zastąpiono minimalne wartości HMIP prawidłowymi liczbami",
-                "zh-cn": "用正确的数字替换HMIP的最小值最大值"
             }
         },
         "authors": [

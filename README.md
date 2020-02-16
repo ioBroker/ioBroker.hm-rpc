@@ -137,6 +137,9 @@ If you use HomeMatic switches or remotes their button states will only be acknow
 by ioBroker, when you have a running 'dummy' program on the CCU which depends on the related switch or remote.
 
 ## Changelog
+### 1.12.7 (2020-02-16)
+* (foxriver76) if role "value.window" is a boolean it is now correctly a "sensor.window"
+
 ### 1.12.6 (2020-01-08)
 * (foxriver76) make all LEVEL dps of unit % if they are w.o. unit and have min/max
 
