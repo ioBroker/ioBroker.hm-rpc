@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.12.7",
+        "version": "1.12.8",
         "news": {
+            "1.12.8": {
+                "en": "improved error handling on undefined methods",
+                "de": "Verbesserte Fehlerbehandlung bei undefinierten Methoden",
+                "ru": "улучшена обработка ошибок в неопределенных методах",
+                "pt": "manipulação aprimorada de erros em métodos indefinidos",
+                "nl": "verbeterde foutafhandeling op ongedefinieerde methoden",
+                "fr": "gestion améliorée des erreurs sur les méthodes non définies",
+                "it": "migliorata gestione degli errori su metodi non definiti",
+                "es": "manejo mejorado de errores en métodos indefinidos",
+                "pl": "poprawiona obsługa błędów w niezdefiniowanych metodach",
+                "zh-cn": "改进了对未定义方法的错误处理"
+            },
             "1.12.7": {
                 "en": "if role 'value.window' is a boolean it is now correctly a 'sensor.window'",
                 "de": "Wenn die Rolle 'value.window' ein Boolescher Wert ist, ist sie jetzt korrekterweise ein 'sensor.window'.",
@@ -98,18 +110,6 @@
                 "es": "'EPAPER_SIGNAL' ahora es de tipo cadena y se configura como OFFSET y REPEATS de EPAPER",
                 "pl": "„EPAPER_SIGNAL” jest teraz typu ciąg i umożliwia konfigurację OFFSET i REPEATS z EPAPER",
                 "zh-cn": "“ EPAPER_SIGNAL”现在为字符串类型，并且可以配置EPAPER的OFFSET和REPEATS"
-            },
-            "1.10.3": {
-                "en": "fixed info channel",
-                "de": "fester Infokanal",
-                "ru": "фиксированный информационный канал",
-                "pt": "canal de informação fixo",
-                "nl": "vast infokanaal",
-                "fr": "canal d'information fixe",
-                "it": "canale informativo fisso",
-                "es": "canal de información fijo",
-                "pl": "naprawiono kanał informacyjny",
-                "zh-cn": "固定信息频道"
             }
         },
         "authors": [

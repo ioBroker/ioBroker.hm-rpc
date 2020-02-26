@@ -800,7 +800,8 @@ function initRpcServer() {
             if (method === 'firmwareUpdateStatusChanged') {
                 adapter.log.info(`Firmware update status of ${params[1]} changed to ${params[2]}`);
             } else {
-                adapter.log.warn(`${adapter.config.type}rpc <- undefined method ${method} ${JSON.stringify(params).slice(0, 80)}`);
+
+                adapter.log.warn(`${adapter.config.type}rpc <- undefined method ${method} with parameters ${typeof params === 'object' ? JSON.stringify(params).slice(0, 80) : params}`);
             } // endElse
         });
 
