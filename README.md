@@ -137,6 +137,9 @@ If you use HomeMatic switches or remotes their button states will only be acknow
 by ioBroker, when you have a running 'dummy' program on the CCU which depends on the related switch or remote.
 
 ## Changelog
+### 1.12.9 (2020-02-29)
+* (foxriver76) replace DISPLAY_DATA_STRING by DIN_66003 encodings
+
 ### 1.12.8 (2020-02-26)
 * (foxriver76) improved error handling on undefined methods
 

@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.12.8",
+        "version": "1.12.9",
         "news": {
+            "1.12.9": {
+                "en": "we replace DISPLAY_DATA_STRING by DIN_66003 encodings",
+                "de": "Wir ersetzen DISPLAY_DATA_STRING durch DIN_66003-Codierungen",
+                "ru": "мы заменяем DISPLAY_DATA_STRING на кодировки DIN_66003",
+                "pt": "substituímos as codificações DISPLAY_DATA_STRING por DIN_66003",
+                "nl": "we vervangen DISPLAY_DATA_STRING door DIN_66003-coderingen",
+                "fr": "nous remplaçons DISPLAY_DATA_STRING par des encodages DIN_66003",
+                "it": "sostituiamo DISPLAY_DATA_STRING con codifiche DIN_66003",
+                "es": "reemplazamos DISPLAY_DATA_STRING por codificaciones DIN_66003",
+                "pl": "zastępujemy DISPLAY_DATA_STRING kodowaniem DIN_66003",
+                "zh-cn": "我们用DIN_66003编码替换DISPLAY_DATA_STRING"
+            },
             "1.12.8": {
                 "en": "improved error handling on undefined methods",
                 "de": "Verbesserte Fehlerbehandlung bei undefinierten Methoden",
@@ -51,7 +63,7 @@
                 "pl": "teraz niektóre metadane będą obsługiwane bardziej abstrakcyjnie",
                 "zh-cn": "现在一些元数据将被更抽象地处理"
             },
-            "1.12.2":{
+            "1.12.2": {
                 "en": "fix issue on https with less robust ccu emulations",
                 "de": "Problem bei https mit weniger robusten ccu-Emulationen behoben",
                 "ru": "исправить проблему на https с менее надежной эмуляцией ccu",
@@ -98,18 +110,6 @@
                 "es": "LOCK.OPEN ahora es de tipo botón para evitar malentendidos",
                 "pl": "LOCK.OPEN jest teraz przyciskiem typu, aby uniknąć nieporozumień",
                 "zh-cn": "LOCK.OPEN现在是按钮类型，可防止误解"
-            },
-            "1.11.0": {
-                "en": "'EPAPER_SIGNAL' is now of type string and made OFFSET and REPEATS of EPAPER configurable",
-                "de": "'EPAPER_SIGNAL' ist jetzt vom Typ string und OFFSET und REPEATS von EPAPER konfigurierbar",
-                "ru": "«EPAPER_SIGNAL» теперь имеет строковый тип и настроен на «OFFSET» и «REPEATS of EPAPER».",
-                "pt": "'EPAPER_SIGNAL' agora é do tipo string e tornou OFFSET e REPEATS do EPAPER configurável",
-                "nl": "'EPAPER_SIGNAL' is nu van het type string en is OFFSET en REPEATS van EPAPER configureerbaar gemaakt",
-                "fr": "'EPAPER_SIGNAL' est maintenant du type chaîne et permet de configurer OFFSET et REPEATS of EPAPER",
-                "it": "'EPAPER_SIGNAL' è ora di tipo stringa e reso OFFSET e REPEATS di EPAPER configurabile",
-                "es": "'EPAPER_SIGNAL' ahora es de tipo cadena y se configura como OFFSET y REPEATS de EPAPER",
-                "pl": "„EPAPER_SIGNAL” jest teraz typu ciąg i umożliwia konfigurację OFFSET i REPEATS z EPAPER",
-                "zh-cn": "“ EPAPER_SIGNAL”现在为字符串类型，并且可以配置EPAPER的OFFSET和REPEATS"
             }
         },
         "authors": [

@@ -31,7 +31,7 @@
 const utils = require('@iobroker/adapter-core'); // Get common adapter utils
 const adapterName = require('./package.json').name.split('.').pop();
 const images = require('./lib/images');
-const crypto = require('./lib/crypto'); // Provides encrypt and decrypt
+const tools = require('./lib/tools');
 const meta = require('./lib/meta');
 let connected = false;
 const displays = {};
@@ -465,6 +465,20 @@ function startAdapter(options) {
                     }
                     displays[_id] = {timer: setTimeout(readSignals, 300, _id), withTone: true};
                     return;
+                } else if (tmp[4] === 'DISPLAY_DATA_STRING') {
+                    // new EPAPER HMIP-WRCD has own states but needs to encode special chars by DIN_66003
+                    val = tools.replaceSpecialChars(state.val);
+                    adapter.log.debug(`Encoded ${state.val} to ${val}`);
+                } else if (tmp[4] === 'COMBINED_PARAMETER' && /DDS=.+,/g.test(state.val)) {
+                    // new EPAPER and DISPLAY_DATA_STRING is given, we need to replace
+                    const text = state.val;
+                    const start = text.search(/DDS=.+/g) + 4;
+                    const end = text.indexOf(',', start);
+                    const origText = text.slice(start, end);
+                    const replacedText = tools.replaceSpecialChars(origText);
+
+                    val = text.replace(`DDS=${origText}`, `DDS=${replacedText}`);
+                    adapter.log.debug(`Encoded ${state.val} to ${val}`);
                 } else {
                     switch (type) {
                         case 'BOOL':
@@ -1579,11 +1593,11 @@ function connect(isFirst) {
             let username;
 
             if (obj && obj.native && obj.native.secret) {
-                password = crypto.decrypt(obj.native.secret, adapter.config.password);
-                username = crypto.decrypt(obj.native.secret, adapter.config.username);
+                password = tools.decrypt(obj.native.secret, adapter.config.password);
+                username = tools.decrypt(obj.native.secret, adapter.config.username);
             } else {
-                password = crypto.decrypt('Zgfr56gFe87jJOM', adapter.config.password);
-                username = crypto.decrypt('Zgfr56gFe87jJOM', adapter.config.username);
+                password = tools.decrypt('Zgfr56gFe87jJOM', adapter.config.password);
+                username = tools.decrypt('Zgfr56gFe87jJOM', adapter.config.username);
             } // endElse
 
             rpcClient = rpc.createSecureClient({
