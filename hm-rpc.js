@@ -471,13 +471,18 @@ function startAdapter(options) {
                     adapter.log.debug(`Encoded ${state.val} to ${val}`);
                 } else if (tmp[4] === 'COMBINED_PARAMETER' && /DDS=.+,/g.test(state.val)) {
                     // new EPAPER and DISPLAY_DATA_STRING is given, we need to replace
-                    const text = state.val;
-                    const start = text.search(/DDS=.+/g) + 4;
-                    const end = text.indexOf(',', start);
-                    const origText = text.slice(start, end);
-                    const replacedText = tools.replaceSpecialChars(origText);
+                    let text = state.val;
+                    for (const line of text.split(/},(\s+)?{/g)) {
+                        if (line === undefined) continue;
+                        const start = line.search(/DDS=.+/g) + 4;
+                        const end = line.indexOf(',', start);
+                        const origText = line.slice(start, end);
+                        const replacedText = tools.replaceSpecialChars(origText);
 
-                    val = text.replace(`DDS=${origText}`, `DDS=${replacedText}`);
+                        const lineReplaced = line.replace(`DDS=${origText}`, `DDS=${replacedText}`);
+                        text = text.replace(line, lineReplaced);
+                    } // endFor
+                    val = text;
                     adapter.log.debug(`Encoded ${state.val} to ${val}`);
                 } else {
                     switch (type) {
