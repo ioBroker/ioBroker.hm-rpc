@@ -1142,7 +1142,7 @@ function addParamsetObjects(channel, paramset, callback) {
         if (typeof obj.common.role !== 'string' && typeof obj.common.role !== 'undefined') {
             throw `typeof obj.common.role ${typeof obj.common.role}`;
         }
-        const dpID = `${channel._id}.${key}`;
+        const dpID = `${adapter.namespace}.${channel._id}.${key}`;
 
         dpTypes[dpID] = {
             UNIT: paramset[key].UNIT,
