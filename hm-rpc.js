@@ -36,6 +36,7 @@ const meta = require('./lib/meta');
 let connected = false;
 const displays = {};
 let adapter;
+let sentry;
 
 const FORBIDDEN_CHARS = /[\][*,;'"`<>\\\s?]/g;
 // msgBuffer = [{line: line2, icon: icon2}, {line: line3, icon: icon3}, {line: '', icon: ''}];
@@ -405,6 +406,13 @@ function startAdapter(options) {
         name: adapterName,
 
         ready: () => {
+            // get sentry instance
+            if (adapter.getPluginInstance) {
+                const sentryInstance = adapter.getPluginInstance('sentry');
+                if (sentryInstance) {
+                    sentry = sentryInstance.getSentryObject();
+                }
+            }
             adapter.subscribeStates('*');
             createMeta().then(main);
         },
@@ -1245,7 +1253,16 @@ function getValueParamsets() {
                                 // if not empty
                                 for (const attr in res) {
                                     if (res.hasOwnProperty(attr)) {
-                                        adapter.log.warn(`Send this info to developer: ${JSON.stringify(Object.assign({'_id': key}, paramset))}`);
+                                        const paramsetStr = JSON.stringify(Object.assign({'_id': key}, paramset));
+                                        if (sentry) {
+                                            sentry.withScope(scope => {
+                                                scope.setLevel('info');
+                                                scope.setExtra('paramset', paramsetStr);
+                                                sentry.captureMessage(`Paramset ${key}`, 'info');
+                                            });
+                                        }
+
+                                        adapter.log.warn(`Send this info to developer: ${paramsetStr}`);
                                         break;
                                     }
                                 }

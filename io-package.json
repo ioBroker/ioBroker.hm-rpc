@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.12.10",
+        "version": "1.13.0",
         "news": {
+            "1.13.0": {
+                "en": "added Sentry plugin support",
+                "de": "Unterstützung für Sentry-Plugins hinzugefügt",
+                "ru": "добавлена поддержка плагинов Sentry",
+                "pt": "adicionado suporte ao plugin Sentry",
+                "nl": "ondersteuning voor Sentry-plug-ins toegevoegd",
+                "fr": "ajout du support du plugin Sentry",
+                "it": "aggiunto il supporto del plugin Sentry",
+                "es": "Se agregó soporte para el complemento Sentry",
+                "pl": "dodano obsługę wtyczek Sentry",
+                "zh-cn": "添加了Sentry插件支持"
+            },
             "1.12.10": {
                 "en": "fixed no 'dpType for ..' error in all cases",
                 "de": "In allen Fällen wurde kein Fehler 'dpType for ..' behoben",
@@ -98,18 +110,6 @@
                 "es": "problema solucionado con valores máximos de listas de valores",
                 "pl": "naprawiono problem z maksymalnymi wartościami list wartości",
                 "zh-cn": "固定值列表最大值的问题"
-            },
-            "1.12.0": {
-                "en": "we no longer use adapter.objects directly",
-                "de": "Wir verwenden adapter.objects nicht mehr direkt",
-                "ru": "мы больше не используем адаптер.объекты напрямую",
-                "pt": "não usamos mais o adapter.objects diretamente",
-                "nl": "we gebruiken adapter.objects niet langer rechtstreeks",
-                "fr": "nous n'utilisons plus directement adapter.objects",
-                "it": "non utilizziamo più adapter.objects direttamente",
-                "es": "ya no usamos adaptador.objetos directamente",
-                "pl": "nie używamy już bezpośrednio adapter.objects",
-                "zh-cn": "我们不再直接使用adapter.objects"
             }
         },
         "authors": [
@@ -152,7 +152,14 @@
             {
                 "js-controller": ">=2.0.0"
             }
-        ]
+        ],
+        "plugins": {
+            "sentry": {
+                "dsn": "https://1bc0c96f48e44483b283bc5fc0ca91e2@sentry.iobroker.net/10",
+                "pathWhitelist": [],
+                "errorBlacklist": ["SyntaxError"]
+            }
+        }
     },
     "native": {
         "homematicAddress": "192.168.0.100",
