@@ -148,6 +148,7 @@
         "dataSource": "push",
         "supportStopInstance": true,
         "messagebox": true,
+        "stopBeforeUpdate": true,
         "dependencies": [
             {
                 "js-controller": ">=2.0.0"
