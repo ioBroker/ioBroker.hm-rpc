@@ -1238,7 +1238,7 @@ async function addParamsetObjects(channel, paramset, callback) {
     callback();
 } // endAddParamsetObjects
 
-function getValueParamsets() {
+async function getValueParamsets() {
     if (queueValueParamsets.length === 0) {
         // Inform hm-rega about new devices
         adapter.setState('updated', true, false);
@@ -1263,41 +1263,47 @@ function getValueParamsets() {
         addParamsetObjects(obj, metaValues[cid], () => setImmediate(getValueParamsets));
     } else {
         const key = `hm-rpc.meta.VALUES.${cid}`;
-        adapter.getForeignObject(key, (err, res) => {
+        let res;
 
-            if (res && res.native) {
-                adapter.log.debug(`${key} found`);
-                metaValues[cid] = res.native;
+        try {
+            res = await adapter.getForeignObjectAsync(key);
+        } catch (e) {
+            adapter.log.warn(`Cannot retrieve meta data of ${key}: ${e}`);
+        }
 
-                if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
-                    addEPaperToMeta();
-                }
+        if (res && res.native) {
+            adapter.log.debug(`${key} found`);
+            metaValues[cid] = res.native;
 
-                addParamsetObjects(obj, metaValues[cid], () => setImmediate(getValueParamsets));
-            } else {
-                adapter.log.info(`${adapter.config.type}rpc -> getParamsetDescription ${JSON.stringify([obj.native.ADDRESS, 'VALUES'])}`);
-                try {
-                    rpcClient.methodCall('getParamsetDescription', [obj.native.ADDRESS, 'VALUES'], (err, res) => {
-                        if (err) {
-                            adapter.log.error(`Error on getParamsetDescription: ${err}`);
-                        } else {
-                            metaValues[cid] = res;
+            if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
+                addEPaperToMeta();
+            }
 
-                            if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
-                                addEPaperToMeta();
-                            }
+            addParamsetObjects(obj, metaValues[cid], () => setImmediate(getValueParamsets));
+        } else {
+            adapter.log.info(`${adapter.config.type}rpc -> getParamsetDescription ${JSON.stringify([obj.native.ADDRESS, 'VALUES'])}`);
+            try {
+                rpcClient.methodCall('getParamsetDescription', [obj.native.ADDRESS, 'VALUES'], async (err, res) => {
+                    if (err) {
+                        adapter.log.error(`Error on getParamsetDescription: ${err}`);
+                    } else {
+                        metaValues[cid] = res;
 
-                            const paramset = {
-                                'type': 'meta',
-                                'meta': {
-                                    adapter: 'hm-rpc',
-                                    type: 'paramsetDescription'
-                                },
-                                'common': {},
-                                'native': metaValues[cid]
-                            };
+                        if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
+                            addEPaperToMeta();
+                        }
 
-                            /*
+                        const paramset = {
+                            'type': 'meta',
+                            'meta': {
+                                adapter: 'hm-rpc',
+                                type: 'paramsetDescription'
+                            },
+                            'common': {},
+                            'native': metaValues[cid]
+                        };
+
+                        /*
                             if (res) {
                                 // if not empty
                                 for (const attr in res) {
@@ -1318,18 +1324,20 @@ function getValueParamsets() {
                             }
                             */
 
-                            adapter.setForeignObject(key, paramset, () => {
-                                addParamsetObjects(obj, metaValues[cid], () => {
-                                    setImmediate(getValueParamsets);
-                                });
-                            });
+                        try {
+                            await adapter.setForeignObjectAsync(key, paramset);
+                        } catch (e) {
+                            adapter.log.warn(`Could not store meta data of ${key}: ${e}`);
                         }
-                    });
-                } catch (err) {
-                    adapter.log.error(`Cannot call getParamsetDescription: ${err}`);
-                }
+                        addParamsetObjects(obj, metaValues[cid], () => {
+                            setImmediate(getValueParamsets);
+                        });
+                    }
+                });
+            } catch (err) {
+                adapter.log.error(`Cannot call getParamsetDescription: ${err}`);
             }
-        });
+        }
     }
 } // endGetValueParamsets
 
