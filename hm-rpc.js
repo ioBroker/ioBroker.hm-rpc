@@ -420,118 +420,120 @@ function startAdapter(options) {
             main();
         },
         stateChange: (id, state) => {
-            if (state && state.ack !== true) {
-                const tmp = id.split('.');
-                let val;
+            if (!state || state.ack === true) {
+                return;
+            }
+            adapter.log.warn(id + ': ' + state.ack);
+            const tmp = id.split('.');
+            let val;
 
-                if (id === `${adapter.namespace}.updated` || /_ALARM$/.test(id)) {
-                    return;
+            if (id === `${adapter.namespace}.updated` || /_ALARM$/.test(id)) {
+                return;
+            }
+
+            adapter.log.debug(`${adapter.config.type}rpc -> setValue ${tmp[3]} ${tmp[4]}: ${state.val}`);
+
+            if (!dpTypes[id]) {
+                adapter.log.error(`${adapter.config.type}rpc -> setValue: no dpType for ${id}!`);
+                return;
+            }
+
+            if (dpTypes[id].UNIT === '%' && dpTypes[id].MIN !== undefined) {
+                state.val = (state.val / 100) * (dpTypes[id].MAX - dpTypes[id].MIN) + dpTypes[id].MIN;
+                state.val = Math.round(state.val * 1000) / 1000;
+            } else if (dpTypes[id].UNIT === '100%') {
+                state.val = state.val / 100;
+            }
+
+            const type = dpTypes[id].TYPE;
+
+            if (type === 'EPAPER_TONE_REPETITIONS') {
+                // repeats have to be between 0 and 15 -> 0 is unlimited
+                if (typeof state.val !== 'number') {
+                    state.val = 1;
                 }
+                val = Math.min(Math.max(state.val, 0), 15);
+                adapter.setForeignState(id, val, true);
+                return;
+            } // endIf
 
-                adapter.log.debug(`${adapter.config.type}rpc -> setValue ${tmp[3]} ${tmp[4]}: ${state.val}`);
-
-                if (!dpTypes[id]) {
-                    adapter.log.error(`${adapter.config.type}rpc -> setValue: no dpType for ${id}!`);
-                    return;
+            if (type === 'EPAPER_TONE_INTERVAL') {
+                // offset has to be between 0 and 160
+                if (typeof state.val !== 'number') {
+                    state.val = 0;
                 }
+                val = Math.min(Math.max(Math.round(state.val / 10) * 10, 10), 160);
+                adapter.setForeignState(id, val, true);
+                return;
+            } // endIf
 
-                if (dpTypes[id].UNIT === '%' && dpTypes[id].MIN !== undefined) {
-                    state.val = (state.val / 100) * (dpTypes[id].MAX - dpTypes[id].MIN) + dpTypes[id].MIN;
-                    state.val = Math.round(state.val * 1000) / 1000;
-                } else if (dpTypes[id].UNIT === '100%') {
-                    state.val = state.val / 100;
-                }
-
-                const type = dpTypes[id].TYPE;
-
-                if (type === 'EPAPER_TONE_REPETITIONS') {
-                    // repeats have to be between 0 and 15 -> 0 is unlimited
-                    if (typeof state.val !== 'number') {
-                        state.val = 1;
+            if (type === 'EPAPER_LINE' || type === 'EPAPER_ICON') {
+                const _id = `${tmp[0]}.${tmp[1]}.${tmp[2]}`;
+                if (displays[_id] && displays[_id].timer) {
+                    clearTimeout(displays[_id].timer);
+                    if (displays[_id].withTone) {
+                        displays[_id] = {timer: setTimeout(readSignals, 300, _id), withTone: true};
+                        return;
                     }
-                    val = Math.min(Math.max(state.val, 0), 15);
-                    adapter.setForeignState(id, val, true);
-                    return;
-                } // endIf
-
-                if (type === 'EPAPER_TONE_INTERVAL') {
-                    // offset has to be between 0 and 160
-                    if (typeof state.val !== 'number') {
-                        state.val = 0;
+                }
+                displays[_id] = {timer: setTimeout(readSettings, 300, _id), withTone: false};
+                return;
+            } else if (type === 'EPAPER_SIGNAL' || type === 'EPAPER_TONE') {
+                const _id = `${tmp[0]}.${tmp[1]}.${tmp[2]}`;
+                if (displays[_id] && displays[_id].timer) {
+                    clearTimeout(displays[_id].timer);
+                }
+                displays[_id] = {timer: setTimeout(readSignals, 300, _id), withTone: true};
+                return;
+            } else if (tmp[4] === 'DISPLAY_DATA_STRING') {
+                // new EPAPER HMIP-WRCD has own states but needs to encode special chars by DIN_66003
+                val = tools.replaceSpecialChars(state.val);
+                adapter.log.debug(`Encoded ${state.val} to ${val}`);
+            } else if (tmp[4] === 'COMBINED_PARAMETER' && /DDS=.+,/g.test(state.val)) {
+                // new EPAPER and DISPLAY_DATA_STRING is given, we need to replace
+                let text = state.val;
+                for (const line of text.split(/},(\s+)?{/g)) {
+                    if (line === undefined) {
+                        continue;
                     }
-                    val = Math.min(Math.max(Math.round(state.val / 10) * 10, 10), 160);
-                    adapter.setForeignState(id, val, true);
-                    return;
-                } // endIf
+                    const start = line.search(/DDS=.+/g) + 4;
+                    const end = line.indexOf(',', start);
+                    const origText = line.slice(start, end);
+                    const replacedText = tools.replaceSpecialChars(origText);
 
-                if (type === 'EPAPER_LINE' || type === 'EPAPER_ICON') {
-                    const _id = `${tmp[0]}.${tmp[1]}.${tmp[2]}`;
-                    if (displays[_id] && displays[_id].timer) {
-                        clearTimeout(displays[_id].timer);
-                        if (displays[_id].withTone) {
-                            displays[_id] = {timer: setTimeout(readSignals, 300, _id), withTone: true};
-                            return;
+                    const lineReplaced = line.replace(`DDS=${origText}`, `DDS=${replacedText}`);
+                    text = text.replace(line, lineReplaced);
+                } // endFor
+                val = text;
+                adapter.log.debug(`Encoded ${state.val} to ${val}`);
+            } else {
+                switch (type) {
+                    case 'BOOL':
+                        val = (state.val === 'false' || state.val === '0') ? false : !!state.val;
+                        break;
+                    case 'FLOAT':
+                        val = {explicitDouble: state.val};
+                        break;
+                    default:
+                        val = state.val;
+                }
+            }
+
+            adapter.log.debug(`setValue ${JSON.stringify([`${tmp[2]}:${tmp[3]}`, tmp[4], val])} ${type}`);
+
+            try {
+                if (rpcClient && connected) {
+                    rpcClient.methodCall('setValue', [`${tmp[2]}:${tmp[3]}`, tmp[4], val], err => {
+                        if (err) {
+                            adapter.log.error(`${adapter.config.type}rpc -> setValue ${JSON.stringify([tmp[3], tmp[4], state.val])} ${type}`);
+                            adapter.log.error(err);
                         }
-                    }
-                    displays[_id] = {timer: setTimeout(readSettings, 300, _id), withTone: false};
-                    return;
-                } else if (type === 'EPAPER_SIGNAL' || type === 'EPAPER_TONE') {
-                    const _id = `${tmp[0]}.${tmp[1]}.${tmp[2]}`;
-                    if (displays[_id] && displays[_id].timer) {
-                        clearTimeout(displays[_id].timer);
-                    }
-                    displays[_id] = {timer: setTimeout(readSignals, 300, _id), withTone: true};
-                    return;
-                } else if (tmp[4] === 'DISPLAY_DATA_STRING') {
-                    // new EPAPER HMIP-WRCD has own states but needs to encode special chars by DIN_66003
-                    val = tools.replaceSpecialChars(state.val);
-                    adapter.log.debug(`Encoded ${state.val} to ${val}`);
-                } else if (tmp[4] === 'COMBINED_PARAMETER' && /DDS=.+,/g.test(state.val)) {
-                    // new EPAPER and DISPLAY_DATA_STRING is given, we need to replace
-                    let text = state.val;
-                    for (const line of text.split(/},(\s+)?{/g)) {
-                        if (line === undefined) {
-                            continue;
-                        }
-                        const start = line.search(/DDS=.+/g) + 4;
-                        const end = line.indexOf(',', start);
-                        const origText = line.slice(start, end);
-                        const replacedText = tools.replaceSpecialChars(origText);
-
-                        const lineReplaced = line.replace(`DDS=${origText}`, `DDS=${replacedText}`);
-                        text = text.replace(line, lineReplaced);
-                    } // endFor
-                    val = text;
-                    adapter.log.debug(`Encoded ${state.val} to ${val}`);
+                    });
                 } else {
-                    switch (type) {
-                        case 'BOOL':
-                            val = (state.val === 'false' || state.val === '0') ? false : !!state.val;
-                            break;
-                        case 'FLOAT':
-                            val = {explicitDouble: state.val};
-                            break;
-                        default:
-                            val = state.val;
-                    }
+                    adapter.log.warn(`Cannot setValue "${id}", because not connected.`);
                 }
-
-                adapter.log.debug(`setValue ${JSON.stringify([`${tmp[2]}:${tmp[3]}`, tmp[4], val])} ${type}`);
-
-                try {
-                    if (rpcClient && connected) {
-                        rpcClient.methodCall('setValue', [`${tmp[2]}:${tmp[3]}`, tmp[4], val], err => {
-                            if (err) {
-                                adapter.log.error(`${adapter.config.type}rpc -> setValue ${JSON.stringify([tmp[3], tmp[4], state.val])} ${type}`);
-                                adapter.log.error(err);
-                            }
-                        });
-                    } else {
-                        adapter.log.warn(`Cannot setValue "${id}", because not connected.`);
-                    }
-                } catch (err) {
-                    adapter.log.error(`Cannot call setValue: :${err}`);
-                }
+            } catch (err) {
+                adapter.log.error(`Cannot call setValue: :${err}`);
             }
         },
         // Add messagebox Function for ioBroker.occ
@@ -1114,6 +1116,7 @@ async function addParamsetObjects(channel, paramset, callback) {
         const obj = {
             type: 'state',
             common: {
+                name: key,
                 def: paramset[key].DEFAULT,
                 type: commonType[paramset[key].TYPE] || paramset[key].TYPE || '',
                 read: !!(paramset[key].OPERATIONS & 1),
@@ -1524,7 +1527,7 @@ function createDevices(deviceArr, callback) {
         objs.push(obj);
     }
 
-    function queue() {
+    async function queue() {
         if (objs.length) {
 
             const obj = objs.pop();
@@ -1533,19 +1536,18 @@ function createDevices(deviceArr, callback) {
                 obj.common.role = metaRoles.dvTYPE[obj.native.PARENT_TYPE];
             }
 
-            adapter.setObject(obj._id, obj, (err, res) => {
-                if (!err) {
-                    adapter.log.debug(`object ${res.id} created`);
-                } else {
-                    adapter.log.error(`object ${res ? res.id : '?'} error on creation: ${err}`);
-                }
-                setImmediate(queue);
-            });
+            try {
+                const res = await adapter.setObjectAsync(obj._id, obj);
+                adapter.log.debug(`object ${res.id} created`);
+            } catch (e) {
+                adapter.log.error(`object ${obj._id} error on creation: ${e}`);
+            }
 
             if (obj.type === 'channel') {
                 queueValueParamsets.push(obj);
             }
 
+            setImmediate(queue);
         } else {
             getValueParamsets();
             callback(null, '');
