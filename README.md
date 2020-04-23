@@ -137,6 +137,14 @@ If you use HomeMatic switches or remotes their button states will only be acknow
 by ioBroker, when you have a running 'dummy' program on the CCU which depends on the related switch or remote.
 
 ## Changelog
+### 1.14.0 (2020-04-23)
+* (foxriver76) catch potential errors on createServer
+* (foxriver76) new meta data approach: we only store meta data gathered by the user,
+otherwise cached meta data can be very old and outdated, we have to monitor performance
+of this approach (more requests to CCU on first setup)
+* (foxriver76) add name and icon to meta folder
+* (foxriver76) minor code improvements
+
 ### 1.13.0 (2020-04-02)
 * (foxriver76) sentry plugin support
 

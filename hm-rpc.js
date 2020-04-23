@@ -32,11 +32,11 @@ const utils = require('@iobroker/adapter-core'); // Get common adapter utils
 const adapterName = require('./package.json').name.split('.').pop();
 const images = require('./lib/images');
 const tools = require('./lib/tools');
-const meta = require('./lib/meta');
+//const meta = require('./lib/meta');
 let connected = false;
 const displays = {};
 let adapter;
-let sentry;
+//let sentry;
 
 const FORBIDDEN_CHARS = /[\][*,;'"`<>\\\s?]/g;
 // msgBuffer = [{line: line2, icon: icon2}, {line: line3, icon: icon3}, {line: '', icon: ''}];
@@ -72,7 +72,9 @@ const FORBIDDEN_CHARS = /[\][*,;'"`<>\\\s?]/g;
 function number2hex(num) {
     if (typeof num === 'number') {
         num = num.toString(16).toUpperCase();
-        if (num.length < 2) num = `0${num}`;
+        if (num.length < 2) {
+            num = `0${num}`;
+        }
         num = `0x${num}`;
     }
     return num;
@@ -407,21 +409,24 @@ function startAdapter(options) {
 
         ready: () => {
             // get sentry instance
-            if (adapter.getPluginInstance) {
+            /*if (adapter.getPluginInstance) {
                 const sentryInstance = adapter.getPluginInstance('sentry');
                 if (sentryInstance) {
                     sentry = sentryInstance.getSentryObject();
                 }
-            }
+            }*/
             adapter.subscribeStates('*');
-            createMeta().then(main);
+            //createMeta().then(main);
+            main();
         },
         stateChange: (id, state) => {
             if (state && state.ack !== true) {
                 const tmp = id.split('.');
                 let val;
 
-                if (id === `${adapter.namespace}.updated` || /_ALARM$/.test(id)) return;
+                if (id === `${adapter.namespace}.updated` || /_ALARM$/.test(id)) {
+                    return;
+                }
 
                 adapter.log.debug(`${adapter.config.type}rpc -> setValue ${tmp[3]} ${tmp[4]}: ${state.val}`);
 
@@ -441,7 +446,9 @@ function startAdapter(options) {
 
                 if (type === 'EPAPER_TONE_REPETITIONS') {
                     // repeats have to be between 0 and 15 -> 0 is unlimited
-                    if (typeof state.val !== 'number') state.val = 1;
+                    if (typeof state.val !== 'number') {
+                        state.val = 1;
+                    }
                     val = Math.min(Math.max(state.val, 0), 15);
                     adapter.setForeignState(id, val, true);
                     return;
@@ -449,7 +456,9 @@ function startAdapter(options) {
 
                 if (type === 'EPAPER_TONE_INTERVAL') {
                     // offset has to be between 0 and 160
-                    if (typeof state.val !== 'number') state.val = 0;
+                    if (typeof state.val !== 'number') {
+                        state.val = 0;
+                    }
                     val = Math.min(Math.max(Math.round(state.val / 10) * 10, 10), 160);
                     adapter.setForeignState(id, val, true);
                     return;
@@ -481,7 +490,9 @@ function startAdapter(options) {
                     // new EPAPER and DISPLAY_DATA_STRING is given, we need to replace
                     let text = state.val;
                     for (const line of text.split(/},(\s+)?{/g)) {
-                        if (line === undefined) continue;
+                        if (line === undefined) {
+                            continue;
+                        }
                         const start = line.search(/DDS=.+/g) + 4;
                         const end = line.indexOf(',', start);
                         const origText = line.slice(start, end);
@@ -509,7 +520,7 @@ function startAdapter(options) {
 
                 try {
                     if (rpcClient && connected) {
-                        rpcClient.methodCall('setValue', [`${tmp[2]}:${tmp[3]}`, tmp[4], val], (err/*, data*/) => {
+                        rpcClient.methodCall('setValue', [`${tmp[2]}:${tmp[3]}`, tmp[4], val], err => {
                             if (err) {
                                 adapter.log.error(`${adapter.config.type}rpc -> setValue ${JSON.stringify([tmp[3], tmp[4], state.val])} ${type}`);
                                 adapter.log.error(err);
@@ -550,14 +561,18 @@ function startAdapter(options) {
                 try {
                     if (rpcClient && connected) {
                         rpcClient.methodCall(obj.command, [obj.message.ID, obj.message.paramType], (err, data) => {
-                            if (obj.callback) adapter.sendTo(obj.from, obj.command, {
-                                result: data,
-                                error: err
-                            }, obj.callback);
+                            if (obj.callback) {
+                                adapter.sendTo(obj.from, obj.command, {
+                                    result: data,
+                                    error: err
+                                }, obj.callback);
+                            }
                         });
                     } else {
                         adapter.log.warn(`Cannot send "${obj.command}" "${obj.message.ID}": because not connected`);
-                        if (obj.callback) adapter.sendTo(obj.from, obj.command, {error: 'not connected'}, obj.callback);
+                        if (obj.callback) {
+                            adapter.sendTo(obj.from, obj.command, {error: 'not connected'}, obj.callback);
+                        }
                     }
                 } catch (err) {
                     adapter.log.error(`Cannot call ${obj.command}: ${err}`);
@@ -567,14 +582,18 @@ function startAdapter(options) {
                 try {
                     if (rpcClient && connected) {
                         rpcClient.methodCall(obj.command, [obj.message.ID, obj.message.paramType, obj.message.params], (err, data) => {
-                            if (obj.callback) adapter.sendTo(obj.from, obj.command, {
-                                result: data,
-                                error: err
-                            }, obj.callback);
+                            if (obj.callback) {
+                                adapter.sendTo(obj.from, obj.command, {
+                                    result: data,
+                                    error: err
+                                }, obj.callback);
+                            }
                         });
                     } else {
                         adapter.log.warn(`Cannot send "${obj.command}" "${obj.message.ID}": because not connected`);
-                        if (obj.callback) adapter.sendTo(obj.from, obj.command, {error: 'not connected'}, obj.callback);
+                        if (obj.callback) {
+                            adapter.sendTo(obj.from, obj.command, {error: 'not connected'}, obj.callback);
+                        }
                     }
                 } catch (err) {
                     adapter.log.error(`Cannot call ${obj.command}: ${err}`);
@@ -607,7 +626,9 @@ function startAdapter(options) {
                                 connected = false;
                                 adapter.setState('info.connection', false, true);
                             }
-                            if (callback) callback();
+                            if (typeof callback === 'function') {
+                                callback();
+                            }
                             callback = null;
                         });
                     } catch (err) {
@@ -617,12 +638,16 @@ function startAdapter(options) {
                             adapter.setState('info.connection', false, true);
                         }
                         adapter.log.error(`Cannot call init: [${daemonURL}, ""]${err}`);
-                        if (callback) callback();
+                        if (typeof callback === 'function') {
+                            callback();
+                        }
                         callback = null;
                     }
 
                 } else {
-                    if (callback) callback();
+                    if (typeof callback === 'function') {
+                        callback();
+                    }
                     callback = null;
                 }
             } catch (e) {
@@ -631,7 +656,9 @@ function startAdapter(options) {
                 } else {
                     console.log(e);
                 }
-                if (callback) callback();
+                if (typeof callback === 'function') {
+                    callback();
+                }
                 callback = null;
             }
         }
@@ -690,7 +717,9 @@ function main() {
         startkey: 'hm-rpc.meta.VALUES',
         endkey: 'hm-rpc.meta.VALUES.\u9999'
     }, (err, doc) => {
-        if (err) adapter.log.error(`getObjectView hm-rpc: ${err}`);
+        if (err) {
+            adapter.log.error(`getObjectView hm-rpc: ${err}`);
+        }
         if (doc && doc.rows) {
             for (const row of doc.rows) {
                 const channel = row.id.slice(19);
@@ -699,11 +728,17 @@ function main() {
         }
         // Load common.role assignments
         adapter.getForeignObject('hm-rpc.meta.roles', (err, res) => {
-            if (err) adapter.log.error(`hm-rpc.meta.roles: ${err}`);
-            if (res) metaRoles = res.native;
+            if (err) {
+                adapter.log.error(`hm-rpc.meta.roles: ${err}`);
+            }
+            if (res) {
+                metaRoles = res.native;
+            }
 
             // Start Adapter
-            if (adapter.config) initRpcServer();
+            if (adapter.config) {
+                initRpcServer();
+            }
         });
     });
 
@@ -713,7 +748,9 @@ function main() {
     }, (err, res) => {
         if (!err && res.rows) {
             for (const row of res.rows) {
-                if (row.id === `${adapter.namespace}.updated`) continue;
+                if (row.id === `${adapter.namespace}.updated`) {
+                    continue;
+                }
                 if (!row.value.native) {
                     adapter.log.warn(`State ${row.id} does not have native.`);
                     dpTypes[row.id] = {UNIT: '', TYPE: ''};
@@ -747,7 +784,7 @@ function sendInit() {
     try {
         if (rpcClient && (rpcClient.connected === undefined || rpcClient.connected)) {
             adapter.log.debug(`${adapter.config.type}rpc -> ${adapter.config.homematicAddress}:${adapter.config.homematicPort}${homematicPath} init ${JSON.stringify([daemonURL, adapter.namespace])}`);
-            rpcClient.methodCall('init', [daemonURL, adapter.namespace], (err/*, data*/) => {
+            rpcClient.methodCall('init', [daemonURL, adapter.namespace], err => {
                 if (!err) {
                     if (adapter.config.daemon === 'CUxD') {
                         getCuxDevices(function handleCuxDevices(err2) {
@@ -775,7 +812,7 @@ function sendPing() {
     if (rpcClient) {
         adapter.log.debug('Send PING...');
         try {
-            rpcClient.methodCall('ping', [adapter.namespace], (err/*, data*/) => {
+            rpcClient.methodCall('ping', [adapter.namespace], err => {
                 if (!err) {
                     adapter.log.debug('PING ok');
                 } else {
@@ -889,12 +926,16 @@ function initRpcServer() {
                 }, (err, doc) => {
                     if (doc && doc.rows) {
                         for (const row of doc.rows) {
-                            if (row.id === `${adapter.namespace}.updated`) continue;
+                            if (row.id === `${adapter.namespace}.updated`) {
+                                continue;
+                            }
 
                             // lets get the device description
                             const val = row.value;
 
-                            if (typeof val.ADDRESS === 'undefined') continue;
+                            if (typeof val.ADDRESS === 'undefined') {
+                                continue;
+                            }
 
                             // lets find the current device in the newDevices array
                             // and if it doesn't exist we can delete it
@@ -951,10 +992,14 @@ function initRpcServer() {
                 // if the adapter instance is not bothering with HmIP (which seems to work slightly different in terms of XMLRPC)
                 if (!adapter.config.forceReInit && adapter.config.daemon !== 'HMIP' && doc && doc.rows) {
                     for (let i = 0; i < doc.rows.length; i++) {
-                        if (doc.rows[i].id === `${adapter.namespace}.updated`) continue;
+                        if (doc.rows[i].id === `${adapter.namespace}.updated`) {
+                            continue;
+                        }
                         const val = doc.rows[i].value;
 
-                        if (val.ADDRESS) response.push({ADDRESS: val.ADDRESS, VERSION: val.VERSION});
+                        if (val.ADDRESS) {
+                            response.push({ADDRESS: val.ADDRESS, VERSION: val.VERSION});
+                        }
                     }
                 }
                 adapter.log.info(`${adapter.config.type}rpc -> ${response.length} devices`);
@@ -1046,11 +1091,11 @@ const methods = {
 
 const queueValueParamsets = [];
 
-function addParamsetObjects(channel, paramset, callback) {
-    const promises = [];
-
+async function addParamsetObjects(channel, paramset, callback) {
     for (const key in paramset) {
-        if (!paramset.hasOwnProperty(key)) continue;
+        if (!paramset.hasOwnProperty(key)) {
+            continue;
+        }
         const commonType = {
             ACTION: 'boolean',
             BOOL: 'boolean',
@@ -1089,7 +1134,9 @@ function addParamsetObjects(channel, paramset, callback) {
             } // endIf
 
             if (paramset[key].SPECIAL) {
-                if (!obj.common.states) obj.common.states = {};
+                if (!obj.common.states) {
+                    obj.common.states = {};
+                }
                 for (let i = 0; i < paramset[key].SPECIAL.length; i++) {
                     obj.common.states[paramset[key].SPECIAL[i].VALUE] = paramset[key].SPECIAL[i].ID;
                 }
@@ -1108,7 +1155,7 @@ function addParamsetObjects(channel, paramset, callback) {
         if (paramset[key].UNIT === '100%') {
             obj.common.unit = '%';
             obj.common.max = 100 * paramset[key].MAX;
-        } else if (paramset[key].UNIT !== '') {
+        } else if (paramset[key].UNIT !== '' && paramset[key].UNIT !== '""') {
             obj.common.unit = paramset[key].UNIT;
             if (obj.common.unit === '�C' || obj.common.unit === '&#176;C') {
                 obj.common.unit = '°C';
@@ -1153,7 +1200,7 @@ function addParamsetObjects(channel, paramset, callback) {
         }
 
         if (typeof obj.common.role !== 'string' && typeof obj.common.role !== 'undefined') {
-            throw `typeof obj.common.role ${typeof obj.common.role}`;
+            throw new Error(`typeof obj.common.role ${typeof obj.common.role}`);
         }
         const dpID = `${adapter.namespace}.${channel._id}.${key}`;
 
@@ -1180,19 +1227,15 @@ function addParamsetObjects(channel, paramset, callback) {
             obj.common.workingID = 'WORKING';
         }
 
-        promises.push(new Promise(resolve => {
-            adapter.extendObject(`${channel._id}.${key}`, obj, (err, res) => {
-                if (!err) {
-                    adapter.log.debug(`object ${res.id} extended`);
-                } else {
-                    adapter.log.error(`object ${res ? res.id : '?'} extend ${err}`);
-                }
-                resolve();
-            });
-        }));
+        try {
+            const res = await adapter.extendObjectAsync(`${channel._id}.${key}`, obj);
+            adapter.log.debug(`object ${res.id} extended`);
+        } catch (e) {
+            adapter.log.error(`object ${channel._id}.${key} extend ${e}`);
+        }
     } // endFor
 
-    Promise.all(promises).then(() => callback());
+    callback();
 } // endAddParamsetObjects
 
 function getValueParamsets() {
@@ -1254,6 +1297,7 @@ function getValueParamsets() {
                                 'native': metaValues[cid]
                             };
 
+                            /*
                             if (res) {
                                 // if not empty
                                 for (const attr in res) {
@@ -1272,6 +1316,7 @@ function getValueParamsets() {
                                     }
                                 }
                             }
+                            */
 
                             adapter.setForeignObject(key, paramset, () => {
                                 addParamsetObjects(obj, metaValues[cid], () => {
@@ -1441,7 +1486,9 @@ function createDevices(deviceArr, callback) {
             native: device
         };
 
-        if (icon) obj.common.icon = icon;
+        if (icon) {
+            obj.common.icon = icon;
+        }
 
         const dpID = `${adapter.namespace}.${obj._id}`;
 
@@ -1518,12 +1565,16 @@ function getCuxDevices(callback) {
                     }, (err, doc) => {
                         if (doc && doc.rows) {
                             for (const row of doc.rows) {
-                                if (row.id === `${adapter.namespace}.updated`) continue;
+                                if (row.id === `${adapter.namespace}.updated`) {
+                                    continue;
+                                }
 
                                 // lets get the device description
                                 const val = row.value;
 
-                                if (typeof val.ADDRESS === 'undefined') continue;
+                                if (typeof val.ADDRESS === 'undefined') {
+                                    continue;
+                                }
 
                                 // lets find the current device in the newDevices array
                                 // and if it doesn't exist we can delete it
@@ -1647,7 +1698,9 @@ function connect(isFirst) {
         eventInterval = null;
     }
 
-    if (isFirst) sendInit();
+    if (isFirst) {
+        sendInit();
+    }
 
     // Periodically try to reconnect
     if (!connInterval) {
@@ -1675,6 +1728,7 @@ function keepAlive() {
     }
 } // endKeepAlive
 
+/*
 function createMeta() {
     return new Promise(resolve => {
         const promises = [];
@@ -1685,6 +1739,7 @@ function createMeta() {
         Promise.all(promises).then(resolve);
     });
 }  // endCreateMeta
+ */
 
 // If started as allInOne/compact mode => return function to create instance
 if (module && module.parent) {
