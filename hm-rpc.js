@@ -813,10 +813,15 @@ function initRpcServer() {
     adapter.getPort(adapterPort, port => {
         daemonURL = `${daemonProto + callbackAddress}:${port}`;
 
-        rpcServer = rpc.createServer({
-            host: adapter.config.adapterAddress,
-            port: port
-        });
+        try {
+            rpcServer = rpc.createServer({
+                host: adapter.config.adapterAddress,
+                port: port
+            });
+        } catch (e) {
+            adapter.log.error(`Could not create RPC Server: ${e}`);
+            return adapter.restart();
+        }
 
         adapter.log.info(`${adapter.config.type}rpc server is trying to listen on ${adapter.config.adapterAddress}:${port}`);
         adapter.log.info(`${adapter.config.type}rpc client is trying to connect to ${adapter.config.homematicAddress}:${adapter.config.homematicPort}${homematicPath} with ${JSON.stringify([daemonURL, adapter.namespace])}`);
