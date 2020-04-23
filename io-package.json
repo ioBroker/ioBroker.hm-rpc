@@ -13,9 +13,9 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.14.0",
+        "version": "1.14.1",
         "news": {
-            "1.14.0": {
+            "1.14.1": {
                 "en": "new meta data handling approach and other improvements",
                 "de": "neuer Ansatz zur Verarbeitung von Metadaten und andere Verbesserungen",
                 "ru": "новый подход к обработке метаданных и другие улучшения",

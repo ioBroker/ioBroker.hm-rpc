@@ -423,7 +423,7 @@ function startAdapter(options) {
             if (!state || state.ack === true) {
                 return;
             }
-            adapter.log.warn(id + ': ' + state.ack);
+
             const tmp = id.split('.');
             let val;
 
