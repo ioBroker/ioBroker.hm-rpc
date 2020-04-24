@@ -1662,12 +1662,17 @@ function updateConnection() {
 
 function connect(isFirst) {
     if (!rpcClient && !adapter.config.useHttps) {
-        rpcClient = rpc.createClient({
-            host: adapter.config.homematicAddress,
-            port: adapter.config.homematicPort,
-            path: homematicPath,
-            reconnectTimeout: adapter.config.reconnectInterval * 1000
-        });
+        try {
+            rpcClient = rpc.createClient({
+                host: adapter.config.homematicAddress,
+                port: adapter.config.homematicPort,
+                path: homematicPath,
+                reconnectTimeout: adapter.config.reconnectInterval * 1000
+            });
+        } catch (e) {
+            adapter.log.error(`Could not create non-secure ${adapter.config.type}-rpc client: ${e}`);
+            return adapter.restart();
+        } // endCatch
 
         // If we have bin-rpc, only need it here because bin-rpc cant have https
         if (rpcClient.on) {
@@ -1688,14 +1693,19 @@ function connect(isFirst) {
                 username = tools.decrypt('Zgfr56gFe87jJOM', adapter.config.username);
             } // endElse
 
-            rpcClient = rpc.createSecureClient({
-                host: adapter.config.homematicAddress,
-                port: adapter.config.homematicPort,
-                path: homematicPath,
-                reconnectTimeout: adapter.config.reconnectInterval * 1000,
-                basic_auth: {user: username, pass: password},
-                rejectUnauthorized: false
-            });
+            try {
+                rpcClient = rpc.createSecureClient({
+                    host: adapter.config.homematicAddress,
+                    port: adapter.config.homematicPort,
+                    path: homematicPath,
+                    reconnectTimeout: adapter.config.reconnectInterval * 1000,
+                    basic_auth: {user: username, pass: password},
+                    rejectUnauthorized: false
+                });
+            } catch (e) {
+                adapter.log.error(`Could not create secure ${adapter.config.type}-rpc client: ${e}`);
+                return adapter.restart();
+            } // endCatch
         });
 
     } // endElseIf

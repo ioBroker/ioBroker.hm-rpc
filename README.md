@@ -137,6 +137,9 @@ If you use HomeMatic switches or remotes their button states will only be acknow
 by ioBroker, when you have a running 'dummy' program on the CCU which depends on the related switch or remote.
 
 ## Changelog
+### 1.14.2 (2020-04-24)
+* (foxriver76) catch errors on rpc client creation
+
 ### 1.14.1 (2020-04-23)
 * (foxriver76) catch potential errors on createServer
 * (foxriver76) new meta data approach: we only store meta data gathered by the user,

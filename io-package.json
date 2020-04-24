@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.14.1",
+        "version": "1.14.2",
         "news": {
+            "1.14.2": {
+                "en": "we now catch errors on rpc client creation",
+                "de": "Wir fangen jetzt Fehler bei der Erstellung des RPC-Clients",
+                "ru": "теперь мы ловим ошибки при создании клиента rpc",
+                "pt": "agora detectamos erros na criação de clientes rpc",
+                "nl": "we vangen nu fouten op bij het maken van rpc-clients",
+                "fr": "nous avons maintenant des erreurs sur la création de client rpc",
+                "it": "ora rileviamo errori nella creazione del client rpc",
+                "es": "ahora detectamos errores en la creación de clientes rpc",
+                "pl": "wychwytujemy teraz błędy podczas tworzenia klienta rpc",
+                "zh-cn": "我们现在在rpc客户端创建时捕获错误"
+            },
             "1.14.1": {
                 "en": "new meta data handling approach and other improvements",
                 "de": "neuer Ansatz zur Verarbeitung von Metadaten und andere Verbesserungen",
