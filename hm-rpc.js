@@ -688,7 +688,12 @@ let daemonURL = '';
 let daemonProto = '';
 let homematicPath;
 
-function main() {
+/**
+ * Main method inits rpc server and gets paramsets
+ *
+ * @return {Promise<void>}
+ */
+async function main() {
     homematicPath = adapter.config.daemon === 'virtual-devices' ? '/groups/' : '/';
 
     adapter.config.reconnectInterval = parseInt(adapter.config.reconnectInterval, 10) || 30;
@@ -715,45 +720,44 @@ function main() {
     }
 
     // Load VALUE paramsetDescriptions (needed to create state objects)
-    adapter.getObjectView('hm-rpc', 'paramsetDescription', {
-        startkey: 'hm-rpc.meta.VALUES',
-        endkey: 'hm-rpc.meta.VALUES.\u9999'
-    }, (err, doc) => {
-        if (err) {
-            adapter.log.error(`getObjectView hm-rpc: ${err}`);
-        }
+
+    try {
+        const doc = await adapter.getObjectViewAsync('hm-rpc', 'paramsetDescription', {
+            startkey: 'hm-rpc.meta.VALUES',
+            endkey: 'hm-rpc.meta.VALUES.\u9999'
+        });
+
         if (doc && doc.rows) {
             for (const row of doc.rows) {
                 const channel = row.id.slice(19);
                 metaValues[channel] = row.value.native;
             }
         }
+    } catch (e) {
+        adapter.log.error(`getObjectView hm-rpc: ${e}`);
+    }
+
+
+    try {
         // Load common.role assignments
-        adapter.getForeignObject('hm-rpc.meta.roles', (err, res) => {
-            if (err) {
-                adapter.log.error(`hm-rpc.meta.roles: ${err}`);
-            }
-            if (res) {
-                metaRoles = res.native;
-            }
+        const res = await adapter.getForeignObjectAsync('hm-rpc.meta.roles');
+        if (res) {
+            metaRoles = res.native;
+        }
+    } catch (e) {
+        adapter.log.error(`hm-rpc.meta.roles: ${e}`);
+    }
 
-            // Start Adapter
-            if (adapter.config) {
-                initRpcServer();
-            }
+    try {
+        const res = await adapter.getObjectViewAsync('system', 'state', {
+            startkey: adapter.namespace,
+            endkey: adapter.namespace + '\u9999'
         });
-    });
 
-    adapter.getObjectView('system', 'state', {
-        startkey: adapter.namespace,
-        endkey: adapter.namespace + '\u9999'
-    }, (err, res) => {
-        if (!err && res.rows) {
+        if (res.rows) {
             for (const row of res.rows) {
-                if (row.id === `${adapter.namespace}.updated`) {
-                    continue;
-                }
-                if (!row.value.native) {
+                if (row.id === `${adapter.namespace}.updated`) continue;
+                if (!row.value || !row.value.native) {
                     adapter.log.warn(`State ${row.id} does not have native.`);
                     dpTypes[row.id] = {UNIT: '', TYPE: ''};
                 } else {
@@ -779,7 +783,12 @@ function main() {
                 }
             }
         }
-    });
+    } catch (e) {
+        adapter.log.error(`Could not get state view on start: ${e}`);
+    }
+
+    // Start Adapter
+    initRpcServer();
 } // endMain
 
 function sendInit() {
