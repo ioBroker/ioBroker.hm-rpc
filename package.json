@@ -1,6 +1,6 @@
 {
     "name": "iobroker.hm-rpc",
-    "version": "1.14.3",
+    "version": "1.14.4",
     "description": "Connects HomeMatic Interface-Processes (BidCos-Services, Homegear and CUxD) via XML-RPC or BIN-RPC to ioBroker",
     "author": {
         "name": "hobbyquaker",
@@ -18,6 +18,10 @@
         {
             "name": "Moritz Heusinger",
             "email": "moritz.heusinger@gmail.com"
+        },
+        {
+            "name": "Jens Maus",
+            "email": "mail@jens-maus.de"
         }
     ],
     "homepage": "https://github.com/ioBroker/ioBroker.hm-rpc",

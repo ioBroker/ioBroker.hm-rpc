@@ -13,8 +13,12 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.14.3",
+        "version": "1.14.4",
         "news": {
+            "1.14.4": {
+                "en": "updated all device images to latest versions",
+                "de": "Alle Gerätebilder aktualisiert"
+            },
             "1.14.3": {
                 "en": "fixed error if row.value has no native",
                 "de": "Fehler behoben, wenn row.value kein natives hat",
