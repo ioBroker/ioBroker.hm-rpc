@@ -17,7 +17,15 @@
         "news": {
             "1.14.4": {
                 "en": "updated all device images to latest versions",
-                "de": "Alle Gerätebilder aktualisiert"
+                "de": "Alle Gerätebilder aktualisiert",
+                "ru": "обновлены все образы устройств до последних версий",
+                "pt": "atualizou todas as imagens do dispositivo para as versões mais recentes",
+                "nl": "alle apparaatafbeeldingen bijgewerkt naar de nieuwste versies",
+                "fr": "mis à jour toutes les images de l'appareil vers les dernières versions",
+                "it": "ha aggiornato tutte le immagini del dispositivo alle ultime versioni",
+                "es": "actualizado todas las imágenes del dispositivo a las últimas versiones",
+                "pl": "zaktualizowałem wszystkie obrazy urządzeń do najnowszych wersji",
+                "zh-cn": "将所有设备映像更新为最新版本"
             },
             "1.14.3": {
                 "en": "fixed error if row.value has no native",

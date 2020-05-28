@@ -11,3 +11,4 @@ test
 appveyor.yml
 .eslintrc.json
 .github
+lib/create-images-js.sh
