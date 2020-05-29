@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.14.4",
+        "version": "1.14.5",
         "news": {
+            "1.14.5": {
+                "en": "fixed a potential problem when CCU (xml-rpc) delivers unexpected format on \"newDevices\"",
+                "de": "Ein potenzielles Problem wurde behoben, wenn CCU (xml-rpc) ein unerwartetes Format für \"newDevices\" liefert.",
+                "ru": "исправлена потенциальная проблема, когда CCU (xml-rpc) доставляет неожиданный формат на \"newDevices\"",
+                "pt": "Foi corrigido um problema em potencial quando o CCU (xml-rpc) entrega um formato inesperado em \"newDevices\"",
+                "nl": "een mogelijk probleem opgelost wanneer CCU (xml-rpc) onverwacht formaat op \"newDevices\" levert",
+                "fr": "correction d'un problème potentiel lorsque CCU (xml-rpc) fournit un format inattendu sur \"newDevices\"",
+                "it": "risolto un potenziale problema quando CCU (xml-rpc) consegna un formato imprevisto su \"newDevices\"",
+                "es": "solucionó un problema potencial cuando CCU (xml-rpc) entrega un formato inesperado en \"newDevices\"",
+                "pl": "naprawiono potencjalny problem, gdy CCU (xml-rpc) dostarcza nieoczekiwany format w „newDevices”",
+                "zh-cn": "修复了CCU（xml-rpc）在“ newDevices”上传递意外格式时的潜在问题"
+            },
             "1.14.4": {
                 "en": "updated all device images to latest versions",
                 "de": "Alle Gerätebilder aktualisiert",

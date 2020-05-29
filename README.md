@@ -137,6 +137,9 @@ If you use HomeMatic switches or remotes their button states will only be acknow
 by ioBroker, when you have a running 'dummy' program on the CCU which depends on the related switch or remote.
 
 ## Changelog
+### 1.14.5 (2020-05-29)
+* (foxriver76) fixed edge case problem IOBROKER-HM-RPC-5E
+
 ### 1.14.4 (2020-05-28)
 * (jens-maus) updated all device images to latest ones include hmip-wired ones
 

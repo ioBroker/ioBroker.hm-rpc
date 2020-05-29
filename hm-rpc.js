@@ -720,7 +720,6 @@ async function main() {
     }
 
     // Load VALUE paramsetDescriptions (needed to create state objects)
-
     try {
         const doc = await adapter.getObjectViewAsync('hm-rpc', 'paramsetDescription', {
             startkey: 'hm-rpc.meta.VALUES',
@@ -736,7 +735,6 @@ async function main() {
     } catch (e) {
         adapter.log.error(`getObjectView hm-rpc: ${e}`);
     }
-
 
     try {
         // Load common.role assignments
@@ -756,7 +754,9 @@ async function main() {
 
         if (res.rows) {
             for (const row of res.rows) {
-                if (row.id === `${adapter.namespace}.updated`) continue;
+                if (row.id === `${adapter.namespace}.updated`) {
+                    continue;
+                }
                 if (!row.value || !row.value.native) {
                     adapter.log.warn(`State ${row.id} does not have native.`);
                     dpTypes[row.id] = {UNIT: '', TYPE: ''};
@@ -909,7 +909,7 @@ function initRpcServer() {
 
         rpcServer.on('event', (err, params, callback) => {
             if (err) {
-                adapter.log.warn(` Error on system.listMethods: ${err}`);
+                adapter.log.warn(`Error on system.listMethods: ${err}`);
             }
             updateConnection();
             try {
@@ -919,70 +919,79 @@ function initRpcServer() {
             }
         });
 
-        rpcServer.on('newDevices', (err, params, callback) => {
+        rpcServer.on('newDevices', async (err, params, callback) => {
             if (err) {
                 adapter.log.warn(` Error on system.listMethods: ${err}`);
             }
 
-            const newDevices = params[1];
+            let newDevices = params[1];
+
+            if (!Array.isArray(newDevices)) {
+                adapter.log.warn(`CCU delivered unexpected result (${params[1]}) on "newDevices": ${newDevices}`);
+                newDevices = [];
+            }
 
             adapter.log.info(`${adapter.config.type}rpc <- newDevices ${newDevices.length}`);
 
             // for a HmIP-adapter we have to filter out the devices that
             // are already present if forceReinit is not set
             if (adapter.config.forceReInit === false && adapter.config.daemon === 'HMIP') {
-                adapter.getObjectView('hm-rpc', 'listDevices', {
-                    startkey: `hm-rpc.${adapter.instance}.`,
-                    endkey: 'hm-rpc.' + adapter.instance + '.\u9999'
-                }, (err, doc) => {
-                    if (doc && doc.rows) {
-                        for (const row of doc.rows) {
-                            if (row.id === `${adapter.namespace}.updated`) {
-                                continue;
-                            }
+                let doc;
+                try {
+                    doc = await adapter.getObjectViewAsync('hm-rpc', 'listDevices', {
+                        startkey: `hm-rpc.${adapter.instance}.`,
+                        endkey: 'hm-rpc.' + adapter.instance + '.\u9999'
+                    });
+                } catch (e) {
+                    adapter.log.error(`getObjectView hm-rpc: ${e}`);
+                }
+                if (doc && doc.rows) {
+                    for (const row of doc.rows) {
+                        if (row.id === `${adapter.namespace}.updated`) {
+                            continue;
+                        }
 
-                            // lets get the device description
-                            const val = row.value;
+                        // lets get the device description
+                        const val = row.value;
 
-                            if (typeof val.ADDRESS === 'undefined') {
-                                continue;
-                            }
+                        if (typeof val.ADDRESS === 'undefined') {
+                            continue;
+                        }
 
-                            // lets find the current device in the newDevices array
-                            // and if it doesn't exist we can delete it
-                            let index = -1;
-                            for (let j = 0; j < newDevices.length; j++) {
-                                if (newDevices[j].ADDRESS === val.ADDRESS && newDevices[j].VERSION === val.VERSION) {
-                                    index = j;
-                                    break;
-                                }
-                            }
-
-                            // if index is -1 than the newDevices doesn't have the
-                            // device with address val.ADDRESS anymore, thus we can delete it
-                            if (index === -1) {
-                                if (val.ADDRESS && !adapter.config.dontDelete) {
-                                    if (val.ADDRESS.indexOf(':') !== -1) {
-                                        const address = val.ADDRESS.replace(':', '.').replace(FORBIDDEN_CHARS, '_');
-                                        const parts = address.split('.');
-                                        adapter.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
-                                        adapter.log.info(`obsolete channel ${address} ${JSON.stringify(address)} deleted`);
-                                    } else {
-                                        adapter.deleteDevice(val.ADDRESS);
-                                        adapter.log.info(`obsolete device ${val.ADDRESS} deleted`);
-                                    }
-                                }
-                            } else {
-                                // we can remove the item at index because it is already registered
-                                // to ioBroker
-                                newDevices.splice(index, 1);
+                        // lets find the current device in the newDevices array
+                        // and if it doesn't exist we can delete it
+                        let index = -1;
+                        for (let j = 0; j < newDevices.length; j++) {
+                            if (newDevices[j].ADDRESS === val.ADDRESS && newDevices[j].VERSION === val.VERSION) {
+                                index = j;
+                                break;
                             }
                         }
-                    }
 
-                    adapter.log.info(`new HmIP devices/channels after filter: ${newDevices.length}`);
-                    createDevices(newDevices, callback);
-                });
+                        // if index is -1 than the newDevices doesn't have the
+                        // device with address val.ADDRESS anymore, thus we can delete it
+                        if (index === -1) {
+                            if (val.ADDRESS && !adapter.config.dontDelete) {
+                                if (val.ADDRESS.indexOf(':') !== -1) {
+                                    const address = val.ADDRESS.replace(':', '.').replace(FORBIDDEN_CHARS, '_');
+                                    const parts = address.split('.');
+                                    adapter.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
+                                    adapter.log.info(`obsolete channel ${address} ${JSON.stringify(address)} deleted`);
+                                } else {
+                                    adapter.deleteDevice(val.ADDRESS);
+                                    adapter.log.info(`obsolete device ${val.ADDRESS} deleted`);
+                                }
+                            }
+                        } else {
+                            // we can remove the item at index because it is already registered
+                            // to ioBroker
+                            newDevices.splice(index, 1);
+                        }
+                    }
+                }
+
+                adapter.log.info(`new HmIP devices/channels after filter: ${newDevices.length}`);
+                createDevices(newDevices, callback);
             } else {
                 createDevices(newDevices, callback);
             }
