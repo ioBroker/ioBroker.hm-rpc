@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.14.5",
+        "version": "1.14.6",
         "news": {
+            "1.14.6": {
+                "en": "added some hmip roles for channel 0",
+                "de": "Einige hmip-Rollen für Kanal 0 wurden hinzugefügt",
+                "ru": "добавлены некоторые роли hmip для канала 0",
+                "pt": "adicionou algumas funções hmip para o canal 0",
+                "nl": "enkele hmip-rollen toegevoegd voor kanaal 0",
+                "fr": "ajout de quelques rôles hmip pour le canal 0",
+                "it": "aggiunti alcuni ruoli hmip per il canale 0",
+                "es": "se agregaron algunos roles hmip para el canal 0",
+                "pl": "dodano kilka ról hmip dla kanału 0",
+                "zh-cn": "为频道0添加了一些hmip角色"
+            },
             "1.14.5": {
                 "en": "fixed a potential problem when CCU (xml-rpc) delivers unexpected format on \"newDevices\"",
                 "de": "Ein potenzielles Problem wurde behoben, wenn CCU (xml-rpc) ein unerwartetes Format für \"newDevices\" liefert.",
@@ -307,6 +319,7 @@
                     "FAULT_REPORTING": "indicator",
                     "MANU_MODE": "level.temperature",
                     "ACTUAL_TEMPERATURE": "value.temperature",
+                    "ACTUAL_TEMPERATURE_STATUS": "value",
                     "TEMPERATURE": "value.temperature",
                     "SETPOINT": "level.temperature",
                     "SET_TEMPERATURE": "level.temperature",
@@ -319,12 +332,14 @@
                     "PRESS_CONT": "button.continuous",
                     "LEVEL": "level",
                     "LOWBAT": "indicator.lowbat",
+                    "LOW_BAT": "indicator.lowbat",
                     "INSTALL_TEST": "indicator",
                     "UNREACH": "indicator.unreach",
                     "WINDOW_STATE": "value.window",
                     "WORKING": "indicator.working",
                     "DIRECTION": "indicator.direction",
                     "CONFIG_PENDING": "indicator",
+                    "UPDATE_PENDING": "indicator",
                     "INSTALL_MODE": "indicator",
                     "RSSI_PEER": "value.rssi",
                     "RSSI_DEVICE": "value.rssi",
@@ -343,8 +358,12 @@
                     "STOP": "button.stop",
                     "ON_TIME": "timer.off",
                     "DUTYCYCLE": "value",
+                    "DUTY_CYCLE": "value",
                     "COLOR": "level.color.hue",
-                    "OPERATING_VOLTAGE": "value.voltage"
+                    "OPERATING_VOLTAGE": "value.voltage",
+                    "OPERATING_VOLTAGE_STATUS": "value",
+                    "SABOTAGE": "indicator",
+                    "ERROR_CODE": "value"
                 },
                 "dvTYPE": {
                     "HM-Sec-SD": "sensor.alarm.fire",
