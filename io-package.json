@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.14.6",
+        "version": "1.14.7",
         "news": {
+            "1.14.7": {
+                "en": "removed meta data caching completely because meta data can be dynamic due to FW update or CuxD",
+                "de": "Das Zwischenspeichern von Metadaten wurde vollständig entfernt, da Metadaten aufgrund von FW-Updates oder CuxD dynamisch sein können",
+                "ru": "полностью удалено кеширование метаданных, потому что метаданные могут быть динамическими из-за обновления FW или CuxD",
+                "pt": "removido completamente o cache de metadados porque os metadados podem ser dinâmicos devido à atualização do FW ou ao CuxD",
+                "nl": "metagegevenscaching volledig verwijderd omdat metagegevens dynamisch kunnen zijn vanwege FW-update of CuxD",
+                "fr": "suppression complète de la mise en cache des métadonnées car les métadonnées peuvent être dynamiques en raison de la mise à jour du micrologiciel ou de CuxD",
+                "it": "rimossa completamente la memorizzazione nella cache dei metadati poiché i metadati possono essere dinamici a causa dell'aggiornamento FW o CuxD",
+                "es": "eliminó completamente el almacenamiento en caché de metadatos porque los metadatos pueden ser dinámicos debido a la actualización de FW o CuxD",
+                "pl": "całkowicie usunięto buforowanie metadanych, ponieważ metadane mogą być dynamiczne z powodu aktualizacji FW lub CuxD",
+                "zh-cn": "完全删除了元数据缓存，因为由于固件更新或CuxD，元数据可以是动态的"
+            },
             "1.14.6": {
                 "en": "added some hmip roles for channel 0",
                 "de": "Einige hmip-Rollen für Kanal 0 wurden hinzugefügt",
