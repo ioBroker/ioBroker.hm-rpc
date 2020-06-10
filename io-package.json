@@ -13,9 +13,9 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.14.7",
+        "version": "1.14.8",
         "news": {
-            "1.14.7": {
+            "1.14.8": {
                 "en": "removed meta data caching completely because meta data can be dynamic due to FW update or CuxD",
                 "de": "Das Zwischenspeichern von Metadaten wurde vollständig entfernt, da Metadaten aufgrund von FW-Updates oder CuxD dynamisch sein können",
                 "ru": "полностью удалено кеширование метаданных, потому что метаданные могут быть динамическими из-за обновления FW или CuxD",
@@ -285,12 +285,6 @@
                 "name": "meta data of Homematic devices",
                 "icon": "/admin/homematic.png"
             },
-            "native": {}
-        },
-        {
-            "_id": "hm-rpc.meta.VALUES",
-            "type": "meta",
-            "common": {},
             "native": {}
         },
         {
