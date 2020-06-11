@@ -408,15 +408,7 @@ function startAdapter(options) {
         name: adapterName,
 
         ready: () => {
-            // get sentry instance
-            /*if (adapter.getPluginInstance) {
-                const sentryInstance = adapter.getPluginInstance('sentry');
-                if (sentryInstance) {
-                    sentry = sentryInstance.getSentryObject();
-                }
-            }*/
             adapter.subscribeStates('*');
-            //createMeta().then(main);
             main();
         },
         stateChange: (id, state) => {
@@ -1280,30 +1272,25 @@ async function getValueParamsets() {
         addEPaperToMeta();
     }
 
-    if (metaValues[cid]) {
-        adapter.log.debug('paramset cache hit');
-        addParamsetObjects(obj, metaValues[cid], () => setImmediate(getValueParamsets));
-    } else {
-        adapter.log.info(`${adapter.config.type}rpc -> getParamsetDescription ${JSON.stringify([obj.native.ADDRESS, 'VALUES'])}`);
-        try {
-            rpcClient.methodCall('getParamsetDescription', [obj.native.ADDRESS, 'VALUES'], async (err, res) => {
-                if (err) {
-                    adapter.log.error(`Error on getParamsetDescription: ${err}`);
-                } else {
-                    metaValues[cid] = res;
+    adapter.log.info(`${adapter.config.type}rpc -> getParamsetDescription ${JSON.stringify([obj.native.ADDRESS, 'VALUES'])}`);
+    try {
+        rpcClient.methodCall('getParamsetDescription', [obj.native.ADDRESS, 'VALUES'], async (err, res) => {
+            if (err) {
+                adapter.log.error(`Error on getParamsetDescription: ${err}`);
+            } else {
+                metaValues[cid] = res;
 
-                    if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
-                        addEPaperToMeta();
-                    }
-
-                    addParamsetObjects(obj, metaValues[cid], () => {
-                        setImmediate(getValueParamsets);
-                    });
+                if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
+                    addEPaperToMeta();
                 }
-            });
-        } catch (err) {
-            adapter.log.error(`Cannot call getParamsetDescription: ${err}`);
-        }
+
+                addParamsetObjects(obj, metaValues[cid], () => {
+                    setImmediate(getValueParamsets);
+                });
+            }
+        });
+    } catch (err) {
+        adapter.log.error(`Cannot call getParamsetDescription: ${err}`);
     }
 } // endGetValueParamsets
 
