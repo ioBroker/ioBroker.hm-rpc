@@ -713,12 +713,16 @@ async function main() {
 
     // Clean up objects if still hm-rpc.meta.VALUES exist
     try {
-        const doc = await adapter.getObjectViewAsync('hm-rpc', 'paramsetDescription', {
+        const doc = await adapter.getObjectListAsync({
             startkey: 'hm-rpc.meta.VALUES',
             endkey: 'hm-rpc.meta.VALUES.\u9999'
         });
 
         if (doc && doc.rows) {
+            if (doc.rows.length >= 50) {
+                adapter.log.info('Cleaning up meta folder... this may take some time');
+            }
+
             for (const row of doc.rows) {
                 try {
                     await adapter.delForeignObjectAsync(row.id);
@@ -1578,8 +1582,8 @@ function getCuxDevices(callback) {
         } catch (err) {
             adapter.log.error(`Cannot call listDevices: ${err}`);
         }
-    } else {
-        callback && callback();
+    } else if (typeof callback === 'function') {
+        callback();
     }
 }
 
