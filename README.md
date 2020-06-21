@@ -137,6 +137,9 @@ If you use HomeMatic switches or remotes their button states will only be acknow
 by ioBroker, when you have a running 'dummy' program on the CCU which depends on the related switch or remote.
 
 ## Changelog
+### 1.14.11 (2020-06-21)
+* (bluefox) Change name of Instance according to the role (RF, Wired, HMIP)
+
 ### 1.14.10 (2020-06-14)
 * (foxriver76) removed meta data caching completely because meta data can be dynamic due to FW update or CuxD
 

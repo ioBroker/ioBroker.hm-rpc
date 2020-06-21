@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.14.10",
+        "version": "1.14.11",
         "news": {
+            "1.14.11": {
+                "en": "Changed name of Instance according to the role (RF, Wired, HMIP)",
+                "de": "Name der Instanz entsprechend der Rolle geändert (RF, Wired, HMIP)",
+                "ru": "Изменено имя экземпляра в зависимости от роли (RF, Wired, HMIP)",
+                "pt": "Nome alterado da instância de acordo com a função (RF, com fio, HMIP)",
+                "nl": "Naam van instantie gewijzigd op basis van de rol (RF, Wired, HMIP)",
+                "fr": "Changement du nom de l'instance en fonction du rôle (RF, filaire, HMIP)",
+                "it": "Nome dell'istanza modificato in base al ruolo (RF, Wired, HMIP)",
+                "es": "Se cambió el nombre de la instancia según el rol (RF, Wired, HMIP)",
+                "pl": "Zmieniono nazwę wystąpienia zgodnie z rolą (RF, Wired, HMIP)",
+                "zh-cn": "根据角色（RF，有线，HMIP）更改了实例名称"
+            },
             "1.14.10": {
                 "en": "removed meta data caching completely because meta data can be dynamic due to FW update or CuxD",
                 "de": "Das Zwischenspeichern von Metadaten wurde vollständig entfernt, da Metadaten aufgrund von FW-Updates oder CuxD dynamisch sein können",
@@ -122,78 +134,6 @@
                 "es": "no se corrigió el error 'dpType for ..' en todos los casos",
                 "pl": "naprawiono brak błędu „dpType for ..” we wszystkich przypadkach",
                 "zh-cn": "修复了在所有情况下均未出现“ dpType for ..”错误的问题"
-            },
-            "1.12.9": {
-                "en": "we replace DISPLAY_DATA_STRING by DIN_66003 encodings",
-                "de": "Wir ersetzen DISPLAY_DATA_STRING durch DIN_66003-Codierungen",
-                "ru": "мы заменяем DISPLAY_DATA_STRING на кодировки DIN_66003",
-                "pt": "substituímos as codificações DISPLAY_DATA_STRING por DIN_66003",
-                "nl": "we vervangen DISPLAY_DATA_STRING door DIN_66003-coderingen",
-                "fr": "nous remplaçons DISPLAY_DATA_STRING par des encodages DIN_66003",
-                "it": "sostituiamo DISPLAY_DATA_STRING con codifiche DIN_66003",
-                "es": "reemplazamos DISPLAY_DATA_STRING por codificaciones DIN_66003",
-                "pl": "zastępujemy DISPLAY_DATA_STRING kodowaniem DIN_66003",
-                "zh-cn": "我们用DIN_66003编码替换DISPLAY_DATA_STRING"
-            },
-            "1.12.8": {
-                "en": "improved error handling on undefined methods",
-                "de": "Verbesserte Fehlerbehandlung bei undefinierten Methoden",
-                "ru": "улучшена обработка ошибок в неопределенных методах",
-                "pt": "manipulação aprimorada de erros em métodos indefinidos",
-                "nl": "verbeterde foutafhandeling op ongedefinieerde methoden",
-                "fr": "gestion améliorée des erreurs sur les méthodes non définies",
-                "it": "migliorata gestione degli errori su metodi non definiti",
-                "es": "manejo mejorado de errores en métodos indefinidos",
-                "pl": "poprawiona obsługa błędów w niezdefiniowanych metodach",
-                "zh-cn": "改进了对未定义方法的错误处理"
-            },
-            "1.12.7": {
-                "en": "if role 'value.window' is a boolean it is now correctly a 'sensor.window'",
-                "de": "Wenn die Rolle 'value.window' ein Boolescher Wert ist, ist sie jetzt korrekterweise ein 'sensor.window'.",
-                "ru": "если роль 'value.window' является логическим значением, теперь это правильно 'sensor.window'",
-                "pt": "se o papel 'value.window' for um booleano, agora será corretamente um 'sensor.window'",
-                "nl": "als rol 'value.window' een boolean is, is het nu correct een 'sensor.window'",
-                "fr": "si le rôle 'value.window' est un booléen c'est maintenant correctement un 'sensor.window'",
-                "it": "se il ruolo 'value.window' è un valore booleano, ora è correttamente un 'sensor.window'",
-                "es": "si el rol 'value.window' es un booleano, ahora es correctamente un 'sensor.window'",
-                "pl": "jeśli rola „wartość. okno” jest wartością logiczną, jest teraz poprawnie „czujnikiem. okno”",
-                "zh-cn": "如果角色'value.window'是布尔值，则现在正确地是'sensor.window'"
-            },
-            "1.12.6": {
-                "en": "now some meta data will be handled more abstract",
-                "de": "Jetzt werden einige Metadaten abstrakter behandelt",
-                "ru": "теперь некоторые метаданные будут обрабатываться более абстрактно",
-                "pt": "agora alguns metadados serão tratados de forma mais abstrata",
-                "nl": "nu worden sommige metagegevens abstracter behandeld",
-                "fr": "maintenant certaines métadonnées seront traitées de manière plus abstraite",
-                "it": "ora alcuni metadati verranno gestiti in modo più astratto",
-                "es": "ahora algunos metadatos se manejarán de manera más abstracta",
-                "pl": "teraz niektóre metadane będą obsługiwane bardziej abstrakcyjnie",
-                "zh-cn": "现在一些元数据将被更抽象地处理"
-            },
-            "1.12.2": {
-                "en": "fix issue on https with less robust ccu emulations",
-                "de": "Problem bei https mit weniger robusten ccu-Emulationen behoben",
-                "ru": "исправить проблему на https с менее надежной эмуляцией ccu",
-                "pt": "corrigir problema em https com emulações de CPU menos robustas",
-                "nl": "probleem op https oplossen met minder robuuste ccu-emulaties",
-                "fr": "correction d'un problème sur https avec des émulations ccu moins robustes",
-                "it": "risolve il problema su https con emulazioni ccu meno robuste",
-                "es": "Solucione el problema en https con emulaciones ccu menos robustas",
-                "pl": "napraw problem na https przy mniej niezawodnych emulacjach ccu",
-                "zh-cn": "使用不太健壮的ccu仿真修复https上的问题"
-            },
-            "1.12.1": {
-                "en": "fixed problem with max values of value lists",
-                "de": "Problem mit Maximalwerten von Wertelisten behoben",
-                "ru": "исправлена проблема с максимальными значениями списков значений",
-                "pt": "problema corrigido com valores máximos de listas de valores",
-                "nl": "probleem opgelost met maximale waarden van waardenlijsten",
-                "fr": "problème résolu avec les valeurs maximales des listes de valeurs",
-                "it": "risolto problema con valori massimi di liste valori",
-                "es": "problema solucionado con valores máximos de listas de valores",
-                "pl": "naprawiono problem z maksymalnymi wartościami list wartości",
-                "zh-cn": "固定值列表最大值的问题"
             }
         },
         "authors": [

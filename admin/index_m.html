@@ -23,6 +23,16 @@
     var secret;
     var onChange = null;
 
+    var type2Name = {
+        def: 'HomeMatic RPC',
+        rfd: 'HomeMatic RF',
+        'virtual-devices': 'HomeMatic Virtual Devices',
+        hs485d: 'HomeMatic Wired',
+        CUxD: 'HomeMatic CUxD',
+        HMIP: 'HomeMatic IP',
+        Homegear: 'Homegear'
+    };
+
     function encrypt(key, value) {
         var result = '';
         for (var i = 0; i < value.length; ++i) {
@@ -310,7 +320,19 @@
             return;
         }
 
-        callback(getSettings());
+        if (common.title === 'HomeMatic RPC' ||
+            common.title === 'HomeMatic RF' ||
+            common.title === 'HomeMatic Wired' ||
+            common.title === 'HomeMatic Virtual Devices' ||
+            common.title === 'HomeMatic CUxD' ||
+            common.title === 'HomeMatic IP' ||
+            common.title === 'HomeMatic Homegear') {
+            if (common.title !== type2Name[settings.daemon]) {
+                return callback(settings, {title: type2Name[settings.daemon]});
+            }
+        }
+
+        callback(settings);
     }
 
     function checkIPs(ip1, ip2) {
