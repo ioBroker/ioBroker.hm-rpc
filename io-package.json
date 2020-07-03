@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.14.11",
+        "version": "1.14.12",
         "news": {
+            "1.14.12": {
+                "en": "we continue execution if error on retrieving a paramset from CCU",
+                "de": "Wir setzen die Ausführung fort, wenn beim Abrufen eines Parameters von der CCU ein Fehler auftritt",
+                "ru": "мы продолжаем выполнение, если ошибка при получении набора параметров из CCU",
+                "pt": "continuamos a execução se ocorrer um erro ao recuperar um paramset da CCU",
+                "nl": "we gaan door met de uitvoering als er een fout optreedt bij het ophalen van een paramset van CCU",
+                "fr": "nous continuons l'exécution en cas d'erreur lors de la récupération d'un paramètre du CCU",
+                "it": "continuiamo l'esecuzione in caso di errore nel recupero di un parametro dalla CCU",
+                "es": "continuamos la ejecución si se produce un error al recuperar un parámetro de CCU",
+                "pl": "kontynuujemy wykonywanie, jeśli wystąpi błąd podczas pobierania zestawu parametrów z CCU",
+                "zh-cn": "如果从CCU检索参数集时出错，我们将继续执行"
+            },
             "1.14.11": {
                 "en": "Changed name of Instance according to the role (RF, Wired, HMIP)",
                 "de": "Name der Instanz entsprechend der Rolle geändert (RF, Wired, HMIP)",

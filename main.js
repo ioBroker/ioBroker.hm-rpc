@@ -32,11 +32,10 @@ const utils = require('@iobroker/adapter-core'); // Get common adapter utils
 const adapterName = require('./package.json').name.split('.').pop();
 const images = require('./lib/images');
 const tools = require('./lib/tools');
-//const meta = require('./lib/meta');
 let connected = false;
 const displays = {};
 let adapter;
-//let sentry;
+let rpcMethodCallAsync;
 
 const FORBIDDEN_CHARS = /[\][*,;'"`<>\\\s?]/g;
 // msgBuffer = [{line: line2, icon: icon2}, {line: line3, icon: icon3}, {line: '', icon: ''}];
@@ -1110,9 +1109,15 @@ const methods = {
 
 const queueValueParamsets = [];
 
-async function addParamsetObjects(channel, paramset, callback) {
+/**
+ * Adds the paramset objects of the given paramset to the given channel
+ *
+ * @param {object} channel - channel object with at least "_id" property
+ * @param {object} paramset - paramset object retrived by CCU
+ * @returns {Promise<void>}
+ */
+async function addParamsetObjects(channel, paramset) {
     for (const key of Object.keys(paramset)) {
-
         const commonType = {
             ACTION: 'boolean',
             BOOL: 'boolean',
@@ -1252,49 +1257,40 @@ async function addParamsetObjects(channel, paramset, callback) {
             adapter.log.error(`Could not extend object ${channel._id}.${key}: ${e}`);
         }
     } // endFor
-
-    callback();
 } // endAddParamsetObjects
 
 async function getValueParamsets() {
-    if (queueValueParamsets.length === 0) {
+    for (const obj of queueValueParamsets) {
+        try {
+            const cid = `${obj.native.PARENT_TYPE}.${obj.native.TYPE}.${obj.native.VERSION}`;
+
+            adapter.log.debug(`getValueParamsets ${cid}`);
+
+            // if meta values are cached for Epaper we extend this cached meta values by epaper states
+            if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
+                addEPaperToMeta();
+            }
+
+            adapter.log.info(`${adapter.config.type}rpc -> getParamsetDescription ${JSON.stringify([obj.native.ADDRESS, 'VALUES'])}`);
+            const res = await rpcMethodCallAsync('getParamsetDescription', [obj.native.ADDRESS, 'VALUES']);
+
+            metaValues[cid] = res;
+
+            if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
+                addEPaperToMeta();
+            }
+
+            await addParamsetObjects(obj, metaValues[cid]);
+        } catch (e) {
+            adapter.log.error(`Error on getParamsetDescription for [${obj.native.ADDRESS}, 'VALUES']": ${e}`);
+        }
+
         // Inform hm-rega about new devices
         adapter.setState('updated', true, false);
-        // Inform hm-rega about new devices
+        // If it has been a force reinit run, set it to false and restart
         if (adapter.config.forceReInit) {
             adapter.extendForeignObject(`system.adapter.${adapter.namespace}`, {native: {forceReInit: false}});
         }
-        return;
-    }
-    const obj = queueValueParamsets.pop();
-    const cid = `${obj.native.PARENT_TYPE}.${obj.native.TYPE}.${obj.native.VERSION}`;
-
-    adapter.log.debug(`getValueParamsets ${cid}`);
-
-    // if meta values are cached for Epaper we extend this cached meta values by epaper states
-    if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
-        addEPaperToMeta();
-    }
-
-    adapter.log.info(`${adapter.config.type}rpc -> getParamsetDescription ${JSON.stringify([obj.native.ADDRESS, 'VALUES'])}`);
-    try {
-        rpcClient.methodCall('getParamsetDescription', [obj.native.ADDRESS, 'VALUES'], async (err, res) => {
-            if (err) {
-                adapter.log.error(`Error on getParamsetDescription: ${err}`);
-            } else {
-                metaValues[cid] = res;
-
-                if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
-                    addEPaperToMeta();
-                }
-
-                addParamsetObjects(obj, metaValues[cid], () => {
-                    setImmediate(getValueParamsets);
-                });
-            }
-        });
-    } catch (err) {
-        adapter.log.error(`Cannot call getParamsetDescription: ${err}`);
     }
 } // endGetValueParamsets
 
@@ -1661,7 +1657,6 @@ function connect(isFirst) {
                 return adapter.restart();
             } // endCatch
         });
-
     } // endElseIf
 
     connTimeout = null;
@@ -1673,6 +1668,18 @@ function connect(isFirst) {
     }
 
     if (isFirst) {
+        // create async methods at first init
+        rpcMethodCallAsync = (method, params) => {
+            return new Promise((resolve, reject) => {
+                rpcClient.methodCall(method, params, (err, res) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(res);
+                    }
+                });
+            });
+        };
         sendInit();
     }
 
