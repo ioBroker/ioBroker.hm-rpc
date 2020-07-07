@@ -176,7 +176,7 @@ function combineEPaperCommand(lines, signal, ton, repeats, offset) {
     for (const li of lines) {
         const line = li.line;
         const icon = li.icon;
-        if (line || icon) {
+        if (line) {
             command = `${command},0x12`;
             let i;
             if ((line.substring(0, 2) === '0x') && (line.length === 4)) {
@@ -189,9 +189,10 @@ function combineEPaperCommand(lines, signal, ton, repeats, offset) {
                 command += `,${substitutions[line[i]]}` || '0x2A';
                 i++;
             }
-            if (icon) {
-                command += `,0x13,${number2hex(icon)}`;
-            }
+        }
+
+        if (icon) {
+            command += `,0x13,${number2hex(icon)}`;
         }
         command = `${command},0x0A`;
     }
@@ -1421,6 +1422,12 @@ function createDevices(deviceArr, callback) {
     const objs = [];
 
     for (const device of deviceArr) {
+        if (typeof device.ADDRESS !== 'string') {
+            // check that ADDRESS is given, else we don't know the id
+            adapter.log.error(`Device has no valid property ADDRESS: ${JSON.stringify(device)}`);
+            continue;
+        }
+
         let type;
         let role;
         let icon;
@@ -1460,6 +1467,7 @@ function createDevices(deviceArr, callback) {
             MIN: device.MIN,
             role: role
         };
+
         if (typeof dpTypes[dpID].MIN === 'number') {
             dpTypes[dpID].MIN = parseFloat(dpTypes[dpID].MIN);
             dpTypes[dpID].MAX = parseFloat(dpTypes[dpID].MAX);

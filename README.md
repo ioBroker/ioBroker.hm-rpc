@@ -137,6 +137,10 @@ If you use HomeMatic switches or remotes their button states will only be acknow
 by ioBroker, when you have a running 'dummy' program on the CCU which depends on the related switch or remote.
 
 ## Changelog
+### 1.14.13 (2020-07-07)
+* (foxriver76) fix edge case on EPAPER command (IOBROKER-HM-RPC-5Z)
+* (foxriver76) Catch error on `createDevices` if CCU does not deliver valid ADDRESS (IOBROKER-HM-RPC-5X)
+
 ### 1.14.12 (2020-07-03)
 * (foxriver76) Continue execution if error on retrieving a paramset from CCU
 

@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.14.12",
+        "version": "1.14.13",
         "news": {
+            "1.14.13": {
+                "en": "we handle some additional edge case errors from now on",
+                "de": "Wir behandeln von nun an einige zusätzliche Randfallfehler",
+                "ru": "с этого момента мы обрабатываем некоторые дополнительные ошибки",
+                "pt": "lidamos com alguns erros adicionais de bordas a partir de agora",
+                "nl": "we verwerken vanaf nu enkele extra edge case-fouten",
+                "fr": "nous traitons désormais quelques erreurs de cas supplémentaires",
+                "it": "d'ora in poi gestiremo alcuni ulteriori errori di caso limite",
+                "es": "manejamos algunos errores adicionales de casos extremos de ahora en adelante",
+                "pl": "odtąd obsługujemy dodatkowe błędy wielkości liter krawędzi",
+                "zh-cn": "从现在开始，我们将处理一些其他的极端情况错误"
+            },
             "1.14.12": {
                 "en": "we continue execution if error on retrieving a paramset from CCU",
                 "de": "Wir setzen die Ausführung fort, wenn beim Abrufen eines Parameters von der CCU ein Fehler auftritt",
