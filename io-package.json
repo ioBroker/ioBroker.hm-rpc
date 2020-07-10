@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.14.13",
+        "version": "1.14.14",
         "news": {
+            "1.14.14": {
+                "en": "Added roles for presence sensor",
+                "de": "Rollen für Anwesenheitssensor hinzugefügt",
+                "ru": "Добавлены роли для датчика присутствия",
+                "pt": "Funções adicionadas para sensor de presença",
+                "nl": "Rollen toegevoegd voor aanwezigheidssensor",
+                "fr": "Rôles ajoutés pour le capteur de présence",
+                "it": "Aggiunti ruoli per il sensore di presenza",
+                "es": "Roles agregados para el sensor de presencia",
+                "pl": "Dodano role dla czujnika obecności",
+                "zh-cn": "增加了状态传感器的角色"
+            },
             "1.14.13": {
                 "en": "we handle some additional edge case errors from now on",
                 "de": "Wir behandeln von nun an einige zusätzliche Randfallfehler",
@@ -98,66 +110,6 @@
                 "es": "actualizado todas las imágenes del dispositivo a las últimas versiones",
                 "pl": "zaktualizowałem wszystkie obrazy urządzeń do najnowszych wersji",
                 "zh-cn": "将所有设备映像更新为最新版本"
-            },
-            "1.14.3": {
-                "en": "fixed error if row.value has no native",
-                "de": "Fehler behoben, wenn row.value kein natives hat",
-                "ru": "исправлена ошибка, если row.value не имеет собственного",
-                "pt": "erro corrigido se row.value não tiver um nativo",
-                "nl": "vaste fout als row.value geen native heeft",
-                "fr": "erreur fixe si row.value n'a pas de natif",
-                "it": "errore risolto se row.value non ha nativi",
-                "es": "error corregido si row.value no tiene nativo",
-                "pl": "naprawiono błąd, jeśli row.value nie ma natywnego",
-                "zh-cn": "如果row.value没有本机，则修复错误"
-            },
-            "1.14.2": {
-                "en": "we now catch errors on rpc client creation",
-                "de": "Wir fangen jetzt Fehler bei der Erstellung des RPC-Clients",
-                "ru": "теперь мы ловим ошибки при создании клиента rpc",
-                "pt": "agora detectamos erros na criação de clientes rpc",
-                "nl": "we vangen nu fouten op bij het maken van rpc-clients",
-                "fr": "nous avons maintenant des erreurs sur la création de client rpc",
-                "it": "ora rileviamo errori nella creazione del client rpc",
-                "es": "ahora detectamos errores en la creación de clientes rpc",
-                "pl": "wychwytujemy teraz błędy podczas tworzenia klienta rpc",
-                "zh-cn": "我们现在在rpc客户端创建时捕获错误"
-            },
-            "1.14.1": {
-                "en": "new meta data handling approach and other improvements",
-                "de": "neuer Ansatz zur Verarbeitung von Metadaten und andere Verbesserungen",
-                "ru": "новый подход к обработке метаданных и другие улучшения",
-                "pt": "nova abordagem de manipulação de metadados e outras melhorias",
-                "nl": "nieuwe metagegevensverwerkingsbenadering en andere verbeteringen",
-                "fr": "nouvelle approche de traitement des métadonnées et autres améliorations",
-                "it": "nuovo approccio alla gestione dei metadati e altri miglioramenti",
-                "es": "nuevo enfoque de manejo de metadatos y otras mejoras",
-                "pl": "nowe podejście do obsługi metadanych i inne ulepszenia",
-                "zh-cn": "新的元数据处理方法和其他改进"
-            },
-            "1.13.0": {
-                "en": "added Sentry plugin support",
-                "de": "Unterstützung für Sentry-Plugins hinzugefügt",
-                "ru": "добавлена поддержка плагинов Sentry",
-                "pt": "adicionado suporte ao plugin Sentry",
-                "nl": "ondersteuning voor Sentry-plug-ins toegevoegd",
-                "fr": "ajout du support du plugin Sentry",
-                "it": "aggiunto il supporto del plugin Sentry",
-                "es": "Se agregó soporte para el complemento Sentry",
-                "pl": "dodano obsługę wtyczek Sentry",
-                "zh-cn": "添加了Sentry插件支持"
-            },
-            "1.12.10": {
-                "en": "fixed no 'dpType for ..' error in all cases",
-                "de": "In allen Fällen wurde kein Fehler 'dpType for ..' behoben",
-                "ru": "исправлена ошибка «dpType for ..» во всех случаях",
-                "pt": "Não foi corrigido nenhum erro 'dpType for ..' em todos os casos",
-                "nl": "geen 'dpType voor ...' fout opgelost in alle gevallen",
-                "fr": "correction de l'erreur \"dpType for ..\" dans tous les cas",
-                "it": "risolto nessun errore 'dpType for ..' in tutti i casi",
-                "es": "no se corrigió el error 'dpType for ..' en todos los casos",
-                "pl": "naprawiono brak błędu „dpType for ..” we wszystkich przypadkach",
-                "zh-cn": "修复了在所有情况下均未出现“ dpType for ..”错误的问题"
             }
         },
         "authors": [
@@ -320,9 +272,11 @@
                     "ERROR_OVERLOAD": "indicator.error.overload",
                     "ERROR_REDUCED": "indicator.error",
                     "MOTION": "sensor.motion",
+                    "PRESENCE_DETECTION_STATE": "sensor.motion",
                     "INHIBIT": "state.inhibit",
                     "VALVE_STATE": "value.valve",
                     "BRIGHTNESS": "value.brightness",
+                    "ILLUMINATION": "value.brightness",
                     "RAMP_TIME": "timer.ramp",
                     "RAMP_STOP": "button.stop",
                     "STOP": "button.stop",
