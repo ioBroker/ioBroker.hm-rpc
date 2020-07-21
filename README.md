@@ -137,6 +137,9 @@ If you use HomeMatic switches or remotes their button states will only be acknow
 by ioBroker, when you have a running 'dummy' program on the CCU which depends on the related switch or remote.
 
 ## Changelog
+### 1.14.15 (2020-07-21)
+* (foxriver76) fix bug on forced reinitialization run
+
 ### 1.14.14 (2020-07-10)
 * (bluefox) Added roles for presence sensor
 

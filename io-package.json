@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.14.14",
+        "version": "1.14.15",
         "news": {
+            "1.14.15": {
+                "en": "fixed bug on forced reinitialization run",
+                "de": "Fehler beim erzwungenen Reinitilisierungslauf behoben",
+                "ru": "исправлена ошибка при принудительной повторной инициализации",
+                "pt": "bug corrigido na execução forçada de reinitilização",
+                "nl": "bug opgelost bij geforceerde herinitialisatierun",
+                "fr": "correction d'un bug sur l'exécution de la réinitilisation forcée",
+                "it": "corretto bug sulla corsa di reinizializzazione forzata",
+                "es": "error corregido en la ejecución de reinicialización forzada",
+                "pl": "naprawiony błąd przy wymuszonej ponownej inicjalizacji",
+                "zh-cn": "修复了强制重新启动运行的错误"
+            },
             "1.14.14": {
                 "en": "Added roles for presence sensor",
                 "de": "Rollen für Anwesenheitssensor hinzugefügt",

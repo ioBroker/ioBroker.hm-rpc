@@ -1285,12 +1285,23 @@ async function getValueParamsets() {
         } catch (e) {
             adapter.log.error(`Error on getParamsetDescription for [${obj.native.ADDRESS}, 'VALUES']": ${e}`);
         }
+    }
 
+    if (queueValueParamsets.length) {
         // Inform hm-rega about new devices
-        adapter.setState('updated', true, false);
+        try {
+            await adapter.setStateAsync('updated', true, false);
+        } catch (e) {
+            adapter.log.error(`Could not inform hm-rega about new devices: ${e}`);
+        }
         // If it has been a force reinit run, set it to false and restart
         if (adapter.config.forceReInit) {
-            adapter.extendForeignObject(`system.adapter.${adapter.namespace}`, {native: {forceReInit: false}});
+            adapter.log.info('Restarting now, because we had a forced reinitialization run');
+            try {
+                await adapter.extendForeignObjectAsync(`system.adapter.${adapter.namespace}`, {native: {forceReInit: false}});
+            } catch (e) {
+                adapter.log.error(`Could not restart and set forceReinit to false: ${e}`);
+            }
         }
     }
 } // endGetValueParamsets
