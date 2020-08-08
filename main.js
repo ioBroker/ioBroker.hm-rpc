@@ -802,7 +802,7 @@ function sendInit() {
             rpcClient.methodCall('init', [daemonURL, adapter.namespace], err => {
                 if (!err) {
                     if (adapter.config.daemon === 'CUxD') {
-                        getCuxDevices(function handleCuxDevices(err2) {
+                        getCuxDevices(err2 => {
                             if (!err2) {
                                 updateConnection();
                             } else {
@@ -1113,6 +1113,8 @@ const methods = {
         adapter.log.debug(`${name} ==> UNIT: "${dpTypes[name] ? dpTypes[name].UNIT : 'none'}" (min: ${dpTypes[name] ? dpTypes[name].MIN : 'none'}, max: ${dpTypes[name] ? dpTypes[name].MAX : 'none'}) From "${params[3]}" => "${val}"`);
 
         adapter.setState(`${channel}.${params[2]}`, {val: val, ack: true});
+        // unfortunately this is necessary
+        return '';
     }
 };
 
@@ -1646,7 +1648,7 @@ function connect(isFirst) {
             });
         } catch (e) {
             adapter.log.error(`Could not create non-secure ${adapter.config.type}-rpc client: ${e}`);
-            return adapter.restart();
+            return void adapter.restart();
         } // endCatch
 
         // If we have bin-rpc, only need it here because bin-rpc cant have https
@@ -1679,7 +1681,7 @@ function connect(isFirst) {
                 });
             } catch (e) {
                 adapter.log.error(`Could not create secure ${adapter.config.type}-rpc client: ${e}`);
-                return adapter.restart();
+                return void adapter.restart();
             } // endCatch
         });
     } // endElseIf
