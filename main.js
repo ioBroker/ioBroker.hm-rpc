@@ -925,7 +925,7 @@ function initRpcServer() {
 
         rpcServer.on('newDevices', async (err, params, callback) => {
             if (err) {
-                adapter.log.warn(` Error on system.listMethods: ${err}`);
+                adapter.log.warn(`Error on system.listMethods: ${err}`);
             }
 
             let newDevices = params[1];
@@ -944,11 +944,12 @@ function initRpcServer() {
                 try {
                     doc = await adapter.getObjectViewAsync('hm-rpc', 'listDevices', {
                         startkey: `hm-rpc.${adapter.instance}.`,
-                        endkey: 'hm-rpc.' + adapter.instance + '.\u9999'
+                        endkey: `hm-rpc.${adapter.instance}.\u9999`
                     });
                 } catch (e) {
-                    adapter.log.error(`getObjectView hm-rpc: ${e}`);
+                    adapter.log.error(`getObjectViewAsync hm-rpc: ${e}`);
                 }
+
                 if (doc && doc.rows) {
                     for (const row of doc.rows) {
                         if (row.id === `${adapter.namespace}.updated`) {
@@ -1008,18 +1009,18 @@ function initRpcServer() {
             adapter.log.info(`${adapter.config.type}rpc <- listDevices ${JSON.stringify(params)}`);
             adapter.getObjectView('hm-rpc', 'listDevices', {
                 startkey: `hm-rpc.${adapter.instance}.`,
-                endkey: 'hm-rpc.' + adapter.instance + '.\u9999'
+                endkey: `hm-rpc.${adapter.instance}.\u9999`
             }, (err, doc) => {
                 const response = [];
 
                 // we only fill the response if this isn't a force reinit and
                 // if the adapter instance is not bothering with HmIP (which seems to work slightly different in terms of XMLRPC)
                 if (!adapter.config.forceReInit && adapter.config.daemon !== 'HMIP' && doc && doc.rows) {
-                    for (let i = 0; i < doc.rows.length; i++) {
-                        if (doc.rows[i].id === `${adapter.namespace}.updated`) {
+                    for (const row of doc.rows) {
+                        if (row.id === `${adapter.namespace}.updated`) {
                             continue;
                         }
-                        const val = doc.rows[i].value;
+                        const val = row.value;
 
                         if (val.ADDRESS) {
                             response.push({ADDRESS: val.ADDRESS, VERSION: val.VERSION});
@@ -1038,15 +1039,15 @@ function initRpcServer() {
 
                     callback(null, response);
                 } catch (err) {
-                    adapter.log.error(`Cannot response on listDevices:${err}`);
-                    require('fs').writeFileSync(`${__dirname}/problem.json`, JSON.stringify(response));
+                    adapter.log.error(`Cannot respond on listDevices: ${err}`);
+                    adapter.log.error(JSON.stringify(response));
                 }
             });
         });
 
         rpcServer.on('deleteDevices', (err, params, callback) => {
             if (err) {
-                adapter.log.warn(` Error on system.listMethods: ${err}`);
+                adapter.log.warn(`Error on system.listMethods: ${err}`);
             }
             adapter.log.info(`${adapter.config.type}rpc <- deleteDevices ${params[1].length}`);
             for (let i = 0; i < params[1].length; i++) {
@@ -1518,7 +1519,7 @@ async function createDevices(deviceArr, callback) {
     } // endFor
 
     getValueParamsets();
-    callback();
+    callback(null, '');
 }
 
 function getCuxDevices(callback) {

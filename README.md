@@ -137,7 +137,7 @@ If you use HomeMatic switches or remotes their button states will only be acknow
 by ioBroker, when you have a running 'dummy' program on the CCU which depends on the related switch or remote.
 
 ## Changelog
-### 1.14.16 (2020-08-08)
+### 1.14.17 (2020-08-08)
 * (foxriver76) fix issue when CuxD listDevices does not deliver valid array
 * (foxriver76) fix error with % scaling in some edge cases
 
