@@ -732,7 +732,7 @@ async function main() {
             }
         }
     } catch (e) {
-        adapter.log.error(`getObjectView hm-rpc: ${e}`);
+        adapter.log.error(`getObjectListAsync hm-rpc: ${e}`);
     }
 
     try {
@@ -748,7 +748,7 @@ async function main() {
     try {
         const res = await adapter.getObjectViewAsync('system', 'state', {
             startkey: adapter.namespace,
-            endkey: adapter.namespace + '\u9999'
+            endkey: `${adapter.namespace}\u9999`
         });
 
         if (res.rows) {
@@ -1079,7 +1079,7 @@ function initRpcServer() {
 
 const methods = {
 
-    event: function (err, params) {
+    event: (err, params) => {
         adapter.log.debug(`${adapter.config.type}rpc <- event ${JSON.stringify(params)}`);
         let val;
         // CUxD ignores all prefixes!!
@@ -1104,7 +1104,6 @@ const methods = {
         adapter.log.debug(`${name} ==> UNIT: "${dpTypes[name] ? dpTypes[name].UNIT : 'none'}" (min: ${dpTypes[name] ? dpTypes[name].MIN : 'none'}, max: ${dpTypes[name] ? dpTypes[name].MAX : 'none'}) From "${params[3]}" => "${val}"`);
 
         adapter.setState(`${channel}.${params[2]}`, {val: val, ack: true});
-        return '';
     }
 };
 
@@ -1273,9 +1272,7 @@ async function getValueParamsets() {
             }
 
             adapter.log.info(`${adapter.config.type}rpc -> getParamsetDescription ${JSON.stringify([obj.native.ADDRESS, 'VALUES'])}`);
-            const res = await rpcMethodCallAsync('getParamsetDescription', [obj.native.ADDRESS, 'VALUES']);
-
-            metaValues[cid] = res;
+            metaValues[cid] = await rpcMethodCallAsync('getParamsetDescription', [obj.native.ADDRESS, 'VALUES']);
 
             if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
                 addEPaperToMeta();
@@ -1429,8 +1426,14 @@ function addEPaperToMeta() {
     }
 }
 
-function createDevices(deviceArr, callback) {
-    const objs = [];
+/**
+ * Create the devices delivered in the device array
+ *
+ * @param {object[]} deviceArr - array of devices
+ * @param {function()} callback - callback function
+ * @returns {Promise<void>}
+ */
+async function createDevices(deviceArr, callback) {
 
     for (const device of deviceArr) {
         if (typeof device.ADDRESS !== 'string') {
@@ -1493,103 +1496,101 @@ function createDevices(deviceArr, callback) {
                 dpTypes[dpID].UNIT = '%';
             }
         }
-        objs.push(obj);
-    }
 
-    async function queue() {
-        if (objs.length) {
-
-            const obj = objs.pop();
-
-            if (metaRoles.dvTYPE && obj.native && metaRoles.dvTYPE[obj.native.PARENT_TYPE]) {
-                obj.common.role = metaRoles.dvTYPE[obj.native.PARENT_TYPE];
-            }
-
-            try {
-                const res = await adapter.setObjectAsync(obj._id, obj);
-                adapter.log.debug(`object ${res.id} created`);
-            } catch (e) {
-                adapter.log.error(`object ${obj._id} error on creation: ${e}`);
-            }
-
-            if (obj.type === 'channel') {
-                queueValueParamsets.push(obj);
-            }
-
-            setImmediate(queue);
-        } else {
-            getValueParamsets();
-            callback(null, '');
+        if (metaRoles.dvTYPE && obj.native && metaRoles.dvTYPE[obj.native.PARENT_TYPE]) {
+            obj.common.role = metaRoles.dvTYPE[obj.native.PARENT_TYPE];
         }
-    }
 
-    queue();
+        try {
+            const res = await adapter.setObjectAsync(obj._id, obj);
+            adapter.log.debug(`object ${res.id} created`);
+        } catch (e) {
+            adapter.log.error(`object ${obj._id} error on creation: ${e}`);
+        }
+
+        if (obj.type === 'channel') {
+            queueValueParamsets.push(obj);
+        }
+    } // endFor
+
+    getValueParamsets();
+    callback();
 }
 
 function getCuxDevices(callback) {
     if (rpcClient) {
         // request devices from CUxD
         try {
-            rpcClient.methodCall('listDevices', [], (err, newDevices) => {
+            rpcClient.methodCall('listDevices', [], async (err, newDevices) => {
                 if (err) {
                     adapter.log.error(`Error on listDevices: ${err}`);
                     return;
                 }
+
+                if (!Array.isArray(newDevices)) {
+                    adapter.log.warn(`CuxD delivered unexpected result on "listDevices": ${newDevices}`);
+                    newDevices = [];
+                }
+
                 adapter.log.info(`${adapter.config.type}rpc -> listDevices ${newDevices.length}`);
 
                 if (adapter.config.forceReInit === false) {
-                    adapter.getObjectView('hm-rpc', 'listDevices', {
-                        startkey: `hm-rpc.${adapter.instance}.`,
-                        endkey: 'hm-rpc.' + adapter.instance + '.\u9999'
-                    }, (err, doc) => {
-                        if (doc && doc.rows) {
-                            for (const row of doc.rows) {
-                                if (row.id === `${adapter.namespace}.updated`) {
-                                    continue;
-                                }
+                    let doc;
+                    try {
+                        doc = await adapter.getObjectViewAsync('hm-rpc', 'listDevices', {
+                            startkey: `hm-rpc.${adapter.instance}.`,
+                            endkey: `hm-rpc.${adapter.instance}.\u9999`
+                        });
+                    } catch (e) {
+                        adapter.log.error(`getObjectView hm-rpc: ${e}`);
+                    }
 
-                                // lets get the device description
-                                const val = row.value;
+                    if (doc && doc.rows) {
+                        for (const row of doc.rows) {
+                            if (row.id === `${adapter.namespace}.updated`) {
+                                continue;
+                            }
 
-                                if (typeof val.ADDRESS === 'undefined') {
-                                    continue;
-                                }
+                            // lets get the device description
+                            const val = row.value;
 
-                                // lets find the current device in the newDevices array
-                                // and if it doesn't exist we can delete it
-                                let index = -1;
-                                for (let j = 0; j < newDevices.length; j++) {
-                                    if (newDevices[j].ADDRESS === val.ADDRESS && newDevices[j].VERSION === val.VERSION) {
-                                        index = j;
-                                        break;
-                                    }
-                                }
+                            if (typeof val.ADDRESS === 'undefined') {
+                                continue;
+                            }
 
-                                // if index is -1 than the newDevices doesn't have the
-                                // device with address val.ADDRESS anymore, thus we can delete it
-                                if (index === -1) {
-                                    if (val.ADDRESS && !adapter.config.dontDelete) {
-                                        if (val.ADDRESS.indexOf(':') !== -1) {
-                                            const address = val.ADDRESS.replace(':', '.').replace(FORBIDDEN_CHARS, '_');
-                                            const parts = address.split('.');
-                                            adapter.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
-                                            adapter.log.info(`obsolete channel ${address} ${JSON.stringify(address)} deleted`);
-                                        } else {
-                                            adapter.deleteDevice(val.ADDRESS);
-                                            adapter.log.info(`obsolete device ${val.ADDRESS} deleted`);
-                                        }
-                                    }
-                                } else {
-                                    // we can remove the item at index because it is already registered
-                                    // to ioBroker
-                                    newDevices.splice(index, 1);
+                            // lets find the current device in the newDevices array
+                            // and if it doesn't exist we can delete it
+                            let index = -1;
+                            for (let j = 0; j < newDevices.length; j++) {
+                                if (newDevices[j].ADDRESS === val.ADDRESS && newDevices[j].VERSION === val.VERSION) {
+                                    index = j;
+                                    break;
                                 }
                             }
-                        }
 
-                        adapter.log.info(`new CUxD devices/channels after filter: ${newDevices.length}`);
-                        createDevices(newDevices, callback);
-                    });
+                            // if index is -1 than the newDevices doesn't have the
+                            // device with address val.ADDRESS anymore, thus we can delete it
+                            if (index === -1) {
+                                if (val.ADDRESS && !adapter.config.dontDelete) {
+                                    if (val.ADDRESS.indexOf(':') !== -1) {
+                                        const address = val.ADDRESS.replace(':', '.').replace(FORBIDDEN_CHARS, '_');
+                                        const parts = address.split('.');
+                                        adapter.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
+                                        adapter.log.info(`obsolete channel ${address} ${JSON.stringify(address)} deleted`);
+                                    } else {
+                                        adapter.deleteDevice(val.ADDRESS);
+                                        adapter.log.info(`obsolete device ${val.ADDRESS} deleted`);
+                                    }
+                                }
+                            } else {
+                                // we can remove the item at index because it is already registered
+                                // to ioBroker
+                                newDevices.splice(index, 1);
+                            }
+                        }
+                    }
+                    adapter.log.info(`new CUxD devices/channels after filter: ${newDevices.length}`);
+                    createDevices(newDevices, callback);
                 } else {
                     createDevices(newDevices, callback);
                 }
