@@ -430,10 +430,12 @@ function startAdapter(options) {
                 return;
             }
 
+            /* It should not be necessary to scale on % values - see https://github.com/ioBroker/ioBroker.hm-rpc/issues/263
             if (dpTypes[id].UNIT === '%' && dpTypes[id].MIN !== undefined) {
                 state.val = (state.val / 100) * (dpTypes[id].MAX - dpTypes[id].MIN) + dpTypes[id].MIN;
                 state.val = Math.round(state.val * 1000) / 1000;
-            } else if (dpTypes[id].UNIT === '100%') {
+            } else */
+            if (dpTypes[id].UNIT === '100%') {
                 state.val = state.val / 100;
             }
 
@@ -770,9 +772,12 @@ async function main() {
                     if (typeof dpTypes[row.id].MIN === 'number') {
                         dpTypes[row.id].MIN = parseFloat(dpTypes[row.id].MIN);
                         dpTypes[row.id].MAX = parseFloat(dpTypes[row.id].MAX);
+
+                        /*
                         if (dpTypes[row.id].UNIT === '100%') {
                             dpTypes[row.id].UNIT = '%';
                         }
+                         */
                         if (dpTypes[row.id].MAX === 99) {
                             dpTypes[row.id].MAX = 100;
                         } else if (dpTypes[row.id].MAX === 1.005 || dpTypes[row.id].MAX === 1.01) {
@@ -1090,10 +1095,13 @@ const methods = {
         const name = `${params[0]}.${channel}.${params[2]}`;
 
         if (dpTypes[name]) {
+            /* it shouldnt be necessary to scale on % values, see https://github.com/ioBroker/ioBroker.hm-rpc/issues/263
             if (dpTypes[name].MIN !== undefined && dpTypes[name].UNIT === '%') {
                 val = ((parseFloat(params[3]) - dpTypes[name].MIN) / (dpTypes[name].MAX - dpTypes[name].MIN)) * 100;
                 val = Math.round(val * 100) / 100;
-            } else if (dpTypes[name].UNIT === '100%' || (dpTypes[name].UNIT === '%' && dpTypes[name].MAX === 1)) {
+            } else */
+            // backward compatibility -> max===1 unit===%
+            if (dpTypes[name].UNIT === '100%' || (dpTypes[name].UNIT === '%' && dpTypes[name].MAX === 1)) {
                 val = params[3] * 100;
             } else {
                 val = params[3];
@@ -1177,7 +1185,8 @@ async function addParamsetObjects(channel, paramset) {
 
         if (paramset[key].UNIT === '100%') {
             obj.common.unit = '%';
-            obj.common.max = 100 * paramset[key].MAX;
+            // when unit is 100% we have min: 0, max: 1, we scale it between 0 and 100
+            obj.common.max = 100;
         } else if (paramset[key].UNIT !== '' && paramset[key].UNIT !== '""') {
             obj.common.unit = paramset[key].UNIT;
             if (obj.common.unit === '�C' || obj.common.unit === '&#176;C') {
@@ -1486,14 +1495,9 @@ async function createDevices(deviceArr, callback) {
             dpTypes[dpID].MIN = parseFloat(dpTypes[dpID].MIN);
             dpTypes[dpID].MAX = parseFloat(dpTypes[dpID].MAX);
 
-            // e. g. Humidity is from 0 to 99. It is wrong.
+            // e. g. Humidity is from 0 to 99. It is wrong. todo: logically ok, but is it? Can a sensor deliver 100 % humidity?
             if (dpTypes[dpID].MAX === 99) {
                 dpTypes[dpID].MAX = 100;
-            }
-
-            // Sometimes unit is 100%, sometimes % it's the same
-            if (dpTypes[dpID].UNIT === '100%') {
-                dpTypes[dpID].UNIT = '%';
             }
         }
 
