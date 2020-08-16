@@ -246,7 +246,7 @@ function controlEPaper(id, data) {
         if (rpcClient && connected) {
             rpcClient.methodCall('setValue', [`${tmp[2]}:${tmp[3]}`, tmp[4], val], err => {
                 if (err) {
-                    adapter.log.error(`${adapter.config.type}rpc -> setValue ${JSON.stringify([tmp[3], tmp[4], val])}`);
+                    adapter.log.error(`${adapter.config.type}rpc -> setValue ${JSON.stringify([`${tmp[2]}:${tmp[3]}`, tmp[4], val])}`);
                     adapter.log.error(err);
                 }
             });
@@ -519,7 +519,7 @@ function startAdapter(options) {
                 if (rpcClient && connected) {
                     rpcClient.methodCall('setValue', [`${tmp[2]}:${tmp[3]}`, tmp[4], val], err => {
                         if (err) {
-                            adapter.log.error(`${adapter.config.type}rpc -> setValue ${JSON.stringify([tmp[3], tmp[4], state.val])} ${type}`);
+                            adapter.log.error(`${adapter.config.type}rpc -> setValue ${JSON.stringify([`${tmp[2]}:${tmp[3]}`, tmp[4], state.val])} ${type}`);
                             adapter.log.error(err);
                         }
                     });
@@ -527,7 +527,7 @@ function startAdapter(options) {
                     adapter.log.warn(`Cannot setValue "${id}", because not connected.`);
                 }
             } catch (err) {
-                adapter.log.error(`Cannot call setValue: :${err}`);
+                adapter.log.error(`Cannot call setValue: ${err}`);
             }
         },
         // Add messagebox Function for ioBroker.occ

@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.14.18",
+        "version": "1.14.19",
         "news": {
+            "1.14.19": {
+                "en": "now logging exact command on error",
+                "de": "Protokolliert jetzt den genauen Befehl bei einem Fehler",
+                "ru": "теперь регистрирует точную команду при ошибке",
+                "pt": "agora registrando o comando exato em caso de erro",
+                "nl": "logt nu exact commando bij fout",
+                "fr": "enregistre maintenant la commande exacte en cas d'erreur",
+                "it": "ora registra il comando esatto in caso di errore",
+                "es": "ahora registrando el comando exacto en caso de error",
+                "pl": "teraz rejestruje dokładne polecenie w przypadku błędu",
+                "zh-cn": "现在记录错误的确切命令"
+            },
             "1.14.18": {
                 "en": "fixed error with % scaling in some edge cases",
                 "de": "Fehler mit% Skalierung in einigen Randfällen behoben",
