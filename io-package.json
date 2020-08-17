@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.14.19",
+        "version": "1.14.20",
         "news": {
+            "1.14.20": {
+                "en": "fix for % scaling of float numbers",
+                "de": "Fix für% Skalierung von Float-Zahlen",
+                "ru": "исправление для% масштабирования чисел с плавающей запятой",
+                "pt": "correção para escala% de números flutuantes",
+                "nl": "oplossing voor %s chaling van float-getallen",
+                "fr": "correction de la mise à l'échelle en% des nombres flottants",
+                "it": "corretto il ridimensionamento% dei numeri in virgola mobile",
+                "es": "corrección de% de escala de números flotantes",
+                "pl": "poprawka dla %s kalowania liczb zmiennoprzecinkowych",
+                "zh-cn": "修正浮点数的百分比缩放"
+            },
             "1.14.19": {
                 "en": "now logging exact command on error",
                 "de": "Protokolliert jetzt den genauen Befehl bei einem Fehler",

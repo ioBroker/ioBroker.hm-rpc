@@ -436,7 +436,7 @@ function startAdapter(options) {
                 state.val = Math.round(state.val * 1000) / 1000;
             } else */
             if (dpTypes[id].UNIT === '100%') {
-                state.val = state.val / 100;
+                state.val = Math.round(state.val / 100 * 1000) / 1000;
             }
 
             const type = dpTypes[id].TYPE;
@@ -1096,14 +1096,14 @@ const methods = {
         const name = `${params[0]}.${channel}.${params[2]}`;
 
         if (dpTypes[name]) {
-            /* it shouldnt be necessary to scale on % values, see https://github.com/ioBroker/ioBroker.hm-rpc/issues/263
+            /* it shouldn't be necessary to scale on % values, see https://github.com/ioBroker/ioBroker.hm-rpc/issues/263
             if (dpTypes[name].MIN !== undefined && dpTypes[name].UNIT === '%') {
                 val = ((parseFloat(params[3]) - dpTypes[name].MIN) / (dpTypes[name].MAX - dpTypes[name].MIN)) * 100;
                 val = Math.round(val * 100) / 100;
             } else */
             // backward compatibility -> max===1 unit===%
             if (dpTypes[name].UNIT === '100%' || (dpTypes[name].UNIT === '%' && dpTypes[name].MAX === 1)) {
-                val = params[3] * 100;
+                val = Math.round(params[3] * 1000) / 10;
             } else {
                 val = params[3];
             }
