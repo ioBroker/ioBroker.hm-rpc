@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.14.20",
+        "version": "1.14.21",
         "news": {
+            "1.14.21": {
+                "en": "fixed virtual-devices objects being recreated on instance startage",
+                "de": "Fehler behoben, bei denen Objekte virtueller Geräte beim Start der Instanz neu erstellt wurden",
+                "ru": "исправлены объекты виртуальных устройств, воссоздаемые при запуске экземпляра",
+                "pt": "objetos de dispositivos virtuais fixos sendo recriados no início da instância",
+                "nl": "vaste objecten van virtuele apparaten die opnieuw worden gemaakt bij het starten van de instantie",
+                "fr": "objets de périphériques virtuels fixes recréés au démarrage de l'instance",
+                "it": "corretti gli oggetti dei dispositivi virtuali ricreati all'avvio dell'istanza",
+                "es": "objetos de dispositivos virtuales fijos que se recrean en el inicio de la instancia",
+                "pl": "naprawiono odtwarzanie obiektów urządzeń wirtualnych podczas uruchamiania instancji",
+                "zh-cn": "实例启动时将重新创建固定的虚拟设备对象"
+            },
             "1.14.20": {
                 "en": "fix for % scaling of float numbers",
                 "de": "Fix für% Skalierung von Float-Zahlen",

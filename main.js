@@ -937,9 +937,9 @@ function initRpcServer() {
 
             adapter.log.info(`${adapter.config.type}rpc <- newDevices ${newDevices.length}`);
 
-            // for a HmIP-adapter we have to filter out the devices that
+            // for a HmIP-adapter (and virtual-devices) we have to filter out the devices that
             // are already present if forceReinit is not set
-            if (adapter.config.forceReInit === false && adapter.config.daemon === 'HMIP') {
+            if (adapter.config.forceReInit === false && (adapter.config.daemon === 'HMIP' || adapter.config.daemon === 'virtual-devices')) {
                 let doc;
                 try {
                     doc = await adapter.getObjectViewAsync('hm-rpc', 'listDevices', {
@@ -995,7 +995,7 @@ function initRpcServer() {
                     }
                 }
 
-                adapter.log.info(`new HmIP devices/channels after filter: ${newDevices.length}`);
+                adapter.log.info(`new ${adapter.config.daemon} devices/channels after filter: ${newDevices.length}`);
                 createDevices(newDevices, callback);
             } else {
                 createDevices(newDevices, callback);
