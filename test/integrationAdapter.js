@@ -2,19 +2,20 @@
 
 const path = require('path');
 const {tests} = require('@iobroker/testing');
-//const hmSim = require('hm-simulator');
+// TODO: activate after https://github.com/hobbyquaker/hm-simulator/pull/1
+// const hmSim = require('hm-simulator');
 
 // Run tests
 tests.integration(path.join(__dirname, '..'), {
     defineAdditionalTests(getHarness) {
         describe('Test sendTo()', () => {
-            it('Should work', () => {
-                return new Promise(async resolve => {
-                    // Create a fresh harness instance each test!
-                    const harness = getHarness();
-                    // Start the adapter and wait until it has started
-                    await harness.startAdapterAndWait();
-                    harness.sendTo('hm-rpc.0', 'test', 'message', (resp) => {
+            it('Should work', async () => {
+                // Create a fresh harness instance each test!
+                const harness = getHarness();
+                // Start the adapter and wait until it has started
+                await harness.startAdapterAndWait();
+                return new Promise(resolve => {
+                    harness.sendTo('hm-rpc.0', 'test', 'message', resp => {
                         console.dir(resp);
                         resolve();
                     });
@@ -36,11 +37,13 @@ tests.integration(path.join(__dirname, '..'), {
                         harness._objects.setObject(obj._id, obj);
 
                         await harness.startAdapterAndWait();
-                        harness.on('objectChange', obj => {
-                            if (obj === 'hm-rpc.0.000393C98D0FF5.1.SET_POINT_TEMPERATURE') {
-                                console.log('object hm-rpc.0.000393C98D0FF5.1.SET_POINT_TEMPERATURE changed!');
+                        harness.on('objectChange', id => {
+                            if (id.startsWith('hm-rpc.0')) {
+                                console.log(`object ${id} changed!`);
                                 resolve();
-                            } // endIf
+                            } else {
+                                console.warn(`objectChange: ${id}`);
+                            }
                         });
                     });
                 });
@@ -49,7 +52,7 @@ tests.integration(path.join(__dirname, '..'), {
 
         describe('Test roles', () => {
             it('Should work', () => {
-                return new Promise(resolve => {
+                return new Promise((resolve, reject) => {
                     const harness = getHarness();
 
                     // change the adapter config
@@ -60,19 +63,22 @@ tests.integration(path.join(__dirname, '..'), {
 
                         await harness.startAdapterAndWait();
 
-                        harness.on('objectChange', obj => {
-                            if (obj === 'hm-rpc.0.000213C990986A.1.PRESS_SHORT') {
+                        harness.on('objectChange', (id, obj) => {
+                            if (id === 'hm-rpc.0.000213C990986A.1.PRESS_SHORT') {
                                 // object has been created, now check role
-                                harness._objects.getObject(obj, (err, testObj) => {
-                                    if (testObj.common.role === 'button') {
-                                        resolve();
-                                    } // endIf
-                                });
-                            } // endIf
+                                if (obj.common.role === 'button') {
+                                    resolve();
+                                } else {
+                                    reject(new Error(`Expected "${obj.common.role}" to be "button"`));
+                                }
+                            } else {
+                                console.log(`objectChange: ${id}`);
+                            }
                         });
                     });
                 });
             });
-        }); */
+        });
+         */
     } // endDefineAdditionalTests
 });

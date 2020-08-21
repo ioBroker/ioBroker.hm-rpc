@@ -42,12 +42,12 @@
         "@iobroker/adapter-core": "^2.4.0"
     },
     "devDependencies": {
-        "@iobroker/testing": "^2.2.0",
+        "@iobroker/testing": "^2.3.0",
         "chai": "^4.2.0",
         "eslint": "^7.3.0",
         "gulp": "^4.0.2",
-        "mocha": "^8.0.1",
-        "hm-simulator": "^0.1.1"
+        "hm-simulator": "^0.1.1",
+        "mocha": "^8.0.1"
     },
     "bugs": {
         "url": "https://github.com/ioBroker/ioBroker.hm-rpc/issues"
