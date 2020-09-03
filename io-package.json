@@ -13,9 +13,9 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.14.22",
+        "version": "1.14.23",
         "news": {
-            "1.14.22": {
+            "1.14.23": {
                 "en": "`value.temperature` will have unit °C no matter of delivered unit by CCU",
                 "de": "`value.temperature` hat die Einheit °C, unabhängig von der von der CCU gelieferten Einheit",
                 "ru": "`значение.температура` будет иметь единицу измерения °C независимо от единицы, поставленной CCU",
@@ -313,6 +313,7 @@
                     "FAULT_REPORTING": "indicator",
                     "MANU_MODE": "level.temperature",
                     "ACTUAL_TEMPERATURE": "value.temperature",
+                    "PARTY_SET_POINT_TEMPERATURE": "value.temperature",
                     "ACTUAL_TEMPERATURE_STATUS": "value",
                     "TEMPERATURE": "value.temperature",
                     "SETPOINT": "level.temperature",
