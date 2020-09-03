@@ -1228,6 +1228,8 @@ async function addParamsetObjects(channel, paramset) {
         } else if (obj.common.role === 'value.window' && paramset[key].TYPE === 'BOOL') {
             // if its value.window but its a boolean it should be sensor.window
             obj.common.role = 'sensor.window';
+        } else if (obj.common.role === 'value.temperature') {
+            obj.common.unit = '°C';
         }
 
         if (paramset[key].OPERATIONS & 8) {

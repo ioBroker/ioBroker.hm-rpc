@@ -137,6 +137,9 @@ If you use HomeMatic switches or remotes their button states will only be acknow
 by ioBroker, when you have a running 'dummy' program on the CCU which depends on the related switch or remote.
 
 ## Changelog
+### 1.14.22 (2020-09-03)
+* (foxriver76) `value.temperature` will have unit °C no matter of delivered unit by CCU
+
 ### 1.14.21 (2020-08-18)
 * (foxriver76) fixed virtual-devices objects being recreated on instance startage (#271)
 
