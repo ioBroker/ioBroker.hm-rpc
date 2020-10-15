@@ -258,7 +258,7 @@ function controlEPaper(id, data) {
     }
 }
 
-function readSignals(id) {
+async function readSignals(id) {
     displays[id] = null;
     const data = {
         lines: [{}, {}, {}],
@@ -338,11 +338,11 @@ function readSignals(id) {
         });
     }));
 
-    Promise.all(promises).then(() => controlEPaper(id, data));
-
+    await Promise.all(promises);
+    controlEPaper(id, data);
 } // endReadSignals
 
-function readSettings(id) {
+async function readSettings(id) {
     displays[id] = null;
     const data = {
         lines: [{}, {}, {}],
@@ -394,8 +394,8 @@ function readSettings(id) {
         });
     }));
 
-    Promise.all(promises).then(() => controlEPaper(id, data));
-
+    await Promise.all(promises);
+    controlEPaper(id, data);
 } // endReadSettings
 
 // the adapter object
@@ -1002,47 +1002,52 @@ function initRpcServer() {
             }
         });
 
-        rpcServer.on('listDevices', (err, params, callback) => {
+        rpcServer.on('listDevices', async (err, params, callback) => {
             if (err) {
                 adapter.log.warn(`Error on system.listMethods: ${err}`);
             }
             adapter.log.info(`${adapter.config.type}rpc <- listDevices ${JSON.stringify(params)}`);
-            adapter.getObjectView('hm-rpc', 'listDevices', {
-                startkey: `hm-rpc.${adapter.instance}.`,
-                endkey: `hm-rpc.${adapter.instance}.\u9999`
-            }, (err, doc) => {
-                const response = [];
+            let doc;
+            try {
+                doc = await adapter.getObjectViewAsync('hm-rpc', 'listDevices', {
+                    startkey: `hm-rpc.${adapter.instance}.`,
+                    endkey: `hm-rpc.${adapter.instance}.\u9999`
+                });
+            } catch (e) {
+                adapter.log.error(`Error on listDevices (getObjectView): ${e}`);
+            }
 
-                // we only fill the response if this isn't a force reinit and
-                // if the adapter instance is not bothering with HmIP (which seems to work slightly different in terms of XMLRPC)
-                if (!adapter.config.forceReInit && adapter.config.daemon !== 'HMIP' && doc && doc.rows) {
-                    for (const row of doc.rows) {
-                        if (row.id === `${adapter.namespace}.updated`) {
-                            continue;
-                        }
-                        const val = row.value;
+            const response = [];
 
-                        if (val.ADDRESS) {
-                            response.push({ADDRESS: val.ADDRESS, VERSION: val.VERSION});
-                        }
+            // we only fill the response if this isn't a force reinit and
+            // if the adapter instance is not bothering with HmIP (which seems to work slightly different in terms of XMLRPC)
+            if (!adapter.config.forceReInit && adapter.config.daemon !== 'HMIP' && doc && doc.rows) {
+                for (const row of doc.rows) {
+                    if (row.id === `${adapter.namespace}.updated`) {
+                        continue;
+                    }
+                    const val = row.value;
+
+                    if (val.ADDRESS) {
+                        response.push({ADDRESS: val.ADDRESS, VERSION: val.VERSION});
                     }
                 }
-                adapter.log.info(`${adapter.config.type}rpc -> ${response.length} devices`);
+            }
+            adapter.log.info(`${adapter.config.type}rpc -> ${response.length} devices`);
 
-                try {
-                    for (let r = response.length - 1; r >= 0; r--) {
-                        if (!response[r].ADDRESS) {
-                            adapter.log.warn(`${adapter.config.type}rpc -> found empty entry at position ${r} !`);
-                            response.splice(r, 1);
-                        }
+            try {
+                for (let r = response.length - 1; r >= 0; r--) {
+                    if (!response[r].ADDRESS) {
+                        adapter.log.warn(`${adapter.config.type}rpc -> found empty entry at position ${r} !`);
+                        response.splice(r, 1);
                     }
-
-                    callback(null, response);
-                } catch (err) {
-                    adapter.log.error(`Cannot respond on listDevices: ${err}`);
-                    adapter.log.error(JSON.stringify(response));
                 }
-            });
+
+                callback(null, response);
+            } catch (err) {
+                adapter.log.error(`Cannot respond on listDevices: ${err}`);
+                adapter.log.error(JSON.stringify(response));
+            }
         });
 
         rpcServer.on('deleteDevices', (err, params, callback) => {
@@ -1254,9 +1259,6 @@ async function addParamsetObjects(channel, paramset) {
             // Humidity is from 0 to 99. It is wrong.
             if (dpTypes[dpID].MAX === 99) {
                 dpTypes[dpID].MAX = 100;
-            }
-            if (dpTypes[dpID].UNIT === '100%') {
-                dpTypes[dpID].UNIT = '%';
             }
         }
 
@@ -1737,19 +1739,6 @@ function keepAlive() {
         sendPing();
     }
 } // endKeepAlive
-
-/*
-function createMeta() {
-    return new Promise(resolve => {
-        const promises = [];
-        for (const data of meta) {
-            promises.push(adapter.setForeignObjectAsync(data._id, data));
-        } // endFor
-        adapter.log.debug('[META] Meta data updated');
-        Promise.all(promises).then(resolve);
-    });
-}  // endCreateMeta
- */
 
 // If started as allInOne/compact mode => return function to create instance
 if (module && module.parent) {

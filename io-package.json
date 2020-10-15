@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.14.23",
+        "version": "1.14.24",
         "news": {
+            "1.14.24": {
+                "en": "fixed error with some blinds if no adapter restart has been performed after creation",
+                "de": "Fehler bei einigen Blinds behoben, wenn nach der Erstellung kein Neustart des Adapters durchgeführt wurde",
+                "ru": "исправлена ошибка с некоторыми шторками, если после создания не производился перезапуск адаптера",
+                "pt": "corrigido o erro com algumas cortinas se nenhuma reinicialização do adaptador foi realizada após a criação",
+                "nl": "fout opgelost met sommige blinds als er geen herstart van de adapter werd uitgevoerd na het maken",
+                "fr": "Correction d'une erreur avec certains stores si aucun redémarrage de l'adaptateur n'a été effectué après la création",
+                "it": "corretto errore con alcuni bui se nessun riavvio dell'adattatore è stato eseguito dopo la creazione",
+                "es": "error fijo con algunas persianas si no se ha reiniciado el adaptador después de la creación",
+                "pl": "naprawiono błąd z niektórymi zasłonami, jeśli po utworzeniu nie wykonano ponownego uruchomienia adaptera",
+                "zh-cn": "如果创建后未执行任何适配器重新启动，则会修复带有一些盲孔的错误"
+            },
             "1.14.23": {
                 "en": "`value.temperature` will have unit °C no matter of delivered unit by CCU",
                 "de": "`value.temperature` hat die Einheit °C, unabhängig von der von der CCU gelieferten Einheit",

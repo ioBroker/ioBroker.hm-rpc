@@ -137,6 +137,9 @@ If you use HomeMatic switches or remotes their button states will only be acknow
 by ioBroker, when you have a running 'dummy' program on the CCU which depends on the related switch or remote.
 
 ## Changelog
+### 1.14.24 (2020-10-15)
+* (foxriver76) fixed error with some blinds if no adapter restart has been performed
+
 ### 1.14.23 (2020-09-03)
 * (foxriver76) `value.temperature` will have unit °C no matter of delivered unit by CCU
 
