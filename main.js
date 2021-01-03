@@ -36,6 +36,7 @@ let connected = false;
 const displays = {};
 let adapter;
 let rpcMethodCallAsync;
+let clientId;
 
 const FORBIDDEN_CHARS = /[\][*,;'"`<>\\\s?]/g;
 // msgBuffer = [{line: line2, icon: icon2}, {line: line3, icon: icon3}, {line: '', icon: ''}];
@@ -795,11 +796,16 @@ async function main() {
     initRpcServer();
 } // endMain
 
-function sendInit() {
+/**
+ * Sends init to RPC server
+ *
+ * @return {Promise<void>}
+ */
+async function sendInit() {
     try {
         if (rpcClient && (rpcClient.connected === undefined || rpcClient.connected)) {
-            adapter.log.debug(`${adapter.config.type}rpc -> ${adapter.config.homematicAddress}:${adapter.config.homematicPort}${homematicPath} init ${JSON.stringify([daemonURL, adapter.namespace])}`);
-            rpcClient.methodCall('init', [daemonURL, adapter.namespace], err => {
+            adapter.log.debug(`${adapter.config.type}rpc -> ${adapter.config.homematicAddress}:${adapter.config.homematicPort}${homematicPath} init ${JSON.stringify([daemonURL, clientId])}`);
+            rpcClient.methodCall('init', [daemonURL, clientId], err => {
                 if (!err) {
                     if (adapter.config.daemon === 'CUxD') {
                         getCuxDevices(err2 => {
@@ -827,7 +833,7 @@ function sendPing() {
     if (rpcClient) {
         adapter.log.debug('Send PING...');
         try {
-            rpcClient.methodCall('ping', [adapter.namespace], err => {
+            rpcClient.methodCall('ping', [clientId], err => {
                 if (!err) {
                     adapter.log.debug('PING ok');
                 } else {
@@ -841,7 +847,7 @@ function sendPing() {
                 }
             });
         } catch (err) {
-            adapter.log.error(`Cannot call ping [${adapter.namespace}]: ${err}`);
+            adapter.log.error(`Cannot call ping [${clientId}]: ${err}`);
         }
     } else {
         adapter.warn('Called PING, but client does not exist');
@@ -854,7 +860,12 @@ function sendPing() {
     }
 } // endSendPing
 
-function initRpcServer() {
+/**
+ * Inits the RPC server
+ *
+ * @return {Promise<void>}
+ */
+async function initRpcServer() {
     adapter.config.homematicPort = parseInt(adapter.config.homematicPort, 10);
     adapter.config.port = parseInt(adapter.config.port, 10);
     adapter.config.useHttps = adapter.config.useHttps || false;
@@ -862,151 +873,93 @@ function initRpcServer() {
     // adapterPort was introduced in v1.0.1. If not set yet then try 2000
     const adapterPort = parseInt(adapter.config.port || adapter.config.homematicPort, 10) || 2000;
     const callbackAddress = adapter.config.callbackAddress || adapter.config.adapterAddress;
-    adapter.getPort(adapterPort, port => {
-        daemonURL = `${daemonProto + callbackAddress}:${port}`;
+    const port = await adapter.getPortAsync(adapterPort);
+    daemonURL = `${daemonProto + callbackAddress}:${port}`;
 
+    try {
+        rpcServer = rpc.createServer({
+            host: adapter.config.adapterAddress,
+            port: port
+        });
+    } catch (e) {
+        adapter.log.error(`Could not create RPC Server: ${e}`);
+        return void adapter.restart();
+    }
+
+    // build up unique client id
+    clientId = adapter.namespace;
+    try {
+        const obj = await adapter.getForeignObjectAsync(`system.adapter.${adapter.namespace}`);
+        clientId = `${obj.common.host}:${clientId}`;
+    } catch (e) {
+        adapter.log.warn(`Could not get hostname, using default id "${clientId}" to register: ${e.message}`);
+    }
+
+    adapter.log.info(`${adapter.config.type}rpc server is trying to listen on ${adapter.config.adapterAddress}:${port}`);
+    adapter.log.info(`${adapter.config.type}rpc client is trying to connect to ${adapter.config.homematicAddress}:${adapter.config.homematicPort}${homematicPath} with ${JSON.stringify([daemonURL, clientId])}`);
+
+    connect(true);
+
+    rpcServer.on('NotFound', (method, params) => {
+        if (method === 'firmwareUpdateStatusChanged') {
+            adapter.log.info(`Firmware update status of ${params[1]} changed to ${params[2]}`);
+        } else {
+
+            adapter.log.warn(`${adapter.config.type}rpc <- undefined method ${method} with parameters ${typeof params === 'object' ? JSON.stringify(params).slice(0, 80) : params}`);
+        } // endElse
+    });
+
+    rpcServer.on('system.multicall', (method, params, callback) => {
+        updateConnection();
+        const response = [];
+        for (const param of params[0]) {
+            if (methods[param.methodName]) {
+                adapter.log.debug(`${adapter.config.type} multicall <${param.methodName}>: ${param.params}`);
+                response.push(methods[param.methodName](null, param.params));
+            } else {
+                response.push('');
+            }
+        }
+        callback(null, response);
+    });
+
+    rpcServer.on('system.listMethods', (err, params, callback) => {
+        if (err) {
+            adapter.log.warn(` Error on system.listMethods: ${err}`);
+        }
+        adapter.log.info(`${adapter.config.type}rpc <- system.listMethods ${JSON.stringify(params)}`);
+        callback(null, ['event', 'deleteDevices', 'listDevices', 'newDevices', 'system.listMethods', 'system.multicall', 'setReadyConfig']);
+    });
+
+    rpcServer.on('event', (err, params, callback) => {
+        if (err) {
+            adapter.log.warn(`Error on system.listMethods: ${err}`);
+        }
+        updateConnection();
         try {
-            rpcServer = rpc.createServer({
-                host: adapter.config.adapterAddress,
-                port: port
-            });
-        } catch (e) {
-            adapter.log.error(`Could not create RPC Server: ${e}`);
-            return adapter.restart();
+            callback(null, methods.event(err, params));
+        } catch (err) {
+            adapter.log.error(`Cannot response on event:${err}`);
+        }
+    });
+
+    rpcServer.on('newDevices', async (err, params, callback) => {
+        if (err) {
+            adapter.log.warn(`Error on system.listMethods: ${err}`);
         }
 
-        adapter.log.info(`${adapter.config.type}rpc server is trying to listen on ${adapter.config.adapterAddress}:${port}`);
-        adapter.log.info(`${adapter.config.type}rpc client is trying to connect to ${adapter.config.homematicAddress}:${adapter.config.homematicPort}${homematicPath} with ${JSON.stringify([daemonURL, adapter.namespace])}`);
+        let newDevices = params[1];
 
-        connect(true);
+        if (!Array.isArray(newDevices)) {
+            adapter.log.warn(`CCU delivered unexpected result (${params[1]}) on "newDevices": ${newDevices}`);
+            newDevices = [];
+        }
 
-        rpcServer.on('NotFound', (method, params) => {
-            if (method === 'firmwareUpdateStatusChanged') {
-                adapter.log.info(`Firmware update status of ${params[1]} changed to ${params[2]}`);
-            } else {
+        adapter.log.info(`${adapter.config.type}rpc <- newDevices ${newDevices.length}`);
 
-                adapter.log.warn(`${adapter.config.type}rpc <- undefined method ${method} with parameters ${typeof params === 'object' ? JSON.stringify(params).slice(0, 80) : params}`);
-            } // endElse
-        });
-
-        rpcServer.on('system.multicall', (method, params, callback) => {
-            updateConnection();
-            const response = [];
-            for (const param of params[0]) {
-                if (methods[param.methodName]) {
-                    adapter.log.debug(`${adapter.config.type} multicall <${param.methodName}>: ${param.params}`);
-                    response.push(methods[param.methodName](null, param.params));
-                } else {
-                    response.push('');
-                }
-            }
-            callback(null, response);
-        });
-
-        rpcServer.on('system.listMethods', (err, params, callback) => {
-            if (err) {
-                adapter.log.warn(` Error on system.listMethods: ${err}`);
-            }
-            adapter.log.info(`${adapter.config.type}rpc <- system.listMethods ${JSON.stringify(params)}`);
-            callback(null, ['event', 'deleteDevices', 'listDevices', 'newDevices', 'system.listMethods', 'system.multicall', 'setReadyConfig']);
-        });
-
-        rpcServer.on('event', (err, params, callback) => {
-            if (err) {
-                adapter.log.warn(`Error on system.listMethods: ${err}`);
-            }
-            updateConnection();
-            try {
-                callback(null, methods.event(err, params));
-            } catch (err) {
-                adapter.log.error(`Cannot response on event:${err}`);
-            }
-        });
-
-        rpcServer.on('newDevices', async (err, params, callback) => {
-            if (err) {
-                adapter.log.warn(`Error on system.listMethods: ${err}`);
-            }
-
-            let newDevices = params[1];
-
-            if (!Array.isArray(newDevices)) {
-                adapter.log.warn(`CCU delivered unexpected result (${params[1]}) on "newDevices": ${newDevices}`);
-                newDevices = [];
-            }
-
-            adapter.log.info(`${adapter.config.type}rpc <- newDevices ${newDevices.length}`);
-
-            // for a HmIP-adapter (and virtual-devices) we have to filter out the devices that
-            // are already present if forceReinit is not set
-            if (adapter.config.forceReInit === false && (adapter.config.daemon === 'HMIP' || adapter.config.daemon === 'virtual-devices')) {
-                let doc;
-                try {
-                    doc = await adapter.getObjectViewAsync('hm-rpc', 'listDevices', {
-                        startkey: `hm-rpc.${adapter.instance}.`,
-                        endkey: `hm-rpc.${adapter.instance}.\u9999`
-                    });
-                } catch (e) {
-                    adapter.log.error(`getObjectViewAsync hm-rpc: ${e}`);
-                }
-
-                if (doc && doc.rows) {
-                    for (const row of doc.rows) {
-                        if (row.id === `${adapter.namespace}.updated`) {
-                            continue;
-                        }
-
-                        // lets get the device description
-                        const val = row.value;
-
-                        if (typeof val.ADDRESS === 'undefined') {
-                            continue;
-                        }
-
-                        // lets find the current device in the newDevices array
-                        // and if it doesn't exist we can delete it
-                        let index = -1;
-                        for (let j = 0; j < newDevices.length; j++) {
-                            if (newDevices[j].ADDRESS === val.ADDRESS && newDevices[j].VERSION === val.VERSION) {
-                                index = j;
-                                break;
-                            }
-                        }
-
-                        // if index is -1 than the newDevices doesn't have the
-                        // device with address val.ADDRESS anymore, thus we can delete it
-                        if (index === -1) {
-                            if (val.ADDRESS && !adapter.config.dontDelete) {
-                                if (val.ADDRESS.indexOf(':') !== -1) {
-                                    const address = val.ADDRESS.replace(':', '.').replace(FORBIDDEN_CHARS, '_');
-                                    const parts = address.split('.');
-                                    adapter.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
-                                    adapter.log.info(`obsolete channel ${address} ${JSON.stringify(address)} deleted`);
-                                } else {
-                                    adapter.deleteDevice(val.ADDRESS);
-                                    adapter.log.info(`obsolete device ${val.ADDRESS} deleted`);
-                                }
-                            }
-                        } else {
-                            // we can remove the item at index because it is already registered
-                            // to ioBroker
-                            newDevices.splice(index, 1);
-                        }
-                    }
-                }
-
-                adapter.log.info(`new ${adapter.config.daemon} devices/channels after filter: ${newDevices.length}`);
-                createDevices(newDevices, callback);
-            } else {
-                createDevices(newDevices, callback);
-            }
-        });
-
-        rpcServer.on('listDevices', async (err, params, callback) => {
-            if (err) {
-                adapter.log.warn(`Error on system.listMethods: ${err}`);
-            }
-            adapter.log.info(`${adapter.config.type}rpc <- listDevices ${JSON.stringify(params)}`);
+        // for a HmIP-adapter (and virtual-devices) we have to filter out the devices that
+        // are already present if forceReinit is not set
+        if (adapter.config.forceReInit === false && (adapter.config.daemon === 'HMIP' || adapter.config.daemon === 'virtual-devices')) {
             let doc;
             try {
                 doc = await adapter.getObjectViewAsync('hm-rpc', 'listDevices', {
@@ -1014,77 +967,142 @@ function initRpcServer() {
                     endkey: `hm-rpc.${adapter.instance}.\u9999`
                 });
             } catch (e) {
-                adapter.log.error(`Error on listDevices (getObjectView): ${e}`);
+                adapter.log.error(`getObjectViewAsync hm-rpc: ${e}`);
             }
 
-            const response = [];
-
-            // we only fill the response if this isn't a force reinit and
-            // if the adapter instance is not bothering with HmIP (which seems to work slightly different in terms of XMLRPC)
-            if (!adapter.config.forceReInit && adapter.config.daemon !== 'HMIP' && doc && doc.rows) {
+            if (doc && doc.rows) {
                 for (const row of doc.rows) {
                     if (row.id === `${adapter.namespace}.updated`) {
                         continue;
                     }
+
+                    // lets get the device description
                     const val = row.value;
 
-                    if (val.ADDRESS) {
-                        response.push({ADDRESS: val.ADDRESS, VERSION: val.VERSION});
+                    if (typeof val.ADDRESS === 'undefined') {
+                        continue;
+                    }
+
+                    // lets find the current device in the newDevices array
+                    // and if it doesn't exist we can delete it
+                    let index = -1;
+                    for (let j = 0; j < newDevices.length; j++) {
+                        if (newDevices[j].ADDRESS === val.ADDRESS && newDevices[j].VERSION === val.VERSION) {
+                            index = j;
+                            break;
+                        }
+                    }
+
+                    // if index is -1 than the newDevices doesn't have the
+                    // device with address val.ADDRESS anymore, thus we can delete it
+                    if (index === -1) {
+                        if (val.ADDRESS && !adapter.config.dontDelete) {
+                            if (val.ADDRESS.indexOf(':') !== -1) {
+                                const address = val.ADDRESS.replace(':', '.').replace(FORBIDDEN_CHARS, '_');
+                                const parts = address.split('.');
+                                adapter.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
+                                adapter.log.info(`obsolete channel ${address} ${JSON.stringify(address)} deleted`);
+                            } else {
+                                adapter.deleteDevice(val.ADDRESS);
+                                adapter.log.info(`obsolete device ${val.ADDRESS} deleted`);
+                            }
+                        }
+                    } else {
+                        // we can remove the item at index because it is already registered
+                        // to ioBroker
+                        newDevices.splice(index, 1);
                     }
                 }
             }
-            adapter.log.info(`${adapter.config.type}rpc -> ${response.length} devices`);
 
-            try {
-                for (let r = response.length - 1; r >= 0; r--) {
-                    if (!response[r].ADDRESS) {
-                        adapter.log.warn(`${adapter.config.type}rpc -> found empty entry at position ${r} !`);
-                        response.splice(r, 1);
-                    }
+            adapter.log.info(`new ${adapter.config.daemon} devices/channels after filter: ${newDevices.length}`);
+            createDevices(newDevices, callback);
+        } else {
+            createDevices(newDevices, callback);
+        }
+    });
+
+    rpcServer.on('listDevices', async (err, params, callback) => {
+        if (err) {
+            adapter.log.warn(`Error on system.listMethods: ${err}`);
+        }
+        adapter.log.info(`${adapter.config.type}rpc <- listDevices ${JSON.stringify(params)}`);
+        let doc;
+        try {
+            doc = await adapter.getObjectViewAsync('hm-rpc', 'listDevices', {
+                startkey: `hm-rpc.${adapter.instance}.`,
+                endkey: `hm-rpc.${adapter.instance}.\u9999`
+            });
+        } catch (e) {
+            adapter.log.error(`Error on listDevices (getObjectView): ${e}`);
+        }
+
+        const response = [];
+
+        // we only fill the response if this isn't a force reinit and
+        // if the adapter instance is not bothering with HmIP (which seems to work slightly different in terms of XMLRPC)
+        if (!adapter.config.forceReInit && adapter.config.daemon !== 'HMIP' && doc && doc.rows) {
+            for (const row of doc.rows) {
+                if (row.id === `${adapter.namespace}.updated`) {
+                    continue;
                 }
+                const val = row.value;
 
-                callback(null, response);
-            } catch (err) {
-                adapter.log.error(`Cannot respond on listDevices: ${err}`);
-                adapter.log.error(JSON.stringify(response));
-            }
-        });
-
-        rpcServer.on('deleteDevices', (err, params, callback) => {
-            if (err) {
-                adapter.log.warn(`Error on system.listMethods: ${err}`);
-            }
-            adapter.log.info(`${adapter.config.type}rpc <- deleteDevices ${params[1].length}`);
-            for (let i = 0; i < params[1].length; i++) {
-                if (params[1][i].indexOf(':') !== -1) {
-                    params[1][i] = params[1][i].replace(':', '.').replace(FORBIDDEN_CHARS, '_');
-                    adapter.log.info(`channel ${params[1][i]} ${JSON.stringify(params[1][i])} deleted`);
-                    const parts = params[1][i].split('.');
-                    adapter.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
-                } else {
-                    adapter.log.info(`device ${params[1][i]} deleted`);
-                    adapter.deleteDevice(params[1][i]);
+                if (val.ADDRESS) {
+                    response.push({ADDRESS: val.ADDRESS, VERSION: val.VERSION});
                 }
             }
-            try {
-                callback(null, '');
-            } catch (err) {
-                adapter.log.error(`Cannot response on deleteDevices:${err}`);
-            }
-        });
+        }
+        adapter.log.info(`${adapter.config.type}rpc -> ${response.length} devices`);
 
-        rpcServer.on('setReadyConfig', (err, params, callback) => {
-            if (err) {
-                adapter.log.warn(` Error on setReadyConfig: ${err}`);
+        try {
+            for (let r = response.length - 1; r >= 0; r--) {
+                if (!response[r].ADDRESS) {
+                    adapter.log.warn(`${adapter.config.type}rpc -> found empty entry at position ${r} !`);
+                    response.splice(r, 1);
+                }
             }
-            adapter.log.info(`${adapter.config.type}rpc <- setReadyConfig ${JSON.stringify(params)}`);
-            try {
-                callback(null, '');
-            } catch (err) {
-                adapter.log.error(`Cannot response on setReadyConfig: ${err}`);
-            }
-        });
 
+            callback(null, response);
+        } catch (err) {
+            adapter.log.error(`Cannot respond on listDevices: ${err}`);
+            adapter.log.error(JSON.stringify(response));
+        }
+    });
+
+    rpcServer.on('deleteDevices', (err, params, callback) => {
+        if (err) {
+            adapter.log.warn(`Error on system.listMethods: ${err}`);
+        }
+        adapter.log.info(`${adapter.config.type}rpc <- deleteDevices ${params[1].length}`);
+        for (let i = 0; i < params[1].length; i++) {
+            if (params[1][i].indexOf(':') !== -1) {
+                params[1][i] = params[1][i].replace(':', '.').replace(FORBIDDEN_CHARS, '_');
+                adapter.log.info(`channel ${params[1][i]} ${JSON.stringify(params[1][i])} deleted`);
+                const parts = params[1][i].split('.');
+                adapter.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
+            } else {
+                adapter.log.info(`device ${params[1][i]} deleted`);
+                adapter.deleteDevice(params[1][i]);
+            }
+        }
+        try {
+            callback(null, '');
+        } catch (err) {
+            adapter.log.error(`Cannot response on deleteDevices:${err}`);
+        }
+    });
+
+    rpcServer.on('setReadyConfig', (err, params, callback) => {
+        if (err) {
+            adapter.log.warn(` Error on setReadyConfig: ${err}`);
+        }
+        adapter.log.info(`${adapter.config.type}rpc <- setReadyConfig ${JSON.stringify(params)}`);
+        try {
+            callback(null, '');
+        } catch (err) {
+            adapter.log.error(`Cannot response on setReadyConfig: ${err}`);
+        }
     });
 } // endInitRPCServer
 
