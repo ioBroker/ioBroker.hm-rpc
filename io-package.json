@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.14.24",
+        "version": "1.14.25",
         "news": {
+            "1.14.25": {
+                "en": "we now use a unique id to connect for each client taking the hostname into account",
+                "de": "Wir verwenden jetzt eine eindeutige ID, um für jeden Client unter Berücksichtigung des Hostnamens eine Verbindung herzustellen",
+                "ru": "теперь мы используем уникальный идентификатор для подключения для каждого клиента с учетом имени хоста",
+                "pt": "agora usamos um id único para conectar para cada cliente levando o nome do host em consideração",
+                "nl": "we gebruiken nu een unieke id om voor elke client te verbinden, rekening houdend met de hostnaam",
+                "fr": "nous utilisons maintenant un identifiant unique pour nous connecter pour chaque client en tenant compte du nom d'hôte",
+                "it": "ora usiamo un ID univoco per connetterci per ogni client tenendo conto del nome host",
+                "es": "ahora usamos una identificación única para conectarnos para cada cliente teniendo en cuenta el nombre de host",
+                "pl": "używamy teraz unikalnego identyfikatora do łączenia się z każdym klientem, biorąc pod uwagę nazwę hosta",
+                "zh-cn": "现在，我们使用唯一的ID为每个客户端连接主机名称"
+            },
             "1.14.24": {
                 "en": "fixed error with some blinds if no adapter restart has been performed after creation",
                 "de": "Fehler bei einigen Blinds behoben, wenn nach der Erstellung kein Neustart des Adapters durchgeführt wurde",

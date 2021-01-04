@@ -137,6 +137,9 @@ If you use HomeMatic switches or remotes their button states will only be acknow
 by ioBroker, when you have a running 'dummy' program on the CCU which depends on the related switch or remote.
 
 ## Changelog
+### 1.14.25 (2021-01-04)
+* (foxriver76) we now use a unique id to connect for each client taking the hostname into account
+
 ### 1.14.24 (2020-10-15)
 * (foxriver76) fixed error with some blinds if no adapter restart has been performed
 
