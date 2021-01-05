@@ -617,7 +617,7 @@ function startAdapter(options) {
                 if (adapter.config && rpcClient) {
                     adapter.log.info(`${adapter.config.type}rpc -> ${adapter.config.homematicAddress}:${adapter.config.homematicPort}${homematicPath} init ${JSON.stringify([daemonURL, ''])}`);
                     try {
-                        rpcClient.methodCall('init', [daemonURL, ''], (/*err, data*/) => {
+                        rpcClient.methodCall('init', [daemonURL, ''], () => {
                             if (connected) {
                                 adapter.log.info('Disconnected');
                                 connected = false;
@@ -888,6 +888,7 @@ async function initRpcServer() {
 
     // build up unique client id
     clientId = adapter.namespace;
+
     try {
         const obj = await adapter.getForeignObjectAsync(`system.adapter.${adapter.namespace}`);
         clientId = `${obj.common.host}:${clientId}`;
@@ -1116,6 +1117,10 @@ const methods = {
             params[0] = adapter.namespace;
         }
         const channel = params[1].replace(':', '.').replace(FORBIDDEN_CHARS, '_');
+        if (params[0] === clientId) {
+            // convert back our clientId to our namespace
+            params[0] = adapter.namespace;
+        }
         const name = `${params[0]}.${channel}.${params[2]}`;
 
         if (dpTypes[name]) {

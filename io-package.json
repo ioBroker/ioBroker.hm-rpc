@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.14.25",
+        "version": "1.14.26",
         "news": {
+            "1.14.26": {
+                "en": "matched clientId with namespace to find correct units",
+                "de": "Die Client-ID wurde mit dem Namespace abgeglichen, um die richtigen Einheiten zu finden",
+                "ru": "сопоставил clientId с пространством имен, чтобы найти правильные единицы",
+                "pt": "correspondência de clientId com namespace para encontrar unidades corretas",
+                "nl": "matched clientId met naamruimte om de juiste eenheden te vinden",
+                "fr": "correspondance du clientId avec l'espace de noms pour trouver les unités correctes",
+                "it": "clientId corrispondente con lo spazio dei nomi per trovare le unità corrette",
+                "es": "identificó el clientId con el espacio de nombres para encontrar las unidades correctas",
+                "pl": "dopasowano identyfikator clientId z przestrzenią nazw, aby znaleźć prawidłowe jednostki",
+                "zh-cn": "将clientId与名称空间匹配以找到正确的单位"
+            },
             "1.14.25": {
                 "en": "we now use a unique id to connect for each client taking the hostname into account",
                 "de": "Wir verwenden jetzt eine eindeutige ID, um für jeden Client unter Berücksichtigung des Hostnamens eine Verbindung herzustellen",
