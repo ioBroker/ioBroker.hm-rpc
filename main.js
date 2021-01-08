@@ -482,7 +482,7 @@ function startAdapter(options) {
                 return;
             } else if (tmp[4] === 'DISPLAY_DATA_STRING') {
                 // new EPAPER HMIP-WRCD has own states but needs to encode special chars by DIN_66003
-                val = tools.replaceSpecialChars(state.val);
+                val = tools.replaceSpecialChars(state.val || '');
                 adapter.log.debug(`Encoded ${state.val} to ${val}`);
             } else if (tmp[4] === 'COMBINED_PARAMETER' && /DDS=.+,/g.test(state.val)) {
                 // new EPAPER and DISPLAY_DATA_STRING is given, we need to replace
