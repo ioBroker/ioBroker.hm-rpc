@@ -137,7 +137,7 @@ If you use HomeMatic switches or remotes their button states will only be acknow
 by ioBroker, when you have a running 'dummy' program on the CCU which depends on the related switch or remote.
 
 ## Changelog
-### 1.14.28 (2021-01-09)
+### 1.14.29 (2021-01-09)
 * (foxriver76) do not set PONG state anymore
 
 ### 1.14.26 (2021-01-05)

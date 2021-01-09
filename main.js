@@ -1123,7 +1123,7 @@ const methods = {
         }
         const name = `${params[0]}.${channel}.${params[2]}`;
 
-        if (name === `${adapter.namespace}.CENTRAL.PONG`) {
+        if (name === `${adapter.namespace}.CENTRAL.PONG` || name ===`${adapter.namespace}.CENTRAL.0.PONG`) {
             adapter.log.debug('PONG event received, ignoring');
             return '';
         }
