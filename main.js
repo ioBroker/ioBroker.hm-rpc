@@ -1123,12 +1123,13 @@ const methods = {
         }
         const name = `${params[0]}.${channel}.${params[2]}`;
 
+        if (name === `${adapter.namespace}.CENTRAL.PONG`) {
+            adapter.log.debug('PONG event received, ignoring');
+            return;
+        }
+
         if (dpTypes[name]) {
-            /* it shouldn't be necessary to scale on % values, see https://github.com/ioBroker/ioBroker.hm-rpc/issues/263
-            if (dpTypes[name].MIN !== undefined && dpTypes[name].UNIT === '%') {
-                val = ((parseFloat(params[3]) - dpTypes[name].MIN) / (dpTypes[name].MAX - dpTypes[name].MIN)) * 100;
-                val = Math.round(val * 100) / 100;
-            } else */
+            // it shouldn't be necessary to scale on % values, see https://github.com/ioBroker/ioBroker.hm-rpc/issues/263
             // backward compatibility -> max===1 unit===%
             if (dpTypes[name].UNIT === '100%' || (dpTypes[name].UNIT === '%' && dpTypes[name].MAX === 1)) {
                 val = Math.round(params[3] * 1000) / 10;
