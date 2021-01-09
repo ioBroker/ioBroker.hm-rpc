@@ -1125,7 +1125,7 @@ const methods = {
 
         if (name === `${adapter.namespace}.CENTRAL.PONG`) {
             adapter.log.debug('PONG event received, ignoring');
-            return;
+            return '';
         }
 
         if (dpTypes[name]) {
