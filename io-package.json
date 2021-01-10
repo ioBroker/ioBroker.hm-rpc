@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.14.29",
+        "version": "1.14.30",
         "news": {
+            "1.14.30": {
+                "en": " in general events of unregistered devices will now be rejected",
+                "de": " Im Allgemeinen werden Ereignisse von nicht registrierten Geräten jetzt abgelehnt",
+                "ru": " в целом события незарегистрированных устройств теперь будут отклоняться",
+                "pt": " em geral, eventos de dispositivos não registrados serão rejeitados",
+                "nl": " in het algemeen worden gebeurtenissen van niet-geregistreerde apparaten nu geweigerd",
+                "fr": " dans les événements généraux des appareils non enregistrés seront désormais rejetés",
+                "it": " in generale gli eventi di dispositivi non registrati verranno ora rifiutati",
+                "es": " en general, los eventos de dispositivos no registrados ahora serán rechazados",
+                "pl": " generalnie zdarzenia niezarejestrowanych urządzeń będą teraz odrzucane",
+                "zh-cn": " 在一般情况下，未注册的设备现在将被拒绝"
+            },
             "1.14.29": {
                 "en": "we do not set PONG state anymore",
                 "de": "Wir setzen den PONG-Status nicht mehr",

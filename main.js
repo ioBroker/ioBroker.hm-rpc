@@ -1123,10 +1123,12 @@ const methods = {
         }
         const name = `${params[0]}.${channel}.${params[2]}`;
 
+        /* now handled below
         if (name === `${adapter.namespace}.CENTRAL.PONG` || name ===`${adapter.namespace}.CENTRAL.0.PONG`) {
             adapter.log.debug('PONG event received, ignoring');
             return '';
         }
+         */
 
         if (dpTypes[name]) {
             // it shouldn't be necessary to scale on % values, see https://github.com/ioBroker/ioBroker.hm-rpc/issues/263
@@ -1137,7 +1139,10 @@ const methods = {
                 val = params[3];
             }
         } else {
-            val = params[3];
+            // val = params[3];
+            // for every device we know (listDevices), there will be a dpType, so this way we filter out stuff like PONG event and https://github.com/ioBroker/ioBroker.hm-rpc/issues/298
+            adapter.log.debug(`${adapter.config.type}rpc <- event: ${name}:${params[3]} discarded, no matching device`);
+            return '';
         }
         adapter.log.debug(`${name} ==> UNIT: "${dpTypes[name] ? dpTypes[name].UNIT : 'none'}" (min: ${dpTypes[name] ? dpTypes[name].MIN : 'none'}, max: ${dpTypes[name] ? dpTypes[name].MAX : 'none'}) From "${params[3]}" => "${val}"`);
 
