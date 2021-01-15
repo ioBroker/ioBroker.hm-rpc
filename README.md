@@ -137,6 +137,9 @@ If you use HomeMatic switches or remotes their button states will only be acknow
 by ioBroker, when you have a running 'dummy' program on the CCU which depends on the related switch or remote.
 
 ## Changelog
+### 1.14.31 (2021-01-15)
+* (foxriver76) fixed default values of HMIP value list states
+
 ### 1.14.30 (2021-01-10)
 * (foriver76) in general reject events of unregistered devices, see #298
 

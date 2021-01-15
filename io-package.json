@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.14.30",
+        "version": "1.14.31",
         "news": {
+            "1.14.31": {
+                "en": "fixed  problem with default values of HMIP value list states",
+                "de": "Problem mit Standardwerten der HMIP-Wertelistenzustände behoben",
+                "ru": "исправлена проблема со значениями по умолчанию для состояний списка значений HMIP",
+                "pt": "problema corrigido com valores padrão de estados da lista de valores HMIP",
+                "nl": "probleem opgelost met standaardwaarden van HMIP-waardelijststatussen",
+                "fr": "problème résolu avec les valeurs par défaut des états de la liste de valeurs HMIP",
+                "it": "risolto il problema con i valori predefiniti degli stati della lista valori HMIP",
+                "es": "Problema solucionado con los valores predeterminados de los estados de la lista de valores HMIP",
+                "pl": "naprawiono problem z domyślnymi wartościami stanów listy wartości HMIP",
+                "zh-cn": "修复了HMIP值列表状态的默认值的问题"
+            },
             "1.14.30": {
                 "en": " in general events of unregistered devices will now be rejected",
                 "de": " Im Allgemeinen werden Ereignisse von nicht registrierten Geräten jetzt abgelehnt",

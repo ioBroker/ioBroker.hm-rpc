@@ -1243,12 +1243,17 @@ async function addParamsetObjects(channel, paramset) {
             obj.common.role = 'button';
         } // endElseIf
 
-        // sometimes min max is string on hmip meta in combination with value_list
-        if (typeof paramset[key].MIN === 'string' && paramset[key].VALUE_LIST) {
-            obj.common.min = paramset[key].VALUE_LIST.indexOf(paramset[key].MIN);
-        }
-        if (typeof paramset[key].MAX === 'string' && paramset[key].VALUE_LIST) {
-            obj.common.max = paramset[key].VALUE_LIST.indexOf(paramset[key].MAX);
+        // sometimes min/max/def is string on hmip meta in combination with value_list
+        if (paramset[key].VALUE_LIST) {
+            if (typeof paramset[key].MIN === 'string') {
+                obj.common.min = paramset[key].VALUE_LIST.indexOf(paramset[key].MIN);
+            }
+            if (typeof paramset[key].MAX === 'string') {
+                obj.common.max = paramset[key].VALUE_LIST.indexOf(paramset[key].MAX);
+            }
+            if (typeof paramset[key].DEFAULT === 'string') {
+                obj.common.def = paramset[key].VALUE_LIST.indexOf(paramset[key].DEFAULT);
+            }
         }
 
         if (obj.common.role === 'state' && obj.common.write) {
