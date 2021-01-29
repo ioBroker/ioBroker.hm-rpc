@@ -11,6 +11,14 @@
 
 Connects HomeMatic Interface-Processes (BidCos-Services, Homegear and CUxD) via XML-RPC or BIN-RPC to ioBroker
 
+**This adapter uses the service [Sentry.io](https://sentry.io) to automatically report exceptions and code errors and new device schemas to me as the developer.** More details see below!
+
+## What is Sentry.io and what is reported to the servers of that company?
+Sentry.io is a service for developers to get an overview about errors from their applications. Exactly this is implemented in this adapter.
+
+When the adapter crashes or another Code error happens, this error message that also appears in the ioBroker log is submitted to Sentry. 
+When you have allowed ioBroker GmbH to collect diagnostic data then also your installation ID (this is just a unique ID **without** any additional infos about you, email, name or such) is included. This allows Sentry to group errors and show how many unique users are affected by such an error. All of these helps me to provide error free adapters that basically never crashs.
+
 ## Configuration
 
 ### HomeMatic Address
@@ -137,6 +145,16 @@ If you use HomeMatic switches or remotes their button states will only be acknow
 by ioBroker, when you have a running 'dummy' program on the CCU which depends on the related switch or remote.
 
 ## Changelog
+<!--
+	Placeholder for the next version (at the beginning of the line):
+	### __WORK IN PROGRESS__
+-->
+
+### 1.14.32 (2021-01-29)
+* (foxriver76) revert received messages with invalid command
+* (foxriver76) log message on real errors instead of error object
+* (foxriver76) fix for crashes on decrypt
+
 ### 1.14.31 (2021-01-15)
 * (foxriver76) fixed default values of HMIP value list states
 

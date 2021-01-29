@@ -16,7 +16,7 @@
         "brace-style": "error",
         "arrow-parens": ["error", "as-needed"],
         "no-console": "off",
-        "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+        "no-unused-vars": ["error", { "argsIgnorePattern": "^_", "caughtErrors": "all" }],
         "no-useless-escape": "warn",
         "no-constant-condition": "off",
         "no-multiple-empty-lines": ["error", { "max": 1, "maxEOF": 1 }],
@@ -24,6 +24,9 @@
         "prefer-const": "error",
         "no-throw-literal": "error",
         "prefer-promise-reject-errors": "error",
+        "require-await": "error",
+        "no-return-await": "error",
+        "eqeqeq": ["error", "always"],
         "quotes": [
             "error",
             "single",

@@ -254,8 +254,8 @@ function controlEPaper(id, data) {
         } else {
             adapter.log.warn(`Cannot setValue "${id}", because not connected.`);
         }
-    } catch (err) {
-        adapter.log.error(`Cannot call setValue: ${err}`);
+    } catch (e) {
+        adapter.log.error(`Cannot call setValue: ${e.message}`);
     }
 }
 
@@ -527,13 +527,22 @@ function startAdapter(options) {
                 } else {
                     adapter.log.warn(`Cannot setValue "${id}", because not connected.`);
                 }
-            } catch (err) {
-                adapter.log.error(`Cannot call setValue: ${err}`);
+            } catch (e) {
+                adapter.log.error(`Cannot call setValue: ${e.message}`);
             }
         },
         // Add messagebox Function for ioBroker.occ
         message: obj => {
             adapter.log.debug(`[MSSG] Received: ${JSON.stringify(obj)}`);
+
+            if (obj.command === undefined || obj.command === null) {
+                adapter.log.warn(`Received invalid command via message "${obj.command}" "${obj.message.ID}" from ${obj.from}`);
+                if (obj.callback) {
+                    adapter.sendTo(obj.from, obj.command, {error: 'Invalid command'}, obj.callback);
+                }
+                return;
+            }
+
             if (obj.command === 'stopInstance') {
                 if (rpcServer && rpcServer.server) {
                     try {
@@ -541,15 +550,15 @@ function startAdapter(options) {
                             console.log('server closed.');
                             rpcServer.server.unref();
                         });
-                    } catch (e) {
-                        //
+                    } catch {
+                        // ignore
                     }
                 }
                 if (rpcClient && rpcClient.socket) {
                     try {
                         rpcClient.socket.destroy();
-                    } catch (e) {
-                        //
+                    } catch {
+                        // ignore
                     }
                 }
                 // force close
@@ -571,9 +580,9 @@ function startAdapter(options) {
                             adapter.sendTo(obj.from, obj.command, {error: 'not connected'}, obj.callback);
                         }
                     }
-                } catch (err) {
-                    adapter.log.error(`Cannot call ${obj.command}: ${err}`);
-                    adapter.sendTo(obj.from, obj.command, {error: err}, obj.callback);
+                } catch (e) {
+                    adapter.log.error(`Cannot call ${obj.command}: ${e.message}`);
+                    adapter.sendTo(obj.from, obj.command, {error: e}, obj.callback);
                 }
             } else {
                 try {
@@ -592,9 +601,9 @@ function startAdapter(options) {
                             adapter.sendTo(obj.from, obj.command, {error: 'not connected'}, obj.callback);
                         }
                     }
-                } catch (err) {
-                    adapter.log.error(`Cannot call ${obj.command}: ${err}`);
-                    adapter.sendTo(obj.from, obj.command, {error: err}, obj.callback);
+                } catch (e) {
+                    adapter.log.error(`Cannot call ${obj.command}: ${e.message}`);
+                    adapter.sendTo(obj.from, obj.command, {error: e}, obj.callback);
                 }
             }
         },
@@ -628,13 +637,13 @@ function startAdapter(options) {
                             }
                             callback = null;
                         });
-                    } catch (err) {
+                    } catch (e) {
                         if (connected) {
                             adapter.log.info('Disconnected');
                             connected = false;
                             adapter.setState('info.connection', false, true);
                         }
-                        adapter.log.error(`Cannot call init: [${daemonURL}, ""]${err}`);
+                        adapter.log.error(`Cannot call init: [${daemonURL}, ""] ${e.message}`);
                         if (typeof callback === 'function') {
                             callback();
                         }
@@ -805,26 +814,21 @@ async function sendInit() {
     try {
         if (rpcClient && (rpcClient.connected === undefined || rpcClient.connected)) {
             adapter.log.debug(`${adapter.config.type}rpc -> ${adapter.config.homematicAddress}:${adapter.config.homematicPort}${homematicPath} init ${JSON.stringify([daemonURL, clientId])}`);
-            rpcClient.methodCall('init', [daemonURL, clientId], err => {
-                if (!err) {
-                    if (adapter.config.daemon === 'CUxD') {
-                        getCuxDevices(err2 => {
-                            if (!err2) {
-                                updateConnection();
-                            } else {
-                                adapter.log.error(`getCuxDevices error: ${err2}`);
-                            }
-                        });
-                    } else {
+            await rpcMethodCallAsync('init', [daemonURL, clientId]);
+            if (adapter.config.daemon === 'CUxD') {
+                getCuxDevices(err2 => {
+                    if (!err2) {
                         updateConnection();
+                    } else {
+                        adapter.log.error(`getCuxDevices error: ${err2}`);
                     }
-                } else {
-                    adapter.log.error(`init error: ${err}`);
-                }
-            });
+                });
+            } else {
+                updateConnection();
+            }
         }
-    } catch (err) {
-        adapter.log.error(`Init not possible, going to stop: ${err}`);
+    } catch (e) {
+        adapter.log.error(`Init not possible, going to stop: ${e.message}`);
         adapter.stop();
     }
 } // endSendInit
@@ -846,8 +850,8 @@ function sendPing() {
                     }
                 }
             });
-        } catch (err) {
-            adapter.log.error(`Cannot call ping [${clientId}]: ${err}`);
+        } catch (e) {
+            adapter.log.error(`Cannot call ping [${clientId}]: ${e.message}`);
         }
     } else {
         adapter.warn('Called PING, but client does not exist');
@@ -939,8 +943,8 @@ async function initRpcServer() {
         updateConnection();
         try {
             callback(null, methods.event(err, params));
-        } catch (err) {
-            adapter.log.error(`Cannot response on event:${err}`);
+        } catch (e) {
+            adapter.log.error(`Cannot response on event: ${e.message}`);
         }
     });
 
@@ -1065,8 +1069,8 @@ async function initRpcServer() {
             }
 
             callback(null, response);
-        } catch (err) {
-            adapter.log.error(`Cannot respond on listDevices: ${err}`);
+        } catch (e) {
+            adapter.log.error(`Cannot respond on listDevices: ${e.message}`);
             adapter.log.error(JSON.stringify(response));
         }
     });
@@ -1089,8 +1093,8 @@ async function initRpcServer() {
         }
         try {
             callback(null, '');
-        } catch (err) {
-            adapter.log.error(`Cannot response on deleteDevices:${err}`);
+        } catch (e) {
+            adapter.log.error(`Cannot response on deleteDevices: ${e.message}`);
         }
     });
 
@@ -1101,8 +1105,8 @@ async function initRpcServer() {
         adapter.log.info(`${adapter.config.type}rpc <- setReadyConfig ${JSON.stringify(params)}`);
         try {
             callback(null, '');
-        } catch (err) {
-            adapter.log.error(`Cannot response on setReadyConfig: ${err}`);
+        } catch (e) {
+            adapter.log.error(`Cannot response on setReadyConfig: ${e.message}`);
         }
     });
 } // endInitRPCServer
@@ -1480,11 +1484,9 @@ function addEPaperToMeta() {
  * Create the devices delivered in the device array
  *
  * @param {object[]} deviceArr - array of devices
- * @param {function()} callback - callback function
  * @returns {Promise<void>}
  */
-async function createDevices(deviceArr, callback) {
-
+async function createDevices(deviceArr) {
     for (const device of deviceArr) {
         if (typeof device.ADDRESS !== 'string') {
             // check that ADDRESS is given, else we don't know the id
@@ -1558,93 +1560,90 @@ async function createDevices(deviceArr, callback) {
         }
     } // endFor
 
-    getValueParamsets();
-    callback(null, '');
+    await getValueParamsets();
 }
 
-function getCuxDevices(callback) {
+/**
+ * Get all CuxD devices
+ *
+ * @return {Promise<void>}
+ */
+async function getCuxDevices() {
     if (rpcClient) {
         // request devices from CUxD
         try {
-            rpcClient.methodCall('listDevices', [], async (err, newDevices) => {
-                if (err) {
-                    adapter.log.error(`Error on listDevices: ${err}`);
-                    return;
+            let newDevices = await rpcMethodCallAsync('listDevices', []);
+
+            if (!Array.isArray(newDevices)) {
+                adapter.log.warn(`CuxD delivered unexpected result on "listDevices": ${newDevices}`);
+                newDevices = [];
+            }
+
+            adapter.log.info(`${adapter.config.type}rpc -> listDevices ${newDevices.length}`);
+
+            if (adapter.config.forceReInit === false) {
+                let doc;
+                try {
+                    doc = await adapter.getObjectViewAsync('hm-rpc', 'listDevices', {
+                        startkey: `hm-rpc.${adapter.instance}.`,
+                        endkey: `hm-rpc.${adapter.instance}.\u9999`
+                    });
+                } catch (e) {
+                    adapter.log.error(`getObjectView hm-rpc: ${e}`);
                 }
 
-                if (!Array.isArray(newDevices)) {
-                    adapter.log.warn(`CuxD delivered unexpected result on "listDevices": ${newDevices}`);
-                    newDevices = [];
-                }
+                if (doc && doc.rows) {
+                    for (const row of doc.rows) {
+                        if (row.id === `${adapter.namespace}.updated`) {
+                            continue;
+                        }
 
-                adapter.log.info(`${adapter.config.type}rpc -> listDevices ${newDevices.length}`);
+                        // lets get the device description
+                        const val = row.value;
 
-                if (adapter.config.forceReInit === false) {
-                    let doc;
-                    try {
-                        doc = await adapter.getObjectViewAsync('hm-rpc', 'listDevices', {
-                            startkey: `hm-rpc.${adapter.instance}.`,
-                            endkey: `hm-rpc.${adapter.instance}.\u9999`
-                        });
-                    } catch (e) {
-                        adapter.log.error(`getObjectView hm-rpc: ${e}`);
-                    }
+                        if (typeof val.ADDRESS === 'undefined') {
+                            continue;
+                        }
 
-                    if (doc && doc.rows) {
-                        for (const row of doc.rows) {
-                            if (row.id === `${adapter.namespace}.updated`) {
-                                continue;
-                            }
-
-                            // lets get the device description
-                            const val = row.value;
-
-                            if (typeof val.ADDRESS === 'undefined') {
-                                continue;
-                            }
-
-                            // lets find the current device in the newDevices array
-                            // and if it doesn't exist we can delete it
-                            let index = -1;
-                            for (let j = 0; j < newDevices.length; j++) {
-                                if (newDevices[j].ADDRESS === val.ADDRESS && newDevices[j].VERSION === val.VERSION) {
-                                    index = j;
-                                    break;
-                                }
-                            }
-
-                            // if index is -1 than the newDevices doesn't have the
-                            // device with address val.ADDRESS anymore, thus we can delete it
-                            if (index === -1) {
-                                if (val.ADDRESS && !adapter.config.dontDelete) {
-                                    if (val.ADDRESS.indexOf(':') !== -1) {
-                                        const address = val.ADDRESS.replace(':', '.').replace(FORBIDDEN_CHARS, '_');
-                                        const parts = address.split('.');
-                                        adapter.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
-                                        adapter.log.info(`obsolete channel ${address} ${JSON.stringify(address)} deleted`);
-                                    } else {
-                                        adapter.deleteDevice(val.ADDRESS);
-                                        adapter.log.info(`obsolete device ${val.ADDRESS} deleted`);
-                                    }
-                                }
-                            } else {
-                                // we can remove the item at index because it is already registered
-                                // to ioBroker
-                                newDevices.splice(index, 1);
+                        // lets find the current device in the newDevices array
+                        // and if it doesn't exist we can delete it
+                        let index = -1;
+                        for (let j = 0; j < newDevices.length; j++) {
+                            if (newDevices[j].ADDRESS === val.ADDRESS && newDevices[j].VERSION === val.VERSION) {
+                                index = j;
+                                break;
                             }
                         }
+
+                        // if index is -1 than the newDevices doesn't have the
+                        // device with address val.ADDRESS anymore, thus we can delete it
+                        if (index === -1) {
+                            if (val.ADDRESS && !adapter.config.dontDelete) {
+                                if (val.ADDRESS.indexOf(':') !== -1) {
+                                    const address = val.ADDRESS.replace(':', '.').replace(FORBIDDEN_CHARS, '_');
+                                    const parts = address.split('.');
+                                    adapter.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
+                                    adapter.log.info(`obsolete channel ${address} ${JSON.stringify(address)} deleted`);
+                                } else {
+                                    adapter.deleteDevice(val.ADDRESS);
+                                    adapter.log.info(`obsolete device ${val.ADDRESS} deleted`);
+                                }
+                            }
+                        } else {
+                            // we can remove the item at index because it is already registered
+                            // to ioBroker
+                            newDevices.splice(index, 1);
+                        }
                     }
-                    adapter.log.info(`new CUxD devices/channels after filter: ${newDevices.length}`);
-                    createDevices(newDevices, callback);
-                } else {
-                    createDevices(newDevices, callback);
                 }
-            });
-        } catch (err) {
-            adapter.log.error(`Cannot call listDevices: ${err}`);
+                adapter.log.info(`new CUxD devices/channels after filter: ${newDevices.length}`);
+                await createDevices(newDevices);
+            } else {
+                await createDevices(newDevices);
+            }
+        } catch (e) {
+            adapter.log.error(`Cannot call listDevices: ${e.message}`);
         }
-    } else if (typeof callback === 'function') {
-        callback();
     }
 }
 
@@ -1701,11 +1700,11 @@ function connect(isFirst) {
             let username;
 
             if (obj && obj.native && obj.native.secret) {
-                password = tools.decrypt(obj.native.secret, adapter.config.password);
-                username = tools.decrypt(obj.native.secret, adapter.config.username);
+                password = tools.decrypt(obj.native.secret, adapter.config.password || '');
+                username = tools.decrypt(obj.native.secret, adapter.config.username || '');
             } else {
-                password = tools.decrypt('Zgfr56gFe87jJOM', adapter.config.password);
-                username = tools.decrypt('Zgfr56gFe87jJOM', adapter.config.username);
+                password = tools.decrypt('Zgfr56gFe87jJOM', adapter.config.password || '');
+                username = tools.decrypt('Zgfr56gFe87jJOM', adapter.config.username || '');
             } // endElse
 
             try {

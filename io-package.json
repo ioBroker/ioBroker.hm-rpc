@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.14.31",
+        "version": "1.14.32",
         "news": {
+            "1.14.32": {
+                "en": "revert received messages with invalid command\nlog message on real errors instead of error object\nfix for crashes on decrypt",
+                "de": "Empfangene Nachrichten mit ungültigem Befehl zurücksetzen\nProtokollmeldung über echte Fehler anstelle des Fehlerobjekts\nBehebung von Abstürzen beim Entschlüsseln",
+                "ru": "вернуть полученные сообщения с недопустимой командой\nсообщение журнала о реальных ошибках вместо объекта ошибки\nисправление сбоев при расшифровке",
+                "pt": "reverter mensagens recebidas com comando inválido\nregistrar mensagem sobre erros reais em vez de objeto de erro\ncorreção para falhas na descriptografia",
+                "nl": "zet ontvangen berichten terug met een ongeldig commando\nlogbericht over echte fouten in plaats van foutobject\noplossing voor crashes bij decoderen",
+                "fr": "annuler les messages reçus avec une commande non valide\nmessage de journalisation sur les erreurs réelles au lieu de l'objet d'erreur\ncorrection des plantages lors du déchiffrement",
+                "it": "ripristinare i messaggi ricevuti con un comando non valido\nmessaggio di log su errori reali invece di oggetto errore\ncorrezione di arresti anomali durante la decrittografia",
+                "es": "revertir mensajes recibidos con comando inválido\nmensaje de registro sobre errores reales en lugar de objeto de error\ncorrección de bloqueos al descifrar",
+                "pl": "przywróć odebrane wiadomości z nieprawidłowym poleceniem\nkomunikat dziennika rzeczywistych błędów zamiast obiektu błędu\nnaprawiono awarie podczas odszyfrowywania",
+                "zh-cn": "使用无效命令还原收到的消息\n记录有关实际错误而不是错误对象的消息\n修复解密时崩溃的问题"
+            },
             "1.14.31": {
                 "en": "fixed  problem with default values of HMIP value list states",
                 "de": "Problem mit Standardwerten der HMIP-Wertelistenzustände behoben",
@@ -242,18 +254,6 @@
                 "es": "solucionó un problema potencial cuando CCU (xml-rpc) entrega un formato inesperado en \"newDevices\"",
                 "pl": "naprawiono potencjalny problem, gdy CCU (xml-rpc) dostarcza nieoczekiwany format w „newDevices”",
                 "zh-cn": "修复了CCU（xml-rpc）在“ newDevices”上传递意外格式时的潜在问题"
-            },
-            "1.14.4": {
-                "en": "updated all device images to latest versions",
-                "de": "Alle Gerätebilder aktualisiert",
-                "ru": "обновлены все образы устройств до последних версий",
-                "pt": "atualizou todas as imagens do dispositivo para as versões mais recentes",
-                "nl": "alle apparaatafbeeldingen bijgewerkt naar de nieuwste versies",
-                "fr": "mis à jour toutes les images de l'appareil vers les dernières versions",
-                "it": "ha aggiornato tutte le immagini del dispositivo alle ultime versioni",
-                "es": "actualizado todas las imágenes del dispositivo a las últimas versiones",
-                "pl": "zaktualizowałem wszystkie obrazy urządzeń do najnowszych wersji",
-                "zh-cn": "将所有设备映像更新为最新版本"
             }
         },
         "authors": [
@@ -301,7 +301,9 @@
             "sentry": {
                 "dsn": "https://1bc0c96f48e44483b283bc5fc0ca91e2@sentry.iobroker.net/10",
                 "pathWhitelist": [],
-                "errorBlacklist": ["SyntaxError"]
+                "errorBlacklist": [
+                    "SyntaxError"
+                ]
             }
         }
     },
