@@ -829,7 +829,7 @@ async function sendInit() {
         }
     } catch (e) {
         adapter.log.error(`Init not possible, going to stop: ${e.message}`);
-        adapter.stop();
+        setTimeout(() => adapter.stop(), 30000);
     }
 } // endSendInit
 
