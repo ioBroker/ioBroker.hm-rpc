@@ -133,6 +133,6 @@ jobs:
           export SENTRY_URL=https://sentry.iobroker.net
           export SENTRY_ORG=iobroker
           export SENTRY_PROJECT=iobroker-hm-rpc
-          export SENTRY_VERSION=iobroker.hm-rpc@${{ env.VERSION }}
+          export SENTRY_VERSION=iobroker.hm-rpc@${{ steps.extract_release.outputs.VERSION }}
           sentry-cli releases new $SENTRY_VERSION
           sentry-cli releases finalize $SENTRY_VERSION
