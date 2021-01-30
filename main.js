@@ -236,7 +236,7 @@ function combineEPaperCommand(lines, signal, ton, repeats, offset) {
     return command;
 }
 
-function controlEPaper(id, data) {
+async function controlEPaper(id, data) {
     const tmp = id.split('.');
     tmp[3] = '3';
     tmp[4] = 'SUBMIT';
@@ -245,16 +245,12 @@ function controlEPaper(id, data) {
 
     try {
         if (rpcClient && connected) {
-            rpcClient.methodCall('setValue', [`${tmp[2]}:${tmp[3]}`, tmp[4], val], err => {
-                if (err) {
-                    adapter.log.error(`${adapter.config.type}rpc -> setValue ${JSON.stringify([`${tmp[2]}:${tmp[3]}`, tmp[4], val])}`);
-                    adapter.log.error(err);
-                }
-            });
+            await rpcMethodCallAsync('setValue', [`${tmp[2]}:${tmp[3]}`, tmp[4], val]);
         } else {
             adapter.log.warn(`Cannot setValue "${id}", because not connected.`);
         }
     } catch (e) {
+        adapter.log.error(`${adapter.config.type}rpc -> setValue ${JSON.stringify([`${tmp[2]}:${tmp[3]}`, tmp[4], val])}`);
         adapter.log.error(`Cannot call setValue: ${e.message}`);
     }
 }
@@ -412,7 +408,7 @@ function startAdapter(options) {
             adapter.subscribeStates('*');
             main();
         },
-        stateChange: (id, state) => {
+        stateChange: async (id, state) => {
             if (!state || state.ack === true) {
                 return;
             }
@@ -518,21 +514,17 @@ function startAdapter(options) {
 
             try {
                 if (rpcClient && connected) {
-                    rpcClient.methodCall('setValue', [`${tmp[2]}:${tmp[3]}`, tmp[4], val], err => {
-                        if (err) {
-                            adapter.log.error(`${adapter.config.type}rpc -> setValue ${JSON.stringify([`${tmp[2]}:${tmp[3]}`, tmp[4], state.val])} ${type}`);
-                            adapter.log.error(err);
-                        }
-                    });
+                    await rpcMethodCallAsync('setValue', [`${tmp[2]}:${tmp[3]}`, tmp[4], val]);
                 } else {
                     adapter.log.warn(`Cannot setValue "${id}", because not connected.`);
                 }
             } catch (e) {
+                adapter.log.error(`${adapter.config.type}rpc -> setValue ${JSON.stringify([`${tmp[2]}:${tmp[3]}`, tmp[4], state.val])} ${type}`);
                 adapter.log.error(`Cannot call setValue: ${e.message}`);
             }
         },
         // Add messagebox Function for ioBroker.occ
-        message: obj => {
+        message: async obj => {
             adapter.log.debug(`[MSSG] Received: ${JSON.stringify(obj)}`);
 
             if (obj.command === undefined || obj.command === null) {
@@ -566,14 +558,13 @@ function startAdapter(options) {
             } else if (obj.message.params === undefined || obj.message.params === null) {
                 try {
                     if (rpcClient && connected) {
-                        rpcClient.methodCall(obj.command, [obj.message.ID, obj.message.paramType], (err, data) => {
-                            if (obj.callback) {
-                                adapter.sendTo(obj.from, obj.command, {
-                                    result: data,
-                                    error: err
-                                }, obj.callback);
-                            }
-                        });
+                        const data = await rpcMethodCallAsync(obj.command, [obj.message.ID, obj.message.paramType]);
+                        if (obj.callback) {
+                            adapter.sendTo(obj.from, obj.command, {
+                                result: data,
+                                error: null
+                            }, obj.callback);
+                        }
                     } else {
                         adapter.log.warn(`Cannot send "${obj.command}" "${obj.message.ID}": because not connected`);
                         if (obj.callback) {
@@ -587,14 +578,13 @@ function startAdapter(options) {
             } else {
                 try {
                     if (rpcClient && connected) {
-                        rpcClient.methodCall(obj.command, [obj.message.ID, obj.message.paramType, obj.message.params], (err, data) => {
-                            if (obj.callback) {
-                                adapter.sendTo(obj.from, obj.command, {
-                                    result: data,
-                                    error: err
-                                }, obj.callback);
-                            }
-                        });
+                        const data = await rpcMethodCallAsync(obj.command, [obj.message.ID, obj.message.paramType, obj.message.params]);
+                        if (obj.callback) {
+                            adapter.sendTo(obj.from, obj.command, {
+                                result: data,
+                                error: null
+                            }, obj.callback);
+                        }
                     } else {
                         adapter.log.warn(`Cannot send "${obj.command}" "${obj.message.ID}": because not connected`);
                         if (obj.callback) {
@@ -607,7 +597,7 @@ function startAdapter(options) {
                 }
             }
         },
-        unload: callback => {
+        unload: async callback => {
             try {
                 if (eventInterval) {
                     clearInterval(eventInterval);
@@ -626,17 +616,16 @@ function startAdapter(options) {
                 if (adapter.config && rpcClient) {
                     adapter.log.info(`${adapter.config.type}rpc -> ${adapter.config.homematicAddress}:${adapter.config.homematicPort}${homematicPath} init ${JSON.stringify([daemonURL, ''])}`);
                     try {
-                        rpcClient.methodCall('init', [daemonURL, ''], () => {
-                            if (connected) {
-                                adapter.log.info('Disconnected');
-                                connected = false;
-                                adapter.setState('info.connection', false, true);
-                            }
-                            if (typeof callback === 'function') {
-                                callback();
-                            }
-                            callback = null;
-                        });
+                        await rpcMethodCallAsync('init', [daemonURL, '']);
+                        if (connected) {
+                            adapter.log.info('Disconnected');
+                            connected = false;
+                            adapter.setState('info.connection', false, true);
+                        }
+                        if (typeof callback === 'function') {
+                            callback();
+                        }
+                        callback = null;
                     } catch (e) {
                         if (connected) {
                             adapter.log.info('Disconnected');
@@ -832,25 +821,25 @@ async function sendInit() {
     }
 } // endSendInit
 
-function sendPing() {
+/**
+ * Send ping to API, if error response, set status disconnected and try reconnect
+ *
+ * @return {Promise<void>}
+ */
+async function sendPing() {
     if (rpcClient) {
         adapter.log.debug('Send PING...');
         try {
-            rpcClient.methodCall('ping', [clientId], err => {
-                if (!err) {
-                    adapter.log.debug('PING ok');
-                } else {
-                    adapter.log.error(`Ping error: ${err}`);
-                    if (connected) {
-                        adapter.log.info('Disconnected');
-                        connected = false;
-                        adapter.setState('info.connection', false, true);
-                        connect();
-                    }
-                }
-            });
+            await rpcMethodCallAsync('ping', [clientId]);
+            adapter.log.debug('PING ok');
         } catch (e) {
-            adapter.log.error(`Cannot call ping [${clientId}]: ${e.message}`);
+            adapter.log.error(`Ping error [${clientId}]: ${e.message}`);
+            if (connected) {
+                adapter.log.info('Disconnected');
+                connected = false;
+                adapter.setState('info.connection', false, true);
+                connect();
+            }
         }
     } else {
         adapter.warn('Called PING, but client does not exist');
