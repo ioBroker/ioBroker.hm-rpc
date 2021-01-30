@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.14.32",
+        "version": "1.14.33",
         "news": {
+            "1.14.33": {
+                "en": "fix problems with CuxD and HMIP (fixes #307)\nmore palces where we now log message on real errors instead of error object",
+                "de": "Beheben Sie Probleme mit CuxD und HMIP (behebt # 307)\nWeitere Palces, in denen wir jetzt Nachrichten über echte Fehler anstelle von Fehlerobjekten protokollieren",
+                "ru": "исправить проблемы с CuxD и HMIP (исправления # 307)\nбольше мест, где мы теперь регистрируем сообщение о реальных ошибках вместо объекта ошибки",
+                "pt": "corrigir problemas com CuxD e HMIP (correções # 307)\nmais locais onde agora registramos mensagens sobre erros reais em vez de objeto de erro",
+                "nl": "problemen oplossen met CuxD en HMIP (fix # 307)\nmeer palces waar we nu een bericht registreren over echte fouten in plaats van een foutobject",
+                "fr": "résoudre les problèmes avec CuxD et HMIP (corrections # 307)\nplus de palces où nous enregistrons maintenant un message sur des erreurs réelles au lieu d'un objet d'erreur",
+                "it": "risolve problemi con CuxD e HMIP (correzioni # 307)\npiù luoghi in cui ora registriamo il messaggio sugli errori reali invece che sull'oggetto errore",
+                "es": "solucionar problemas con CuxD y HMIP (arreglos # 307)\nmás lugares donde ahora registramos el mensaje sobre errores reales en lugar del objeto de error",
+                "pl": "napraw problemy z CuxD i HMIP (poprawki # 307)\nmore palces, gdzie teraz rejestrujemy komunikaty dotyczące rzeczywistych błędów zamiast obiektu błędu",
+                "zh-cn": "修复CuxD和HMIP的问题（修复＃307）\n现在我们在实际错误而不是错误对象上记录消息的更多地方"
+            },
             "1.14.32": {
                 "en": "revert received messages with invalid command\nlog message on real errors instead of error object\nfix for crashes on decrypt",
                 "de": "Empfangene Nachrichten mit ungültigem Befehl zurücksetzen\nProtokollmeldung über echte Fehler anstelle des Fehlerobjekts\nBehebung von Abstürzen beim Entschlüsseln",
@@ -242,18 +254,6 @@
                 "es": "se agregaron algunos roles hmip para el canal 0",
                 "pl": "dodano kilka ról hmip dla kanału 0",
                 "zh-cn": "为频道0添加了一些hmip角色"
-            },
-            "1.14.5": {
-                "en": "fixed a potential problem when CCU (xml-rpc) delivers unexpected format on \"newDevices\"",
-                "de": "Ein potenzielles Problem wurde behoben, wenn CCU (xml-rpc) ein unerwartetes Format für \"newDevices\" liefert.",
-                "ru": "исправлена потенциальная проблема, когда CCU (xml-rpc) доставляет неожиданный формат на \"newDevices\"",
-                "pt": "Foi corrigido um problema em potencial quando o CCU (xml-rpc) entrega um formato inesperado em \"newDevices\"",
-                "nl": "een mogelijk probleem opgelost wanneer CCU (xml-rpc) onverwacht formaat op \"newDevices\" levert",
-                "fr": "correction d'un problème potentiel lorsque CCU (xml-rpc) fournit un format inattendu sur \"newDevices\"",
-                "it": "risolto un potenziale problema quando CCU (xml-rpc) consegna un formato imprevisto su \"newDevices\"",
-                "es": "solucionó un problema potencial cuando CCU (xml-rpc) entrega un formato inesperado en \"newDevices\"",
-                "pl": "naprawiono potencjalny problem, gdy CCU (xml-rpc) dostarcza nieoczekiwany format w „newDevices”",
-                "zh-cn": "修复了CCU（xml-rpc）在“ newDevices”上传递意外格式时的潜在问题"
             }
         },
         "authors": [

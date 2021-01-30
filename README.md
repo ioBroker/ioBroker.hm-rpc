@@ -150,6 +150,10 @@ by ioBroker, when you have a running 'dummy' program on the CCU which depends on
 	### __WORK IN PROGRESS__
 -->
 
+### 1.14.33 (2021-01-30)
+* (foxriver76) fix problems with CuxD and HMIP (fixes #307)
+* (foxriver76) more palces where we now log message on real errors instead of error object
+
 ### 1.14.32 (2021-01-29)
 * (foxriver76) revert received messages with invalid command
 * (foxriver76) log message on real errors instead of error object

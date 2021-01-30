@@ -739,12 +739,12 @@ async function main() {
                 try {
                     await adapter.delForeignObjectAsync(row.id);
                 } catch (e) {
-                    adapter.log.warn(`Could not delete ${row.id}: ${e}`);
+                    adapter.log.warn(`Could not delete ${row.id}: ${e.message}`);
                 }
             }
         }
     } catch (e) {
-        adapter.log.error(`getObjectListAsync hm-rpc: ${e}`);
+        adapter.log.error(`getObjectListAsync hm-rpc: ${e.message}`);
     }
 
     try {
@@ -754,7 +754,7 @@ async function main() {
             metaRoles = res.native;
         }
     } catch (e) {
-        adapter.log.error(`hm-rpc.meta.roles: ${e}`);
+        adapter.log.error(`hm-rpc.meta.roles: ${e.message}`);
     }
 
     try {
@@ -798,7 +798,7 @@ async function main() {
             }
         }
     } catch (e) {
-        adapter.log.error(`Could not get state view on start: ${e}`);
+        adapter.log.error(`Could not get state view on start: ${e.message}`);
     }
 
     // Start Adapter
@@ -816,13 +816,12 @@ async function sendInit() {
             adapter.log.debug(`${adapter.config.type}rpc -> ${adapter.config.homematicAddress}:${adapter.config.homematicPort}${homematicPath} init ${JSON.stringify([daemonURL, clientId])}`);
             await rpcMethodCallAsync('init', [daemonURL, clientId]);
             if (adapter.config.daemon === 'CUxD') {
-                getCuxDevices(err2 => {
-                    if (!err2) {
-                        updateConnection();
-                    } else {
-                        adapter.log.error(`getCuxDevices error: ${err2}`);
-                    }
-                });
+                try {
+                    await getCuxDevices();
+                    updateConnection();
+                } catch (e) {
+                    adapter.log.error(`getCuxDevices error: ${e.message}`);
+                }
             } else {
                 updateConnection();
             }
@@ -886,7 +885,7 @@ async function initRpcServer() {
             port: port
         });
     } catch (e) {
-        adapter.log.error(`Could not create RPC Server: ${e}`);
+        adapter.log.error(`Could not create RPC Server: ${e.message}`);
         return void adapter.restart();
     }
 
@@ -972,7 +971,7 @@ async function initRpcServer() {
                     endkey: `hm-rpc.${adapter.instance}.\u9999`
                 });
             } catch (e) {
-                adapter.log.error(`getObjectViewAsync hm-rpc: ${e}`);
+                adapter.log.error(`getObjectViewAsync hm-rpc: ${e.message}`);
             }
 
             if (doc && doc.rows) {
@@ -1021,10 +1020,12 @@ async function initRpcServer() {
             }
 
             adapter.log.info(`new ${adapter.config.daemon} devices/channels after filter: ${newDevices.length}`);
-            createDevices(newDevices, callback);
+            await createDevices(newDevices);
         } else {
-            createDevices(newDevices, callback);
+            await createDevices(newDevices);
         }
+        // call it otherwise HMIP won't work
+        callback(null, '');
     });
 
     rpcServer.on('listDevices', async (err, params, callback) => {
@@ -1039,7 +1040,7 @@ async function initRpcServer() {
                 endkey: `hm-rpc.${adapter.instance}.\u9999`
             });
         } catch (e) {
-            adapter.log.error(`Error on listDevices (getObjectView): ${e}`);
+            adapter.log.error(`Error on listDevices (getObjectView): ${e.message}`);
         }
 
         const response = [];
@@ -1063,7 +1064,7 @@ async function initRpcServer() {
         try {
             for (let r = response.length - 1; r >= 0; r--) {
                 if (!response[r].ADDRESS) {
-                    adapter.log.warn(`${adapter.config.type}rpc -> found empty entry at position ${r} !`);
+                    adapter.log.warn(`${adapter.config.type}rpc -> found empty entry at position ${r}!`);
                     response.splice(r, 1);
                 }
             }
@@ -1308,7 +1309,7 @@ async function addParamsetObjects(channel, paramset) {
             const res = await adapter.extendObjectAsync(`${channel._id}.${key}`, obj);
             adapter.log.debug(`object ${res.id} extended`);
         } catch (e) {
-            adapter.log.error(`Could not extend object ${channel._id}.${key}: ${e}`);
+            adapter.log.error(`Could not extend object ${channel._id}.${key}: ${e.message}`);
         }
     } // endFor
 } // endAddParamsetObjects
@@ -1334,7 +1335,7 @@ async function getValueParamsets() {
 
             await addParamsetObjects(obj, metaValues[cid]);
         } catch (e) {
-            adapter.log.error(`Error on getParamsetDescription for [${obj.native.ADDRESS}, 'VALUES']": ${e}`);
+            adapter.log.error(`Error on getParamsetDescription for [${obj.native.ADDRESS}, 'VALUES']": ${e.message}`);
         }
     }
 
@@ -1343,7 +1344,7 @@ async function getValueParamsets() {
         try {
             await adapter.setStateAsync('updated', true, false);
         } catch (e) {
-            adapter.log.error(`Could not inform hm-rega about new devices: ${e}`);
+            adapter.log.error(`Could not inform hm-rega about new devices: ${e.message}`);
         }
         // If it has been a force reinit run, set it to false and restart
         if (adapter.config.forceReInit) {
@@ -1351,7 +1352,7 @@ async function getValueParamsets() {
             try {
                 await adapter.extendForeignObjectAsync(`system.adapter.${adapter.namespace}`, {native: {forceReInit: false}});
             } catch (e) {
-                adapter.log.error(`Could not restart and set forceReinit to false: ${e}`);
+                adapter.log.error(`Could not restart and set forceReinit to false: ${e.message}`);
             }
         }
     }
@@ -1552,7 +1553,7 @@ async function createDevices(deviceArr) {
             const res = await adapter.setObjectAsync(obj._id, obj);
             adapter.log.debug(`object ${res.id} created`);
         } catch (e) {
-            adapter.log.error(`object ${obj._id} error on creation: ${e}`);
+            adapter.log.error(`object ${obj._id} error on creation: ${e.message}`);
         }
 
         if (obj.type === 'channel') {
@@ -1589,7 +1590,7 @@ async function getCuxDevices() {
                         endkey: `hm-rpc.${adapter.instance}.\u9999`
                     });
                 } catch (e) {
-                    adapter.log.error(`getObjectView hm-rpc: ${e}`);
+                    adapter.log.error(`getObjectView hm-rpc: ${e.message}`);
                 }
 
                 if (doc && doc.rows) {
@@ -1684,7 +1685,7 @@ function connect(isFirst) {
                 reconnectTimeout: adapter.config.reconnectInterval * 1000
             });
         } catch (e) {
-            adapter.log.error(`Could not create non-secure ${adapter.config.type}-rpc client: ${e}`);
+            adapter.log.error(`Could not create non-secure ${adapter.config.type}-rpc client: ${e.message}`);
             return void adapter.restart();
         } // endCatch
 
@@ -1717,7 +1718,7 @@ function connect(isFirst) {
                     rejectUnauthorized: false
                 });
             } catch (e) {
-                adapter.log.error(`Could not create secure ${adapter.config.type}-rpc client: ${e}`);
+                adapter.log.error(`Could not create secure ${adapter.config.type}-rpc client: ${e.message}`);
                 return void adapter.restart();
             } // endCatch
         });
