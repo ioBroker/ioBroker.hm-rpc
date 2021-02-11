@@ -395,15 +395,22 @@ async function readSettings(id) {
     controlEPaper(id, data);
 } // endReadSettings
 
-// the adapter object
-
 function startAdapter(options) {
     options = options || {};
 
     Object.assign(options, {
 
         name: adapterName,
+        error: e => {
+            if (e.code === 'EADDRNOTAVAIL') {
+                adapter.log.error(`Address ${adapter.config.adapterAddress} not available, maybe your HOST IP has changed due to migration`);
+                // doesn't work in that case, so let it correctly be handled by controller at least we can log
+                // return true;
+            }
 
+            // don't now how to handle so let it burn ;-)
+            return false;
+        },
         ready: () => {
             adapter.subscribeStates('*');
             main();
@@ -869,6 +876,7 @@ async function initRpcServer() {
     daemonURL = `${daemonProto + callbackAddress}:${port}`;
 
     try {
+        // somehow we cannot catch EADDRNOTAVAIL, also not with a cb here
         rpcServer = rpc.createServer({
             host: adapter.config.adapterAddress,
             port: port
@@ -1104,6 +1112,16 @@ async function initRpcServer() {
 const methods = {
 
     event: (err, params) => {
+        if (err) {
+            adapter.log.error(`${adapter.config.type}rpc <- received error event: ${err}`);
+            return '';
+        }
+
+        if (!Array.isArray(params)) {
+            adapter.log.error(`${adapter.config.type}rpc <- Invalid params "${params}" received`);
+            return '';
+        }
+
         adapter.log.debug(`${adapter.config.type}rpc <- event ${JSON.stringify(params)}`);
         let val;
         // CUxD ignores all prefixes!!
@@ -1116,13 +1134,6 @@ const methods = {
             params[0] = adapter.namespace;
         }
         const name = `${params[0]}.${channel}.${params[2]}`;
-
-        /* now handled below
-        if (name === `${adapter.namespace}.CENTRAL.PONG` || name ===`${adapter.namespace}.CENTRAL.0.PONG`) {
-            adapter.log.debug('PONG event received, ignoring');
-            return '';
-        }
-         */
 
         if (dpTypes[name]) {
             // it shouldn't be necessary to scale on % values, see https://github.com/ioBroker/ioBroker.hm-rpc/issues/263
