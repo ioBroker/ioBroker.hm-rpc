@@ -1669,7 +1669,7 @@ function updateConnection() {
     }
 
     // Virtual Devices API does not support PING
-    if (!eventInterval && adapter.config.daemon !== 'virtual-devices') {
+    if (!eventInterval) {
         adapter.log.debug('start ping interval');
         eventInterval = setInterval(keepAlive, adapter.config.checkInitInterval * 1000 / 2);
     }

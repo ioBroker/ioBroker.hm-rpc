@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.14.34",
+        "version": "1.14.35",
         "news": {
+            "1.14.35": {
+                "en": "virtual devices now support ping, so use it, else it can be that instance won't register at CCU again (fixes #308)",
+                "de": "Virtuelle Geräte unterstützen jetzt Ping. Verwenden Sie es daher. Andernfalls wird die Instanz möglicherweise nicht erneut bei der CCU registriert (Fixes Nr. 308).",
+                "ru": "виртуальные устройства теперь поддерживают ping, поэтому используйте его, иначе может случиться так, что экземпляр больше не будет регистрироваться в CCU (исправления # 308)",
+                "pt": "dispositivos virtuais agora suportam ping, então use-o, caso contrário, pode ser que a instância não se registre no CCU novamente (correções # 308)",
+                "nl": "virtuele apparaten ondersteunen nu ping, dus gebruik het, anders kan het zijn dat de instantie zich niet opnieuw bij CCU registreert (fix # 308)",
+                "fr": "les périphériques virtuels prennent désormais en charge le ping, alors utilisez-le, sinon il se peut que l'instance ne s'enregistre pas à nouveau au CCU (correctifs # 308)",
+                "it": "i dispositivi virtuali ora supportano il ping, quindi usalo, altrimenti potrebbe essere che l'istanza non si registrerà di nuovo su CCU (correzioni # 308)",
+                "es": "los dispositivos virtuales ahora admiten ping, así que úselo, de lo contrario, puede ser que la instancia no se registre en CCU nuevamente (arreglos # 308)",
+                "pl": "urządzenia wirtualne obsługują teraz ping, więc użyj go, w przeciwnym razie może się zdarzyć, że instancja nie zarejestruje się ponownie w CCU (poprawki nr 308)",
+                "zh-cn": "虚拟设备现在支持ping，因此请使用它，否则可能是该实例不再在CCU上注册（修复＃308）"
+            },
             "1.14.34": {
                 "en": "use async rpc calls for better error handling\nnow log error events received by XML-RPC\ndetect invalid params and log instead of crash",
                 "de": "Verwenden Sie asynchrone RPC-Aufrufe für eine bessere Fehlerbehandlung\nProtokollieren Sie jetzt von XML-RPC empfangene Fehlerereignisse\nErkennen Sie ungültige Parameter und protokollieren Sie anstelle eines Absturzes",
@@ -242,18 +254,6 @@
                 "es": "Se cambió el nombre de la instancia según el rol (RF, Wired, HMIP)",
                 "pl": "Zmieniono nazwę wystąpienia zgodnie z rolą (RF, Wired, HMIP)",
                 "zh-cn": "根据角色（RF，有线，HMIP）更改了实例名称"
-            },
-            "1.14.10": {
-                "en": "removed meta data caching completely because meta data can be dynamic due to FW update or CuxD",
-                "de": "Das Zwischenspeichern von Metadaten wurde vollständig entfernt, da Metadaten aufgrund von FW-Updates oder CuxD dynamisch sein können",
-                "ru": "полностью удалено кеширование метаданных, потому что метаданные могут быть динамическими из-за обновления FW или CuxD",
-                "pt": "removido completamente o cache de metadados porque os metadados podem ser dinâmicos devido à atualização do FW ou ao CuxD",
-                "nl": "metagegevenscaching volledig verwijderd omdat metagegevens dynamisch kunnen zijn vanwege FW-update of CuxD",
-                "fr": "suppression complète de la mise en cache des métadonnées car les métadonnées peuvent être dynamiques en raison de la mise à jour du micrologiciel ou de CuxD",
-                "it": "rimossa completamente la memorizzazione nella cache dei metadati poiché i metadati possono essere dinamici a causa dell'aggiornamento FW o CuxD",
-                "es": "eliminó completamente el almacenamiento en caché de metadatos porque los metadatos pueden ser dinámicos debido a la actualización de FW o CuxD",
-                "pl": "całkowicie usunięto buforowanie metadanych, ponieważ metadane mogą być dynamiczne z powodu aktualizacji FW lub CuxD",
-                "zh-cn": "完全删除了元数据缓存，因为由于固件更新或CuxD，元数据可以是动态的"
             }
         },
         "authors": [
