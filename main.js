@@ -1668,7 +1668,7 @@ function updateConnection() {
         connTimeout = null;
     }
 
-    // Virtual Devices API does not support PING
+    // Virtual Devices API does now also support PING (tested with 3.55.5.20201226 - see #308)
     if (!eventInterval) {
         adapter.log.debug('start ping interval');
         eventInterval = setInterval(keepAlive, adapter.config.checkInitInterval * 1000 / 2);
