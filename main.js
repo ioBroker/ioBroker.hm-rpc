@@ -1001,11 +1001,19 @@ async function initRpcServer() {
                             if (val.ADDRESS.indexOf(':') !== -1) {
                                 const address = val.ADDRESS.replace(':', '.').replace(FORBIDDEN_CHARS, '_');
                                 const parts = address.split('.');
-                                adapter.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
-                                adapter.log.info(`obsolete channel ${address} ${JSON.stringify(address)} deleted`);
+                                try {
+                                    await adapter.deleteChannelAsync(parts[parts.length - 2], parts[parts.length - 1]);
+                                    adapter.log.info(`obsolete channel ${address} ${JSON.stringify(address)} deleted`);
+                                } catch (e) {
+                                    adapter.log.error(`Could not delete obsolete channel ${address} ${JSON.stringify(address)}: ${e.message}`);
+                                }
                             } else {
-                                adapter.deleteDevice(val.ADDRESS);
-                                adapter.log.info(`obsolete device ${val.ADDRESS} deleted`);
+                                try {
+                                    await adapter.deleteDeviceAsync(val.ADDRESS);
+                                    adapter.log.info(`obsolete device ${val.ADDRESS} deleted`);
+                                } catch (e) {
+                                    adapter.log.error(`Could not delete obsolete device ${val.ADDRESS}: ${e.message}`);
+                                }
                             }
                         }
                     } else {
