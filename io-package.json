@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.14.35",
+        "version": "1.14.36",
         "news": {
+            "1.14.36": {
+                "en": "error handling improved when deleting obsolete devices/channels\nif no message id provided on `sendTo`, we do not send `undefined` params anymore (fixes #318)",
+                "de": "Die Fehlerbehandlung beim Löschen veralteter Geräte / Kanäle wurde verbessert\nWenn auf \"sendTo\" keine Nachrichten-ID angegeben ist, senden wir keine \"undefinierten\" Parameter mehr (Fixes # 318).",
+                "ru": "улучшена обработка ошибок при удалении устаревших устройств / каналов\nесли в sendTo не указан идентификатор сообщения, мы больше не отправляем параметры undefined (исправления # 318)",
+                "pt": "tratamento de erros melhorado ao excluir dispositivos / canais obsoletos\nse nenhum id de mensagem fornecido em `sendTo`, não enviamos mais parâmetros` undefined` (correções # 318)",
+                "nl": "foutafhandeling verbeterd bij het verwijderen van verouderde apparaten / kanalen\nals er geen bericht-ID is opgegeven op `sendTo`, verzenden we geen` ongedefinieerde` params meer (fixes # 318)",
+                "fr": "gestion des erreurs améliorée lors de la suppression d'appareils / canaux obsolètes\nsi aucun identifiant de message n'est fourni sur `sendTo`, nous n'envoyons plus les paramètres` undefined` (correctifs # 318)",
+                "it": "gestione degli errori migliorata durante l'eliminazione di dispositivi / canali obsoleti\nse non viene fornito alcun ID messaggio su `sendTo`, non inviamo più i parametri` undefined` (correzioni # 318)",
+                "es": "manejo de errores mejorado al eliminar dispositivos / canales obsoletos\nsi no se proporciona un ID de mensaje en `sendTo`, ya no enviamos parámetros` undefined` (arreglos # 318)",
+                "pl": "poprawiono obsługę błędów podczas usuwania przestarzałych urządzeń / kanałów\njeśli nie podano identyfikatora wiadomości w `sendTo`, nie wysyłamy już parametrów` undefined` (poprawki # 318)",
+                "zh-cn": "删除过时的设备/通道时的错误处理得到改善\n如果在`sendTo`上没有提供消息ID，我们将不再发送`undefined`参数（修复＃318）"
+            },
             "1.14.35": {
                 "en": "virtual devices now support ping, so use it, else it can be that instance won't register at CCU again (fixes #308)",
                 "de": "Virtuelle Geräte unterstützen jetzt Ping. Verwenden Sie es daher. Andernfalls wird die Instanz möglicherweise nicht erneut bei der CCU registriert (Fixes Nr. 308).",
@@ -242,18 +254,6 @@
                 "es": "continuamos la ejecución si se produce un error al recuperar un parámetro de CCU",
                 "pl": "kontynuujemy wykonywanie, jeśli wystąpi błąd podczas pobierania zestawu parametrów z CCU",
                 "zh-cn": "如果从CCU检索参数集时出错，我们将继续执行"
-            },
-            "1.14.11": {
-                "en": "Changed name of Instance according to the role (RF, Wired, HMIP)",
-                "de": "Name der Instanz entsprechend der Rolle geändert (RF, Wired, HMIP)",
-                "ru": "Изменено имя экземпляра в зависимости от роли (RF, Wired, HMIP)",
-                "pt": "Nome alterado da instância de acordo com a função (RF, com fio, HMIP)",
-                "nl": "Naam van instantie gewijzigd op basis van de rol (RF, Wired, HMIP)",
-                "fr": "Changement du nom de l'instance en fonction du rôle (RF, filaire, HMIP)",
-                "it": "Nome dell'istanza modificato in base al ruolo (RF, Wired, HMIP)",
-                "es": "Se cambió el nombre de la instancia según el rol (RF, Wired, HMIP)",
-                "pl": "Zmieniono nazwę wystąpienia zgodnie z rolą (RF, Wired, HMIP)",
-                "zh-cn": "根据角色（RF，有线，HMIP）更改了实例名称"
             }
         },
         "authors": [

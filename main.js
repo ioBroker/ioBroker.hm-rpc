@@ -565,7 +565,8 @@ function startAdapter(options) {
             } else if (obj.message.params === undefined || obj.message.params === null) {
                 try {
                     if (rpcClient && connected) {
-                        const data = await rpcMethodCallAsync(obj.command, [obj.message.ID, obj.message.paramType]);
+                        // if device specific command, send it's ID and paramType
+                        const data = await rpcMethodCallAsync(obj.command, obj.message.ID !== undefined ? [obj.message.ID, obj.message.paramType] : []);
                         if (obj.callback) {
                             adapter.sendTo(obj.from, obj.command, {
                                 result: data,
