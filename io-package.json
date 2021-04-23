@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.14.36",
+        "version": "1.14.37",
         "news": {
+            "1.14.37": {
+                "en": "added tier, is now 2\nadded missing images (closes #319)",
+                "de": "Tier hinzugefügt, ist jetzt 2\nfehlende Bilder hinzugefügt (schließt # 319)",
+                "ru": "добавлен уровень, теперь 2\nдобавлены отсутствующие изображения (закрывает # 319)",
+                "pt": "camada adicionada, agora é 2\nadicionaram imagens ausentes (fecha # 319)",
+                "nl": "toegevoegd niveau, is nu 2\nontbrekende afbeeldingen toegevoegd (sluit # 319)",
+                "fr": "niveau supplémentaire, est maintenant 2\najout d'images manquantes (ferme le # 319)",
+                "it": "livello aggiunto, ora è 2\naggiunte immagini mancanti (chiude # 319)",
+                "es": "nivel agregado, ahora es 2\nse agregaron imágenes faltantes (cierra # 319)",
+                "pl": "dodany poziom, jest teraz 2\ndodano brakujące obrazy (zamyka # 319)",
+                "zh-cn": "增加的等级，现在是2\n添加缺少的图像（关闭＃319）"
+            },
             "1.14.36": {
                 "en": "error handling improved when deleting obsolete devices/channels\nif no message id provided on `sendTo`, we do not send `undefined` params anymore (fixes #318)",
                 "de": "Die Fehlerbehandlung beim Löschen veralteter Geräte / Kanäle wurde verbessert\nWenn auf \"sendTo\" keine Nachrichten-ID angegeben ist, senden wir keine \"undefinierten\" Parameter mehr (Fixes # 318).",
@@ -242,18 +254,6 @@
                 "es": "manejamos algunos errores adicionales de casos extremos de ahora en adelante",
                 "pl": "odtąd obsługujemy dodatkowe błędy wielkości liter krawędzi",
                 "zh-cn": "从现在开始，我们将处理一些其他的极端情况错误"
-            },
-            "1.14.12": {
-                "en": "we continue execution if error on retrieving a paramset from CCU",
-                "de": "Wir setzen die Ausführung fort, wenn beim Abrufen eines Parameters von der CCU ein Fehler auftritt",
-                "ru": "мы продолжаем выполнение, если ошибка при получении набора параметров из CCU",
-                "pt": "continuamos a execução se ocorrer um erro ao recuperar um paramset da CCU",
-                "nl": "we gaan door met de uitvoering als er een fout optreedt bij het ophalen van een paramset van CCU",
-                "fr": "nous continuons l'exécution en cas d'erreur lors de la récupération d'un paramètre du CCU",
-                "it": "continuiamo l'esecuzione in caso di errore nel recupero di un parametro dalla CCU",
-                "es": "continuamos la ejecución si se produce un error al recuperar un parámetro de CCU",
-                "pl": "kontynuujemy wykonywanie, jeśli wystąpi błąd podczas pobierania zestawu parametrów z CCU",
-                "zh-cn": "如果从CCU检索参数集时出错，我们将继续执行"
             }
         },
         "authors": [
@@ -305,7 +305,12 @@
                     "SyntaxError"
                 ]
             }
-        }
+        },
+        "titleLang": {
+            "en": "HomeMatic RPC",
+            "de": "HomeMatic RPC"
+        },
+        "tier": 2
     },
     "native": {
         "homematicAddress": "192.168.0.100",
