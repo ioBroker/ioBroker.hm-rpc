@@ -1262,7 +1262,7 @@ async function addParamsetObjects(channel, paramset) {
             if (typeof paramset[key].MIN === 'string' && paramset[key].VALUE_LIST.indexOf(paramset[key].MIN) !== -1) {
                 obj.common.min = paramset[key].VALUE_LIST.indexOf(paramset[key].MIN);
             }
-            if (typeof paramset[key].MAX === 'string' && paramset[key].VALUE_LIST.indexOf(paramset[key].MIN) !== -1) {
+            if (typeof paramset[key].MAX === 'string' && paramset[key].VALUE_LIST.indexOf(paramset[key].MAX) !== -1) {
                 obj.common.max = paramset[key].VALUE_LIST.indexOf(paramset[key].MAX);
             }
             if (typeof paramset[key].DEFAULT === 'string') && paramset[key].VALUE_LIST.indexOf(paramset[key].DEFAULT) !== -1) {
