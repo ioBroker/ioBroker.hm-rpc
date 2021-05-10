@@ -1258,15 +1258,29 @@ async function addParamsetObjects(channel, paramset) {
         } // endElseIf
 
         // sometimes min/max/def is string on hmip meta in combination with value_list
+        // note, that there are cases (Virtual heating devices) which also provide min/max/def with
+        // strings, but does not match entries in the value list, thus we have to check indexOf().
         if (paramset[key].VALUE_LIST) {
             if (typeof paramset[key].MIN === 'string') {
-                obj.common.min = paramset[key].VALUE_LIST.indexOf(paramset[key].MIN);
+                if(paramset[key].VALUE_LIST.indexOf(paramset[key].MIN) !== -1) {
+                    obj.common.min = paramset[key].VALUE_LIST.indexOf(paramset[key].MIN);
+                } else {
+                    obj.common.min = parseInt(paramset[key].MIN);
+                }
             }
             if (typeof paramset[key].MAX === 'string') {
-                obj.common.max = paramset[key].VALUE_LIST.indexOf(paramset[key].MAX);
+                if(paramset[key].VALUE_LIST.indexOf(paramset[key].MAX) !== -1) {
+                    obj.common.max = paramset[key].VALUE_LIST.indexOf(paramset[key].MAX);
+                } else {
+                    obj.common.max = parseInt(paramset[key].MAX);
+                }
             }
             if (typeof paramset[key].DEFAULT === 'string') {
-                obj.common.def = paramset[key].VALUE_LIST.indexOf(paramset[key].DEFAULT);
+                if(paramset[key].VALUE_LIST.indexOf(paramset[key].DEFAULT) !== -1) {
+                    obj.common.def = paramset[key].VALUE_LIST.indexOf(paramset[key].DEFAULT);
+                } else {
+                    obj.common.def = parseInt(paramset[key].DEFAULT);
+                }
             }
         }
 
