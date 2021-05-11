@@ -44,11 +44,11 @@
   "devDependencies": {
     "@alcalzone/release-script": "^1.8.3",
     "@iobroker/testing": "^2.4.2",
-    "chai": "^4.2.0",
-    "eslint": "^7.3.0",
+    "chai": "^4.3.4",
+    "eslint": "^7.26.0",
     "gulp": "^4.0.2",
     "hm-simulator": "^0.1.1",
-    "mocha": "^8.0.1"
+    "mocha": "^8.4.0"
   },
   "bugs": {
     "url": "https://github.com/ioBroker/ioBroker.hm-rpc/issues"
