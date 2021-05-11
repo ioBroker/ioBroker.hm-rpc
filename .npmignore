@@ -14,5 +14,6 @@ gulpfile.js
 !/README.md
 /admin/i18n/*
 lib/create-images-js.sh
+test
 
 

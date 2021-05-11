@@ -1147,7 +1147,7 @@ const methods = {
         if (dpTypes[name]) {
             // it shouldn't be necessary to scale on % values, see https://github.com/ioBroker/ioBroker.hm-rpc/issues/263
             // backward compatibility -> max===1 unit===%
-            if (dpTypes[name].UNIT === '100%' || (dpTypes[name].UNIT === '%' && dpTypes[name].MAX === 1)) {
+            if (dpTypes[name].UNIT === '100%') {// || (dpTypes[name].UNIT === '%' && dpTypes[name].MAX === 1)) {
                 val = Math.round(params[3] * 1000) / 10;
             } else {
                 val = params[3];

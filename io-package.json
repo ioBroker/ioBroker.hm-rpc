@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.14.37",
+        "version": "1.14.38",
         "news": {
+            "1.14.38": {
+                "en": "fixed the VirtualDevices min/max/default assignment (fixes #332)\ndo not scale on normal '%' UNIT because its inconsistent (fixes #326)",
+                "de": "Die Zuweisung von VirtualDevices min / max / default wurde korrigiert (Fixes # 332).\nSkalieren Sie nicht auf der normalen '%' UNIT, da diese inkonsistent ist (Fixes # 326).",
+                "ru": "исправлено назначение виртуальных устройств min / max / default (исправления # 332)\nне масштабируются по обычному ЕДИНИЦУ \"%\", потому что он несовместим (исправление # 326)",
+                "pt": "corrigiu a atribuição mín / máx / padrão VirtualDevices (corrige # 332)\nnão escalar na UNIDADE '%' normal porque é inconsistente (corrige # 326)",
+                "nl": "de VirtualDevices min / max / standaard toewijzing gerepareerd (fixes # 332)\nschaal niet op normale '%' UNIT omdat het inconsistent is (fix # 326)",
+                "fr": "correction de l'affectation min / max / par défaut de VirtualDevices (correctifs # 332)\nne pas mettre à l'échelle sur l'unité '%' normale car elle est incohérente (correction # 326)",
+                "it": "risolto l'assegnazione min / max / predefinita di VirtualDevices (correzioni # 332)\nnon scalare sulla normale UNITÀ '%' perché è incoerente (correzioni # 326)",
+                "es": "Se corrigió la asignación mínima / máxima / predeterminada de VirtualDevices (arreglos # 332)\nno escale en la UNIDAD '%' normal porque es inconsistente (corrige # 326)",
+                "pl": "naprawiono przypisanie wartości min / maks / domyślne VirtualDevices (poprawki # 332)\nnie skaluj na normalnej JEDNOSTCE „%”, ponieważ jest niespójna (poprawki # 326)",
+                "zh-cn": "修复了VirtualDevices的最小/最大/默认分配（修复＃332）\n不能按正常的'％'UNIT缩放，因为它不一致（修复＃326）"
+            },
             "1.14.37": {
                 "en": "added tier, is now 2\nadded missing images (closes #319)",
                 "de": "Tier hinzugefügt, ist jetzt 2\nfehlende Bilder hinzugefügt (schließt # 319)",
@@ -242,18 +254,6 @@
                 "es": "Roles agregados para el sensor de presencia",
                 "pl": "Dodano role dla czujnika obecności",
                 "zh-cn": "增加了状态传感器的角色"
-            },
-            "1.14.13": {
-                "en": "we handle some additional edge case errors from now on",
-                "de": "Wir behandeln von nun an einige zusätzliche Randfallfehler",
-                "ru": "с этого момента мы обрабатываем некоторые дополнительные ошибки",
-                "pt": "lidamos com alguns erros adicionais de bordas a partir de agora",
-                "nl": "we verwerken vanaf nu enkele extra edge case-fouten",
-                "fr": "nous traitons désormais quelques erreurs de cas supplémentaires",
-                "it": "d'ora in poi gestiremo alcuni ulteriori errori di caso limite",
-                "es": "manejamos algunos errores adicionales de casos extremos de ahora en adelante",
-                "pl": "odtąd obsługujemy dodatkowe błędy wielkości liter krawędzi",
-                "zh-cn": "从现在开始，我们将处理一些其他的极端情况错误"
             }
         },
         "authors": [
