@@ -149,6 +149,10 @@ by ioBroker, when you have a running 'dummy' program on the CCU which depends on
 	Placeholder for the next version (at the beginning of the line):
 	### __WORK IN PROGRESS__
 -->
+
+### __WORK IN PROGRESS__
+* (foxriver76) remove the stopInstance message handling and put everything in unload
+
 ### 1.14.38 (2021-05-11)
 * (Jens Maus) fixed the VirtualDevices min/max/default assignment (fixes #332)
 * (foxriver76) do not scale on normal '%' UNIT because its inconsistent (fixes #326)

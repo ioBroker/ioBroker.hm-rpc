@@ -542,27 +542,7 @@ function startAdapter(options) {
                 return;
             }
 
-            if (obj.command === 'stopInstance') {
-                if (rpcServer && rpcServer.server) {
-                    try {
-                        rpcServer.server.close(() => {
-                            console.log('server closed.');
-                            rpcServer.server.unref();
-                        });
-                    } catch {
-                        // ignore
-                    }
-                }
-                if (rpcClient && rpcClient.socket) {
-                    try {
-                        rpcClient.socket.destroy();
-                    } catch {
-                        // ignore
-                    }
-                }
-                // force close
-                setTimeout(() => adapter.terminate ? adapter.terminate() : process.exit(), 3000);
-            } else if (obj.message.params === undefined || obj.message.params === null) {
+            if (obj.message.params === undefined || obj.message.params === null) {
                 try {
                     if (rpcClient && connected) {
                         // if device specific command, send it's ID and paramType
@@ -616,6 +596,7 @@ function startAdapter(options) {
                     clearInterval(connInterval);
                     connInterval = null;
                 }
+
                 if (connTimeout) {
                     clearTimeout(connTimeout);
                     connTimeout = null;
@@ -624,12 +605,33 @@ function startAdapter(options) {
                 if (adapter.config && rpcClient) {
                     adapter.log.info(`${adapter.config.type}rpc -> ${adapter.config.homematicAddress}:${adapter.config.homematicPort}${homematicPath} init ${JSON.stringify([daemonURL, ''])}`);
                     try {
+                        // tell CCU that we are no longer the client under this URL - legacy idk if necessary
                         await rpcMethodCallAsync('init', [daemonURL, '']);
                         if (connected) {
                             adapter.log.info('Disconnected');
                             connected = false;
                             adapter.setState('info.connection', false, true);
                         }
+
+                        if (rpcServer && rpcServer.server) {
+                            try {
+                                rpcServer.server.close(() => {
+                                    console.log('server closed.');
+                                    rpcServer.server.unref();
+                                });
+                            } catch {
+                                // ignore
+                            }
+                        }
+
+                        if (rpcClient && rpcClient.socket) {
+                            try {
+                                rpcClient.socket.destroy();
+                            } catch {
+                                // ignore
+                            }
+                        }
+
                         if (typeof callback === 'function') {
                             callback();
                         }
@@ -655,9 +657,9 @@ function startAdapter(options) {
                 }
             } catch (e) {
                 if (adapter && adapter.log) {
-                    adapter.log.error(`Unload error: ${e}`);
+                    adapter.log.error(`Unload error: ${e.message}`);
                 } else {
-                    console.log(e);
+                    console.log(`Unload error: ${e.message}`);
                 }
                 if (typeof callback === 'function') {
                     callback();
@@ -1712,7 +1714,7 @@ function connect(isFirst) {
             return void adapter.restart();
         } // endCatch
 
-        // If we have bin-rpc, only need it here because bin-rpc cant have https
+        // If we have bin-rpc, only need it here because bin-rpc cannot have https
         if (rpcClient.on) {
             rpcClient.on('error', err => {
                 adapter.log.error(`Socket error: ${err}`);

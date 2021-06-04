@@ -290,7 +290,7 @@
         "type": "iot-systems",
         "connectionType": "local",
         "dataSource": "push",
-        "supportStopInstance": true,
+        "stopTimeout": 1000,
         "messagebox": true,
         "dependencies": [
             {
