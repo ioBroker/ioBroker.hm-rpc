@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.14.38",
+        "version": "1.14.39",
         "news": {
+            "1.14.39": {
+                "en": "remove the stopInstance message handling and put everything in unload\nremoved the white background by some icons",
+                "de": "entferne die stopInstance-Nachrichtenbehandlung und lege alles in unload\nden weißen Hintergrund bei einigen Symbolen entfernt",
+                "ru": "удалите обработку сообщений stopInstance и поместите все в выгрузку\nубран белый фон некоторыми иконками",
+                "pt": "remova o tratamento da mensagem stopInstance e coloque tudo em unload\nremoveu o fundo branco por alguns ícones",
+                "nl": "verwijder de stopInstance-berichtafhandeling en plaats alles in unload\nde witte achtergrond door sommige pictogrammen verwijderd",
+                "fr": "supprimer la gestion des messages stopInstance et tout mettre en décharge\nsupprimé le fond blanc de certaines icônes",
+                "it": "rimuovi la gestione dei messaggi stopInstance e metti tutto in scarica\nrimosso lo sfondo bianco da alcune icone",
+                "es": "eliminar el manejo de mensajes stopInstance y poner todo en descarga\neliminado el fondo blanco por algunos iconos",
+                "pl": "usuń obsługę wiadomości stopInstance i umieść wszystko w unload\nusunięto białe tło za pomocą niektórych ikon",
+                "zh-cn": "删除 stopInstance 消息处理并将所有内容卸载\n通过一些图标删除了白色背景"
+            },
             "1.14.38": {
                 "en": "fixed the VirtualDevices min/max/default assignment (fixes #332)\ndo not scale on normal '%' UNIT because its inconsistent (fixes #326)",
                 "de": "Die Zuweisung von VirtualDevices min / max / default wurde korrigiert (Fixes # 332).\nSkalieren Sie nicht auf der normalen '%' UNIT, da diese inkonsistent ist (Fixes # 326).",

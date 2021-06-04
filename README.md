@@ -150,7 +150,7 @@ by ioBroker, when you have a running 'dummy' program on the CCU which depends on
 	### __WORK IN PROGRESS__
 -->
 
-### __WORK IN PROGRESS__
+### 1.14.39 (2021-06-04)
 * (foxriver76) remove the stopInstance message handling and put everything in unload
 * (bluefox) removed the white background by some icons
 
