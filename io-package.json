@@ -134,126 +134,6 @@
                 "es": "ya no establecemos el estado PONG",
                 "pl": "nie ustawiamy już stanu PONG",
                 "zh-cn": "我们不再设置PONG状态"
-            },
-            "1.14.26": {
-                "en": "matched clientId with namespace to find correct units",
-                "de": "Die Client-ID wurde mit dem Namespace abgeglichen, um die richtigen Einheiten zu finden",
-                "ru": "сопоставил clientId с пространством имен, чтобы найти правильные единицы",
-                "pt": "correspondência de clientId com namespace para encontrar unidades corretas",
-                "nl": "matched clientId met naamruimte om de juiste eenheden te vinden",
-                "fr": "correspondance du clientId avec l'espace de noms pour trouver les unités correctes",
-                "it": "clientId corrispondente con lo spazio dei nomi per trovare le unità corrette",
-                "es": "identificó el clientId con el espacio de nombres para encontrar las unidades correctas",
-                "pl": "dopasowano identyfikator clientId z przestrzenią nazw, aby znaleźć prawidłowe jednostki",
-                "zh-cn": "将clientId与名称空间匹配以找到正确的单位"
-            },
-            "1.14.25": {
-                "en": "we now use a unique id to connect for each client taking the hostname into account",
-                "de": "Wir verwenden jetzt eine eindeutige ID, um für jeden Client unter Berücksichtigung des Hostnamens eine Verbindung herzustellen",
-                "ru": "теперь мы используем уникальный идентификатор для подключения для каждого клиента с учетом имени хоста",
-                "pt": "agora usamos um id único para conectar para cada cliente levando o nome do host em consideração",
-                "nl": "we gebruiken nu een unieke id om voor elke client te verbinden, rekening houdend met de hostnaam",
-                "fr": "nous utilisons maintenant un identifiant unique pour nous connecter pour chaque client en tenant compte du nom d'hôte",
-                "it": "ora usiamo un ID univoco per connetterci per ogni client tenendo conto del nome host",
-                "es": "ahora usamos una identificación única para conectarnos para cada cliente teniendo en cuenta el nombre de host",
-                "pl": "używamy teraz unikalnego identyfikatora do łączenia się z każdym klientem, biorąc pod uwagę nazwę hosta",
-                "zh-cn": "现在，我们使用唯一的ID为每个客户端连接主机名称"
-            },
-            "1.14.24": {
-                "en": "fixed error with some blinds if no adapter restart has been performed after creation",
-                "de": "Fehler bei einigen Blinds behoben, wenn nach der Erstellung kein Neustart des Adapters durchgeführt wurde",
-                "ru": "исправлена ошибка с некоторыми шторками, если после создания не производился перезапуск адаптера",
-                "pt": "corrigido o erro com algumas cortinas se nenhuma reinicialização do adaptador foi realizada após a criação",
-                "nl": "fout opgelost met sommige blinds als er geen herstart van de adapter werd uitgevoerd na het maken",
-                "fr": "Correction d'une erreur avec certains stores si aucun redémarrage de l'adaptateur n'a été effectué après la création",
-                "it": "corretto errore con alcuni bui se nessun riavvio dell'adattatore è stato eseguito dopo la creazione",
-                "es": "error fijo con algunas persianas si no se ha reiniciado el adaptador después de la creación",
-                "pl": "naprawiono błąd z niektórymi zasłonami, jeśli po utworzeniu nie wykonano ponownego uruchomienia adaptera",
-                "zh-cn": "如果创建后未执行任何适配器重新启动，则会修复带有一些盲孔的错误"
-            },
-            "1.14.23": {
-                "en": "`value.temperature` will have unit °C no matter of delivered unit by CCU",
-                "de": "`value.temperature` hat die Einheit °C, unabhängig von der von der CCU gelieferten Einheit",
-                "ru": "`значение.температура` будет иметь единицу измерения °C независимо от единицы, поставленной CCU",
-                "pt": "`valor.temperatura` terá unidade °C, independentemente da unidade entregue pelo CCU",
-                "nl": "`value.temperature` zal eenheid °C hebben, ongeacht de geleverde eenheid door CCU",
-                "fr": "`value.temperature` aura l'unité °C quelle que soit l'unité livrée par CCU",
-                "it": "\"value.temperature\" avrà l'unità °C indipendentemente dall'unità fornita dalla CCU",
-                "es": "`value.temperature` tendrá la unidad °C sin importar la unidad entregada por CCU",
-                "pl": "„wartość.temperatura” będzie miała jednostkę °C bez względu na jednostkę dostarczoną przez CCU",
-                "zh-cn": "无论CCU交付的单位是多少，“ value.temperature”的单位均为°C"
-            },
-            "1.14.21": {
-                "en": "fixed virtual-devices objects being recreated on instance startage",
-                "de": "Fehler behoben, bei denen Objekte virtueller Geräte beim Start der Instanz neu erstellt wurden",
-                "ru": "исправлены объекты виртуальных устройств, воссоздаемые при запуске экземпляра",
-                "pt": "objetos de dispositivos virtuais fixos sendo recriados no início da instância",
-                "nl": "vaste objecten van virtuele apparaten die opnieuw worden gemaakt bij het starten van de instantie",
-                "fr": "objets de périphériques virtuels fixes recréés au démarrage de l'instance",
-                "it": "corretti gli oggetti dei dispositivi virtuali ricreati all'avvio dell'istanza",
-                "es": "objetos de dispositivos virtuales fijos que se recrean en el inicio de la instancia",
-                "pl": "naprawiono odtwarzanie obiektów urządzeń wirtualnych podczas uruchamiania instancji",
-                "zh-cn": "实例启动时将重新创建固定的虚拟设备对象"
-            },
-            "1.14.20": {
-                "en": "fix for % scaling of float numbers",
-                "de": "Fix für% Skalierung von Float-Zahlen",
-                "ru": "исправление для% масштабирования чисел с плавающей запятой",
-                "pt": "correção para escala% de números flutuantes",
-                "nl": "oplossing voor %s chaling van float-getallen",
-                "fr": "correction de la mise à l'échelle en% des nombres flottants",
-                "it": "corretto il ridimensionamento% dei numeri in virgola mobile",
-                "es": "corrección de% de escala de números flotantes",
-                "pl": "poprawka dla %s kalowania liczb zmiennoprzecinkowych",
-                "zh-cn": "修正浮点数的百分比缩放"
-            },
-            "1.14.19": {
-                "en": "now logging exact command on error",
-                "de": "Protokolliert jetzt den genauen Befehl bei einem Fehler",
-                "ru": "теперь регистрирует точную команду при ошибке",
-                "pt": "agora registrando o comando exato em caso de erro",
-                "nl": "logt nu exact commando bij fout",
-                "fr": "enregistre maintenant la commande exacte en cas d'erreur",
-                "it": "ora registra il comando esatto in caso di errore",
-                "es": "ahora registrando el comando exacto en caso de error",
-                "pl": "teraz rejestruje dokładne polecenie w przypadku błędu",
-                "zh-cn": "现在记录错误的确切命令"
-            },
-            "1.14.18": {
-                "en": "fixed error with % scaling in some edge cases",
-                "de": "Fehler mit% Skalierung in einigen Randfällen behoben",
-                "ru": "исправлена ошибка с% масштабированием в некоторых краевых случаях",
-                "pt": "erro corrigido com escala% em alguns casos extremos",
-                "nl": "fout opgelost met %s caling in sommige randgevallen",
-                "fr": "erreur fixe avec mise à l'échelle en% dans certains cas extrêmes",
-                "it": "corretto errore con ridimensionamento% in alcuni casi limite",
-                "es": "error fijo con% de escala en algunos casos extremos",
-                "pl": "naprawiono błąd ze skalowaniem% w niektórych skrajnych przypadkach",
-                "zh-cn": "在某些边缘情况下使用％缩放的固定错误"
-            },
-            "1.14.15": {
-                "en": "fixed bug on forced reinitialization run",
-                "de": "Fehler beim erzwungenen Reinitilisierungslauf behoben",
-                "ru": "исправлена ошибка при принудительной повторной инициализации",
-                "pt": "bug corrigido na execução forçada de reinitilização",
-                "nl": "bug opgelost bij geforceerde herinitialisatierun",
-                "fr": "correction d'un bug sur l'exécution de la réinitilisation forcée",
-                "it": "corretto bug sulla corsa di reinizializzazione forzata",
-                "es": "error corregido en la ejecución de reinicialización forzada",
-                "pl": "naprawiony błąd przy wymuszonej ponownej inicjalizacji",
-                "zh-cn": "修复了强制重新启动运行的错误"
-            },
-            "1.14.14": {
-                "en": "Added roles for presence sensor",
-                "de": "Rollen für Anwesenheitssensor hinzugefügt",
-                "ru": "Добавлены роли для датчика присутствия",
-                "pt": "Funções adicionadas para sensor de presença",
-                "nl": "Rollen toegevoegd voor aanwezigheidssensor",
-                "fr": "Rôles ajoutés pour le capteur de présence",
-                "it": "Aggiunti ruoli per il sensore di presenza",
-                "es": "Roles agregados para el sensor de presencia",
-                "pl": "Dodano role dla czujnika obecności",
-                "zh-cn": "增加了状态传感器的角色"
             }
         },
         "authors": [
@@ -305,6 +185,9 @@
                     "SyntaxError"
                 ]
             }
+        },
+        "adminUI": {
+            "config": "materialize"
         },
         "titleLang": {
             "en": "HomeMatic RPC",
