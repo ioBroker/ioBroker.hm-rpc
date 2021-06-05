@@ -534,7 +534,7 @@ function startAdapter(options) {
         message: async obj => {
             adapter.log.debug(`[MSSG] Received: ${JSON.stringify(obj)}`);
 
-            if (obj.command === undefined || obj.command === null || !obj.message.params) {
+            if (obj.command === undefined || obj.command === null) {
                 adapter.log.warn(`Received invalid command via message "${obj.command}" "${obj.message.ID}" from ${obj.from}`);
                 if (obj.callback) {
                     adapter.sendTo(obj.from, obj.command, {error: 'Invalid command'}, obj.callback);

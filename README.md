@@ -150,8 +150,8 @@ by ioBroker, when you have a running 'dummy' program on the CCU which depends on
 	### __WORK IN PROGRESS__
 -->
 
-### 1.14.40 (2021-06-05)
-* (foxriver76) make sure, that controller does not send stopInstance message anymore
+### 1.14.41 (2021-06-05)
+* (foxriver76) we made sure, that controller does not send stopInstance message anymore
 
 ### 1.14.39 (2021-06-04)
 * (foxriver76) remove the stopInstance message handling and put everything in unload

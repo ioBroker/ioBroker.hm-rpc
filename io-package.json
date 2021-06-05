@@ -13,19 +13,19 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.14.40",
+        "version": "1.14.41",
         "news": {
-            "1.14.40": {
-                "en": "make sure, that controller does not send stopInstance message anymore",
-                "de": "Stellen Sie sicher, dass der Controller keine stopInstance-Nachricht mehr sendet",
-                "ru": "убедитесь, что этот контроллер больше не отправляет сообщение stopInstance",
-                "pt": "certifique-se de que o controlador não envia mais mensagem stopInstance",
-                "nl": "zorg ervoor dat die controller geen stopInstance-bericht meer verzendt",
-                "fr": "assurez-vous que ce contrôleur n'envoie plus de message stopInstance",
-                "it": "assicurati che il controller non invii più il messaggio stopInstance",
-                "es": "asegúrese de que el controlador ya no envíe el mensaje stopInstance",
-                "pl": "upewnij się, że kontroler nie wysyła już komunikatu stopInstance",
-                "zh-cn": "确保该控制器不再发送 stopInstance 消息"
+            "1.14.41": {
+                "en": "we made sure, that controller does not send stopInstance message anymore",
+                "de": "Wir haben sichergestellt, dass der Controller keine stopInstance-Nachricht mehr sendet",
+                "ru": "мы убедились, что этот контроллер больше не отправляет сообщение stopInstance",
+                "pt": "certificamo-nos de que o controlador não envia mais mensagem stopInstance",
+                "nl": "we hebben ervoor gezorgd dat de controller geen stopInstance-bericht meer verzendt",
+                "fr": "nous nous sommes assurés que ce contrôleur n'envoie plus de message stopInstance",
+                "it": "ci siamo assicurati che quel controller non inviasse più il messaggio stopInstance",
+                "es": "nos aseguramos de que el controlador ya no envíe el mensaje stopInstance",
+                "pl": "upewniliśmy się, że kontroler nie wysyła już komunikatu stopInstance",
+                "zh-cn": "我们确保，该控制器不再发送 stopInstance 消息"
             },
             "1.14.39": {
                 "en": "remove the stopInstance message handling and put everything in unload\nremoved the white background by some icons",
