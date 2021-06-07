@@ -296,6 +296,9 @@
                 "dpNAME": {
                     "BATTERY_STATE": "value.voltage",
                     "BOOST_STATE": "level.boost",
+                    "BOOST_MODE": "switch.mode.boost",
+                    "PARTY_MODE": "switch.mode.party",
+                    "FROST_PROTECTION": "indicator",
                     "CONTROL_MODE": "indicator",
                     "FAULT_REPORTING": "indicator",
                     "MANU_MODE": "level.temperature",
@@ -306,6 +309,7 @@
                     "SETPOINT": "level.temperature",
                     "SET_TEMPERATURE": "level.temperature",
                     "SET_POINT_TEMPERATURE": "level.temperature",
+                    "SET_POINT_MODE": "level.mode.thermostat",
                     "HUMIDITY": "value.humidity",
                     "STATE": "state",
                     "PRESS_SHORT": "button",
