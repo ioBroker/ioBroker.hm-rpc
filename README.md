@@ -144,11 +144,14 @@ sendTo('hm-rpc.1', 'getDeviceDescription', {ID: '0000S8179E3DBE', paramType: 'FI
 If you use HomeMatic switches or remotes their button states will only be acknowledged by CCU and thus 
 by ioBroker, when you have a running 'dummy' program on the CCU which depends on the related switch or remote.
 
-## Changelog
 <!--
 	Placeholder for the next version (at the beginning of the line):
 	### __WORK IN PROGRESS__
 -->
+## Changelog
+
+### __WORK IN PROGRESS__
+* (bluefox) Added the roles to thermostat states
 
 ### 1.14.41 (2021-06-05)
 * (foxriver76) we made sure, that controller does not send stopInstance message anymore

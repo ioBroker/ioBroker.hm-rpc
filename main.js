@@ -1264,21 +1264,21 @@ async function addParamsetObjects(channel, paramset) {
         // strings, but does not match entries in the value list, thus we have to check indexOf().
         if (paramset[key].VALUE_LIST) {
             if (typeof paramset[key].MIN === 'string') {
-                if(paramset[key].VALUE_LIST.indexOf(paramset[key].MIN) !== -1) {
+                if (paramset[key].VALUE_LIST.includes(paramset[key].MIN)) {
                     obj.common.min = paramset[key].VALUE_LIST.indexOf(paramset[key].MIN);
                 } else {
                     obj.common.min = parseInt(paramset[key].MIN);
                 }
             }
             if (typeof paramset[key].MAX === 'string') {
-                if(paramset[key].VALUE_LIST.indexOf(paramset[key].MAX) !== -1) {
+                if (paramset[key].VALUE_LIST.includes(paramset[key].MAX)) {
                     obj.common.max = paramset[key].VALUE_LIST.indexOf(paramset[key].MAX);
                 } else {
                     obj.common.max = parseInt(paramset[key].MAX);
                 }
             }
             if (typeof paramset[key].DEFAULT === 'string') {
-                if(paramset[key].VALUE_LIST.indexOf(paramset[key].DEFAULT) !== -1) {
+                if (paramset[key].VALUE_LIST.includes(paramset[key].DEFAULT)) {
                     obj.common.def = paramset[key].VALUE_LIST.indexOf(paramset[key].DEFAULT);
                 } else {
                     obj.common.def = parseInt(paramset[key].DEFAULT);
