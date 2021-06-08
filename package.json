@@ -48,7 +48,7 @@
     "eslint": "^7.27.0",
     "gulp": "^4.0.2",
     "hm-simulator": "^0.1.1",
-    "mocha": "^8.4.0"
+    "mocha": "^9.0.0"
   },
   "bugs": {
     "url": "https://github.com/ioBroker/ioBroker.hm-rpc/issues"
