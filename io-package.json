@@ -351,6 +351,11 @@
                     "OPERATING_VOLTAGE": "value.voltage",
                     "OPERATING_VOLTAGE_STATUS": "value",
                     "SABOTAGE": "indicator",
+                    "CURRENT": "value.current",
+                    "ENERGY_COUNTER": "value.power.consumption",
+                    "FREQUENCY": "value.frequency",
+                    "POWER": "value.power",
+                    "VOLTAGE": "value.voltage",
                     "ERROR_CODE": "value"
                 },
                 "dvTYPE": {
