@@ -767,15 +767,18 @@ async function main() {
                 if (row.id === `${adapter.namespace}.updated`) {
                     continue;
                 }
-                if (!row.value || !row.value.native) {
+
+                const obj = row.value;
+
+                if (!obj || !obj.native) {
                     adapter.log.warn(`State ${row.id} does not have native.`);
                     dpTypes[row.id] = {UNIT: '', TYPE: ''};
                 } else {
                     dpTypes[row.id] = {
-                        UNIT: row.value.native.UNIT,
-                        TYPE: row.value.native.TYPE,
-                        MIN: row.value.native.MIN,
-                        MAX: row.value.native.MAX
+                        UNIT: obj.native.UNIT,
+                        TYPE: obj.native.TYPE,
+                        MIN: obj.native.MIN,
+                        MAX: obj.native.MAX
                     };
 
                     if (typeof dpTypes[row.id].MIN === 'number') {
@@ -793,6 +796,13 @@ async function main() {
                             dpTypes[row.id].MAX = 1;
                         } // endElseIf
                     } // endIf
+                }
+
+                // apply new roles, that were defined later
+                const key = row.id.split('.').pop();
+                if (obj && obj.common && !obj.common.role && metaRoles.dpNAME[key]) {
+                    obj.common.role = metaRoles.dpNAME[key];
+                    await adapter.setForeignObjectAsync(obj._id, obj);
                 }
             }
         }
@@ -1346,7 +1356,7 @@ async function getValueParamsets() {
 
             adapter.log.debug(`getValueParamsets ${cid}`);
 
-            // if meta values are cached for Epaper we extend this cached meta values by epaper states
+            // if meta values are cached for E-paper we extend this cached meta values by e-paper states
             if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
                 addEPaperToMeta();
             }
@@ -1781,7 +1791,6 @@ function connect(isFirst) {
 }
 
 function keepAlive() {
-
     adapter.log.debug('[KEEPALIVE] Check if connection is alive');
 
     if (connInterval) {

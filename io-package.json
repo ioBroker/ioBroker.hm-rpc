@@ -303,7 +303,6 @@
                     "FAULT_REPORTING": "indicator",
                     "MANU_MODE": "level.temperature",
                     "ACTUAL_TEMPERATURE": "value.temperature",
-                    "PARTY_SET_POINT_TEMPERATURE": "value.temperature",
                     "ACTUAL_TEMPERATURE_STATUS": "value",
                     "TEMPERATURE": "value.temperature",
                     "SETPOINT": "level.temperature",
