@@ -36,13 +36,13 @@ Usually:
 - 9292 for Virtual Devices (https: 49292)
 
 ### Daemon
-CCU/Homematic can support different types of devices (wired, wireless, hmip, CUxD) and for every type you should create the instance of adapter separately.
+CCU/Homematic can support different types of devices (wired, wireless, HM-IP, CUxD) and for every type you should create the instance of adapter separately.
 
 ### Protocol
 There are two protocols for communication XML-RPC and BIN-RPC. BIN-RPC is faster, but it can be, that the end device do not support it or supports it incorrect.
 In this case switch the protocol to XML.
 
-*Notice:* CUxD can only communicate with BIN-RPC and HMIP and RFD only via XML-RPC protocol.
+*Notice:* CUxD can only communicate with BIN-RPC and HM-IP and RFD only via XML-RPC protocol.
 
 ### Synchronize objects (once)
 After very first start the instance read *all* devices from CCU/Homematic.
@@ -59,7 +59,7 @@ This address cannot be "0.0.0.0", because CCU/Homematic cannot reach ioBroker un
 The port number on which the ioBroker will run. Let it 0 for automatically selection.
 
 ### Adapter Callback Address
-Sometimes the ioBroker server runs behind the router, to solve this problem, that inboud and outbound addresses are different, this option can be used.
+Sometimes the ioBroker server runs behind the router, to solve this problem, that inbound and outbound addresses are different, this option can be used.
 Here you can define the IP address of the router and the router will according to the port route the traffic to ioBroker.
 
 Used if ioBroker runs in Docker.
@@ -72,9 +72,9 @@ How many seconds will be waited before connect attempts.
 
 ### Don't delete devices on adapter start
 If this flag is not activated, the ioBroker will remove devices from configuration if device is not found at adapter start in CCU/Homematic.
-Activate this flag to do *not* delete such a devices. This is to avoid a bug on CCU side, where hmip devices are not correctly transmitted to
-ioBroker and thus will be deleted on adapter startage and be recreated when transmitted some milliseconds later. The flag is automatically checked
-when you selected hmip as daemon. However, when you delete devices while adapter is running, the adapter will be notified by CCU and will remove devices 
+Activate this flag to do *not* delete such a devices. This is to avoid a bug on CCU side, where HM-IP devices are not correctly transmitted to
+ioBroker and thus will be deleted on the adapter start and be recreated when transmitted, some milliseconds later. The flag is automatically checked
+when you selected HM-IP as daemon. However, when you delete devices while adapter is running, the adapter will be notified by CCU and will remove devices 
 which are removed on CCU.
 
 ### Use https
@@ -86,11 +86,11 @@ If 'use https' is activated you can fill in the username and password of a CCU u
 In case the CCU needs authentication on the API, you have to provide the credentials here.
 
 ## Custom commands
-It is possible to send custom commands, e. g. to read and control the master area of a device which allows the user 
+It is possible to send custom commands, e.g. to read and control the master area of a device which allows the user 
 to configure heating week programs and more.
 
 This is done by sending a message to the adapter, which contains the method as first parameter, followed by an object which 
-has to contain the ``ID`` of the target device as well as optional the ``paramType``, which specifies e. g. the MASTER area.
+has to contain the ``ID`` of the target device as well as optional the ``paramType``, which specifies e.g. the MASTER area.
 Additional parameters have to be sent in the ``params`` object.
 
 **Examples:**
@@ -183,7 +183,7 @@ by ioBroker, when you have a running 'dummy' program on the CCU which depends on
 * (foxriver76) detect invalid params and log instead of crash
 
 ### 1.14.33 (2021-01-30)
-* (foxriver76) fix problems with CuxD and HMIP (fixes #307)
+* (foxriver76) fix problems with CuxD and HM-IP (fixes #307)
 * (foxriver76) more palces where we now log message on real errors instead of error object
 
 ### 1.14.32 (2021-01-29)
@@ -192,7 +192,7 @@ by ioBroker, when you have a running 'dummy' program on the CCU which depends on
 * (foxriver76) fix for crashes on decrypt
 
 ### 1.14.31 (2021-01-15)
-* (foxriver76) fixed default values of HMIP value list states
+* (foxriver76) fixed default values of HM-IP value list states
 
 ### 1.14.30 (2021-01-10)
 * (foriver76) in general reject events of unregistered devices, see #298
@@ -239,19 +239,19 @@ by ioBroker, when you have a running 'dummy' program on the CCU which depends on
 * (foxriver76) Continue execution if error on retrieving a paramset from CCU
 
 ### 1.14.11 (2020-06-21)
-* (bluefox) Change name of Instance according to the role (RF, Wired, HMIP)
+* (bluefox) Change name of Instance according to the role (RF, Wired, HM-IP)
 
 ### 1.14.10 (2020-06-14)
 * (foxriver76) removed meta data caching completely because meta data can be dynamic due to FW update or CuxD
 
 ### 1.14.6 (2020-06-05)
-* (foxriver76) added some hmip roles for channel 0
+* (foxriver76) added some HM-IP roles for channel 0
 
 ### 1.14.5 (2020-05-29)
 * (foxriver76) fixed edge case problem IOBROKER-HM-RPC-5E
 
 ### 1.14.4 (2020-05-28)
-* (jens-maus) updated all device images to latest ones include hmip-wired ones
+* (jens-maus) updated all device images to latest ones include HM-IP-wired ones
 
 ### 1.14.3 (2020-05-18)
 * (foxriver76) catch edge case error if row.value has no native 
@@ -310,7 +310,7 @@ of this approach (more requests to CCU on first setup)
 * (foxriver76) fixed info channel
 
 ### 1.10.2 (2019-10-24)
-* (foxriver76) replace min max values of hmip with correct numbers 
+* (foxriver76) replace min max values of HM-IP with correct numbers 
 
 ### 1.10.0 (2019-08-12)
 * (foxriver76) new meta data handling procedure
