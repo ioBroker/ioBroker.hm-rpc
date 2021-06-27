@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.14.41",
+        "version": "1.14.42",
         "news": {
+            "1.14.42": {
+                "en": "Added the roles to thermostat states\nAdded the roles for switch\nApply new roles to existing states",
+                "de": "Die Rollen zu den Thermostatzuständen hinzugefügt\nDie Rollen für den Schalter hinzugefügt\nAnwenden neuer Rollen auf bestehende Zustände",
+                "ru": "Добавлены роли в состояния термостата.\nДобавлены роли для переключателя\nПрименить новые роли к существующим состояниям",
+                "pt": "Adicionadas as funções aos estados do termostato\nAdicionadas as funções para troca\nAplicar novas funções aos estados existentes",
+                "nl": "De rollen toegevoegd aan thermostaatstatussen\nDe rollen voor switch toegevoegd\nPas nieuwe rollen toe op bestaande statussen",
+                "fr": "Ajout des rôles aux états du thermostat\nAjout des rôles pour le commutateur\nAppliquer de nouveaux rôles aux états existants",
+                "it": "Aggiunti i ruoli agli stati del termostato\nAggiunti i ruoli per switch\nApplicare nuovi ruoli agli stati esistenti",
+                "es": "Se agregaron los roles a los estados del termostato.\nSe agregaron los roles para el cambio.\nAplicar nuevos roles a estados existentes",
+                "pl": "Dodano role do stanów termostatu\nDodano role dla przełącznika\nZastosuj nowe role do istniejących stanów",
+                "zh-cn": "将角色添加到恒温器状态\n添加切换角色\n将新角色应用于现有状态"
+            },
             "1.14.41": {
                 "en": "we made sure, that controller does not send stopInstance message anymore",
                 "de": "Wir haben sichergestellt, dass der Controller keine stopInstance-Nachricht mehr sendet",

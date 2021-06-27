@@ -150,7 +150,7 @@ by ioBroker, when you have a running 'dummy' program on the CCU which depends on
 -->
 ## Changelog
 
-### __WORK IN PROGRESS__
+### 1.14.42 (2021-06-27)
 * (bluefox) Added the roles to thermostat states
 * (bluefox) Added the roles for switch
 * (bluefox) Apply new roles to existing states
