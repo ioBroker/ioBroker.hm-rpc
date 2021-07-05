@@ -150,6 +150,9 @@ by ioBroker, when you have a running 'dummy' program on the CCU which depends on
 -->
 ## Changelog
 
+### 1.14.43 (2021-07-05)
+* (foxriver76) we now correctly map the role of smoke detectors (closes #354)
+ 
 ### 1.14.42 (2021-06-27)
 * (bluefox) Added the roles to thermostat states
 * (bluefox) Added the roles for switch

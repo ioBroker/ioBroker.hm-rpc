@@ -13,8 +13,20 @@
             "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker"
         },
-        "version": "1.14.42",
+        "version": "1.14.43",
         "news": {
+            "1.14.43": {
+                "en": "we now correctly map the role of smoke detectors (closes #354)",
+                "de": "wir ordnen jetzt die Rolle von Rauchmeldern korrekt zu (schließt #354)",
+                "ru": "теперь мы правильно отображаем роль детекторов дыма (закрывает # 354)",
+                "pt": "agora mapeamos corretamente a função dos detectores de fumaça (fecha # 354)",
+                "nl": "we brengen nu de rol van rookmelders correct in kaart (closes #354)",
+                "fr": "nous cartographions maintenant correctement le rôle des détecteurs de fumée (ferme le #354)",
+                "it": "ora mappiamo correttamente il ruolo dei rilevatori di fumo (chiude #354)",
+                "es": "ahora mapeamos correctamente el papel de los detectores de humo (cierra el n. ° 354)",
+                "pl": "teraz poprawnie mapujemy rolę czujek dymu (zamyka #354)",
+                "zh-cn": "我们现在正确地映射了烟雾探测器的作用（关闭 #354）"
+            },
             "1.14.42": {
                 "en": "Added the roles to thermostat states\nAdded the roles for switch\nApply new roles to existing states",
                 "de": "Die Rollen zu den Thermostatzuständen hinzugefügt\nDie Rollen für den Schalter hinzugefügt\nAnwenden neuer Rollen auf bestehende Zustände",
@@ -295,7 +307,8 @@
                     "DIMMER.LEVEL": "level.dimmer",
                     "BLIND.LEVEL": "level.blind",
                     "LOCK.STATE": "switch.lock",
-                    "DOOR_SENSOR.STATE": "value.window"
+                    "DOOR_SENSOR.STATE": "value.window",
+                    "DANGER.STATE": "sensor.alarm.fire"
                 },
                 "chTYPE_dpNAME": {
                     "DIMMER.LEVEL": "level.dimmer",
