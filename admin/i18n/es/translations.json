@@ -1,0 +1,23 @@
+{
+    "Adapter Address": "Dirección del adaptador",
+    "Adapter Callback Address": "Dirección de devolución de llamada del adaptador",
+    "Adapter Port": "Puerto adaptador",
+    "Additional settings": "Ajustes adicionales",
+    "BIN-RPC does not work with HTTPS. HTTPS has been disabled.": "BIN-RPC no funciona con HTTPS. HTTPS ha sido desactivado.",
+    "Check communication interval (sec)": "Verificar el intervalo de comunicación (sec)",
+    "Daemon": "Demonio",
+    "Don't delete devices": "No elimine dispositivos al iniciar el adaptador",
+    "Force objects re-init": "Sincronizar objetos (una vez)",
+    "HomeMatic Address": "Dirección HomeMatic",
+    "HomeMatic Port": "Puerto HomeMatic",
+    "Homematic RPC adapter settings": "Configuración del adaptador Homematic RPC",
+    "Listen on all IPs": "Escuchar en todas las direcciones IP",
+    "Ok": "De acuerdo",
+    "Password": "Contraseña",
+    "Please specify callback address": "Por favor, especifique la dirección de devolución de llamada.",
+    "Protocol": "Protocolo",
+    "Reconnect interval (sec)": "Intervalo de reconexión (sec)",
+    "This IP is unreachable from %s": "Este IP es inalcanzable desde %s",
+    "Use https": "usar https",
+    "Username": "Nombre de usuario"
+}

@@ -1,0 +1,23 @@
+{
+    "Adapter Address": "Собственный адрес",
+    "Adapter Callback Address": "Собственный Callback адрес",
+    "Adapter Port": "Порт драйвера ioBroker",
+    "Additional settings": "Дополнительные настройки",
+    "BIN-RPC does not work with HTTPS. HTTPS has been disabled.": "BIN-RPC не работает с HTTPS. HTTPS отключен.",
+    "Check communication interval (sec)": "Интервал проверки соединения(сек)",
+    "Daemon": "Служба",
+    "Don't delete devices": "Не удаляйте устройства при старте адаптера",
+    "Force objects re-init": "Синхронизировать объекты (один раз)",
+    "HomeMatic Address": "Адрес HomeMatic",
+    "HomeMatic Port": "Порт HomeMatic",
+    "Homematic RPC adapter settings": "Настройки Homematic RPC драйвера",
+    "Listen on all IPs": "Слушать на всех IP адресах",
+    "Ok": "Ok",
+    "Password": "пароль",
+    "Please specify callback address": "Введите IP адрес для callback.",
+    "Protocol": "Протокол",
+    "Reconnect interval (sec)": "Интервал повтора соединения(сек)",
+    "This IP is unreachable from %s": "Этот IP не доступен для %s",
+    "Use https": "использовать https",
+    "Username": "имя пользователя"
+}
