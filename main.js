@@ -175,9 +175,8 @@ function combineEPaperCommand(lines, signal, ton, repeats, offset) {
 
     let command = '0x02,0x0A';
     for (const li of lines) {
-        const line = li.line;
-        const icon = li.icon;
-        if (line) {
+        if (li.line) {
+            const line = li.line.toString();
             command = `${command},0x12`;
             let i;
             if ((line.substring(0, 2) === '0x') && (line.length === 4)) {
@@ -192,8 +191,8 @@ function combineEPaperCommand(lines, signal, ton, repeats, offset) {
             }
         }
 
-        if (icon) {
-            command += `,0x13,${number2hex(icon)}`;
+        if (li.icon) {
+            command += `,0x13,${number2hex(li.icon)}`;
         }
         command = `${command},0x0A`;
     }
@@ -534,8 +533,8 @@ function startAdapter(options) {
         message: async obj => {
             adapter.log.debug(`[MSSG] Received: ${JSON.stringify(obj)}`);
 
-            if (obj.command === undefined || obj.command === null) {
-                adapter.log.warn(`Received invalid command via message "${obj.command}" "${obj.message.ID}" from ${obj.from}`);
+            if (obj.command === undefined || obj.command === null || obj.message === undefined || obj.message === null) {
+                adapter.log.warn(`Received invalid command via message "${obj.command}" "${obj.message}" from ${obj.from}`);
                 if (obj.callback) {
                     adapter.sendTo(obj.from, obj.command, {error: 'Invalid command'}, obj.callback);
                 }

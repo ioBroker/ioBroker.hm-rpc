@@ -150,6 +150,9 @@ by ioBroker, when you have a running 'dummy' program on the CCU which depends on
 -->
 ## Changelog
 
+### 1.14.44 (2021-08-12)
+* (foxriver76) we fixed several sentry issues (closes #368, closes #370)
+
 ### 1.14.43 (2021-07-05)
 * (foxriver76) we now correctly map the role of smoke detectors (closes #354)
  
