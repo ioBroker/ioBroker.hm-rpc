@@ -14,8 +14,20 @@
             "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker",
             "zh-cn": "通过 XML-RPC 或 BIN-RPC 将 HomeMatic 接口进程（BidCos-Services、Homegear 和 CUxD）连接到 ioBroker"
         },
-        "version": "1.14.44",
+        "version": "1.14.45",
         "news": {
+            "1.14.45": {
+                "en": "we fixed several sentry issues (closes #368, closes #370)",
+                "de": "wir haben mehrere Wachpostenprobleme behoben (schließt #368, schließt #370)",
+                "ru": "мы исправили несколько проблем с часовой (закрывает # 368, закрывает # 370)",
+                "pt": "corrigimos vários problemas de sentinela (fecha # 368, fecha # 370)",
+                "nl": "we hebben verschillende schildwachtproblemen opgelost (sluit #368, sluit #370)",
+                "fr": "nous avons corrigé plusieurs problèmes de sentinelle (ferme #368, ferme #370)",
+                "it": "abbiamo risolto diversi problemi di sentinella (chiude #368, chiude #370)",
+                "es": "arreglamos varios problemas de centinela (cierra # 368, cierra # 370)",
+                "pl": "naprawiliśmy kilka błędów wartowników (zamyka #368, zamyka #370)",
+                "zh-cn": "我们修复了几个哨兵问题（关闭 #368，关闭 #370）"
+            },
             "1.14.43": {
                 "en": "we now correctly map the role of smoke detectors (closes #354)",
                 "de": "wir ordnen jetzt die Rolle von Rauchmeldern korrekt zu (schließt #354)",
