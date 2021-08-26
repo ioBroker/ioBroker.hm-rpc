@@ -11,13 +11,13 @@
     "HomeMatic Address": "HomeMatic Adresse",
     "HomeMatic Port": "HomeMatic Port",
     "Homematic RPC adapter settings": "Homematic RPC Adapter Einstellungen",
-    "Listen on all IPs": "Auf alle IPs hören",
+    "Listen on all IPs": "Anfragen für alle IPs beantworten",
     "Ok": "Ok",
     "Password": "Passwort",
     "Please specify callback address": "Bitte Callback IP-Adresse eingeben.",
     "Protocol": "Protokoll",
     "Reconnect interval (sec)": "Wiederverbindungs-Intervall(sek)",
     "This IP is unreachable from %s": "Diese IP ist nicht erreichbar von %s",
-    "Use https": "Nutze https",
+    "Use https": "https nutzen",
     "Username": "Nutzername"
 }
