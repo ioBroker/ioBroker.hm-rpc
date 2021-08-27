@@ -18,6 +18,6 @@
     "Protocol": "Protokoll",
     "Reconnect interval (sec)": "Wiederverbindungs-Intervall(sek)",
     "This IP is unreachable from %s": "Diese IP ist nicht erreichbar von %s",
-    "Use https": "https nutzen",
-    "Username": "Nutzername"
+    "Use https": "HTTPS benutzen",
+    "Username": "Benutzername"
 }
