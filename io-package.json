@@ -1,460 +1,364 @@
 {
-    "common": {
-        "name": "hm-rpc",
-        "title": "HomeMatic RPC",
-        "desc": {
-            "en": "Connects HomeMatic Interface-Processes (BidCos-Services, Homegear and CUxD) via XML-RPC or BIN-RPC to ioBroker",
-            "de": "Verbindet HomeMatic Interface-Prozesse (BidCos-Services, Homegear und CUxD) via XML-RPC oder BIN-RPC mit ioBroker",
-            "ru": "Подключает HomeMatic интерфейсы (BidCos-сервисы, Homegear и CUxD) через XML-RPC или BIN-RPC к ioBroker",
-            "pt": "Conecta HomeMatic Interface-Processes (BidCos-Services, Homegear e CUxD) via XML-RPC ou BIN-RPC para ioBroker",
-            "nl": "Verbindt HomeMatic Interface-processen (BidCos-Services, Homegear en CUxD) via XML-RPC of BIN-RPC met ioBroker",
-            "fr": "Connecte les processus d'interface HomeMatic (BidCos-Services, Homegear et CUxD) via XML-RPC ou BIN-RPC à ioBroker",
-            "it": "Collega l'interfaccia HomeMatic: i processi (BidCos-Services, Homegear e CUxD) tramite XML-RPC o BIN-RPC su ioBroker",
-            "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
-            "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker",
-            "zh-cn": "通过 XML-RPC 或 BIN-RPC 将 HomeMatic 接口进程（BidCos-Services、Homegear 和 CUxD）连接到 ioBroker"
-        },
-        "version": "1.14.45",
-        "news": {
-            "1.14.45": {
-                "en": "we fixed several sentry issues (closes #368, closes #370)",
-                "de": "wir haben mehrere Wachpostenprobleme behoben (schließt #368, schließt #370)",
-                "ru": "мы исправили несколько проблем с часовой (закрывает # 368, закрывает # 370)",
-                "pt": "corrigimos vários problemas de sentinela (fecha # 368, fecha # 370)",
-                "nl": "we hebben verschillende schildwachtproblemen opgelost (sluit #368, sluit #370)",
-                "fr": "nous avons corrigé plusieurs problèmes de sentinelle (ferme #368, ferme #370)",
-                "it": "abbiamo risolto diversi problemi di sentinella (chiude #368, chiude #370)",
-                "es": "arreglamos varios problemas de centinela (cierra # 368, cierra # 370)",
-                "pl": "naprawiliśmy kilka błędów wartowników (zamyka #368, zamyka #370)",
-                "zh-cn": "我们修复了几个哨兵问题（关闭 #368，关闭 #370）"
-            },
-            "1.14.43": {
-                "en": "we now correctly map the role of smoke detectors (closes #354)",
-                "de": "wir ordnen jetzt die Rolle von Rauchmeldern korrekt zu (schließt #354)",
-                "ru": "теперь мы правильно отображаем роль детекторов дыма (закрывает # 354)",
-                "pt": "agora mapeamos corretamente a função dos detectores de fumaça (fecha # 354)",
-                "nl": "we brengen nu de rol van rookmelders correct in kaart (closes #354)",
-                "fr": "nous cartographions maintenant correctement le rôle des détecteurs de fumée (ferme le #354)",
-                "it": "ora mappiamo correttamente il ruolo dei rilevatori di fumo (chiude #354)",
-                "es": "ahora mapeamos correctamente el papel de los detectores de humo (cierra el n. ° 354)",
-                "pl": "teraz poprawnie mapujemy rolę czujek dymu (zamyka #354)",
-                "zh-cn": "我们现在正确地映射了烟雾探测器的作用（关闭 #354）"
-            },
-            "1.14.42": {
-                "en": "Added the roles to thermostat states\nAdded the roles for switch\nApply new roles to existing states",
-                "de": "Die Rollen zu den Thermostatzuständen hinzugefügt\nDie Rollen für den Schalter hinzugefügt\nAnwenden neuer Rollen auf bestehende Zustände",
-                "ru": "Добавлены роли в состояния термостата.\nДобавлены роли для переключателя\nПрименить новые роли к существующим состояниям",
-                "pt": "Adicionadas as funções aos estados do termostato\nAdicionadas as funções para troca\nAplicar novas funções aos estados existentes",
-                "nl": "De rollen toegevoegd aan thermostaatstatussen\nDe rollen voor switch toegevoegd\nPas nieuwe rollen toe op bestaande statussen",
-                "fr": "Ajout des rôles aux états du thermostat\nAjout des rôles pour le commutateur\nAppliquer de nouveaux rôles aux états existants",
-                "it": "Aggiunti i ruoli agli stati del termostato\nAggiunti i ruoli per switch\nApplicare nuovi ruoli agli stati esistenti",
-                "es": "Se agregaron los roles a los estados del termostato.\nSe agregaron los roles para el cambio.\nAplicar nuevos roles a estados existentes",
-                "pl": "Dodano role do stanów termostatu\nDodano role dla przełącznika\nZastosuj nowe role do istniejących stanów",
-                "zh-cn": "将角色添加到恒温器状态\n添加切换角色\n将新角色应用于现有状态"
-            },
-            "1.14.41": {
-                "en": "we made sure, that controller does not send stopInstance message anymore",
-                "de": "Wir haben sichergestellt, dass der Controller keine stopInstance-Nachricht mehr sendet",
-                "ru": "мы убедились, что этот контроллер больше не отправляет сообщение stopInstance",
-                "pt": "certificamo-nos de que o controlador não envia mais mensagem stopInstance",
-                "nl": "we hebben ervoor gezorgd dat de controller geen stopInstance-bericht meer verzendt",
-                "fr": "nous nous sommes assurés que ce contrôleur n'envoie plus de message stopInstance",
-                "it": "ci siamo assicurati che quel controller non inviasse più il messaggio stopInstance",
-                "es": "nos aseguramos de que el controlador ya no envíe el mensaje stopInstance",
-                "pl": "upewniliśmy się, że kontroler nie wysyła już komunikatu stopInstance",
-                "zh-cn": "我们确保，该控制器不再发送 stopInstance 消息"
-            },
-            "1.14.39": {
-                "en": "remove the stopInstance message handling and put everything in unload\nremoved the white background by some icons",
-                "de": "entferne die stopInstance-Nachrichtenbehandlung und lege alles in unload\nden weißen Hintergrund bei einigen Symbolen entfernt",
-                "ru": "удалите обработку сообщений stopInstance и поместите все в выгрузку\nубран белый фон некоторыми иконками",
-                "pt": "remova o tratamento da mensagem stopInstance e coloque tudo em unload\nremoveu o fundo branco por alguns ícones",
-                "nl": "verwijder de stopInstance-berichtafhandeling en plaats alles in unload\nde witte achtergrond door sommige pictogrammen verwijderd",
-                "fr": "supprimer la gestion des messages stopInstance et tout mettre en décharge\nsupprimé le fond blanc de certaines icônes",
-                "it": "rimuovi la gestione dei messaggi stopInstance e metti tutto in scarica\nrimosso lo sfondo bianco da alcune icone",
-                "es": "eliminar el manejo de mensajes stopInstance y poner todo en descarga\neliminado el fondo blanco por algunos iconos",
-                "pl": "usuń obsługę wiadomości stopInstance i umieść wszystko w unload\nusunięto białe tło za pomocą niektórych ikon",
-                "zh-cn": "删除 stopInstance 消息处理并将所有内容卸载\n通过一些图标删除了白色背景"
-            },
-            "1.14.38": {
-                "en": "fixed the VirtualDevices min/max/default assignment (fixes #332)\ndo not scale on normal '%' UNIT because its inconsistent (fixes #326)",
-                "de": "Die Zuweisung von VirtualDevices min / max / default wurde korrigiert (Fixes # 332).\nSkalieren Sie nicht auf der normalen '%' UNIT, da diese inkonsistent ist (Fixes # 326).",
-                "ru": "исправлено назначение виртуальных устройств min / max / default (исправления # 332)\nне масштабируются по обычному ЕДИНИЦУ \"%\", потому что он несовместим (исправление # 326)",
-                "pt": "corrigiu a atribuição mín / máx / padrão VirtualDevices (corrige # 332)\nnão escalar na UNIDADE '%' normal porque é inconsistente (corrige # 326)",
-                "nl": "de VirtualDevices min / max / standaard toewijzing gerepareerd (fixes # 332)\nschaal niet op normale '%' UNIT omdat het inconsistent is (fix # 326)",
-                "fr": "correction de l'affectation min / max / par défaut de VirtualDevices (correctifs # 332)\nne pas mettre à l'échelle sur l'unité '%' normale car elle est incohérente (correction # 326)",
-                "it": "risolto l'assegnazione min / max / predefinita di VirtualDevices (correzioni # 332)\nnon scalare sulla normale UNITÀ '%' perché è incoerente (correzioni # 326)",
-                "es": "Se corrigió la asignación mínima / máxima / predeterminada de VirtualDevices (arreglos # 332)\nno escale en la UNIDAD '%' normal porque es inconsistente (corrige # 326)",
-                "pl": "naprawiono przypisanie wartości min / maks / domyślne VirtualDevices (poprawki # 332)\nnie skaluj na normalnej JEDNOSTCE „%”, ponieważ jest niespójna (poprawki # 326)",
-                "zh-cn": "修复了VirtualDevices的最小/最大/默认分配（修复＃332）\n不能按正常的'％'UNIT缩放，因为它不一致（修复＃326）"
-            },
-            "1.14.37": {
-                "en": "added tier, is now 2\nadded missing images (closes #319)",
-                "de": "Tier hinzugefügt, ist jetzt 2\nfehlende Bilder hinzugefügt (schließt # 319)",
-                "ru": "добавлен уровень, теперь 2\nдобавлены отсутствующие изображения (закрывает # 319)",
-                "pt": "camada adicionada, agora é 2\nadicionaram imagens ausentes (fecha # 319)",
-                "nl": "toegevoegd niveau, is nu 2\nontbrekende afbeeldingen toegevoegd (sluit # 319)",
-                "fr": "niveau supplémentaire, est maintenant 2\najout d'images manquantes (ferme le # 319)",
-                "it": "livello aggiunto, ora è 2\naggiunte immagini mancanti (chiude # 319)",
-                "es": "nivel agregado, ahora es 2\nse agregaron imágenes faltantes (cierra # 319)",
-                "pl": "dodany poziom, jest teraz 2\ndodano brakujące obrazy (zamyka # 319)",
-                "zh-cn": "增加的等级，现在是2\n添加缺少的图像（关闭＃319）"
-            },
-            "1.14.36": {
-                "en": "error handling improved when deleting obsolete devices/channels\nif no message id provided on `sendTo`, we do not send `undefined` params anymore (fixes #318)",
-                "de": "Die Fehlerbehandlung beim Löschen veralteter Geräte / Kanäle wurde verbessert\nWenn auf \"sendTo\" keine Nachrichten-ID angegeben ist, senden wir keine \"undefinierten\" Parameter mehr (Fixes # 318).",
-                "ru": "улучшена обработка ошибок при удалении устаревших устройств / каналов\nесли в sendTo не указан идентификатор сообщения, мы больше не отправляем параметры undefined (исправления # 318)",
-                "pt": "tratamento de erros melhorado ao excluir dispositivos / canais obsoletos\nse nenhum id de mensagem fornecido em `sendTo`, não enviamos mais parâmetros` undefined` (correções # 318)",
-                "nl": "foutafhandeling verbeterd bij het verwijderen van verouderde apparaten / kanalen\nals er geen bericht-ID is opgegeven op `sendTo`, verzenden we geen` ongedefinieerde` params meer (fixes # 318)",
-                "fr": "gestion des erreurs améliorée lors de la suppression d'appareils / canaux obsolètes\nsi aucun identifiant de message n'est fourni sur `sendTo`, nous n'envoyons plus les paramètres` undefined` (correctifs # 318)",
-                "it": "gestione degli errori migliorata durante l'eliminazione di dispositivi / canali obsoleti\nse non viene fornito alcun ID messaggio su `sendTo`, non inviamo più i parametri` undefined` (correzioni # 318)",
-                "es": "manejo de errores mejorado al eliminar dispositivos / canales obsoletos\nsi no se proporciona un ID de mensaje en `sendTo`, ya no enviamos parámetros` undefined` (arreglos # 318)",
-                "pl": "poprawiono obsługę błędów podczas usuwania przestarzałych urządzeń / kanałów\njeśli nie podano identyfikatora wiadomości w `sendTo`, nie wysyłamy już parametrów` undefined` (poprawki # 318)",
-                "zh-cn": "删除过时的设备/通道时的错误处理得到改善\n如果在`sendTo`上没有提供消息ID，我们将不再发送`undefined`参数（修复＃318）"
-            },
-            "1.14.35": {
-                "en": "virtual devices now support ping, so use it, else it can be that instance won't register at CCU again (fixes #308)",
-                "de": "Virtuelle Geräte unterstützen jetzt Ping. Verwenden Sie es daher. Andernfalls wird die Instanz möglicherweise nicht erneut bei der CCU registriert (Fixes Nr. 308).",
-                "ru": "виртуальные устройства теперь поддерживают ping, поэтому используйте его, иначе может случиться так, что экземпляр больше не будет регистрироваться в CCU (исправления # 308)",
-                "pt": "dispositivos virtuais agora suportam ping, então use-o, caso contrário, pode ser que a instância não se registre no CCU novamente (correções # 308)",
-                "nl": "virtuele apparaten ondersteunen nu ping, dus gebruik het, anders kan het zijn dat de instantie zich niet opnieuw bij CCU registreert (fix # 308)",
-                "fr": "les périphériques virtuels prennent désormais en charge le ping, alors utilisez-le, sinon il se peut que l'instance ne s'enregistre pas à nouveau au CCU (correctifs # 308)",
-                "it": "i dispositivi virtuali ora supportano il ping, quindi usalo, altrimenti potrebbe essere che l'istanza non si registrerà di nuovo su CCU (correzioni # 308)",
-                "es": "los dispositivos virtuales ahora admiten ping, así que úselo, de lo contrario, puede ser que la instancia no se registre en CCU nuevamente (arreglos # 308)",
-                "pl": "urządzenia wirtualne obsługują teraz ping, więc użyj go, w przeciwnym razie może się zdarzyć, że instancja nie zarejestruje się ponownie w CCU (poprawki nr 308)",
-                "zh-cn": "虚拟设备现在支持ping，因此请使用它，否则可能是该实例不再在CCU上注册（修复＃308）"
-            },
-            "1.14.34": {
-                "en": "use async rpc calls for better error handling\nnow log error events received by XML-RPC\ndetect invalid params and log instead of crash",
-                "de": "Verwenden Sie asynchrone RPC-Aufrufe für eine bessere Fehlerbehandlung\nProtokollieren Sie jetzt von XML-RPC empfangene Fehlerereignisse\nErkennen Sie ungültige Parameter und protokollieren Sie anstelle eines Absturzes",
-                "ru": "используйте вызовы async rpc для лучшей обработки ошибок\nтеперь записывать события ошибок, полученные XML-RPC\nобнаруживать недопустимые параметры и регистрировать вместо сбоя",
-                "pt": "use chamadas rpc assíncronas para melhor tratamento de erros\nagora registra eventos de erro recebidos por XML-RPC\ndetectar parâmetros inválidos e registrar em vez de travar",
-                "nl": "gebruik asynchrone rpc-oproepen voor betere foutafhandeling\nlog nu foutgebeurtenissen die zijn ontvangen door XML-RPC\ndetecteren ongeldige parameters en log in plaats van crash",
-                "fr": "utiliser les appels async rpc pour une meilleure gestion des erreurs\nenregistre maintenant les événements d'erreur reçus par XML-RPC\ndétecter les paramètres invalides et enregistrer au lieu de planter",
-                "it": "usa chiamate rpc asincrone per una migliore gestione degli errori\nora registra gli eventi di errore ricevuti da XML-RPC\nrileva parametri e log non validi invece di crash",
-                "es": "use llamadas async rpc para un mejor manejo de errores\nahora registra los eventos de error recibidos por XML-RPC\ndetectar parámetros inválidos y registrar en lugar de fallar",
-                "pl": "użyj asynchronicznych wywołań RPC dla lepszej obsługi błędów\nteraz rejestruj zdarzenia błędów odebrane przez XML-RPC\nwykrywa nieprawidłowe parametry i rejestruje zamiast awarii",
-                "zh-cn": "使用异步rpc调用以更好地处理错误\n现在记录XML-RPC收到的错误事件\n检测无效的参数并记录而不是崩溃"
-            },
-            "1.14.33": {
-                "en": "fix problems with CuxD and HMIP (fixes #307)\nmore palces where we now log message on real errors instead of error object",
-                "de": "Beheben Sie Probleme mit CuxD und HMIP (behebt # 307)\nWeitere Palces, in denen wir jetzt Nachrichten über echte Fehler anstelle von Fehlerobjekten protokollieren",
-                "ru": "исправить проблемы с CuxD и HMIP (исправления # 307)\nбольше мест, где мы теперь регистрируем сообщение о реальных ошибках вместо объекта ошибки",
-                "pt": "corrigir problemas com CuxD e HMIP (correções # 307)\nmais locais onde agora registramos mensagens sobre erros reais em vez de objeto de erro",
-                "nl": "problemen oplossen met CuxD en HMIP (fix # 307)\nmeer palces waar we nu een bericht registreren over echte fouten in plaats van een foutobject",
-                "fr": "résoudre les problèmes avec CuxD et HMIP (corrections # 307)\nplus de palces où nous enregistrons maintenant un message sur des erreurs réelles au lieu d'un objet d'erreur",
-                "it": "risolve problemi con CuxD e HMIP (correzioni # 307)\npiù luoghi in cui ora registriamo il messaggio sugli errori reali invece che sull'oggetto errore",
-                "es": "solucionar problemas con CuxD y HMIP (arreglos # 307)\nmás lugares donde ahora registramos el mensaje sobre errores reales en lugar del objeto de error",
-                "pl": "napraw problemy z CuxD i HMIP (poprawki # 307)\nmore palces, gdzie teraz rejestrujemy komunikaty dotyczące rzeczywistych błędów zamiast obiektu błędu",
-                "zh-cn": "修复CuxD和HMIP的问题（修复＃307）\n现在我们在实际错误而不是错误对象上记录消息的更多地方"
-            },
-            "1.14.32": {
-                "en": "revert received messages with invalid command\nlog message on real errors instead of error object\nfix for crashes on decrypt",
-                "de": "Empfangene Nachrichten mit ungültigem Befehl zurücksetzen\nProtokollmeldung über echte Fehler anstelle des Fehlerobjekts\nBehebung von Abstürzen beim Entschlüsseln",
-                "ru": "вернуть полученные сообщения с недопустимой командой\nсообщение журнала о реальных ошибках вместо объекта ошибки\nисправление сбоев при расшифровке",
-                "pt": "reverter mensagens recebidas com comando inválido\nregistrar mensagem sobre erros reais em vez de objeto de erro\ncorreção para falhas na descriptografia",
-                "nl": "zet ontvangen berichten terug met een ongeldig commando\nlogbericht over echte fouten in plaats van foutobject\noplossing voor crashes bij decoderen",
-                "fr": "annuler les messages reçus avec une commande non valide\nmessage de journalisation sur les erreurs réelles au lieu de l'objet d'erreur\ncorrection des plantages lors du déchiffrement",
-                "it": "ripristinare i messaggi ricevuti con un comando non valido\nmessaggio di log su errori reali invece di oggetto errore\ncorrezione di arresti anomali durante la decrittografia",
-                "es": "revertir mensajes recibidos con comando inválido\nmensaje de registro sobre errores reales en lugar de objeto de error\ncorrección de bloqueos al descifrar",
-                "pl": "przywróć odebrane wiadomości z nieprawidłowym poleceniem\nkomunikat dziennika rzeczywistych błędów zamiast obiektu błędu\nnaprawiono awarie podczas odszyfrowywania",
-                "zh-cn": "使用无效命令还原收到的消息\n记录有关实际错误而不是错误对象的消息\n修复解密时崩溃的问题"
-            },
-            "1.14.31": {
-                "en": "fixed  problem with default values of HMIP value list states",
-                "de": "Problem mit Standardwerten der HMIP-Wertelistenzustände behoben",
-                "ru": "исправлена проблема со значениями по умолчанию для состояний списка значений HMIP",
-                "pt": "problema corrigido com valores padrão de estados da lista de valores HMIP",
-                "nl": "probleem opgelost met standaardwaarden van HMIP-waardelijststatussen",
-                "fr": "problème résolu avec les valeurs par défaut des états de la liste de valeurs HMIP",
-                "it": "risolto il problema con i valori predefiniti degli stati della lista valori HMIP",
-                "es": "Problema solucionado con los valores predeterminados de los estados de la lista de valores HMIP",
-                "pl": "naprawiono problem z domyślnymi wartościami stanów listy wartości HMIP",
-                "zh-cn": "修复了HMIP值列表状态的默认值的问题"
-            },
-            "1.14.30": {
-                "en": " in general events of unregistered devices will now be rejected",
-                "de": " Im Allgemeinen werden Ereignisse von nicht registrierten Geräten jetzt abgelehnt",
-                "ru": " в целом события незарегистрированных устройств теперь будут отклоняться",
-                "pt": " em geral, eventos de dispositivos não registrados serão rejeitados",
-                "nl": " in het algemeen worden gebeurtenissen van niet-geregistreerde apparaten nu geweigerd",
-                "fr": " dans les événements généraux des appareils non enregistrés seront désormais rejetés",
-                "it": " in generale gli eventi di dispositivi non registrati verranno ora rifiutati",
-                "es": " en general, los eventos de dispositivos no registrados ahora serán rechazados",
-                "pl": " generalnie zdarzenia niezarejestrowanych urządzeń będą teraz odrzucane",
-                "zh-cn": " 在一般情况下，未注册的设备现在将被拒绝"
-            },
-            "1.14.29": {
-                "en": "we do not set PONG state anymore",
-                "de": "Wir setzen den PONG-Status nicht mehr",
-                "ru": "мы больше не устанавливаем состояние PONG",
-                "pt": "não definimos mais o estado PONG",
-                "nl": "we stellen de PONG-status niet meer in",
-                "fr": "nous ne définissons plus l'état PONG",
-                "it": "non impostiamo più lo stato PONG",
-                "es": "ya no establecemos el estado PONG",
-                "pl": "nie ustawiamy już stanu PONG",
-                "zh-cn": "我们不再设置PONG状态"
-            }
-        },
-        "authors": [
-            "hobbyquaker <hq@ccu.io>",
-            "Moritz Heusinger <moritz.heusinger@gmail.com>"
-        ],
-        "license": "MIT",
-        "mode": "daemon",
-        "platform": "Javascript/Node.js",
-        "loglevel": "info",
-        "readme": "https://github.com/ioBroker/ioBroker.hm-rpc/blob/master/README.md",
-        "icon": "homematic.png",
-        "materialize": true,
-        "compact": true,
-        "extIcon": "https://raw.githubusercontent.com/ioBroker/ioBroker.hm-rpc/master/admin/homematic.png",
-        "keywords": [
-            "homematic",
-            "bidcos",
-            "eq3",
-            "ELV",
-            "CCU",
-            "CCU1",
-            "CCU2",
-            "rpc",
-            "xmlrpc",
-            "homegear",
-            "binrpc",
-            "CUxD",
-            "FS20",
-            "FHT",
-            "HMS",
-            "EnOcean"
-        ],
-        "type": "iot-systems",
-        "connectionType": "local",
-        "dataSource": "push",
-        "stopTimeout": 1000,
-        "messagebox": true,
-        "supportStopInstance": false,
-        "dependencies": [
-            {
-                "js-controller": ">=2.0.0"
-            }
-        ],
-        "plugins": {
-            "sentry": {
-                "dsn": "https://1bc0c96f48e44483b283bc5fc0ca91e2@sentry.iobroker.net/10",
-                "pathWhitelist": [],
-                "errorBlacklist": [
-                    "SyntaxError"
-                ]
-            }
-        },
-        "adminUI": {
-            "config": "materialize"
-        },
-        "titleLang": {
-            "en": "HomeMatic RPC",
-            "de": "HomeMatic RPC",
-            "ru": "HomeMatic RPC",
-            "pt": "HomeMatic RPC",
-            "nl": "HomeMatic RPC",
-            "fr": "AccueilMatic RPC",
-            "it": "HomeMatic RPC",
-            "es": "HomeMatic RPC",
-            "pl": "HomeMatic RPC",
-            "zh-cn": "HomeMatic RPC"
-        },
-        "tier": 2
+  "common": {
+    "name": "hm-rpc",
+    "title": "HomeMatic RPC",
+    "desc": {
+      "en": "Connects HomeMatic Interface-Processes (BidCos-Services, Homegear and CUxD) via XML-RPC or BIN-RPC to ioBroker",
+      "de": "Verbindet HomeMatic Interface-Prozesse (BidCos-Services, Homegear und CUxD) via XML-RPC oder BIN-RPC mit ioBroker",
+      "ru": "Подключает HomeMatic интерфейсы (BidCos-сервисы, Homegear и CUxD) через XML-RPC или BIN-RPC к ioBroker",
+      "pt": "Conecta HomeMatic Interface-Processes (BidCos-Services, Homegear e CUxD) via XML-RPC ou BIN-RPC para ioBroker",
+      "nl": "Verbindt HomeMatic Interface-processen (BidCos-Services, Homegear en CUxD) via XML-RPC of BIN-RPC met ioBroker",
+      "fr": "Connecte les processus d'interface HomeMatic (BidCos-Services, Homegear et CUxD) via XML-RPC ou BIN-RPC à ioBroker",
+      "it": "Collega l'interfaccia HomeMatic: i processi (BidCos-Services, Homegear e CUxD) tramite XML-RPC o BIN-RPC su ioBroker",
+      "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
+      "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker",
+      "zh-cn": "通过 XML-RPC 或 BIN-RPC 将 HomeMatic 接口进程（BidCos-Services、Homegear 和 CUxD）连接到 ioBroker"
     },
-    "native": {
-        "homematicAddress": "192.168.0.100",
-        "adapterAddress": "0.0.0.0",
-        "homematicPort": "2001",
-        "callbackAddress": "",
-        "port": "0",
-        "type": "xml",
-        "daemon": "rfd",
-        "checkInitInterval": 180,
-        "reconnectInterval": 30,
-        "forceReInit": false,
-        "username": "",
-        "password": "",
-        "useHttps": false,
-        "dontDelete": false
+    "version": "1.14.46",
+    "news": {
+      "1.14.46": {
+        "en": "added logging for \"no dpType\" scenarios\nadded image of HmIP-eTRV-E\nadded image of HmIPW-WRC6",
+        "de": "Logging für \"no dpType\"-Szenarien hinzugefügt\nBild von HmIP-eTRV-E hinzugefügt\nBild von HmIPW-WRC6 hinzugefügt",
+        "ru": "добавлено ведение журнала для сценариев \"без dpType\"\nдобавлено изображение HmIP-eTRV-E\nдобавлено изображение HmIPW-WRC6",
+        "pt": "adicionado registro para cenários \"sem dpType\"\nadicionada imagem de HmIP-eTRV-E\nadicionada imagem de HmIPW-WRC6",
+        "nl": "logboekregistratie toegevoegd voor \"geen dpType\"-scenario's\ntoegevoegde afbeelding van HmIP-eTRV-E\ntoegevoegde afbeelding van HmIPW-WRC6",
+        "fr": "ajout de la journalisation pour les scénarios \"sans dpType\"\nimage ajoutée de HmIP-eTRV-E\nimage ajoutée de HmIPW-WRC6",
+        "it": "aggiunta registrazione per scenari \"no dpType\"\naggiunta immagine di HmIP-eTRV-E\naggiunta immagine di HmIPW-WRC6",
+        "es": "registro agregado para escenarios \"sin dpType\"\nimagen agregada de HmIP-eTRV-E\nimagen añadida de HmIPW-WRC6",
+        "pl": "dodano logowanie dla scenariuszy \"bez dpType\"\ndodano obraz HmIP-eTRV-E\ndodano obraz HmIPW-WRC6",
+        "zh-cn": "添加了“无 dpType”场景的日志记录\n添加了 HmIP-eTRV-E 的图片\n添加了 HmIPW-WRC6 的图片"
+      },
+      "1.14.45": {
+        "en": "we fixed several sentry issues (closes #368, closes #370)",
+        "de": "wir haben mehrere Wachpostenprobleme behoben (schließt #368, schließt #370)",
+        "ru": "мы исправили несколько проблем с часовой (закрывает # 368, закрывает # 370)",
+        "pt": "corrigimos vários problemas de sentinela (fecha # 368, fecha # 370)",
+        "nl": "we hebben verschillende schildwachtproblemen opgelost (sluit #368, sluit #370)",
+        "fr": "nous avons corrigé plusieurs problèmes de sentinelle (ferme #368, ferme #370)",
+        "it": "abbiamo risolto diversi problemi di sentinella (chiude #368, chiude #370)",
+        "es": "arreglamos varios problemas de centinela (cierra # 368, cierra # 370)",
+        "pl": "naprawiliśmy kilka błędów wartowników (zamyka #368, zamyka #370)",
+        "zh-cn": "我们修复了几个哨兵问题（关闭 #368，关闭 #370）"
+      },
+      "1.14.43": {
+        "en": "we now correctly map the role of smoke detectors (closes #354)",
+        "de": "wir ordnen jetzt die Rolle von Rauchmeldern korrekt zu (schließt #354)",
+        "ru": "теперь мы правильно отображаем роль детекторов дыма (закрывает # 354)",
+        "pt": "agora mapeamos corretamente a função dos detectores de fumaça (fecha # 354)",
+        "nl": "we brengen nu de rol van rookmelders correct in kaart (closes #354)",
+        "fr": "nous cartographions maintenant correctement le rôle des détecteurs de fumée (ferme le #354)",
+        "it": "ora mappiamo correttamente il ruolo dei rilevatori di fumo (chiude #354)",
+        "es": "ahora mapeamos correctamente el papel de los detectores de humo (cierra el n. ° 354)",
+        "pl": "teraz poprawnie mapujemy rolę czujek dymu (zamyka #354)",
+        "zh-cn": "我们现在正确地映射了烟雾探测器的作用（关闭 #354）"
+      },
+      "1.14.42": {
+        "en": "Added the roles to thermostat states\nAdded the roles for switch\nApply new roles to existing states",
+        "de": "Die Rollen zu den Thermostatzuständen hinzugefügt\nDie Rollen für den Schalter hinzugefügt\nAnwenden neuer Rollen auf bestehende Zustände",
+        "ru": "Добавлены роли в состояния термостата.\nДобавлены роли для переключателя\nПрименить новые роли к существующим состояниям",
+        "pt": "Adicionadas as funções aos estados do termostato\nAdicionadas as funções para troca\nAplicar novas funções aos estados existentes",
+        "nl": "De rollen toegevoegd aan thermostaatstatussen\nDe rollen voor switch toegevoegd\nPas nieuwe rollen toe op bestaande statussen",
+        "fr": "Ajout des rôles aux états du thermostat\nAjout des rôles pour le commutateur\nAppliquer de nouveaux rôles aux états existants",
+        "it": "Aggiunti i ruoli agli stati del termostato\nAggiunti i ruoli per switch\nApplicare nuovi ruoli agli stati esistenti",
+        "es": "Se agregaron los roles a los estados del termostato.\nSe agregaron los roles para el cambio.\nAplicar nuevos roles a estados existentes",
+        "pl": "Dodano role do stanów termostatu\nDodano role dla przełącznika\nZastosuj nowe role do istniejących stanów",
+        "zh-cn": "将角色添加到恒温器状态\n添加切换角色\n将新角色应用于现有状态"
+      },
+      "1.14.41": {
+        "en": "we made sure, that controller does not send stopInstance message anymore",
+        "de": "Wir haben sichergestellt, dass der Controller keine stopInstance-Nachricht mehr sendet",
+        "ru": "мы убедились, что этот контроллер больше не отправляет сообщение stopInstance",
+        "pt": "certificamo-nos de que o controlador não envia mais mensagem stopInstance",
+        "nl": "we hebben ervoor gezorgd dat de controller geen stopInstance-bericht meer verzendt",
+        "fr": "nous nous sommes assurés que ce contrôleur n'envoie plus de message stopInstance",
+        "it": "ci siamo assicurati che quel controller non inviasse più il messaggio stopInstance",
+        "es": "nos aseguramos de que el controlador ya no envíe el mensaje stopInstance",
+        "pl": "upewniliśmy się, że kontroler nie wysyła już komunikatu stopInstance",
+        "zh-cn": "我们确保，该控制器不再发送 stopInstance 消息"
+      },
+      "1.14.39": {
+        "en": "remove the stopInstance message handling and put everything in unload\nremoved the white background by some icons",
+        "de": "entferne die stopInstance-Nachrichtenbehandlung und lege alles in unload\nden weißen Hintergrund bei einigen Symbolen entfernt",
+        "ru": "удалите обработку сообщений stopInstance и поместите все в выгрузку\nубран белый фон некоторыми иконками",
+        "pt": "remova o tratamento da mensagem stopInstance e coloque tudo em unload\nremoveu o fundo branco por alguns ícones",
+        "nl": "verwijder de stopInstance-berichtafhandeling en plaats alles in unload\nde witte achtergrond door sommige pictogrammen verwijderd",
+        "fr": "supprimer la gestion des messages stopInstance et tout mettre en décharge\nsupprimé le fond blanc de certaines icônes",
+        "it": "rimuovi la gestione dei messaggi stopInstance e metti tutto in scarica\nrimosso lo sfondo bianco da alcune icone",
+        "es": "eliminar el manejo de mensajes stopInstance y poner todo en descarga\neliminado el fondo blanco por algunos iconos",
+        "pl": "usuń obsługę wiadomości stopInstance i umieść wszystko w unload\nusunięto białe tło za pomocą niektórych ikon",
+        "zh-cn": "删除 stopInstance 消息处理并将所有内容卸载\n通过一些图标删除了白色背景"
+      },
+      "1.14.38": {
+        "en": "fixed the VirtualDevices min/max/default assignment (fixes #332)\ndo not scale on normal '%' UNIT because its inconsistent (fixes #326)",
+        "de": "Die Zuweisung von VirtualDevices min / max / default wurde korrigiert (Fixes # 332).\nSkalieren Sie nicht auf der normalen '%' UNIT, da diese inkonsistent ist (Fixes # 326).",
+        "ru": "исправлено назначение виртуальных устройств min / max / default (исправления # 332)\nне масштабируются по обычному ЕДИНИЦУ \"%\", потому что он несовместим (исправление # 326)",
+        "pt": "corrigiu a atribuição mín / máx / padrão VirtualDevices (corrige # 332)\nnão escalar na UNIDADE '%' normal porque é inconsistente (corrige # 326)",
+        "nl": "de VirtualDevices min / max / standaard toewijzing gerepareerd (fixes # 332)\nschaal niet op normale '%' UNIT omdat het inconsistent is (fix # 326)",
+        "fr": "correction de l'affectation min / max / par défaut de VirtualDevices (correctifs # 332)\nne pas mettre à l'échelle sur l'unité '%' normale car elle est incohérente (correction # 326)",
+        "it": "risolto l'assegnazione min / max / predefinita di VirtualDevices (correzioni # 332)\nnon scalare sulla normale UNITÀ '%' perché è incoerente (correzioni # 326)",
+        "es": "Se corrigió la asignación mínima / máxima / predeterminada de VirtualDevices (arreglos # 332)\nno escale en la UNIDAD '%' normal porque es inconsistente (corrige # 326)",
+        "pl": "naprawiono przypisanie wartości min / maks / domyślne VirtualDevices (poprawki # 332)\nnie skaluj na normalnej JEDNOSTCE „%”, ponieważ jest niespójna (poprawki # 326)",
+        "zh-cn": "修复了VirtualDevices的最小/最大/默认分配（修复＃332）\n不能按正常的'％'UNIT缩放，因为它不一致（修复＃326）"
+      }
     },
-    "protectedNative": [
-        "username",
-        "password"
+    "authors": [
+      "hobbyquaker <hq@ccu.io>",
+      "Moritz Heusinger <moritz.heusinger@gmail.com>"
     ],
-    "objects": [
-        {
-            "_id": "_design/hm-rpc",
-            "language": "javascript",
-            "views": {
-                "listDevices": {
-                    "map": "function(doc) {\n  if (doc._id.match(/^hm-rpc\\.[0-9]+\\.\\*?[A-Za-z0-9_-]+(\\.[0-9]+)?$/)) {\n   emit(doc._id, {ADDRESS:(doc.native?doc.native.ADDRESS:''),VERSION:(doc.native?doc.native.VERSION:'')});\n  }\n}"
-                },
-                "paramsetDescription": {
-                    "map": "function(doc) {\n  if (doc._id.match(/^hm-rpc\\.meta/) && doc.meta.type === 'paramsetDescription') {\n   emit(doc._id, doc);\n  }\n}"
-                }
-            }
-        },
-        {
-            "_id": "hm-rpc.meta",
-            "type": "meta",
-            "common": {
-                "name": "meta data of Homematic devices",
-                "icon": "/admin/homematic.png"
-            },
-            "native": {}
-        },
-        {
-            "_id": "hm-rpc.meta.roles",
-            "parent": "hm-rpc",
-            "type": "meta",
-            "meta": {
-                "type": "roles",
-                "adapter": "hm-rpc"
-            },
-            "common": {},
-            "native": {
-                "chTYPE": {
-                    "DIMMER": "light.dimmer",
-                    "BLIND": "blind",
-                    "SWITCH": "switch",
-                    "KEY": "button",
-                    "SHUTTER_CONTACT": "sensor"
-                },
-                "dpCONTROL": {
-                    "DIMMER.LEVEL": "level.dimmer",
-                    "BLIND.LEVEL": "level.blind",
-                    "LOCK.STATE": "switch.lock",
-                    "DOOR_SENSOR.STATE": "value.window",
-                    "DANGER.STATE": "sensor.alarm.fire"
-                },
-                "chTYPE_dpNAME": {
-                    "DIMMER.LEVEL": "level.dimmer",
-                    "DIMMER.OLD_LEVEL": "value.dimmer",
-                    "DIMMER.LEVEL_REAL": "value.dimmer",
-                    "VIRTUAL_DIMMER.LEVEL": "level.dimmer",
-                    "VIRTUAL_DIMMER.OLD_LEVEL": "value.dimmer",
-                    "VIRTUAL_DIMMER.LEVEL_REAL": "value.dimmer"
-                },
-                "dpNAME": {
-                    "BATTERY_STATE": "value.voltage",
-                    "BOOST_STATE": "level.boost",
-                    "BOOST_MODE": "switch.mode.boost",
-                    "PARTY_MODE": "switch.mode.party",
-                    "FROST_PROTECTION": "indicator",
-                    "CONTROL_MODE": "indicator",
-                    "FAULT_REPORTING": "indicator",
-                    "MANU_MODE": "level.temperature",
-                    "ACTUAL_TEMPERATURE": "value.temperature",
-                    "ACTUAL_TEMPERATURE_STATUS": "value",
-                    "TEMPERATURE": "value.temperature",
-                    "SETPOINT": "level.temperature",
-                    "SET_TEMPERATURE": "level.temperature",
-                    "SET_POINT_TEMPERATURE": "level.temperature",
-                    "SET_POINT_MODE": "level.mode.thermostat",
-                    "HUMIDITY": "value.humidity",
-                    "STATE": "state",
-                    "PRESS_SHORT": "button",
-                    "PRESS_LONG": "button.long",
-                    "PRESS_LONG_RELEASE": "button.release",
-                    "PRESS_CONT": "button.continuous",
-                    "LEVEL": "level",
-                    "LOWBAT": "indicator.lowbat",
-                    "LOW_BAT": "indicator.lowbat",
-                    "INSTALL_TEST": "indicator",
-                    "UNREACH": "indicator.unreach",
-                    "WINDOW_STATE": "value.window",
-                    "WORKING": "indicator.working",
-                    "DIRECTION": "indicator.direction",
-                    "CONFIG_PENDING": "indicator",
-                    "UPDATE_PENDING": "indicator",
-                    "INSTALL_MODE": "indicator",
-                    "RSSI_PEER": "value.rssi",
-                    "RSSI_DEVICE": "value.rssi",
-                    "AES_KEY": "value",
-                    "STICKY_UNREACH": "indicator.unreach",
-                    "ERROR": "indicator.error",
-                    "ERROR_OVERHEAT": "indicator.error.overheat",
-                    "ERROR_OVERLOAD": "indicator.error.overload",
-                    "ERROR_REDUCED": "indicator.error",
-                    "MOTION": "sensor.motion",
-                    "PRESENCE_DETECTION_STATE": "sensor.motion",
-                    "INHIBIT": "state.inhibit",
-                    "VALVE_STATE": "value.valve",
-                    "BRIGHTNESS": "value.brightness",
-                    "ILLUMINATION": "value.brightness",
-                    "RAMP_TIME": "timer.ramp",
-                    "RAMP_STOP": "button.stop",
-                    "STOP": "button.stop",
-                    "ON_TIME": "timer.off",
-                    "DUTYCYCLE": "value",
-                    "DUTY_CYCLE": "value",
-                    "COLOR": "level.color.hue",
-                    "OPERATING_VOLTAGE": "value.voltage",
-                    "OPERATING_VOLTAGE_STATUS": "value",
-                    "SABOTAGE": "indicator",
-                    "CURRENT": "value.current",
-                    "ENERGY_COUNTER": "value.power.consumption",
-                    "FREQUENCY": "value.frequency",
-                    "POWER": "value.power",
-                    "VOLTAGE": "value.voltage",
-                    "ERROR_CODE": "value"
-                },
-                "dvTYPE": {
-                    "HM-Sec-SD": "sensor.alarm.fire",
-                    "HM-Sec-SD-2": "sensor.alarm.fire",
-                    "HM-Sec-SD-Team": "sensor.alarm.fire",
-                    "HM-Sen-MDIR-O-2": "sensor.motion",
-                    "HM-Sen-MDIR-O-3": "sensor.motion",
-                    "HM-Sec-MDIR-3": "sensor.motion",
-                    "HmIP-SMO": "sensor.motion",
-                    "HmIP-SMO-A": "sensor.motion",
-                    "HmIP-SPI": "sensor.motion",
-                    "HmIP-SMI": "sensor.motion",
-                    "HM-Sen-RD-O": "sensor.rain",
-                    "HM-Sec-RHS": "value.tilt",
-                    "HmIP-SRH": "value.tilt",
-                    "HM-Sec-WDS-2": "sensor.alarm.flood",
-                    "HmIP-SWD": "sensor.alarm.flood",
-                    "HmIP-SWSD": "sensor.alarm.fire"
-                }
-            }
-        }
+    "license": "MIT",
+    "mode": "daemon",
+    "platform": "Javascript/Node.js",
+    "loglevel": "info",
+    "readme": "https://github.com/ioBroker/ioBroker.hm-rpc/blob/master/README.md",
+    "icon": "homematic.png",
+    "materialize": true,
+    "compact": true,
+    "extIcon": "https://raw.githubusercontent.com/ioBroker/ioBroker.hm-rpc/master/admin/homematic.png",
+    "keywords": [
+      "homematic",
+      "bidcos",
+      "eq3",
+      "ELV",
+      "CCU",
+      "CCU1",
+      "CCU2",
+      "rpc",
+      "xmlrpc",
+      "homegear",
+      "binrpc",
+      "CUxD",
+      "FS20",
+      "FHT",
+      "HMS",
+      "EnOcean"
     ],
-    "instanceObjects": [
-        {
-            "_id": "updated",
-            "type": "state",
-            "common": {
-                "name": "Some new devices added",
-                "type": "boolean",
-                "read": true,
-                "write": true
-            }
+    "type": "iot-systems",
+    "connectionType": "local",
+    "dataSource": "push",
+    "stopTimeout": 1000,
+    "messagebox": true,
+    "supportStopInstance": false,
+    "dependencies": [
+      {
+        "js-controller": ">=2.0.0"
+      }
+    ],
+    "plugins": {
+      "sentry": {
+        "dsn": "https://1bc0c96f48e44483b283bc5fc0ca91e2@sentry.iobroker.net/10",
+        "pathWhitelist": [],
+        "errorBlacklist": [
+          "SyntaxError"
+        ]
+      }
+    },
+    "adminUI": {
+      "config": "materialize"
+    },
+    "titleLang": {
+      "en": "HomeMatic RPC",
+      "de": "HomeMatic RPC",
+      "ru": "HomeMatic RPC",
+      "pt": "HomeMatic RPC",
+      "nl": "HomeMatic RPC",
+      "fr": "AccueilMatic RPC",
+      "it": "HomeMatic RPC",
+      "es": "HomeMatic RPC",
+      "pl": "HomeMatic RPC",
+      "zh-cn": "HomeMatic RPC"
+    },
+    "tier": 2
+  },
+  "native": {
+    "homematicAddress": "192.168.0.100",
+    "adapterAddress": "0.0.0.0",
+    "homematicPort": "2001",
+    "callbackAddress": "",
+    "port": "0",
+    "type": "xml",
+    "daemon": "rfd",
+    "checkInitInterval": 180,
+    "reconnectInterval": 30,
+    "forceReInit": false,
+    "username": "",
+    "password": "",
+    "useHttps": false,
+    "dontDelete": false
+  },
+  "protectedNative": [
+    "username",
+    "password"
+  ],
+  "objects": [
+    {
+      "_id": "_design/hm-rpc",
+      "language": "javascript",
+      "views": {
+        "listDevices": {
+          "map": "function(doc) {\n  if (doc._id.match(/^hm-rpc\\.[0-9]+\\.\\*?[A-Za-z0-9_-]+(\\.[0-9]+)?$/)) {\n   emit(doc._id, {ADDRESS:(doc.native?doc.native.ADDRESS:''),VERSION:(doc.native?doc.native.VERSION:'')});\n  }\n}"
         },
-        {
-            "_id": "info",
-            "type": "channel",
-            "common": {
-                "name": "Information"
-            },
-            "native": {}
-        },
-        {
-            "_id": "info.connection",
-            "type": "state",
-            "common": {
-                "role": "indicator.connected",
-                "name": "If connected to CCU",
-                "type": "boolean",
-                "read": true,
-                "write": false,
-                "def": false
-            },
-            "native": {}
+        "paramsetDescription": {
+          "map": "function(doc) {\n  if (doc._id.match(/^hm-rpc\\.meta/) && doc.meta.type === 'paramsetDescription') {\n   emit(doc._id, doc);\n  }\n}"
         }
-    ]
+      }
+    },
+    {
+      "_id": "hm-rpc.meta",
+      "type": "meta",
+      "common": {
+        "name": "meta data of Homematic devices",
+        "icon": "/admin/homematic.png"
+      },
+      "native": {}
+    },
+    {
+      "_id": "hm-rpc.meta.roles",
+      "parent": "hm-rpc",
+      "type": "meta",
+      "meta": {
+        "type": "roles",
+        "adapter": "hm-rpc"
+      },
+      "common": {},
+      "native": {
+        "chTYPE": {
+          "DIMMER": "light.dimmer",
+          "BLIND": "blind",
+          "SWITCH": "switch",
+          "KEY": "button",
+          "SHUTTER_CONTACT": "sensor"
+        },
+        "dpCONTROL": {
+          "DIMMER.LEVEL": "level.dimmer",
+          "BLIND.LEVEL": "level.blind",
+          "LOCK.STATE": "switch.lock",
+          "DOOR_SENSOR.STATE": "value.window",
+          "DANGER.STATE": "sensor.alarm.fire"
+        },
+        "chTYPE_dpNAME": {
+          "DIMMER.LEVEL": "level.dimmer",
+          "DIMMER.OLD_LEVEL": "value.dimmer",
+          "DIMMER.LEVEL_REAL": "value.dimmer",
+          "VIRTUAL_DIMMER.LEVEL": "level.dimmer",
+          "VIRTUAL_DIMMER.OLD_LEVEL": "value.dimmer",
+          "VIRTUAL_DIMMER.LEVEL_REAL": "value.dimmer"
+        },
+        "dpNAME": {
+          "BATTERY_STATE": "value.voltage",
+          "BOOST_STATE": "level.boost",
+          "BOOST_MODE": "switch.mode.boost",
+          "PARTY_MODE": "switch.mode.party",
+          "FROST_PROTECTION": "indicator",
+          "CONTROL_MODE": "indicator",
+          "FAULT_REPORTING": "indicator",
+          "MANU_MODE": "level.temperature",
+          "ACTUAL_TEMPERATURE": "value.temperature",
+          "ACTUAL_TEMPERATURE_STATUS": "value",
+          "TEMPERATURE": "value.temperature",
+          "SETPOINT": "level.temperature",
+          "SET_TEMPERATURE": "level.temperature",
+          "SET_POINT_TEMPERATURE": "level.temperature",
+          "SET_POINT_MODE": "level.mode.thermostat",
+          "HUMIDITY": "value.humidity",
+          "STATE": "state",
+          "PRESS_SHORT": "button",
+          "PRESS_LONG": "button.long",
+          "PRESS_LONG_RELEASE": "button.release",
+          "PRESS_CONT": "button.continuous",
+          "LEVEL": "level",
+          "LOWBAT": "indicator.lowbat",
+          "LOW_BAT": "indicator.lowbat",
+          "INSTALL_TEST": "indicator",
+          "UNREACH": "indicator.unreach",
+          "WINDOW_STATE": "value.window",
+          "WORKING": "indicator.working",
+          "DIRECTION": "indicator.direction",
+          "CONFIG_PENDING": "indicator",
+          "UPDATE_PENDING": "indicator",
+          "INSTALL_MODE": "indicator",
+          "RSSI_PEER": "value.rssi",
+          "RSSI_DEVICE": "value.rssi",
+          "AES_KEY": "value",
+          "STICKY_UNREACH": "indicator.unreach",
+          "ERROR": "indicator.error",
+          "ERROR_OVERHEAT": "indicator.error.overheat",
+          "ERROR_OVERLOAD": "indicator.error.overload",
+          "ERROR_REDUCED": "indicator.error",
+          "MOTION": "sensor.motion",
+          "PRESENCE_DETECTION_STATE": "sensor.motion",
+          "INHIBIT": "state.inhibit",
+          "VALVE_STATE": "value.valve",
+          "BRIGHTNESS": "value.brightness",
+          "ILLUMINATION": "value.brightness",
+          "RAMP_TIME": "timer.ramp",
+          "RAMP_STOP": "button.stop",
+          "STOP": "button.stop",
+          "ON_TIME": "timer.off",
+          "DUTYCYCLE": "value",
+          "DUTY_CYCLE": "value",
+          "COLOR": "level.color.hue",
+          "OPERATING_VOLTAGE": "value.voltage",
+          "OPERATING_VOLTAGE_STATUS": "value",
+          "SABOTAGE": "indicator",
+          "CURRENT": "value.current",
+          "ENERGY_COUNTER": "value.power.consumption",
+          "FREQUENCY": "value.frequency",
+          "POWER": "value.power",
+          "VOLTAGE": "value.voltage",
+          "ERROR_CODE": "value"
+        },
+        "dvTYPE": {
+          "HM-Sec-SD": "sensor.alarm.fire",
+          "HM-Sec-SD-2": "sensor.alarm.fire",
+          "HM-Sec-SD-Team": "sensor.alarm.fire",
+          "HM-Sen-MDIR-O-2": "sensor.motion",
+          "HM-Sen-MDIR-O-3": "sensor.motion",
+          "HM-Sec-MDIR-3": "sensor.motion",
+          "HmIP-SMO": "sensor.motion",
+          "HmIP-SMO-A": "sensor.motion",
+          "HmIP-SPI": "sensor.motion",
+          "HmIP-SMI": "sensor.motion",
+          "HM-Sen-RD-O": "sensor.rain",
+          "HM-Sec-RHS": "value.tilt",
+          "HmIP-SRH": "value.tilt",
+          "HM-Sec-WDS-2": "sensor.alarm.flood",
+          "HmIP-SWD": "sensor.alarm.flood",
+          "HmIP-SWSD": "sensor.alarm.fire"
+        }
+      }
+    }
+  ],
+  "instanceObjects": [
+    {
+      "_id": "updated",
+      "type": "state",
+      "common": {
+        "name": "Some new devices added",
+        "type": "boolean",
+        "read": true,
+        "write": true
+      }
+    },
+    {
+      "_id": "info",
+      "type": "channel",
+      "common": {
+        "name": "Information"
+      },
+      "native": {}
+    },
+    {
+      "_id": "info.connection",
+      "type": "state",
+      "common": {
+        "role": "indicator.connected",
+        "name": "If connected to CCU",
+        "type": "boolean",
+        "read": true,
+        "write": false,
+        "def": false
+      },
+      "native": {}
+    }
+  ]
 }
