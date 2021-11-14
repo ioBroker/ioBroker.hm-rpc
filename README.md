@@ -153,7 +153,8 @@ via or/and operator. The then clause of the program can remain empty. Now your s
 -->
 ## Changelog
 
-### __WORK IN PROGRESS__
+### 1.14.46 (2021-11-14)
+* (foxriver76) added logging for "no dpType" scenarios
 * (foxriver76) added image of HmIP-eTRV-E
 * (foxriver76) added image of HmIPW-WRC6
 

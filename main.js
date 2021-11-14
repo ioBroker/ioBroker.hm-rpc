@@ -430,6 +430,8 @@ function startAdapter(options) {
 
             if (!dpTypes[id]) {
                 adapter.log.error(`${adapter.config.type}rpc -> setValue: no dpType for ${id}!`);
+                // log this for debug purposes
+                adapter.log.error(JSON.stringify(dpTypes));
                 return;
             }
 
@@ -757,8 +759,8 @@ async function main() {
 
     try {
         const res = await adapter.getObjectViewAsync('system', 'state', {
-            startkey: adapter.namespace,
-            endkey: `${adapter.namespace}\u9999`
+            startkey: `${adapter.namespace}.`,
+            endkey: `${adapter.namespace}.\u9999`
         });
 
         if (res.rows) {
@@ -976,8 +978,8 @@ async function initRpcServer() {
             let doc;
             try {
                 doc = await adapter.getObjectViewAsync('hm-rpc', 'listDevices', {
-                    startkey: `hm-rpc.${adapter.instance}.`,
-                    endkey: `hm-rpc.${adapter.instance}.\u9999`
+                    startkey: `${adapter.namespace}.`,
+                    endkey: `${adapter.namespace}.\u9999`
                 });
             } catch (e) {
                 adapter.log.error(`getObjectViewAsync hm-rpc: ${e.message}`);
@@ -1053,8 +1055,8 @@ async function initRpcServer() {
         let doc;
         try {
             doc = await adapter.getObjectViewAsync('hm-rpc', 'listDevices', {
-                startkey: `hm-rpc.${adapter.instance}.`,
-                endkey: `hm-rpc.${adapter.instance}.\u9999`
+                startkey: `${adapter.namespace}.`,
+                endkey: `${adapter.namespace}.\u9999`
             });
         } catch (e) {
             adapter.log.error(`Error on listDevices (getObjectView): ${e.message}`);
@@ -1118,7 +1120,7 @@ async function initRpcServer() {
 
     rpcServer.on('setReadyConfig', (err, params, callback) => {
         if (err) {
-            adapter.log.warn(` Error on setReadyConfig: ${err}`);
+            adapter.log.warn(`Error on setReadyConfig: ${err}`);
         }
         adapter.log.info(`${adapter.config.type}rpc <- setReadyConfig ${JSON.stringify(params)}`);
         try {
@@ -1620,8 +1622,8 @@ async function getCuxDevices() {
                 let doc;
                 try {
                     doc = await adapter.getObjectViewAsync('hm-rpc', 'listDevices', {
-                        startkey: `hm-rpc.${adapter.instance}.`,
-                        endkey: `hm-rpc.${adapter.instance}.\u9999`
+                        startkey: `${adapter.namespace}.`,
+                        endkey: `${adapter.namespace}.\u9999`
                     });
                 } catch (e) {
                     adapter.log.error(`getObjectView hm-rpc: ${e.message}`);
