@@ -152,7 +152,6 @@ via or/and operator. The then clause of the program can remain empty. Now your s
 	### __WORK IN PROGRESS__
 -->
 ## Changelog
-
 ### 1.14.46 (2021-11-14)
 * (foxriver76) added logging for "no dpType" scenarios
 * (foxriver76) added image of HmIP-eTRV-E
@@ -163,7 +162,7 @@ via or/and operator. The then clause of the program can remain empty. Now your s
 
 ### 1.14.43 (2021-07-05)
 * (foxriver76) we now correctly map the role of smoke detectors (closes #354)
- 
+
 ### 1.14.42 (2021-06-27)
 * (bluefox) Added the roles to thermostat states
 * (bluefox) Added the roles for switch
@@ -268,7 +267,7 @@ via or/and operator. The then clause of the program can remain empty. Now your s
 * (jens-maus) updated all device images to latest ones include HM-IP-wired ones
 
 ### 1.14.3 (2020-05-18)
-* (foxriver76) catch edge case error if row.value has no native 
+* (foxriver76) catch edge case error if row.value has no native
 
 ### 1.14.2 (2020-04-24)
 * (foxriver76) catch errors on rpc client creation
@@ -324,7 +323,7 @@ of this approach (more requests to CCU on first setup)
 * (foxriver76) fixed info channel
 
 ### 1.10.2 (2019-10-24)
-* (foxriver76) replace min max values of HM-IP with correct numbers 
+* (foxriver76) replace min max values of HM-IP with correct numbers
 
 ### 1.10.0 (2019-08-12)
 * (foxriver76) new metadata handling procedure
