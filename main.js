@@ -681,9 +681,9 @@ let rpcClient;
 let rpcServer;
 
 const metaValues = {};
-let metaRoles = {};
 const dpTypes = {};
 
+let metaRoles;
 let lastEvent = 0;
 let eventInterval;
 let connInterval;
@@ -755,6 +755,13 @@ async function main() {
         }
     } catch (e) {
         adapter.log.error(`hm-rpc.meta.roles: ${e.message}`);
+    }
+
+    if (!metaRoles) {
+        // if no meta roles we cannot run correctly
+        adapter.log.error('No meta values retrived, check your installation. "hm-rpc.meta.roles" may be corrupted.');
+        adapter.restart();
+        return;
     }
 
     try {

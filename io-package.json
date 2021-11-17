@@ -14,8 +14,20 @@
       "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker",
       "zh-cn": "通过 XML-RPC 或 BIN-RPC 将 HomeMatic 接口进程（BidCos-Services、Homegear 和 CUxD）连接到 ioBroker"
     },
-    "version": "1.14.46",
+    "version": "1.14.47",
     "news": {
+      "1.14.47": {
+        "en": "handle cases where we cannot retrive `meta.roles` (addresses #407)",
+        "de": "behandelt Fälle, in denen wir `meta.roles` nicht abrufen können (Adressen #407)",
+        "ru": "обрабатывать случаи, когда мы не можем получить `meta.roles` (адреса # 407)",
+        "pt": "lidar com casos em que não podemos recuperar `meta.roles` (endereços # 407)",
+        "nl": "gevallen behandelen waarin we `meta.roles` niet kunnen ophalen (adressen #407)",
+        "fr": "gérer les cas où nous ne pouvons pas récupérer `meta.roles` (adresses #407)",
+        "it": "gestire i casi in cui non possiamo recuperare `meta.roles` (indirizzi #407)",
+        "es": "manejar casos donde no podemos recuperar `meta.roles` (direcciones # 407)",
+        "pl": "obsłużyć przypadki, w których nie możemy odzyskać `meta.roles` (adresy #407)",
+        "zh-cn": "处理我们无法检索 `meta.roles` 的情况（地址 #407）"
+      },
       "1.14.46": {
         "en": "added logging for \"no dpType\" scenarios\nadded image of HmIP-eTRV-E\nadded image of HmIPW-WRC6",
         "de": "Logging für \"no dpType\"-Szenarien hinzugefügt\nBild von HmIP-eTRV-E hinzugefügt\nBild von HmIPW-WRC6 hinzugefügt",
@@ -87,18 +99,6 @@
         "es": "eliminar el manejo de mensajes stopInstance y poner todo en descarga\neliminado el fondo blanco por algunos iconos",
         "pl": "usuń obsługę wiadomości stopInstance i umieść wszystko w unload\nusunięto białe tło za pomocą niektórych ikon",
         "zh-cn": "删除 stopInstance 消息处理并将所有内容卸载\n通过一些图标删除了白色背景"
-      },
-      "1.14.38": {
-        "en": "fixed the VirtualDevices min/max/default assignment (fixes #332)\ndo not scale on normal '%' UNIT because its inconsistent (fixes #326)",
-        "de": "Die Zuweisung von VirtualDevices min / max / default wurde korrigiert (Fixes # 332).\nSkalieren Sie nicht auf der normalen '%' UNIT, da diese inkonsistent ist (Fixes # 326).",
-        "ru": "исправлено назначение виртуальных устройств min / max / default (исправления # 332)\nне масштабируются по обычному ЕДИНИЦУ \"%\", потому что он несовместим (исправление # 326)",
-        "pt": "corrigiu a atribuição mín / máx / padrão VirtualDevices (corrige # 332)\nnão escalar na UNIDADE '%' normal porque é inconsistente (corrige # 326)",
-        "nl": "de VirtualDevices min / max / standaard toewijzing gerepareerd (fixes # 332)\nschaal niet op normale '%' UNIT omdat het inconsistent is (fix # 326)",
-        "fr": "correction de l'affectation min / max / par défaut de VirtualDevices (correctifs # 332)\nne pas mettre à l'échelle sur l'unité '%' normale car elle est incohérente (correction # 326)",
-        "it": "risolto l'assegnazione min / max / predefinita di VirtualDevices (correzioni # 332)\nnon scalare sulla normale UNITÀ '%' perché è incoerente (correzioni # 326)",
-        "es": "Se corrigió la asignación mínima / máxima / predeterminada de VirtualDevices (arreglos # 332)\nno escale en la UNIDAD '%' normal porque es inconsistente (corrige # 326)",
-        "pl": "naprawiono przypisanie wartości min / maks / domyślne VirtualDevices (poprawki # 332)\nnie skaluj na normalnej JEDNOSTCE „%”, ponieważ jest niespójna (poprawki # 326)",
-        "zh-cn": "修复了VirtualDevices的最小/最大/默认分配（修复＃332）\n不能按正常的'％'UNIT缩放，因为它不一致（修复＃326）"
       }
     },
     "authors": [
