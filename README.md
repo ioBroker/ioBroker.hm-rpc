@@ -151,6 +151,9 @@ via or/and operator. The then clause of the program can remain empty. Now your s
 	Placeholder for the next version (at the beginning of the line):
 	### __WORK IN PROGRESS__
 -->
+### 1.14.50 (2021-11-18)
+* (foxriver76) `meta.roles` is no longer an object, because it is kept in RAM anyway (closes #407)
+
 ### 1.14.49 (2021-11-18)
 * (foxriver76) handle cases where we cannot retrive `meta.roles` (addresses #407)
 

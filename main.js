@@ -32,6 +32,7 @@ const utils = require('@iobroker/adapter-core'); // Get common adapter utils
 const adapterName = require('./package.json').name.split('.').pop();
 const images = require('./lib/images');
 const tools = require('./lib/tools');
+const metaRoles = require('./lib/roles');
 let connected = false;
 const displays = {};
 let adapter;
@@ -683,7 +684,6 @@ let rpcServer;
 const metaValues = {};
 const dpTypes = {};
 
-let metaRoles;
 let lastEvent = 0;
 let eventInterval;
 let connInterval;
@@ -723,11 +723,11 @@ async function main() {
         daemonProto = 'http://';
     }
 
-    // Clean up objects if still hm-rpc.meta.VALUES exist
+    // Clean up objects if still hm-rpc.meta exist
     try {
         const doc = await adapter.getObjectListAsync({
-            startkey: 'hm-rpc.meta.VALUES',
-            endkey: 'hm-rpc.meta.VALUES.\u9999'
+            startkey: 'hm-rpc.meta',
+            endkey: 'hm-rpc.meta\u9999'
         });
 
         if (doc && doc.rows) {
@@ -745,23 +745,6 @@ async function main() {
         }
     } catch (e) {
         adapter.log.error(`getObjectListAsync hm-rpc: ${e.message}`);
-    }
-
-    try {
-        // Load common.role assignments
-        const res = await adapter.getForeignObjectAsync('hm-rpc.meta.roles');
-        if (res) {
-            metaRoles = res.native;
-        }
-    } catch (e) {
-        adapter.log.error(`hm-rpc.meta.roles: ${e.message}`);
-    }
-
-    if (!metaRoles) {
-        // if no meta roles we cannot run correctly
-        adapter.log.error('No meta values retrived, check your installation. "hm-rpc.meta.roles" may be corrupted.');
-        adapter.restart();
-        return;
     }
 
     try {

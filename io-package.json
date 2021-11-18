@@ -14,8 +14,20 @@
       "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker",
       "zh-cn": "通过 XML-RPC 或 BIN-RPC 将 HomeMatic 接口进程（BidCos-Services、Homegear 和 CUxD）连接到 ioBroker"
     },
-    "version": "1.14.49",
+    "version": "1.14.50",
     "news": {
+      "1.14.50": {
+        "en": "`meta.roles` is no longer an object, because it is kept in RAM anyway (closes #407)",
+        "de": "`meta.roles` ist kein Objekt mehr, da es sowieso im RAM gehalten wird (schließt #407)",
+        "ru": "`meta.roles` больше не является объектом, потому что он все равно хранится в ОЗУ (закрывает # 407)",
+        "pt": "`meta.roles` não é mais um objeto, porque é mantido na RAM de qualquer maneira (fecha # 407)",
+        "nl": "`meta.roles` is niet langer een object, omdat het toch in het RAM wordt bewaard (sluit #407 af)",
+        "fr": "`meta.roles` n'est plus un objet, car il est de toute façon conservé dans la RAM (ferme #407)",
+        "it": "`meta.roles` non è più un oggetto, perché è comunque mantenuto nella RAM (chiude #407)",
+        "es": "`meta.roles` ya no es un objeto, porque de todos modos se guarda en la RAM (cierra # 407)",
+        "pl": "`meta.roles` nie jest już obiektem, ponieważ i tak jest przechowywany w pamięci RAM (zamyka #407)",
+        "zh-cn": "`meta.roles` 不再是一个对象，因为它无论如何都保存在 RAM 中（关闭 #407）"
+      },
       "1.14.49": {
         "en": "handle cases where we cannot retrive `meta.roles` (addresses #407)",
         "de": "behandelt Fälle, in denen wir `meta.roles` nicht abrufen können (Adressen #407)",
@@ -87,18 +99,6 @@
         "es": "nos aseguramos de que el controlador ya no envíe el mensaje stopInstance",
         "pl": "upewniliśmy się, że kontroler nie wysyła już komunikatu stopInstance",
         "zh-cn": "我们确保，该控制器不再发送 stopInstance 消息"
-      },
-      "1.14.39": {
-        "en": "remove the stopInstance message handling and put everything in unload\nremoved the white background by some icons",
-        "de": "entferne die stopInstance-Nachrichtenbehandlung und lege alles in unload\nden weißen Hintergrund bei einigen Symbolen entfernt",
-        "ru": "удалите обработку сообщений stopInstance и поместите все в выгрузку\nубран белый фон некоторыми иконками",
-        "pt": "remova o tratamento da mensagem stopInstance e coloque tudo em unload\nremoveu o fundo branco por alguns ícones",
-        "nl": "verwijder de stopInstance-berichtafhandeling en plaats alles in unload\nde witte achtergrond door sommige pictogrammen verwijderd",
-        "fr": "supprimer la gestion des messages stopInstance et tout mettre en décharge\nsupprimé le fond blanc de certaines icônes",
-        "it": "rimuovi la gestione dei messaggi stopInstance e metti tutto in scarica\nrimosso lo sfondo bianco da alcune icone",
-        "es": "eliminar el manejo de mensajes stopInstance y poner todo en descarga\neliminado el fondo blanco por algunos iconos",
-        "pl": "usuń obsługę wiadomości stopInstance i umieść wszystko w unload\nusunięto białe tło za pomocą niektórych ikon",
-        "zh-cn": "删除 stopInstance 消息处理并将所有内容卸载\n通过一些图标删除了白色背景"
       }
     },
     "authors": [
@@ -199,131 +199,6 @@
         },
         "paramsetDescription": {
           "map": "function(doc) {\n  if (doc._id.match(/^hm-rpc\\.meta/) && doc.meta.type === 'paramsetDescription') {\n   emit(doc._id, doc);\n  }\n}"
-        }
-      }
-    },
-    {
-      "_id": "hm-rpc.meta",
-      "type": "meta",
-      "common": {
-        "name": "meta data of Homematic devices",
-        "icon": "/admin/homematic.png"
-      },
-      "native": {}
-    },
-    {
-      "_id": "hm-rpc.meta.roles",
-      "parent": "hm-rpc",
-      "type": "meta",
-      "meta": {
-        "type": "roles",
-        "adapter": "hm-rpc"
-      },
-      "common": {},
-      "native": {
-        "chTYPE": {
-          "DIMMER": "light.dimmer",
-          "BLIND": "blind",
-          "SWITCH": "switch",
-          "KEY": "button",
-          "SHUTTER_CONTACT": "sensor"
-        },
-        "dpCONTROL": {
-          "DIMMER.LEVEL": "level.dimmer",
-          "BLIND.LEVEL": "level.blind",
-          "LOCK.STATE": "switch.lock",
-          "DOOR_SENSOR.STATE": "value.window",
-          "DANGER.STATE": "sensor.alarm.fire"
-        },
-        "chTYPE_dpNAME": {
-          "DIMMER.LEVEL": "level.dimmer",
-          "DIMMER.OLD_LEVEL": "value.dimmer",
-          "DIMMER.LEVEL_REAL": "value.dimmer",
-          "VIRTUAL_DIMMER.LEVEL": "level.dimmer",
-          "VIRTUAL_DIMMER.OLD_LEVEL": "value.dimmer",
-          "VIRTUAL_DIMMER.LEVEL_REAL": "value.dimmer"
-        },
-        "dpNAME": {
-          "BATTERY_STATE": "value.voltage",
-          "BOOST_STATE": "level.boost",
-          "BOOST_MODE": "switch.mode.boost",
-          "PARTY_MODE": "switch.mode.party",
-          "FROST_PROTECTION": "indicator",
-          "CONTROL_MODE": "indicator",
-          "FAULT_REPORTING": "indicator",
-          "MANU_MODE": "level.temperature",
-          "ACTUAL_TEMPERATURE": "value.temperature",
-          "ACTUAL_TEMPERATURE_STATUS": "value",
-          "TEMPERATURE": "value.temperature",
-          "SETPOINT": "level.temperature",
-          "SET_TEMPERATURE": "level.temperature",
-          "SET_POINT_TEMPERATURE": "level.temperature",
-          "SET_POINT_MODE": "level.mode.thermostat",
-          "HUMIDITY": "value.humidity",
-          "STATE": "state",
-          "PRESS_SHORT": "button",
-          "PRESS_LONG": "button.long",
-          "PRESS_LONG_RELEASE": "button.release",
-          "PRESS_CONT": "button.continuous",
-          "LEVEL": "level",
-          "LOWBAT": "indicator.lowbat",
-          "LOW_BAT": "indicator.lowbat",
-          "INSTALL_TEST": "indicator",
-          "UNREACH": "indicator.unreach",
-          "WINDOW_STATE": "value.window",
-          "WORKING": "indicator.working",
-          "DIRECTION": "indicator.direction",
-          "CONFIG_PENDING": "indicator",
-          "UPDATE_PENDING": "indicator",
-          "INSTALL_MODE": "indicator",
-          "RSSI_PEER": "value.rssi",
-          "RSSI_DEVICE": "value.rssi",
-          "AES_KEY": "value",
-          "STICKY_UNREACH": "indicator.unreach",
-          "ERROR": "indicator.error",
-          "ERROR_OVERHEAT": "indicator.error.overheat",
-          "ERROR_OVERLOAD": "indicator.error.overload",
-          "ERROR_REDUCED": "indicator.error",
-          "MOTION": "sensor.motion",
-          "PRESENCE_DETECTION_STATE": "sensor.motion",
-          "INHIBIT": "state.inhibit",
-          "VALVE_STATE": "value.valve",
-          "BRIGHTNESS": "value.brightness",
-          "ILLUMINATION": "value.brightness",
-          "RAMP_TIME": "timer.ramp",
-          "RAMP_STOP": "button.stop",
-          "STOP": "button.stop",
-          "ON_TIME": "timer.off",
-          "DUTYCYCLE": "value",
-          "DUTY_CYCLE": "value",
-          "COLOR": "level.color.hue",
-          "OPERATING_VOLTAGE": "value.voltage",
-          "OPERATING_VOLTAGE_STATUS": "value",
-          "SABOTAGE": "indicator",
-          "CURRENT": "value.current",
-          "ENERGY_COUNTER": "value.power.consumption",
-          "FREQUENCY": "value.frequency",
-          "POWER": "value.power",
-          "VOLTAGE": "value.voltage",
-          "ERROR_CODE": "value"
-        },
-        "dvTYPE": {
-          "HM-Sec-SD": "sensor.alarm.fire",
-          "HM-Sec-SD-2": "sensor.alarm.fire",
-          "HM-Sec-SD-Team": "sensor.alarm.fire",
-          "HM-Sen-MDIR-O-2": "sensor.motion",
-          "HM-Sen-MDIR-O-3": "sensor.motion",
-          "HM-Sec-MDIR-3": "sensor.motion",
-          "HmIP-SMO": "sensor.motion",
-          "HmIP-SMO-A": "sensor.motion",
-          "HmIP-SPI": "sensor.motion",
-          "HmIP-SMI": "sensor.motion",
-          "HM-Sen-RD-O": "sensor.rain",
-          "HM-Sec-RHS": "value.tilt",
-          "HmIP-SRH": "value.tilt",
-          "HM-Sec-WDS-2": "sensor.alarm.flood",
-          "HmIP-SWD": "sensor.alarm.flood",
-          "HmIP-SWSD": "sensor.alarm.fire"
         }
       }
     }
