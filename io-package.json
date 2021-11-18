@@ -14,9 +14,9 @@
       "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker",
       "zh-cn": "通过 XML-RPC 或 BIN-RPC 将 HomeMatic 接口进程（BidCos-Services、Homegear 和 CUxD）连接到 ioBroker"
     },
-    "version": "1.14.47",
+    "version": "1.14.49",
     "news": {
-      "1.14.47": {
+      "1.14.49": {
         "en": "handle cases where we cannot retrive `meta.roles` (addresses #407)",
         "de": "behandelt Fälle, in denen wir `meta.roles` nicht abrufen können (Adressen #407)",
         "ru": "обрабатывать случаи, когда мы не можем получить `meta.roles` (адреса # 407)",
