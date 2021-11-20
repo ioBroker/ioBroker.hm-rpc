@@ -151,6 +151,10 @@ via or/and operator. The then clause of the program can remain empty. Now your s
 	Placeholder for the next version (at the beginning of the line):
 	### __WORK IN PROGRESS__
 -->
+
+### __WORK IN PROGRESS__
+* (foxriver76) added image for `HmIP-STE2-PCB`
+
 ### 1.14.50 (2021-11-18)
 * (foxriver76) `meta.roles` is no longer an object, because it is kept in RAM anyway (closes #407)
 
