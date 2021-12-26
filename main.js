@@ -1693,7 +1693,7 @@ async function getCuxDevices() {
     }
 }
 
-async function updateConnection() {
+function updateConnection() {
     lastEvent = new Date().getTime();
 
     if (!connected) {
