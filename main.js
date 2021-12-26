@@ -905,11 +905,24 @@ async function initRpcServer() {
 
     connect(true);
 
-    rpcServer.on('NotFound', (method, params) => {
+    rpcServer.on('NotFound', async (method, params) => {
         if (method === 'firmwareUpdateStatusChanged') {
             adapter.log.info(`Firmware update status of ${params[1]} changed to ${params[2]}`);
-        } else {
+        } else if (method === 'replaceDevice') {
+            const oldDeviceName = params[1];
+            const newDeviceName = params[2];
+            adapter.log.info(`Device "${oldDeviceName}" has been replaced by "${newDeviceName}"`);
 
+            // remove the old device
+            await adapter.deleteDeviceAsync(oldDeviceName);
+            adapter.log.info(`Replaced device "${oldDeviceName}" deleted`);
+
+            // add the new device
+            adapter.log.info(`${adapter.config.type}rpc -> getDeviceDescription ${JSON.stringify([newDeviceName])}`);
+            const res = await rpcMethodCallAsync('getDeviceDescription', [newDeviceName]);
+
+            await createDevices([res]);
+        } else {
             adapter.log.warn(`${adapter.config.type}rpc <- undefined method ${method} with parameters ${typeof params === 'object' ? JSON.stringify(params).slice(0, 80) : params}`);
         } // endElse
     });
@@ -1087,18 +1100,18 @@ async function initRpcServer() {
 
     rpcServer.on('deleteDevices', (err, params, callback) => {
         if (err) {
-            adapter.log.warn(`Error on system.listMethods: ${err}`);
+            adapter.log.warn(`Error on system.listMethods: ${err.message}`);
         }
         adapter.log.info(`${adapter.config.type}rpc <- deleteDevices ${params[1].length}`);
-        for (let i = 0; i < params[1].length; i++) {
-            if (params[1][i].indexOf(':') !== -1) {
-                params[1][i] = params[1][i].replace(':', '.').replace(FORBIDDEN_CHARS, '_');
-                adapter.log.info(`channel ${params[1][i]} ${JSON.stringify(params[1][i])} deleted`);
-                const parts = params[1][i].split('.');
+        for (let deviceName of params[1]) {
+            if (deviceName.indexOf(':') !== -1) {
+                deviceName = deviceName.replace(':', '.').replace(FORBIDDEN_CHARS, '_');
+                adapter.log.info(`channel ${deviceName} ${JSON.stringify(deviceName)} deleted`);
+                const parts = deviceName.split('.');
                 adapter.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
             } else {
-                adapter.log.info(`device ${params[1][i]} deleted`);
-                adapter.deleteDevice(params[1][i]);
+                adapter.log.info(`device ${deviceName} deleted`);
+                adapter.deleteDevice(deviceName);
             }
         }
         try {
@@ -1110,7 +1123,7 @@ async function initRpcServer() {
 
     rpcServer.on('setReadyConfig', (err, params, callback) => {
         if (err) {
-            adapter.log.warn(`Error on setReadyConfig: ${err}`);
+            adapter.log.warn(`Error on setReadyConfig: ${err.message}`);
         }
         adapter.log.info(`${adapter.config.type}rpc <- setReadyConfig ${JSON.stringify(params)}`);
         try {
@@ -1168,8 +1181,6 @@ const methods = {
         return '';
     }
 };
-
-const queueValueParamsets = [];
 
 /**
  * Adds the paramset objects of the given paramset to the given channel
@@ -1340,8 +1351,14 @@ async function addParamsetObjects(channel, paramset) {
     } // endFor
 } // endAddParamsetObjects
 
-async function getValueParamsets() {
-    for (const obj of queueValueParamsets) {
+/**
+ * Get value paramsets and add them
+ *
+ * @param {object[]} valueParamsets
+ * @return {Promise<void>}
+ */
+async function getValueParamsets(valueParamsets) {
+    for (const obj of valueParamsets) {
         try {
             const cid = `${obj.native.PARENT_TYPE}.${obj.native.TYPE}.${obj.native.VERSION}`;
 
@@ -1365,7 +1382,8 @@ async function getValueParamsets() {
         }
     }
 
-    if (queueValueParamsets.length) {
+    if (valueParamsets.length) {
+        // reset
         // Inform hm-rega about new devices
         try {
             await adapter.setStateAsync('updated', true, false);
@@ -1514,6 +1532,7 @@ function addEPaperToMeta() {
  * @returns {Promise<void>}
  */
 async function createDevices(deviceArr) {
+    const queueValueParamsets = [];
     for (const device of deviceArr) {
         if (typeof device.ADDRESS !== 'string') {
             // check that ADDRESS is given, else we don't know the id
@@ -1587,7 +1606,7 @@ async function createDevices(deviceArr) {
         }
     } // endFor
 
-    await getValueParamsets();
+    await getValueParamsets(queueValueParamsets);
 }
 
 /**
@@ -1674,7 +1693,7 @@ async function getCuxDevices() {
     }
 }
 
-function updateConnection() {
+async function updateConnection() {
     lastEvent = new Date().getTime();
 
     if (!connected) {

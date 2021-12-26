@@ -14,8 +14,20 @@
       "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker",
       "zh-cn": "通过 XML-RPC 或 BIN-RPC 将 HomeMatic 接口进程（BidCos-Services、Homegear 和 CUxD）连接到 ioBroker"
     },
-    "version": "1.14.50",
+    "version": "1.15.0",
     "news": {
+      "1.15.0": {
+        "en": "added image for `HmIP-STE2-PCB`\nwe now handle `replaceDevice` requests by deleting old device and creating new one (closes #420)",
+        "de": "Bild hinzugefügt für `HmIP-STE2-PCB`\nWir verarbeiten jetzt `replaceDevice`-Anfragen, indem wir das alte Gerät löschen und ein neues erstellen (schließt #420)",
+        "ru": "добавлен образ для `HmIP-STE2-PCB`\nТеперь мы обрабатываем запросы replaceDevice, удаляя старое устройство и создавая новое (закрывает # 420)",
+        "pt": "adicionada imagem para `HmIP-STE2-PCB`\nagora lidamos com solicitações `replaceDevice` excluindo o dispositivo antigo e criando um novo (fecha # 420)",
+        "nl": "afbeelding toegevoegd voor `HmIP-STE2-PCB`\nwe behandelen nu `replaceDevice`-verzoeken door het oude apparaat te verwijderen en een nieuw te maken (sluit #420)",
+        "fr": "image ajoutée pour `HmIP-STE2-PCB`\nnous gérons maintenant les requêtes `replaceDevice` en supprimant l'ancien appareil et en en créant un nouveau (ferme le #420)",
+        "it": "aggiunta immagine per `HmIP-STE2-PCB`\nora gestiamo le richieste `replaceDevice` eliminando il vecchio dispositivo e creandone uno nuovo (chiude #420)",
+        "es": "imagen agregada para `HmIP-STE2-PCB`\nahora manejamos las solicitudes de `replaceDevice` eliminando el dispositivo antiguo y creando uno nuevo (cierra # 420)",
+        "pl": "dodany obraz dla `HmIP-STE2-PCB`\nteraz obsługujemy żądania `replaceDevice`, usuwając stare urządzenie i tworząc nowe (zamyka #420)",
+        "zh-cn": "添加了“HmIP-STE2-PCB”的图片\n我们现在通过删除旧设备并创建新设备来处理 `replaceDevice` 请求（关闭 #420）"
+      },
       "1.14.50": {
         "en": "`meta.roles` is no longer an object, because it is kept in RAM anyway (closes #407)",
         "de": "`meta.roles` ist kein Objekt mehr, da es sowieso im RAM gehalten wird (schließt #407)",
@@ -87,18 +99,6 @@
         "es": "Se agregaron los roles a los estados del termostato.\nSe agregaron los roles para el cambio.\nAplicar nuevos roles a estados existentes",
         "pl": "Dodano role do stanów termostatu\nDodano role dla przełącznika\nZastosuj nowe role do istniejących stanów",
         "zh-cn": "将角色添加到恒温器状态\n添加切换角色\n将新角色应用于现有状态"
-      },
-      "1.14.41": {
-        "en": "we made sure, that controller does not send stopInstance message anymore",
-        "de": "Wir haben sichergestellt, dass der Controller keine stopInstance-Nachricht mehr sendet",
-        "ru": "мы убедились, что этот контроллер больше не отправляет сообщение stopInstance",
-        "pt": "certificamo-nos de que o controlador não envia mais mensagem stopInstance",
-        "nl": "we hebben ervoor gezorgd dat de controller geen stopInstance-bericht meer verzendt",
-        "fr": "nous nous sommes assurés que ce contrôleur n'envoie plus de message stopInstance",
-        "it": "ci siamo assicurati che quel controller non inviasse più il messaggio stopInstance",
-        "es": "nos aseguramos de que el controlador ya no envíe el mensaje stopInstance",
-        "pl": "upewniliśmy się, że kontroler nie wysyła już komunikatu stopInstance",
-        "zh-cn": "我们确保，该控制器不再发送 stopInstance 消息"
       }
     },
     "authors": [
