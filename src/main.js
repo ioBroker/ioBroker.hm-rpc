@@ -29,7 +29,7 @@
 'use strict';
 
 const utils = require('@iobroker/adapter-core'); // Get common adapter utils
-const adapterName = require('./package.json').name.split('.').pop();
+const adapterName = require('./../package.json').name.split('.').pop();
 const images = require('./lib/images');
 const tools = require('./lib/tools');
 const metaRoles = require('./lib/roles');
