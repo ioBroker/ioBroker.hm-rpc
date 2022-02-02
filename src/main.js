@@ -1319,8 +1319,13 @@ async function addParamsetObjects(channel, paramset) {
             native: paramset[key]
         };
 
+        // Heating groups are send everything as string
         if (typeof obj.common.def === 'string' && obj.common.type === 'number') {
             obj.common.def = parseFloat(obj.common.def);
+        }
+
+        if (typeof obj.common.def === 'string' && obj.common.type === 'boolean') {
+            obj.common.def = obj.common.def === 'true';
         }
 
         if (obj.common.type === 'number') {

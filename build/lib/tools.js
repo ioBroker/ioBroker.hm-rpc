@@ -1,13 +1,12 @@
 'use strict';
-
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.replaceSpecialChars = exports.decrypt = void 0;
 /**
  * decrypts a key with its related value
  *
- * @param {string} key
- * @param {string} value
- * @returns {string}
+ * @param key
+ * @param value
  */
-
 function decrypt(key, value) {
     let result = '';
     for (let i = 0; i < value.length; ++i) {
@@ -15,12 +14,11 @@ function decrypt(key, value) {
     }
     return result;
 }
-
+exports.decrypt = decrypt;
 /**
  * replaces special chars by DIN_66003
  *
- * @param {string} text
- * @returns {string}
+ * @param text
  */
 function replaceSpecialChars(text) {
     const specialChars = {
@@ -50,16 +48,11 @@ function replaceSpecialChars(text) {
         '@': '\x40',
         '>': '\x3E'
     };
-
     let result = '';
     for (const char of text) {
         result += specialChars[char] || char;
     } // endFor
-
     return result;
 }
-
-module.exports = {
-    decrypt,
-    replaceSpecialChars
-};
+exports.replaceSpecialChars = replaceSpecialChars;
+//# sourceMappingURL=tools.js.map
