@@ -1,14 +1,16 @@
 'use strict';
 
 const path = require('path');
-const {tests} = require('@iobroker/testing');
+const { tests } = require('@iobroker/testing');
 // TODO: activate after https://github.com/hobbyquaker/hm-simulator/pull/1
 // const hmSim = require('hm-simulator');
 
 // Run tests
 tests.integration(path.join(__dirname, '..'), {
     defineAdditionalTests(getHarness) {
+        // eslint-disable-next-line no-undef
         describe('Test sendTo()', () => {
+            // eslint-disable-next-line no-undef
             it('Should work', async () => {
                 // Create a fresh harness instance each test!
                 const harness = getHarness();

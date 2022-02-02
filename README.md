@@ -151,6 +151,9 @@ via or/and operator. The then clause of the program can remain empty. Now your s
 	Placeholder for the next version (at the beginning of the line):
 	### __WORK IN PROGRESS__
 -->
+### 1.15.1 (2022-02-02)
+* (foxriver76) we fixxed type of default value and min/max of heating groups (closes #443)
+
 ### 1.15.0 (2021-12-26)
 * (foxriver76) added image for `HmIP-STE2-PCB`
 * (foxriver76) we now handle `replaceDevice` requests by deleting old device and creating new one (closes #420)
@@ -345,7 +348,7 @@ of this approach (more requests to CCU on first setup)
 
 The MIT License (MIT)
 
-Copyright (c) 2014-2021 bluefox <dogafox@gmail.com>
+Copyright (c) 2014-2022 bluefox <dogafox@gmail.com>
 
 Copyright (c) 2014 hobbyquaker
 

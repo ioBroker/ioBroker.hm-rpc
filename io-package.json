@@ -14,8 +14,20 @@
       "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker",
       "zh-cn": "通过 XML-RPC 或 BIN-RPC 将 HomeMatic 接口进程（BidCos-Services、Homegear 和 CUxD）连接到 ioBroker"
     },
-    "version": "1.15.0",
+    "version": "1.15.1",
     "news": {
+      "1.15.1": {
+        "en": "we fixxed type of default value and min/max of heating groups (closes #443)",
+        "de": "Wir haben die Art des Standardwerts und das Minimum/Maximum der Heizgruppen korrigiert (schließt #443)",
+        "ru": "мы зафиксировали тип значения по умолчанию и мин/макс группы нагрева (закрывает #443)",
+        "pt": "fixamos o tipo de valor padrão e min/max de grupos de aquecimento (fecha #443)",
+        "nl": "we hebben het type standaardwaarde en min/max van verwarmingsgroepen vastgelegd (sluit #443)",
+        "fr": "nous fixons le type de valeur par défaut et le min/max des groupes de chauffage (ferme #443)",
+        "it": "abbiamo fissato il tipo di valore predefinito e min/max dei gruppi di riscaldamento (chiude #443)",
+        "es": "fijamos el tipo de valor predeterminado y min/max de grupos de calefacción (cierra #443)",
+        "pl": "ustaliliśmy typ wartości domyślnej oraz min/max grup grzewczych (zamyka #443)",
+        "zh-cn": "我们固定了默认值的类型和加热组的最小值/最大值（关闭 #443）"
+      },
       "1.15.0": {
         "en": "added image for `HmIP-STE2-PCB`\nwe now handle `replaceDevice` requests by deleting old device and creating new one (closes #420)",
         "de": "Bild hinzugefügt für `HmIP-STE2-PCB`\nWir verarbeiten jetzt `replaceDevice`-Anfragen, indem wir das alte Gerät löschen und ein neues erstellen (schließt #420)",
@@ -87,18 +99,6 @@
         "es": "ahora mapeamos correctamente el papel de los detectores de humo (cierra el n. ° 354)",
         "pl": "teraz poprawnie mapujemy rolę czujek dymu (zamyka #354)",
         "zh-cn": "我们现在正确地映射了烟雾探测器的作用（关闭 #354）"
-      },
-      "1.14.42": {
-        "en": "Added the roles to thermostat states\nAdded the roles for switch\nApply new roles to existing states",
-        "de": "Die Rollen zu den Thermostatzuständen hinzugefügt\nDie Rollen für den Schalter hinzugefügt\nAnwenden neuer Rollen auf bestehende Zustände",
-        "ru": "Добавлены роли в состояния термостата.\nДобавлены роли для переключателя\nПрименить новые роли к существующим состояниям",
-        "pt": "Adicionadas as funções aos estados do termostato\nAdicionadas as funções para troca\nAplicar novas funções aos estados existentes",
-        "nl": "De rollen toegevoegd aan thermostaatstatussen\nDe rollen voor switch toegevoegd\nPas nieuwe rollen toe op bestaande statussen",
-        "fr": "Ajout des rôles aux états du thermostat\nAjout des rôles pour le commutateur\nAppliquer de nouveaux rôles aux états existants",
-        "it": "Aggiunti i ruoli agli stati del termostato\nAggiunti i ruoli per switch\nApplicare nuovi ruoli agli stati esistenti",
-        "es": "Se agregaron los roles a los estados del termostato.\nSe agregaron los roles para el cambio.\nAplicar nuevos roles a estados existentes",
-        "pl": "Dodano role do stanów termostatu\nDodano role dla przełącznika\nZastosuj nowe role do istniejących stanów",
-        "zh-cn": "将角色添加到恒温器状态\n添加切换角色\n将新角色应用于现有状态"
       }
     },
     "authors": [

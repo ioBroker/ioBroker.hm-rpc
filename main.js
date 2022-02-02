@@ -22,7 +22,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 /* jshint -W097 */
 /* jshint strict: false */
 /* jslint node: true */
@@ -85,68 +85,68 @@ function combineEPaperCommand(lines, signal, ton, repeats, offset) {
     signal = number2hex(signal || '0xF0');
     ton = number2hex(ton || '0xC0');
     const substitutions = {
-        'A': '0x41',
-        'B': '0x42',
-        'C': '0x43',
-        'D': '0x44',
-        'E': '0x45',
-        'F': '0x46',
-        'G': '0x47',
-        'H': '0x48',
-        'I': '0x49',
-        'J': '0x4A',
-        'K': '0x4B',
-        'L': '0x4C',
-        'M': '0x4D',
-        'N': '0x4E',
-        'O': '0x4F',
-        'P': '0x50',
-        'Q': '0x51',
-        'R': '0x52',
-        'S': '0x53',
-        'T': '0x54',
-        'U': '0x55',
-        'V': '0x56',
-        'W': '0x57',
-        'X': '0x58',
-        'Y': '0x59',
-        'Z': '0x5A',
-        'a': '0x61',
-        'b': '0x62',
-        'c': '0x63',
-        'd': '0x64',
-        'e': '0x65',
-        'f': '0x66',
-        'g': '0x67',
-        'h': '0x68',
-        'i': '0x69',
-        'j': '0x6A',
-        'k': '0x6B',
-        'l': '0x6C',
-        'm': '0x6D',
-        'n': '0x6E',
-        'o': '0x6F',
-        'p': '0x70',
-        'q': '0x71',
-        'r': '0x72',
-        's': '0x73',
-        't': '0x74',
-        'u': '0x75',
-        'v': '0x76',
-        'w': '0x77',
-        'x': '0x78',
-        'y': '0x79',
-        'z': '0x7A',
-        '0': '0x30',
-        '1': '0x31',
-        '2': '0x32',
-        '3': '0x33',
-        '4': '0x34',
-        '5': '0x35',
-        '6': '0x36',
-        '7': '0x37',
-        '8': '0x38',
-        '9': '0x39',
+        A: '0x41',
+        B: '0x42',
+        C: '0x43',
+        D: '0x44',
+        E: '0x45',
+        F: '0x46',
+        G: '0x47',
+        H: '0x48',
+        I: '0x49',
+        J: '0x4A',
+        K: '0x4B',
+        L: '0x4C',
+        M: '0x4D',
+        N: '0x4E',
+        O: '0x4F',
+        P: '0x50',
+        Q: '0x51',
+        R: '0x52',
+        S: '0x53',
+        T: '0x54',
+        U: '0x55',
+        V: '0x56',
+        W: '0x57',
+        X: '0x58',
+        Y: '0x59',
+        Z: '0x5A',
+        a: '0x61',
+        b: '0x62',
+        c: '0x63',
+        d: '0x64',
+        e: '0x65',
+        f: '0x66',
+        g: '0x67',
+        h: '0x68',
+        i: '0x69',
+        j: '0x6A',
+        k: '0x6B',
+        l: '0x6C',
+        m: '0x6D',
+        n: '0x6E',
+        o: '0x6F',
+        p: '0x70',
+        q: '0x71',
+        r: '0x72',
+        s: '0x73',
+        t: '0x74',
+        u: '0x75',
+        v: '0x76',
+        w: '0x77',
+        x: '0x78',
+        y: '0x79',
+        z: '0x7A',
+        0: '0x30',
+        1: '0x31',
+        2: '0x32',
+        3: '0x33',
+        4: '0x34',
+        5: '0x35',
+        6: '0x36',
+        7: '0x37',
+        8: '0x38',
+        9: '0x39',
         ' ': '0x20',
         '!': '0x21',
         '"': '0x22',
@@ -161,13 +161,13 @@ function combineEPaperCommand(lines, signal, ton, repeats, offset) {
         '-': '0x2D',
         '.': '0x2E',
         '/': '0x2F',
-        'Ä': '0x5B',
-        'Ö': '0x23',
-        'Ü': '0x24',
-        'ä': '0x7B',
-        'ö': '0x7C',
-        'ü': '0x7D',
-        'ß': '0x5F',
+        Ä: '0x5B',
+        Ö: '0x23',
+        Ü: '0x24',
+        ä: '0x7B',
+        ö: '0x7C',
+        ü: '0x7D',
+        ß: '0x5F',
         ':': '0x3A',
         ';': '0x3B',
         '@': '0x40',
@@ -180,13 +180,13 @@ function combineEPaperCommand(lines, signal, ton, repeats, offset) {
             const line = li.line.toString();
             command = `${command},0x12`;
             let i;
-            if ((line.substring(0, 2) === '0x') && (line.length === 4)) {
+            if (line.substring(0, 2) === '0x' && line.length === 4) {
                 command = `${command},${line}`;
                 i = 12;
             } else {
                 i = 0;
             }
-            while ((i < line.length) && (i < 12)) {
+            while (i < line.length && i < 12) {
                 command += `,${substitutions[line[i]]}` || '0x2A';
                 i++;
             }
@@ -250,7 +250,9 @@ async function controlEPaper(id, data) {
             adapter.log.warn(`Cannot setValue "${id}", because not connected.`);
         }
     } catch (e) {
-        adapter.log.error(`${adapter.config.type}rpc -> setValue ${JSON.stringify([`${tmp[2]}:${tmp[3]}`, tmp[4], val])}`);
+        adapter.log.error(
+            `${adapter.config.type}rpc -> setValue ${JSON.stringify([`${tmp[2]}:${tmp[3]}`, tmp[4], val])}`
+        );
         adapter.log.error(`Cannot call setValue: ${e.message}`);
     }
 }
@@ -265,75 +267,95 @@ async function readSignals(id) {
 
     const promises = [];
 
-    promises.push(new Promise(resolve => {
-        adapter.getForeignState(`${id}.0.EPAPER_LINE2`, (err, state) => {
-            data.lines[0].line = state ? state.val || '' : '';
-            resolve();
-        });
-    }));
+    promises.push(
+        new Promise(resolve => {
+            adapter.getForeignState(`${id}.0.EPAPER_LINE2`, (err, state) => {
+                data.lines[0].line = state ? state.val || '' : '';
+                resolve();
+            });
+        })
+    );
 
-    promises.push(new Promise(resolve => {
-        adapter.getForeignState(`${id}.0.EPAPER_ICON2`, (err, state) => {
-            data.lines[0].icon = state ? state.val || '' : '';
-            resolve();
-        });
-    }));
+    promises.push(
+        new Promise(resolve => {
+            adapter.getForeignState(`${id}.0.EPAPER_ICON2`, (err, state) => {
+                data.lines[0].icon = state ? state.val || '' : '';
+                resolve();
+            });
+        })
+    );
 
-    promises.push(new Promise(resolve => {
-        adapter.getForeignState(`${id}.0.EPAPER_LINE3`, (err, state) => {
-            data.lines[1].line = state ? state.val || '' : '';
-            resolve();
-        });
-    }));
+    promises.push(
+        new Promise(resolve => {
+            adapter.getForeignState(`${id}.0.EPAPER_LINE3`, (err, state) => {
+                data.lines[1].line = state ? state.val || '' : '';
+                resolve();
+            });
+        })
+    );
 
-    promises.push(new Promise(resolve => {
-        adapter.getForeignState(`${id}.0.EPAPER_ICON3`, (err, state) => {
-            data.lines[1].icon = state ? state.val || '' : '';
-            resolve();
-        });
-    }));
+    promises.push(
+        new Promise(resolve => {
+            adapter.getForeignState(`${id}.0.EPAPER_ICON3`, (err, state) => {
+                data.lines[1].icon = state ? state.val || '' : '';
+                resolve();
+            });
+        })
+    );
 
-    promises.push(new Promise(resolve => {
-        adapter.getForeignState(`${id}.0.EPAPER_LINE4`, (err, state) => {
-            data.lines[2].line = state ? state.val || '' : '';
-            resolve();
-        });
-    }));
+    promises.push(
+        new Promise(resolve => {
+            adapter.getForeignState(`${id}.0.EPAPER_LINE4`, (err, state) => {
+                data.lines[2].line = state ? state.val || '' : '';
+                resolve();
+            });
+        })
+    );
 
-    promises.push(new Promise(resolve => {
-        adapter.getForeignState(`${id}.0.EPAPER_ICON4`, (err, state) => {
-            data.lines[2].icon = state ? state.val || '' : '';
-            resolve();
-        });
-    }));
+    promises.push(
+        new Promise(resolve => {
+            adapter.getForeignState(`${id}.0.EPAPER_ICON4`, (err, state) => {
+                data.lines[2].icon = state ? state.val || '' : '';
+                resolve();
+            });
+        })
+    );
 
-    promises.push(new Promise(resolve => {
-        adapter.getForeignState(`${id}.0.EPAPER_SIGNAL`, (err, state) => {
-            data.signal = state ? state.val || '0xF0' : '0xF0';
-            resolve();
-        });
-    }));
+    promises.push(
+        new Promise(resolve => {
+            adapter.getForeignState(`${id}.0.EPAPER_SIGNAL`, (err, state) => {
+                data.signal = state ? state.val || '0xF0' : '0xF0';
+                resolve();
+            });
+        })
+    );
 
-    promises.push(new Promise(resolve => {
-        adapter.getForeignState(`${id}.0.EPAPER_TONE`, (err, state) => {
-            data.tone = state ? state.val || '0xC0' : '0xC0';
-            resolve();
-        });
-    }));
+    promises.push(
+        new Promise(resolve => {
+            adapter.getForeignState(`${id}.0.EPAPER_TONE`, (err, state) => {
+                data.tone = state ? state.val || '0xC0' : '0xC0';
+                resolve();
+            });
+        })
+    );
 
-    promises.push(new Promise(resolve => {
-        adapter.getForeignState(`${id}.0.EPAPER_TONE_INTERVAL`, (err, state) => {
-            data.offset = state ? state.val : 10;
-            resolve();
-        });
-    }));
+    promises.push(
+        new Promise(resolve => {
+            adapter.getForeignState(`${id}.0.EPAPER_TONE_INTERVAL`, (err, state) => {
+                data.offset = state ? state.val : 10;
+                resolve();
+            });
+        })
+    );
 
-    promises.push(new Promise(resolve => {
-        adapter.getForeignState(`${id}.0.EPAPER_TONE_REPETITIONS`, (err, state) => {
-            data.repeats = state ? state.val : 1;
-            resolve();
-        });
-    }));
+    promises.push(
+        new Promise(resolve => {
+            adapter.getForeignState(`${id}.0.EPAPER_TONE_REPETITIONS`, (err, state) => {
+                data.repeats = state ? state.val : 1;
+                resolve();
+            });
+        })
+    );
 
     await Promise.all(promises);
     controlEPaper(id, data);
@@ -349,47 +371,59 @@ async function readSettings(id) {
 
     const promises = [];
 
-    promises.push(new Promise(resolve => {
-        adapter.getForeignState(`${id}.0.EPAPER_LINE2`, (err, state) => {
-            data.lines[0].line = state ? state.val || '' : '';
-            resolve();
-        });
-    }));
+    promises.push(
+        new Promise(resolve => {
+            adapter.getForeignState(`${id}.0.EPAPER_LINE2`, (err, state) => {
+                data.lines[0].line = state ? state.val || '' : '';
+                resolve();
+            });
+        })
+    );
 
-    promises.push(new Promise(resolve => {
-        adapter.getForeignState(`${id}.0.EPAPER_ICON2`, (err, state) => {
-            data.lines[0].icon = state ? state.val || '' : '';
-            resolve();
-        });
-    }));
+    promises.push(
+        new Promise(resolve => {
+            adapter.getForeignState(`${id}.0.EPAPER_ICON2`, (err, state) => {
+                data.lines[0].icon = state ? state.val || '' : '';
+                resolve();
+            });
+        })
+    );
 
-    promises.push(new Promise(resolve => {
-        adapter.getForeignState(`${id}.0.EPAPER_LINE3`, (err, state) => {
-            data.lines[1].line = state ? state.val || '' : '';
-            resolve();
-        });
-    }));
+    promises.push(
+        new Promise(resolve => {
+            adapter.getForeignState(`${id}.0.EPAPER_LINE3`, (err, state) => {
+                data.lines[1].line = state ? state.val || '' : '';
+                resolve();
+            });
+        })
+    );
 
-    promises.push(new Promise(resolve => {
-        adapter.getForeignState(`${id}.0.EPAPER_ICON3`, (err, state) => {
-            data.lines[1].icon = state ? state.val || '' : '';
-            resolve();
-        });
-    }));
+    promises.push(
+        new Promise(resolve => {
+            adapter.getForeignState(`${id}.0.EPAPER_ICON3`, (err, state) => {
+                data.lines[1].icon = state ? state.val || '' : '';
+                resolve();
+            });
+        })
+    );
 
-    promises.push(new Promise(resolve => {
-        adapter.getForeignState(`${id}.0.EPAPER_LINE4`, (err, state) => {
-            data.lines[2].line = state ? state.val || '' : '';
-            resolve();
-        });
-    }));
+    promises.push(
+        new Promise(resolve => {
+            adapter.getForeignState(`${id}.0.EPAPER_LINE4`, (err, state) => {
+                data.lines[2].line = state ? state.val || '' : '';
+                resolve();
+            });
+        })
+    );
 
-    promises.push(new Promise(resolve => {
-        adapter.getForeignState(`${id}.0.EPAPER_ICON4`, (err, state) => {
-            data.lines[2].icon = state ? state.val || '' : '';
-            resolve();
-        });
-    }));
+    promises.push(
+        new Promise(resolve => {
+            adapter.getForeignState(`${id}.0.EPAPER_ICON4`, (err, state) => {
+                data.lines[2].icon = state ? state.val || '' : '';
+                resolve();
+            });
+        })
+    );
 
     await Promise.all(promises);
     controlEPaper(id, data);
@@ -399,11 +433,12 @@ function startAdapter(options) {
     options = options || {};
 
     Object.assign(options, {
-
         name: adapterName,
         error: e => {
             if (e.code === 'EADDRNOTAVAIL') {
-                adapter.log.error(`Address ${adapter.config.adapterAddress} not available, maybe your HOST IP has changed due to migration`);
+                adapter.log.error(
+                    `Address ${adapter.config.adapterAddress} not available, maybe your HOST IP has changed due to migration`
+                );
                 // doesn't work in that case, so let it correctly be handled by controller at least we can log
                 // return true;
             }
@@ -442,7 +477,7 @@ function startAdapter(options) {
                 state.val = Math.round(state.val * 1000) / 1000;
             } else */
             if (dpTypes[id].UNIT === '100%') {
-                state.val = Math.round(state.val / 100 * 1000) / 1000;
+                state.val = Math.round((state.val / 100) * 1000) / 1000;
             }
 
             const type = dpTypes[id].TYPE;
@@ -472,18 +507,18 @@ function startAdapter(options) {
                 if (displays[_id] && displays[_id].timer) {
                     clearTimeout(displays[_id].timer);
                     if (displays[_id].withTone) {
-                        displays[_id] = {timer: setTimeout(readSignals, 300, _id), withTone: true};
+                        displays[_id] = { timer: setTimeout(readSignals, 300, _id), withTone: true };
                         return;
                     }
                 }
-                displays[_id] = {timer: setTimeout(readSettings, 300, _id), withTone: false};
+                displays[_id] = { timer: setTimeout(readSettings, 300, _id), withTone: false };
                 return;
             } else if (type === 'EPAPER_SIGNAL' || type === 'EPAPER_TONE') {
                 const _id = `${tmp[0]}.${tmp[1]}.${tmp[2]}`;
                 if (displays[_id] && displays[_id].timer) {
                     clearTimeout(displays[_id].timer);
                 }
-                displays[_id] = {timer: setTimeout(readSignals, 300, _id), withTone: true};
+                displays[_id] = { timer: setTimeout(readSignals, 300, _id), withTone: true };
                 return;
             } else if (tmp[4] === 'DISPLAY_DATA_STRING') {
                 // new EPAPER HMIP-WRCD has own states but needs to encode special chars by DIN_66003
@@ -509,10 +544,10 @@ function startAdapter(options) {
             } else {
                 switch (type) {
                     case 'BOOL':
-                        val = (state.val === 'false' || state.val === '0') ? false : !!state.val;
+                        val = state.val === 'false' || state.val === '0' ? false : !!state.val;
                         break;
                     case 'FLOAT':
-                        val = {explicitDouble: state.val};
+                        val = { explicitDouble: state.val };
                         break;
                     default:
                         val = state.val;
@@ -528,7 +563,13 @@ function startAdapter(options) {
                     adapter.log.warn(`Cannot setValue "${id}", because not connected.`);
                 }
             } catch (e) {
-                adapter.log.error(`${adapter.config.type}rpc -> setValue ${JSON.stringify([`${tmp[2]}:${tmp[3]}`, tmp[4], state.val])} ${type}`);
+                adapter.log.error(
+                    `${adapter.config.type}rpc -> setValue ${JSON.stringify([
+                        `${tmp[2]}:${tmp[3]}`,
+                        tmp[4],
+                        state.val
+                    ])} ${type}`
+                );
                 adapter.log.error(`Cannot call setValue: ${e.message}`);
             }
         },
@@ -536,10 +577,17 @@ function startAdapter(options) {
         message: async obj => {
             adapter.log.debug(`[MSSG] Received: ${JSON.stringify(obj)}`);
 
-            if (obj.command === undefined || obj.command === null || obj.message === undefined || obj.message === null) {
-                adapter.log.warn(`Received invalid command via message "${obj.command}" "${obj.message}" from ${obj.from}`);
+            if (
+                obj.command === undefined ||
+                obj.command === null ||
+                obj.message === undefined ||
+                obj.message === null
+            ) {
+                adapter.log.warn(
+                    `Received invalid command via message "${obj.command}" "${obj.message}" from ${obj.from}`
+                );
                 if (obj.callback) {
-                    adapter.sendTo(obj.from, obj.command, {error: 'Invalid command'}, obj.callback);
+                    adapter.sendTo(obj.from, obj.command, { error: 'Invalid command' }, obj.callback);
                 }
                 return;
             }
@@ -548,42 +596,59 @@ function startAdapter(options) {
                 try {
                     if (rpcClient && connected) {
                         // if device specific command, send it's ID and paramType
-                        const data = await rpcMethodCallAsync(obj.command, obj.message.ID !== undefined ? [obj.message.ID, obj.message.paramType] : []);
+                        const data = await rpcMethodCallAsync(
+                            obj.command,
+                            obj.message.ID !== undefined ? [obj.message.ID, obj.message.paramType] : []
+                        );
                         if (obj.callback) {
-                            adapter.sendTo(obj.from, obj.command, {
-                                result: data,
-                                error: null
-                            }, obj.callback);
+                            adapter.sendTo(
+                                obj.from,
+                                obj.command,
+                                {
+                                    result: data,
+                                    error: null
+                                },
+                                obj.callback
+                            );
                         }
                     } else {
                         adapter.log.warn(`Cannot send "${obj.command}" "${obj.message.ID}": because not connected`);
                         if (obj.callback) {
-                            adapter.sendTo(obj.from, obj.command, {error: 'not connected'}, obj.callback);
+                            adapter.sendTo(obj.from, obj.command, { error: 'not connected' }, obj.callback);
                         }
                     }
                 } catch (e) {
                     adapter.log.error(`Cannot call ${obj.command}: ${e.message}`);
-                    adapter.sendTo(obj.from, obj.command, {error: e}, obj.callback);
+                    adapter.sendTo(obj.from, obj.command, { error: e }, obj.callback);
                 }
             } else {
                 try {
                     if (rpcClient && connected) {
-                        const data = await rpcMethodCallAsync(obj.command, [obj.message.ID, obj.message.paramType, obj.message.params]);
+                        const data = await rpcMethodCallAsync(obj.command, [
+                            obj.message.ID,
+                            obj.message.paramType,
+                            obj.message.params
+                        ]);
                         if (obj.callback) {
-                            adapter.sendTo(obj.from, obj.command, {
-                                result: data,
-                                error: null
-                            }, obj.callback);
+                            adapter.sendTo(
+                                obj.from,
+                                obj.command,
+                                {
+                                    result: data,
+                                    error: null
+                                },
+                                obj.callback
+                            );
                         }
                     } else {
                         adapter.log.warn(`Cannot send "${obj.command}" "${obj.message.ID}": because not connected`);
                         if (obj.callback) {
-                            adapter.sendTo(obj.from, obj.command, {error: 'not connected'}, obj.callback);
+                            adapter.sendTo(obj.from, obj.command, { error: 'not connected' }, obj.callback);
                         }
                     }
                 } catch (e) {
                     adapter.log.error(`Cannot call ${obj.command}: ${e.message}`);
-                    adapter.sendTo(obj.from, obj.command, {error: e}, obj.callback);
+                    adapter.sendTo(obj.from, obj.command, { error: e }, obj.callback);
                 }
             }
         },
@@ -605,7 +670,11 @@ function startAdapter(options) {
                 }
 
                 if (adapter.config && rpcClient) {
-                    adapter.log.info(`${adapter.config.type}rpc -> ${adapter.config.homematicAddress}:${adapter.config.homematicPort}${homematicPath} init ${JSON.stringify([daemonURL, ''])}`);
+                    adapter.log.info(
+                        `${adapter.config.type}rpc -> ${adapter.config.homematicAddress}:${
+                            adapter.config.homematicPort
+                        }${homematicPath} init ${JSON.stringify([daemonURL, ''])}`
+                    );
                     try {
                         // tell CCU that we are no longer the client under this URL - legacy idk if necessary
                         await rpcMethodCallAsync('init', [daemonURL, '']);
@@ -650,7 +719,6 @@ function startAdapter(options) {
                         }
                         callback = null;
                     }
-
                 } else {
                     if (typeof callback === 'function') {
                         callback();
@@ -763,7 +831,7 @@ async function main() {
 
                 if (!obj || !obj.native) {
                     adapter.log.warn(`State ${row.id} does not have native.`);
-                    dpTypes[row.id] = {UNIT: '', TYPE: ''};
+                    dpTypes[row.id] = { UNIT: '', TYPE: '' };
                 } else {
                     dpTypes[row.id] = {
                         UNIT: obj.native.UNIT,
@@ -813,7 +881,11 @@ async function main() {
 async function sendInit() {
     try {
         if (rpcClient && (rpcClient.connected === undefined || rpcClient.connected)) {
-            adapter.log.debug(`${adapter.config.type}rpc -> ${adapter.config.homematicAddress}:${adapter.config.homematicPort}${homematicPath} init ${JSON.stringify([daemonURL, clientId])}`);
+            adapter.log.debug(
+                `${adapter.config.type}rpc -> ${adapter.config.homematicAddress}:${
+                    adapter.config.homematicPort
+                }${homematicPath} init ${JSON.stringify([daemonURL, clientId])}`
+            );
             await rpcMethodCallAsync('init', [daemonURL, clientId]);
             if (adapter.config.daemon === 'CUxD') {
                 try {
@@ -900,8 +972,14 @@ async function initRpcServer() {
         adapter.log.warn(`Could not get hostname, using default id "${clientId}" to register: ${e.message}`);
     }
 
-    adapter.log.info(`${adapter.config.type}rpc server is trying to listen on ${adapter.config.adapterAddress}:${port}`);
-    adapter.log.info(`${adapter.config.type}rpc client is trying to connect to ${adapter.config.homematicAddress}:${adapter.config.homematicPort}${homematicPath} with ${JSON.stringify([daemonURL, clientId])}`);
+    adapter.log.info(
+        `${adapter.config.type}rpc server is trying to listen on ${adapter.config.adapterAddress}:${port}`
+    );
+    adapter.log.info(
+        `${adapter.config.type}rpc client is trying to connect to ${adapter.config.homematicAddress}:${
+            adapter.config.homematicPort
+        }${homematicPath} with ${JSON.stringify([daemonURL, clientId])}`
+    );
 
     connect(true);
 
@@ -923,7 +1001,11 @@ async function initRpcServer() {
 
             await createDevices([res]);
         } else {
-            adapter.log.warn(`${adapter.config.type}rpc <- undefined method ${method} with parameters ${typeof params === 'object' ? JSON.stringify(params).slice(0, 80) : params}`);
+            adapter.log.warn(
+                `${adapter.config.type}rpc <- undefined method ${method} with parameters ${
+                    typeof params === 'object' ? JSON.stringify(params).slice(0, 80) : params
+                }`
+            );
         } // endElse
     });
 
@@ -946,7 +1028,15 @@ async function initRpcServer() {
             adapter.log.warn(` Error on system.listMethods: ${err}`);
         }
         adapter.log.info(`${adapter.config.type}rpc <- system.listMethods ${JSON.stringify(params)}`);
-        callback(null, ['event', 'deleteDevices', 'listDevices', 'newDevices', 'system.listMethods', 'system.multicall', 'setReadyConfig']);
+        callback(null, [
+            'event',
+            'deleteDevices',
+            'listDevices',
+            'newDevices',
+            'system.listMethods',
+            'system.multicall',
+            'setReadyConfig'
+        ]);
     });
 
     rpcServer.on('event', (err, params, callback) => {
@@ -977,7 +1067,10 @@ async function initRpcServer() {
 
         // for a HmIP-adapter (and virtual-devices) we have to filter out the devices that
         // are already present if forceReinit is not set
-        if (adapter.config.forceReInit === false && (adapter.config.daemon === 'HMIP' || adapter.config.daemon === 'virtual-devices')) {
+        if (
+            adapter.config.forceReInit === false &&
+            (adapter.config.daemon === 'HMIP' || adapter.config.daemon === 'virtual-devices')
+        ) {
             let doc;
             try {
                 doc = await adapter.getObjectViewAsync('hm-rpc', 'listDevices', {
@@ -1022,7 +1115,11 @@ async function initRpcServer() {
                                     await adapter.deleteChannelAsync(parts[parts.length - 2], parts[parts.length - 1]);
                                     adapter.log.info(`obsolete channel ${address} ${JSON.stringify(address)} deleted`);
                                 } catch (e) {
-                                    adapter.log.error(`Could not delete obsolete channel ${address} ${JSON.stringify(address)}: ${e.message}`);
+                                    adapter.log.error(
+                                        `Could not delete obsolete channel ${address} ${JSON.stringify(address)}: ${
+                                            e.message
+                                        }`
+                                    );
                                 }
                             } else {
                                 try {
@@ -1077,7 +1174,7 @@ async function initRpcServer() {
                 const val = row.value;
 
                 if (val.ADDRESS) {
-                    response.push({ADDRESS: val.ADDRESS, VERSION: val.VERSION});
+                    response.push({ ADDRESS: val.ADDRESS, VERSION: val.VERSION });
                 }
             }
         }
@@ -1135,7 +1232,6 @@ async function initRpcServer() {
 } // endInitRPCServer
 
 const methods = {
-
     event: (err, params) => {
         if (err) {
             adapter.log.error(`${adapter.config.type}rpc <- received error event: ${err}`);
@@ -1163,7 +1259,8 @@ const methods = {
         if (dpTypes[name]) {
             // it shouldn't be necessary to scale on % values, see https://github.com/ioBroker/ioBroker.hm-rpc/issues/263
             // backward compatibility -> max===1 unit===%
-            if (dpTypes[name].UNIT === '100%') {// || (dpTypes[name].UNIT === '%' && dpTypes[name].MAX === 1)) {
+            if (dpTypes[name].UNIT === '100%') {
+                // || (dpTypes[name].UNIT === '%' && dpTypes[name].MAX === 1)) {
                 val = Math.round(params[3] * 1000) / 10;
             } else {
                 val = params[3];
@@ -1174,9 +1271,13 @@ const methods = {
             adapter.log.debug(`${adapter.config.type}rpc <- event: ${name}:${params[3]} discarded, no matching device`);
             return '';
         }
-        adapter.log.debug(`${name} ==> UNIT: "${dpTypes[name] ? dpTypes[name].UNIT : 'none'}" (min: ${dpTypes[name] ? dpTypes[name].MIN : 'none'}, max: ${dpTypes[name] ? dpTypes[name].MAX : 'none'}) From "${params[3]}" => "${val}"`);
+        adapter.log.debug(
+            `${name} ==> UNIT: "${dpTypes[name] ? dpTypes[name].UNIT : 'none'}" (min: ${
+                dpTypes[name] ? dpTypes[name].MIN : 'none'
+            }, max: ${dpTypes[name] ? dpTypes[name].MAX : 'none'}) From "${params[3]}" => "${val}"`
+        );
 
-        adapter.setState(`${channel}.${params[2]}`, {val: val, ack: true});
+        adapter.setState(`${channel}.${params[2]}`, { val: val, ack: true });
         // unfortunately this is necessary
         return '';
     }
@@ -1218,9 +1319,13 @@ async function addParamsetObjects(channel, paramset) {
             native: paramset[key]
         };
 
+        if (typeof obj.common.def === 'string' && obj.common.type === 'number') {
+            obj.common.def = parseFloat(obj.common.def);
+        }
+
         if (obj.common.type === 'number') {
-            obj.common.min = paramset[key].MIN;
-            obj.common.max = paramset[key].MAX;
+            obj.common.min = typeof paramset[key].MIN === 'string' ? parseFloat(paramset[key].MIN) : paramset[key].MIN;
+            obj.common.max = typeof paramset[key].MAX === 'string' ? parseFloat(paramset[key].MAX) : paramset[key].MAX;
 
             if (paramset[key].TYPE === 'ENUM') {
                 obj.common.states = {};
@@ -1244,7 +1349,12 @@ async function addParamsetObjects(channel, paramset) {
         }
 
         // temporary fix for https://github.com/eq-3/occu/issues/105 and LEVEL w. o. %
-        if (key === 'LEVEL' && typeof paramset[key].MIN === 'number' && typeof paramset[key].MAX === 'number' && paramset[key].UNIT === undefined) {
+        if (
+            key === 'LEVEL' &&
+            typeof paramset[key].MIN === 'number' &&
+            typeof paramset[key].MAX === 'number' &&
+            paramset[key].UNIT === undefined
+        ) {
             paramset[key].UNIT = '%';
         } // endIf
 
@@ -1369,7 +1479,9 @@ async function getValueParamsets(valueParamsets) {
                 addEPaperToMeta();
             }
 
-            adapter.log.info(`${adapter.config.type}rpc -> getParamsetDescription ${JSON.stringify([obj.native.ADDRESS, 'VALUES'])}`);
+            adapter.log.info(
+                `${adapter.config.type}rpc -> getParamsetDescription ${JSON.stringify([obj.native.ADDRESS, 'VALUES'])}`
+            );
             metaValues[cid] = await rpcMethodCallAsync('getParamsetDescription', [obj.native.ADDRESS, 'VALUES']);
 
             if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
@@ -1394,7 +1506,9 @@ async function getValueParamsets(valueParamsets) {
         if (adapter.config.forceReInit) {
             adapter.log.info('Restarting now, because we had a forced reinitialization run');
             try {
-                await adapter.extendForeignObjectAsync(`system.adapter.${adapter.namespace}`, {native: {forceReInit: false}});
+                await adapter.extendForeignObjectAsync(`system.adapter.${adapter.namespace}`, {
+                    native: { forceReInit: false }
+                });
             } catch (e) {
                 adapter.log.error(`Could not restart and set forceReinit to false: ${e.message}`);
             }
@@ -1546,14 +1660,17 @@ async function createDevices(deviceArr) {
 
         if (device.PARENT) {
             type = 'channel';
-            role = metaRoles.chTYPE && metaRoles.chTYPE[device.TYPE] ? metaRoles.chTYPE && metaRoles.chTYPE[device.TYPE] : undefined;
+            role =
+                metaRoles.chTYPE && metaRoles.chTYPE[device.TYPE]
+                    ? metaRoles.chTYPE && metaRoles.chTYPE[device.TYPE]
+                    : undefined;
         } else {
             type = 'device';
             if (!images[device.TYPE]) {
                 adapter.log.warn(`No image for "${device.TYPE}" found.`);
             }
 
-            icon = images[device.TYPE] ? (`/icons/${images[device.TYPE]}`) : '';
+            icon = images[device.TYPE] ? `/icons/${images[device.TYPE]}` : '';
         }
 
         const obj = {
@@ -1716,7 +1833,7 @@ function updateConnection() {
     // Virtual Devices API does now also support PING (tested with 3.55.5.20201226 - see #308)
     if (!eventInterval) {
         adapter.log.debug('start ping interval');
-        eventInterval = setInterval(keepAlive, adapter.config.checkInitInterval * 1000 / 2);
+        eventInterval = setInterval(keepAlive, (adapter.config.checkInitInterval * 1000) / 2);
     }
 }
 
@@ -1759,7 +1876,7 @@ function connect(isFirst) {
                     port: adapter.config.homematicPort,
                     path: homematicPath,
                     reconnectTimeout: adapter.config.reconnectInterval * 1000,
-                    basic_auth: {user: username, pass: password},
+                    basic_auth: { user: username, pass: password },
                     rejectUnauthorized: false
                 });
             } catch (e) {
@@ -1810,7 +1927,7 @@ function keepAlive() {
 
     const _now = Date.now();
     // Check last event time. If timeout => send init again
-    if (!lastEvent || (_now - lastEvent) >= adapter.config.checkInitInterval * 1000) {
+    if (!lastEvent || _now - lastEvent >= adapter.config.checkInitInterval * 1000) {
         adapter.log.debug('[KEEPALIVE] Connection timed out, initializing new connection');
         connect();
     } else {
