@@ -28,7 +28,6 @@
 /* jslint node: true */
 'use strict';
 const utils = require('@iobroker/adapter-core'); // Get common adapter utils
-const adapterName = require('./../package.json').name.split('.').pop();
 const images = require('./lib/images');
 const tools = require('./lib/tools');
 const metaRoles = require('./lib/roles');
@@ -375,7 +374,7 @@ async function readSettings(id) {
 function startAdapter(options) {
     options = options || {};
     Object.assign(options, {
-        name: adapterName,
+        name: 'hm-rpc',
         error: e => {
             if (e.code === 'EADDRNOTAVAIL') {
                 adapter.log.error(`Address ${adapter.config.adapterAddress} not available, maybe your HOST IP has changed due to migration`);

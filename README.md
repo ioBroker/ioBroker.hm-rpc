@@ -151,7 +151,7 @@ via or/and operator. The then clause of the program can remain empty. Now your s
 	Placeholder for the next version (at the beginning of the line):
 	### __WORK IN PROGRESS__
 -->
-### __WORK IN PROGRESS__
+### 1.15.2 (2022-02-02)
 * (foxriver76) we also fixed type of default value if boolean on heating groups
 
 ### 1.15.1 (2022-02-02)

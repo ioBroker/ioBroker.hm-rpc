@@ -29,7 +29,6 @@
 'use strict';
 
 const utils = require('@iobroker/adapter-core'); // Get common adapter utils
-const adapterName = require('./../package.json').name.split('.').pop();
 const images = require('./lib/images');
 const tools = require('./lib/tools');
 const metaRoles = require('./lib/roles');
@@ -433,7 +432,7 @@ function startAdapter(options) {
     options = options || {};
 
     Object.assign(options, {
-        name: adapterName,
+        name: 'hm-rpc',
         error: e => {
             if (e.code === 'EADDRNOTAVAIL') {
                 adapter.log.error(
