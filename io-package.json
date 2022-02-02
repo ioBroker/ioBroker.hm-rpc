@@ -18,7 +18,7 @@
     "news": {
       "1.15.2": {
         "en": "we also fixed type of default value if boolean on heating groups",
-        "de": "Wir haben auch den Typ des Standardwerts behoben, wenn er für Heizgruppen boolesch ist",
+        "de": "Wir haben auch den Typ des Standardwerts behoben, wenn er auf Heizgruppen boolesch ist",
         "ru": "мы также исправили тип значения по умолчанию, если логическое значение для групп нагрева",
         "pt": "também fixamos o tipo de valor padrão se booleano nos grupos de aquecimento",
         "nl": "we hebben ook het type standaardwaarde vastgesteld als boolean op verwarmingsgroepen",
