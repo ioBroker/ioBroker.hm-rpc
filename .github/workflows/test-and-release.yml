@@ -44,8 +44,6 @@ jobs:
   adapter-tests:
     if: contains(github.event.head_commit.message, '[skip ci]') == false
 
-    needs: [check-and-lint]
-
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -53,22 +51,13 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
-      - uses: actions/checkout@v1
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+      - uses: ioBroker/testing-action-adapter@v1
         with:
           node-version: ${{ matrix.node-version }}
-
-      - name: Install Dependencies
-        run: npm ci
-
-      - name: Run integration tests (unix only)
-        if: startsWith(runner.OS, 'windows') == false
-        run: DEBUG=testing:* npm run test:integration
-
-      - name: Run integration tests (windows only)
-        if: startsWith(runner.OS, 'windows')
-        run: set DEBUG=testing:* & npm run test:integration
+          os: ${{ matrix.os }}
+          # Uncomment the following line if your adapter cannot be installed using 'npm ci'
+          # install-command: 'npm install'
+          build: true
 
   # Deploys the final package to NPM and Github Actions
   deploy:
