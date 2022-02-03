@@ -1,4 +1,4 @@
-module.exports = {
+export const metaRoles: Record<string, Record<string, string>> = {
     chTYPE: {
         DIMMER: 'light.dimmer',
         BLIND: 'blind',

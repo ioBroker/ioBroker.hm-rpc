@@ -6,12 +6,12 @@
 
 const gulp = require('gulp');
 const fs = require('fs');
-const pkg = require('./package.json');
-const iopackage = require('./io-package.json');
+const pkg = require('./../package.json');
+const iopackage = require('./../io-package.json');
 const version = pkg && pkg.version ? pkg.version : iopackage.common.version;
 const fileName = 'words.js';
 const EMPTY = '';
-const translate = require('./lib/gulptools').translateText;
+const translate = require('./gulptools').translateText;
 const languages = {
     en: {},
     de: {},

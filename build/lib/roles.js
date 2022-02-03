@@ -1,5 +1,7 @@
 "use strict";
-module.exports = {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.metaRoles = void 0;
+exports.metaRoles = {
     chTYPE: {
         DIMMER: 'light.dimmer',
         BLIND: 'blind',

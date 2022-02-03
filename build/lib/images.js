@@ -1,5 +1,7 @@
 "use strict";
-module.exports = {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.images = void 0;
+exports.images = {
     'ZEL STG RM HS 4': '18_hm-rc-4_thumb.png',
     'HM-LC-Sw1-Ba-PCB': '77_hm-lc-sw1-ba-pcb_thumb.png',
     'HM-LC-Sw2-PB-FM': 'PushButton-4ch-wm_thumb.png',
