@@ -14,8 +14,20 @@
       "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker",
       "zh-cn": "通过 XML-RPC 或 BIN-RPC 将 HomeMatic 接口进程（BidCos-Services、Homegear 和 CUxD）连接到 ioBroker"
     },
-    "version": "1.15.3",
+    "version": "1.15.4",
     "news": {
+      "1.15.4": {
+        "en": "added handler for `readdedDevice` event (closes #356)",
+        "de": "Handler für `readdedDevice`-Ereignis hinzugefügt (schließt #356)",
+        "ru": "добавлен обработчик события `readdedDevice` (закрывается #356)",
+        "pt": "adicionado manipulador para o evento `readdedDevice` (fecha #356)",
+        "nl": "toegevoegde handler voor gebeurtenis `readdedDevice` (sluit #356 af)",
+        "fr": "ajout d'un gestionnaire pour l'événement `readdedDevice` (ferme #356)",
+        "it": "aggiunto gestore per l'evento `readdedDevice` (chiude #356)",
+        "es": "controlador agregado para el evento `readdedDevice` (cierra #356)",
+        "pl": "dodano obsługę zdarzenia `readdedDevice` (zamyka #356)",
+        "zh-cn": "为 `readedDevice` 事件添加了处理程序（关闭 #356）"
+      },
       "1.15.3": {
         "en": "added error handling on rpc server (fixes #457)\nadded icon of HmIP-eTRV-E-S (closes #456)",
         "de": "Fehlerbehandlung auf dem RPC-Server hinzugefügt (Korrekturen Nr. 457)\nIcon von HmIP-eTRV-E-S hinzugefügt (schließt #456)",
@@ -87,18 +99,6 @@
         "es": "manejar casos donde no podemos recuperar `meta.roles` (direcciones # 407)",
         "pl": "obsłużyć przypadki, w których nie możemy odzyskać `meta.roles` (adresy #407)",
         "zh-cn": "处理我们无法检索 `meta.roles` 的情况（地址 #407）"
-      },
-      "1.14.46": {
-        "en": "added logging for \"no dpType\" scenarios\nadded image of HmIP-eTRV-E\nadded image of HmIPW-WRC6",
-        "de": "Logging für \"no dpType\"-Szenarien hinzugefügt\nBild von HmIP-eTRV-E hinzugefügt\nBild von HmIPW-WRC6 hinzugefügt",
-        "ru": "добавлено ведение журнала для сценариев \"без dpType\"\nдобавлено изображение HmIP-eTRV-E\nдобавлено изображение HmIPW-WRC6",
-        "pt": "adicionado registro para cenários \"sem dpType\"\nadicionada imagem de HmIP-eTRV-E\nadicionada imagem de HmIPW-WRC6",
-        "nl": "logboekregistratie toegevoegd voor \"geen dpType\"-scenario's\ntoegevoegde afbeelding van HmIP-eTRV-E\ntoegevoegde afbeelding van HmIPW-WRC6",
-        "fr": "ajout de la journalisation pour les scénarios \"sans dpType\"\nimage ajoutée de HmIP-eTRV-E\nimage ajoutée de HmIPW-WRC6",
-        "it": "aggiunta registrazione per scenari \"no dpType\"\naggiunta immagine di HmIP-eTRV-E\naggiunta immagine di HmIPW-WRC6",
-        "es": "registro agregado para escenarios \"sin dpType\"\nimagen agregada de HmIP-eTRV-E\nimagen añadida de HmIPW-WRC6",
-        "pl": "dodano logowanie dla scenariuszy \"bez dpType\"\ndodano obraz HmIP-eTRV-E\ndodano obraz HmIPW-WRC6",
-        "zh-cn": "添加了“无 dpType”场景的日志记录\n添加了 HmIP-eTRV-E 的图片\n添加了 HmIPW-WRC6 的图片"
       }
     },
     "authors": [

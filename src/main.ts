@@ -1048,15 +1048,15 @@ async function initRpcServer() {
         );
     });
 
-    rpcServer.on(
-        'firmwareUpdateStatusChanged',
-        (method: any, params: any, callback: (param1: any, param2: any) => void) => {
-            adapter.log.info(`Firmware update status of ${params[1]} changed to ${params[2]}`);
-            callback(null, '');
-        }
-    );
+    rpcServer.on('readdedDevice', (method: any, params: any) => {
+        adapter.log.info(`Readded device ${JSON.stringify(params)}`);
+    });
 
-    rpcServer.on('replaceDevice', async (method: any, params: any, callback: (param1: any, param2: any) => void) => {
+    rpcServer.on('firmwareUpdateStatusChanged', (method: any, params: any) => {
+        adapter.log.info(`Firmware update status of ${params[1]} changed to ${params[2]}`);
+    });
+
+    rpcServer.on('replaceDevice', async (method: any, params: any) => {
         const oldDeviceName = params[1];
         const newDeviceName = params[2];
         adapter.log.info(`Device "${oldDeviceName}" has been replaced by "${newDeviceName}"`);
@@ -1073,8 +1073,6 @@ async function initRpcServer() {
         } catch (e: any) {
             adapter.log.error(`Error while creating replacement device "${newDeviceName}": ${e.message}`);
         }
-
-        callback(null, '');
     });
 
     rpcServer.on('error', (e: any) => {

@@ -152,6 +152,9 @@ via or/and operator. The then clause of the program can remain empty. Now your s
 	Placeholder for the next version (at the beginning of the line):
 	### __WORK IN PROGRESS__
 -->
+### 1.15.4 (2022-02-12)
+* (foxriver76) added handler for `readdedDevice` event (closes #356)
+
 ### 1.15.3 (2022-02-12)
 * (foxriver76) added error handling on rpc server (fixes #457)
 * (foxriver76) added icon of HmIP-eTRV-E-S (closes #456)
