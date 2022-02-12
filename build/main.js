@@ -940,25 +940,35 @@ async function initRpcServer() {
     adapter.log.info(`${adapter.config.type}rpc server is trying to listen on ${adapter.config.adapterAddress}:${port}`);
     adapter.log.info(`${adapter.config.type}rpc client is trying to connect to ${adapter.config.homematicAddress}:${adapter.config.homematicPort}${homematicPath} with ${JSON.stringify([daemonURL, clientId])}`);
     connect(true);
-    rpcServer.on('NotFound', async (method, params) => {
-        if (method === 'firmwareUpdateStatusChanged') {
-            adapter.log.info(`Firmware update status of ${params[1]} changed to ${params[2]}`);
-        }
-        else if (method === 'replaceDevice') {
-            const oldDeviceName = params[1];
-            const newDeviceName = params[2];
-            adapter.log.info(`Device "${oldDeviceName}" has been replaced by "${newDeviceName}"`);
-            // remove the old device
-            await adapter.deleteDeviceAsync(oldDeviceName);
-            adapter.log.info(`Replaced device "${oldDeviceName}" deleted`);
-            // add the new device
-            adapter.log.info(`${adapter.config.type}rpc -> getDeviceDescription ${JSON.stringify([newDeviceName])}`);
+    rpcServer.on('NotFound', (method, params) => {
+        adapter.log.warn(`${adapter.config.type}rpc <- undefined method ${method} with parameters ${typeof params === 'object' ? JSON.stringify(params).slice(0, 80) : params}`);
+    });
+    rpcServer.on('readdedDevice', (method, params) => {
+        adapter.log.info(`Readded device ${JSON.stringify(params)}`);
+    });
+    rpcServer.on('firmwareUpdateStatusChanged', (method, params) => {
+        adapter.log.info(`Firmware update status of ${params[1]} changed to ${params[2]}`);
+    });
+    rpcServer.on('replaceDevice', async (method, params) => {
+        const oldDeviceName = params[1];
+        const newDeviceName = params[2];
+        adapter.log.info(`Device "${oldDeviceName}" has been replaced by "${newDeviceName}"`);
+        // remove the old device
+        await adapter.deleteDeviceAsync(oldDeviceName);
+        adapter.log.info(`Replaced device "${oldDeviceName}" deleted`);
+        // add the new device
+        adapter.log.info(`${adapter.config.type}rpc -> getDeviceDescription ${JSON.stringify([newDeviceName])}`);
+        try {
             const res = await rpcMethodCallAsync('getDeviceDescription', [newDeviceName]);
             await createDevices([res]);
         }
-        else {
-            adapter.log.warn(`${adapter.config.type}rpc <- undefined method ${method} with parameters ${typeof params === 'object' ? JSON.stringify(params).slice(0, 80) : params}`);
-        } // endElse
+        catch (e) {
+            adapter.log.error(`Error while creating replacement device "${newDeviceName}": ${e.message}`);
+        }
+    });
+    rpcServer.on('error', (e) => {
+        // not sure if this can really be triggered
+        adapter.log.error(`RPC Server error: ${e.message}`);
     });
     rpcServer.on('system.multicall', (method, params, callback) => {
         updateConnection();
