@@ -147,10 +147,15 @@ by ioBroker, when you have a running 'dummy' program on the CCU which depends on
 You can use a single dummy program for multiple buttons, by just adding all button states in the if clause connected 
 via or/and operator. The then clause of the program can remain empty. Now your state should be updated on a button press.
 
+## Changelog
 <!--
 	Placeholder for the next version (at the beginning of the line):
 	### __WORK IN PROGRESS__
 -->
+### 1.15.3 (2022-02-12)
+* (foxriver76) added error handling on rpc server (fixes #457)
+* (foxriver76) added icon of HmIP-eTRV-E-S (closes #456)
+
 ### 1.15.2 (2022-02-02)
 * (foxriver76) we also fixed type of default value if boolean on heating groups
 

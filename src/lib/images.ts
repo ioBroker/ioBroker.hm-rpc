@@ -381,5 +381,6 @@ export const images: Record<string, string> = {
     'HmIP-DLD': 'HmIP-DLD.png',
     'HmIP-KRCK': 'HmIP-KRCK.png',
     'HmIP-eTRV-E': 'HmIP-eTRV-E.png',
+    'HmIP-eTRV-E-S': 'HmIP-eTRV-E.png',
     'HmIP-STE2-PCB': 'HmIP-STE2-PCB.png'
 };
