@@ -481,15 +481,12 @@ function startAdapter(options) {
             }
             else if (tmp[4] === 'DISPLAY_DATA_STRING') {
                 // new EPAPER HMIP-WRCD has own states but needs to encode special chars by DIN_66003
-                /** @ts-expect-error todo */
-                val = tools.replaceSpecialChars(state.val || '');
+                val = tools.replaceSpecialChars(state.val ? state.val.toString() : '');
                 adapter.log.debug(`Encoded ${state.val} to ${val}`);
-                /** @ts-expect-error todo */
             }
-            else if (tmp[4] === 'COMBINED_PARAMETER' && /DDS=.+,/g.test(state.val)) {
+            else if (tmp[4] === 'COMBINED_PARAMETER' && state.val && /DDS=.+,/g.test(state.val.toString())) {
                 // new EPAPER and DISPLAY_DATA_STRING is given, we need to replace
-                let text = state.val;
-                /** @ts-expect-error types needed */
+                let text = state.val.toString();
                 for (const line of text.split(/},(\s+)?{/g)) {
                     if (line === undefined) {
                         continue;
@@ -499,7 +496,6 @@ function startAdapter(options) {
                     const origText = line.slice(start, end);
                     const replacedText = tools.replaceSpecialChars(origText);
                     const lineReplaced = line.replace(`DDS=${origText}`, `DDS=${replacedText}`);
-                    /** @ts-expect-error todo */
                     text = text.replace(line, lineReplaced);
                 } // endFor
                 val = text;
@@ -1565,8 +1561,8 @@ async function createDevices(deviceArr) {
             }
             icon = images_1.images[device.TYPE] ? `/icons/${images_1.images[device.TYPE]}` : '';
         }
+        const id = device.ADDRESS.replace(':', '.').replace(adapter.FORBIDDEN_CHARS, '_');
         const obj = {
-            _id: device.ADDRESS.replace(':', '.').replace(adapter.FORBIDDEN_CHARS, '_'),
             type: type,
             common: {
                 name: device.ADDRESS,
@@ -1593,18 +1589,15 @@ async function createDevices(deviceArr) {
                 dpTypes[dpID].MAX = 100;
             }
         }
-        /** @ts-expect-error types needed */
-        if (roles_1.metaRoles.dvTYPE && obj.native && roles_1.metaRoles.dvTYPE[obj.native.PARENT_TYPE]) {
-            /** @ts-expect-error types needed */
-            obj.common.role = roles_1.metaRoles.dvTYPE[obj.native.PARENT_TYPE];
+        if (roles_1.metaRoles.dvTYPE && obj.native && roles_1.metaRoles.dvTYPE[device.PARENT_TYPE]) {
+            obj.common.role = roles_1.metaRoles.dvTYPE[device.PARENT_TYPE];
         }
         try {
-            /** @ts-expect-error how we want to handle it */
-            const res = await adapter.setObjectAsync(obj._id, obj);
+            const res = await adapter.setObjectAsync(id, obj);
             adapter.log.debug(`object ${res.id} created`);
         }
         catch (e) {
-            adapter.log.error(`object ${obj._id} error on creation: ${e.message}`);
+            adapter.log.error(`object ${id} error on creation: ${e.message}`);
         }
         if (obj.type === 'channel') {
             queueValueParamsets.push(obj);
