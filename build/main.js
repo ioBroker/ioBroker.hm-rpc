@@ -1239,11 +1239,10 @@ async function addParamsetObjects(channel, paramset) {
                 }
             } // endIf
             if (paramObj.SPECIAL) {
-                if (!obj.common.states) {
+                if (typeof obj.common.states !== 'object') {
                     obj.common.states = {};
                 }
                 for (let i = 0; i < paramObj.SPECIAL.length; i++) {
-                    /** @ts-expect-error types needed */
                     obj.common.states[paramObj.SPECIAL[i].VALUE] = paramObj.SPECIAL[i].ID;
                 }
             } // endIf

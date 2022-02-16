@@ -1312,6 +1312,11 @@ async function initRpcServer() {
     });
 } // endInitRPCServer
 
+interface ParamsetObjectSpecialEntry {
+    ID: string;
+    VALUE: number;
+}
+
 interface ParamsetObject {
     DEFAULT?: string | boolean | number;
     FLAGS: number;
@@ -1334,7 +1339,7 @@ interface ParamsetObject {
         | 'EPAPER_TONE_REPETITIONS';
     UNIT?: string;
     VALUE_LIST?: string[];
-    SPECIAL?: Record<string, any>[];
+    SPECIAL?: ParamsetObjectSpecialEntry[];
     STATES?: any;
     CONTROL?: string;
 }
@@ -1397,11 +1402,10 @@ async function addParamsetObjects(channel: any, paramset: Record<string, Paramse
             } // endIf
 
             if (paramObj.SPECIAL) {
-                if (!obj.common.states) {
+                if (typeof obj.common.states !== 'object') {
                     obj.common.states = {};
                 }
                 for (let i = 0; i < paramObj.SPECIAL.length; i++) {
-                    /** @ts-expect-error types needed */
                     obj.common.states[paramObj.SPECIAL[i].VALUE] = paramObj.SPECIAL[i].ID;
                 }
             } // endIf
