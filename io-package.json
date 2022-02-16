@@ -14,8 +14,20 @@
       "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker",
       "zh-cn": "通过 XML-RPC 或 BIN-RPC 将 HomeMatic 接口进程（BidCos-Services、Homegear 和 CUxD）连接到 ioBroker"
     },
-    "version": "1.15.5",
+    "version": "1.15.6",
     "news": {
+      "1.15.6": {
+        "en": "implemented workaround for the RSSI_DEVICE 128 bug if devices connect to HMIP-HAP (fixes #346, #469, #402)",
+        "de": "Workaround für den Fehler RSSI_DEVICE 128 implementiert, wenn sich Geräte mit HMIP-HAP verbinden (Fixes Nr. 346, Nr. 469, Nr. 402)",
+        "ru": "реализован обходной путь для ошибки RSSI_DEVICE 128, если устройства подключаются к HMIP-HAP (исправления № 346, № 469, № 402)",
+        "pt": "solução alternativa implementada para o bug RSSI_DEVICE 128 se os dispositivos se conectarem ao HMIP-HAP (correções #346, #469, #402)",
+        "nl": "tijdelijke oplossing geïmplementeerd voor de RSSI_DEVICE 128-bug als apparaten verbinding maken met HMIP-HAP (fixes #346, #469, #402)",
+        "fr": "solution de contournement implémentée pour le bogue RSSI_DEVICE 128 si les appareils se connectent à HMIP-HAP (correctifs #346, #469, #402)",
+        "it": "soluzione alternativa implementata per il bug RSSI_DEVICE 128 se i dispositivi si connettono a HMIP-HAP (correzioni n. 346, n. 469, n. 402)",
+        "es": "solución implementada para el error RSSI_DEVICE 128 si los dispositivos se conectan a HMIP-HAP (correcciones #346, #469, #402)",
+        "pl": "zaimplementowane obejście błędu RSSI_DEVICE 128, jeśli urządzenia łączą się z HMIP-HAP (poprawki #346, #469, #402)",
+        "zh-cn": "如果设备连接到 HMIP-HAP，则针对 RSSI_DEVICE 128 错误实施解决方法（修复 #346、#469、#402）"
+      },
       "1.15.5": {
         "en": "added handler for `readdedDevice` event (closes #356)\nadded error handling on rpc server (fixes #457)\nadded icon of HmIP-eTRV-E-S (closes #456)",
         "de": "Handler für `readdedDevice`-Ereignis hinzugefügt (schließt #356)\nFehlerbehandlung auf dem RPC-Server hinzugefügt (Korrekturen Nr. 457)\nIcon von HmIP-eTRV-E-S hinzugefügt (schließt #456)",
@@ -87,18 +99,6 @@
         "es": "imagen agregada para `HmIP-STE2-PCB`\nahora manejamos las solicitudes de `replaceDevice` eliminando el dispositivo antiguo y creando uno nuevo (cierra # 420)",
         "pl": "dodany obraz dla `HmIP-STE2-PCB`\nteraz obsługujemy żądania `replaceDevice`, usuwając stare urządzenie i tworząc nowe (zamyka #420)",
         "zh-cn": "添加了“HmIP-STE2-PCB”的图片\n我们现在通过删除旧设备并创建新设备来处理 `replaceDevice` 请求（关闭 #420）"
-      },
-      "1.14.50": {
-        "en": "`meta.roles` is no longer an object, because it is kept in RAM anyway (closes #407)",
-        "de": "`meta.roles` ist kein Objekt mehr, da es sowieso im RAM gehalten wird (schließt #407)",
-        "ru": "`meta.roles` больше не является объектом, потому что он все равно хранится в ОЗУ (закрывает # 407)",
-        "pt": "`meta.roles` não é mais um objeto, porque é mantido na RAM de qualquer maneira (fecha # 407)",
-        "nl": "`meta.roles` is niet langer een object, omdat het toch in het RAM wordt bewaard (sluit #407 af)",
-        "fr": "`meta.roles` n'est plus un objet, car il est de toute façon conservé dans la RAM (ferme #407)",
-        "it": "`meta.roles` non è più un oggetto, perché è comunque mantenuto nella RAM (chiude #407)",
-        "es": "`meta.roles` ya no es un objeto, porque de todos modos se guarda en la RAM (cierra # 407)",
-        "pl": "`meta.roles` nie jest już obiektem, ponieważ i tak jest przechowywany w pamięci RAM (zamyka #407)",
-        "zh-cn": "`meta.roles` 不再是一个对象，因为它无论如何都保存在 RAM 中（关闭 #407）"
       }
     },
     "authors": [

@@ -1194,7 +1194,8 @@ async function initRpcServer() {
  * @param paramset - paramset object retrived by CCU
  */
 async function addParamsetObjects(channel, paramset) {
-    for (const key of Object.keys(paramset)) {
+    adapter.log.warn(JSON.stringify(paramset));
+    for (const [key, paramObj] of Object.entries(paramset)) {
         const commonType = {
             ACTION: 'boolean',
             BOOL: 'boolean',
@@ -1214,12 +1215,12 @@ async function addParamsetObjects(channel, paramset) {
             common: {
                 name: key,
                 role: '',
-                def: paramset[key].DEFAULT,
-                type: commonType[paramset[key].TYPE] || paramset[key].TYPE || '',
-                read: !!(paramset[key].OPERATIONS & 1),
-                write: !!(paramset[key].OPERATIONS & 2)
+                def: paramObj.DEFAULT,
+                type: commonType[paramObj.TYPE] || 'mixed',
+                read: !!(paramObj.OPERATIONS & 1),
+                write: !!(paramObj.OPERATIONS & 2)
             },
-            native: paramset[key]
+            native: paramObj
         };
         // Heating groups are send everything as string
         if (typeof obj.common.def === 'string' && obj.common.type === 'number') {
@@ -1228,42 +1229,42 @@ async function addParamsetObjects(channel, paramset) {
         if (typeof obj.common.def === 'string' && obj.common.type === 'boolean') {
             obj.common.def = obj.common.def === 'true';
         }
-        if (obj.common.type === 'number') {
-            obj.common.min = typeof paramset[key].MIN === 'string' ? parseFloat(paramset[key].MIN) : paramset[key].MIN;
-            obj.common.max = typeof paramset[key].MAX === 'string' ? parseFloat(paramset[key].MAX) : paramset[key].MAX;
-            if (paramset[key].TYPE === 'ENUM') {
+        if (obj.common.type === 'number' && typeof paramObj.MIN !== 'boolean' && typeof paramObj.MAX !== 'boolean') {
+            obj.common.min = typeof paramObj.MIN === 'string' ? parseFloat(paramObj.MIN) : paramObj.MIN;
+            obj.common.max = typeof paramObj.MAX === 'string' ? parseFloat(paramObj.MAX) : paramObj.MAX;
+            if (paramObj.TYPE === 'ENUM' && paramObj.VALUE_LIST) {
                 obj.common.states = {};
-                for (let i = 0; i < paramset[key].VALUE_LIST.length; i++) {
-                    obj.common.states[i] = paramset[key].VALUE_LIST[i];
+                for (let i = 0; i < paramObj.VALUE_LIST.length; i++) {
+                    obj.common.states[i] = paramObj.VALUE_LIST[i];
                 }
             } // endIf
-            if (paramset[key].SPECIAL) {
+            if (paramObj.SPECIAL) {
                 if (!obj.common.states) {
                     obj.common.states = {};
                 }
-                for (let i = 0; i < paramset[key].SPECIAL.length; i++) {
+                for (let i = 0; i < paramObj.SPECIAL.length; i++) {
                     /** @ts-expect-error types needed */
-                    obj.common.states[paramset[key].SPECIAL[i].VALUE] = paramset[key].SPECIAL[i].ID;
+                    obj.common.states[paramObj.SPECIAL[i].VALUE] = paramObj.SPECIAL[i].ID;
                 }
             } // endIf
         } // endIf
-        if (paramset[key].STATES) {
-            obj.common.states = paramset[key].STATES;
+        if (paramObj.STATES) {
+            obj.common.states = paramObj.STATES;
         }
         // temporary fix for https://github.com/eq-3/occu/issues/105 and LEVEL w. o. %
         if (key === 'LEVEL' &&
-            typeof paramset[key].MIN === 'number' &&
-            typeof paramset[key].MAX === 'number' &&
-            paramset[key].UNIT === undefined) {
-            paramset[key].UNIT = '%';
+            typeof paramObj.MIN === 'number' &&
+            typeof paramObj.MAX === 'number' &&
+            paramObj.UNIT === undefined) {
+            paramObj.UNIT = '%';
         } // endIf
-        if (paramset[key].UNIT === '100%') {
+        if (paramObj.UNIT === '100%') {
             obj.common.unit = '%';
             // when unit is 100% we have min: 0, max: 1, we scale it between 0 and 100
             obj.common.max = 100;
         }
-        else if (paramset[key].UNIT !== '' && paramset[key].UNIT !== '""') {
-            obj.common.unit = paramset[key].UNIT;
+        else if (paramObj.UNIT !== '' && paramObj.UNIT !== '""') {
+            obj.common.unit = paramObj.UNIT;
             if (obj.common.unit === '�C' || obj.common.unit === '&#176;C') {
                 obj.common.unit = '°C';
             }
@@ -1280,35 +1281,35 @@ async function addParamsetObjects(channel, paramset) {
         else if (roles_1.metaRoles.dpNAME && roles_1.metaRoles.dpNAME[key]) {
             obj.common.role = roles_1.metaRoles.dpNAME[key];
         }
-        else if (paramset[key].TYPE === 'ACTION' && obj.common.write) {
+        else if (paramObj.TYPE === 'ACTION' && obj.common.write) {
             obj.common.role = 'button';
         } // endElseIf
         // sometimes min/max/def is string on hmip meta in combination with value_list
         // note, that there are cases (Virtual heating devices) which also provide min/max/def with
         // strings, but does not match entries in the value list, thus we have to check indexOf().
-        if (paramset[key].VALUE_LIST) {
-            if (typeof paramset[key].MIN === 'string') {
-                if (paramset[key].VALUE_LIST.includes(paramset[key].MIN)) {
-                    obj.common.min = paramset[key].VALUE_LIST.indexOf(paramset[key].MIN);
+        if (paramObj.VALUE_LIST) {
+            if (typeof paramObj.MIN === 'string') {
+                if (paramObj.VALUE_LIST.includes(paramObj.MIN)) {
+                    obj.common.min = paramObj.VALUE_LIST.indexOf(paramObj.MIN);
                 }
                 else {
-                    obj.common.min = parseInt(paramset[key].MIN);
+                    obj.common.min = parseInt(paramObj.MIN);
                 }
             }
-            if (typeof paramset[key].MAX === 'string') {
-                if (paramset[key].VALUE_LIST.includes(paramset[key].MAX)) {
-                    obj.common.max = paramset[key].VALUE_LIST.indexOf(paramset[key].MAX);
+            if (typeof paramObj.MAX === 'string') {
+                if (paramObj.VALUE_LIST.includes(paramObj.MAX)) {
+                    obj.common.max = paramObj.VALUE_LIST.indexOf(paramObj.MAX);
                 }
                 else {
-                    obj.common.max = parseInt(paramset[key].MAX);
+                    obj.common.max = parseInt(paramObj.MAX);
                 }
             }
-            if (typeof paramset[key].DEFAULT === 'string') {
-                if (paramset[key].VALUE_LIST.includes(paramset[key].DEFAULT)) {
-                    obj.common.def = paramset[key].VALUE_LIST.indexOf(paramset[key].DEFAULT);
+            if (typeof paramObj.DEFAULT === 'string') {
+                if (paramObj.VALUE_LIST.includes(paramObj.DEFAULT)) {
+                    obj.common.def = paramObj.VALUE_LIST.indexOf(paramObj.DEFAULT);
                 }
                 else {
-                    obj.common.def = parseInt(paramset[key].DEFAULT);
+                    obj.common.def = parseInt(paramObj.DEFAULT);
                 }
             }
         }
@@ -1324,14 +1325,14 @@ async function addParamsetObjects(channel, paramset) {
         else if (obj.common.role === 'value.voltage') {
             obj.common.unit = 'V';
         }
-        else if (obj.common.role === 'value.window' && paramset[key].TYPE === 'BOOL') {
+        else if (obj.common.role === 'value.window' && paramObj.TYPE === 'BOOL') {
             // if its value.window but its a boolean it should be sensor.window
             obj.common.role = 'sensor.window';
         }
         else if (obj.common.role === 'value.temperature') {
             obj.common.unit = '°C';
         }
-        if (paramset[key].OPERATIONS & 8) {
+        if (paramObj.OPERATIONS & 8) {
             obj.common.role = 'indicator.service';
         }
         if (typeof obj.common.role !== 'string' && typeof obj.common.role !== 'undefined') {
@@ -1339,10 +1340,10 @@ async function addParamsetObjects(channel, paramset) {
         }
         const dpID = `${adapter.namespace}.${channel._id}.${key}`;
         dpTypes[dpID] = {
-            UNIT: paramset[key].UNIT,
-            TYPE: paramset[key].TYPE,
-            MIN: paramset[key].MIN,
-            MAX: paramset[key].MAX
+            UNIT: paramObj.UNIT,
+            TYPE: paramObj.TYPE,
+            MIN: paramObj.MIN,
+            MAX: paramObj.MAX
         };
         if (typeof dpTypes[dpID].MIN === 'number') {
             dpTypes[dpID].MIN = parseFloat(dpTypes[dpID].MIN);
@@ -1354,6 +1355,10 @@ async function addParamsetObjects(channel, paramset) {
         }
         if (key === 'LEVEL' && paramset.WORKING) {
             obj.common.workingID = 'WORKING';
+        }
+        // it seems like if devices connect to a HMIP-HAP, RSSI_DEVICE shows 128, eq3 should fix this, but lets workaround #346
+        if (key === 'RSSI_DEVICE') {
+            obj.common.max = 128;
         }
         try {
             const res = await adapter.extendObjectAsync(`${channel._id}.${key}`, obj);
