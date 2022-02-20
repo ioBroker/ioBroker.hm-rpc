@@ -38,8 +38,15 @@ let rpcClient: any;
 
 let rpcServer: any;
 
+interface DatapointTypeObject {
+    UNIT: string;
+    TYPE: string;
+    MIN?: number;
+    MAX?: number;
+}
+
 const metaValues: Record<string, ParamsetObject> = {};
-const dpTypes: Record<string, any> = {};
+const dpTypes: Record<string, DatapointTypeObject> = {};
 
 let lastEvent = 0;
 let eventInterval: NodeJS.Timer | null;
@@ -825,20 +832,13 @@ async function main() {
                 } else {
                     dpTypes[row.id] = {
                         UNIT: obj.native.UNIT,
-                        TYPE: obj.native.TYPE,
-                        MIN: obj.native.MIN,
-                        MAX: obj.native.MAX
+                        TYPE: obj.native.TYPE
                     };
 
-                    if (typeof dpTypes[row.id].MIN === 'number') {
-                        dpTypes[row.id].MIN = parseFloat(dpTypes[row.id].MIN);
-                        dpTypes[row.id].MAX = parseFloat(dpTypes[row.id].MAX);
+                    if (typeof obj.native.MIN === 'number') {
+                        dpTypes[row.id].MIN = obj.native.MIN;
+                        dpTypes[row.id].MAX = obj.native.MAX;
 
-                        /*
-                        if (dpTypes[row.id].UNIT === '100%') {
-                            dpTypes[row.id].UNIT = '%';
-                        }
-                         */
                         if (dpTypes[row.id].MAX === 99) {
                             dpTypes[row.id].MAX = 100;
                         } else if (dpTypes[row.id].MAX === 1.005 || dpTypes[row.id].MAX === 1.01) {
@@ -940,7 +940,7 @@ const methods: Record<string, any> = {
         adapter.log.debug(`${adapter.config.type}rpc <- event ${JSON.stringify(params)}`);
         let val;
         // CUxD ignores all prefixes!!
-        if (params[0] === 'CUxD' || params[0].indexOf(adapter.name) === -1) {
+        if (params[0] === 'CUxD' || !params[0].includes(adapter.name)) {
             params[0] = adapter.namespace;
         }
         const channel = params[1].replace(':', '.').replace(adapter.FORBIDDEN_CHARS, '_');
@@ -1258,7 +1258,7 @@ async function initRpcServer() {
         }
         adapter.log.info(`${adapter.config.type}rpc <- deleteDevices ${params[1].length}`);
         for (let deviceName of params[1]) {
-            if (deviceName.indexOf(':') !== -1) {
+            if (deviceName.includes(':')) {
                 deviceName = deviceName.replace(':', '.').replace(adapter.FORBIDDEN_CHARS, '_');
                 adapter.log.info(`channel ${deviceName} ${JSON.stringify(deviceName)} deleted`);
                 const parts = deviceName.split('.');
@@ -1537,14 +1537,12 @@ async function addParamsetObjects(
 
         dpTypes[dpID] = {
             UNIT: paramObj.UNIT,
-            TYPE: paramObj.TYPE,
-            MIN: paramObj.MIN,
-            MAX: paramObj.MAX
+            TYPE: paramObj.TYPE
         };
 
-        if (typeof dpTypes[dpID].MIN === 'number') {
-            dpTypes[dpID].MIN = parseFloat(dpTypes[dpID].MIN);
-            dpTypes[dpID].MAX = parseFloat(dpTypes[dpID].MAX);
+        if (paramObj.MIN === 'number') {
+            dpTypes[dpID].MIN = paramObj.MIN;
+            dpTypes[dpID].MAX = paramObj.MAX;
             // Humidity is from 0 to 99. It is wrong.
             if (dpTypes[dpID].MAX === 99) {
                 dpTypes[dpID].MAX = 100;
@@ -1800,15 +1798,12 @@ async function createDevices(deviceArr: any[]): Promise<void> {
 
         dpTypes[dpID] = {
             UNIT: device.UNIT,
-            TYPE: device.TYPE,
-            MAX: device.MAX,
-            MIN: device.MIN,
-            role: role
+            TYPE: device.TYPE
         };
 
-        if (typeof dpTypes[dpID].MIN === 'number') {
-            dpTypes[dpID].MIN = parseFloat(dpTypes[dpID].MIN);
-            dpTypes[dpID].MAX = parseFloat(dpTypes[dpID].MAX);
+        if (typeof device.MIN === 'number') {
+            dpTypes[dpID].MIN = device.MIN;
+            dpTypes[dpID].MAX = device.MAX;
 
             // e. g. Humidity is from 0 to 99. It is wrong. todo: logically ok, but is it? Can a sensor deliver 100 % humidity?
             if (dpTypes[dpID].MAX === 99) {
