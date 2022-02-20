@@ -438,7 +438,7 @@ async function readSettings(id: string) {
 } // endReadSettings
 
 function startAdapter(options: Partial<utils.AdapterOptions> = {}) {
-    options = {
+    adapter = new utils.Adapter({
         ...options,
         name: 'hm-rpc',
         error: (e: any) => {
@@ -745,10 +745,7 @@ function startAdapter(options: Partial<utils.AdapterOptions> = {}) {
                 callback = null;
             }
         }
-    };
-
-    /** @ts-expect-error fix this */
-    adapter = new utils.Adapter(options);
+    });
 
     return adapter;
 }
@@ -1694,7 +1691,7 @@ function addEPaperToMeta() {
  * @param deviceArr - array of devices
  */
 async function createDevices(deviceArr: any[]): Promise<void> {
-    const queueValueParamsets = [];
+    const queueValueParamsets: ioBroker.SettableObject[] = [];
     for (const device of deviceArr) {
         if (typeof device.ADDRESS !== 'string') {
             // check that ADDRESS is given, else we don't know the id
@@ -1723,6 +1720,7 @@ async function createDevices(deviceArr: any[]): Promise<void> {
 
         const id = device.ADDRESS.replace(':', '.').replace(adapter.FORBIDDEN_CHARS, '_');
         const obj: ioBroker.SettableObject = {
+            _id: id,
             type: type,
             common: {
                 name: device.ADDRESS,

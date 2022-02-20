@@ -677,7 +677,7 @@ function startAdapter(options = {}) {
             }
         }
     };
-    /** @ts-expect-error fix this */
+    /** @ts-expect-error fix it */
     adapter = new utils.Adapter(options);
     return adapter;
 }
@@ -1545,6 +1545,7 @@ async function createDevices(deviceArr) {
         }
         const id = device.ADDRESS.replace(':', '.').replace(adapter.FORBIDDEN_CHARS, '_');
         const obj = {
+            _id: id,
             type: type,
             common: {
                 name: device.ADDRESS,

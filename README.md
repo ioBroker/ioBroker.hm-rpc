@@ -152,6 +152,9 @@ via or/and operator. The then clause of the program can remain empty. Now your s
 	Placeholder for the next version (at the beginning of the line):
 	### __WORK IN PROGRESS__
 -->
+### 1.15.7 (2022-02-20)
+* (foxriver76) fixed new devices beeing created as `undefined`
+
 ### 1.15.6 (2022-02-16)
 * (foxriver76) implemented workaround for the RSSI_DEVICE 128 bug if devices connect to HMIP-HAP (fixes #346, #469, #402)
 

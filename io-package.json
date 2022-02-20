@@ -14,8 +14,20 @@
       "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker",
       "zh-cn": "通过 XML-RPC 或 BIN-RPC 将 HomeMatic 接口进程（BidCos-Services、Homegear 和 CUxD）连接到 ioBroker"
     },
-    "version": "1.15.6",
+    "version": "1.15.7",
     "news": {
+      "1.15.7": {
+        "en": "fixed new devices beeing created as `undefined`",
+        "de": "Behoben, dass neue Geräte als „undefiniert“ erstellt wurden",
+        "ru": "исправлено создание новых устройств как `undefined`",
+        "pt": "corrigidos novos dispositivos sendo criados como 'indefinidos'",
+        "nl": "vaste nieuwe apparaten die zijn gemaakt als `undefined`",
+        "fr": "correction de nouveaux appareils créés comme \"indéfinis\"",
+        "it": "corretto il problema con la creazione di nuovi dispositivi come \"non definiti\".",
+        "es": "Se corrigieron nuevos dispositivos creados como `indefinidos`",
+        "pl": "naprawiono nowe urządzenia tworzone jako `undefined`",
+        "zh-cn": "修复了创建为“未定义”的新设备"
+      },
       "1.15.6": {
         "en": "implemented workaround for the RSSI_DEVICE 128 bug if devices connect to HMIP-HAP (fixes #346, #469, #402)",
         "de": "Workaround für den Fehler RSSI_DEVICE 128 implementiert, wenn sich Geräte mit HMIP-HAP verbinden (Fixes Nr. 346, Nr. 469, Nr. 402)",
@@ -87,18 +99,6 @@
         "es": "fijamos el tipo de valor predeterminado y min/max de grupos de calefacción (cierra #443)",
         "pl": "ustaliliśmy typ wartości domyślnej oraz min/max grup grzewczych (zamyka #443)",
         "zh-cn": "我们固定了默认值的类型和加热组的最小值/最大值（关闭 #443）"
-      },
-      "1.15.0": {
-        "en": "added image for `HmIP-STE2-PCB`\nwe now handle `replaceDevice` requests by deleting old device and creating new one (closes #420)",
-        "de": "Bild hinzugefügt für `HmIP-STE2-PCB`\nWir verarbeiten jetzt `replaceDevice`-Anfragen, indem wir das alte Gerät löschen und ein neues erstellen (schließt #420)",
-        "ru": "добавлен образ для `HmIP-STE2-PCB`\nТеперь мы обрабатываем запросы replaceDevice, удаляя старое устройство и создавая новое (закрывает # 420)",
-        "pt": "adicionada imagem para `HmIP-STE2-PCB`\nagora lidamos com solicitações `replaceDevice` excluindo o dispositivo antigo e criando um novo (fecha # 420)",
-        "nl": "afbeelding toegevoegd voor `HmIP-STE2-PCB`\nwe behandelen nu `replaceDevice`-verzoeken door het oude apparaat te verwijderen en een nieuw te maken (sluit #420)",
-        "fr": "image ajoutée pour `HmIP-STE2-PCB`\nnous gérons maintenant les requêtes `replaceDevice` en supprimant l'ancien appareil et en en créant un nouveau (ferme le #420)",
-        "it": "aggiunta immagine per `HmIP-STE2-PCB`\nora gestiamo le richieste `replaceDevice` eliminando il vecchio dispositivo e creandone uno nuovo (chiude #420)",
-        "es": "imagen agregada para `HmIP-STE2-PCB`\nahora manejamos las solicitudes de `replaceDevice` eliminando el dispositivo antiguo y creando uno nuevo (cierra # 420)",
-        "pl": "dodany obraz dla `HmIP-STE2-PCB`\nteraz obsługujemy żądania `replaceDevice`, usuwając stare urządzenie i tworząc nowe (zamyka #420)",
-        "zh-cn": "添加了“HmIP-STE2-PCB”的图片\n我们现在通过删除旧设备并创建新设备来处理 `replaceDevice` 请求（关闭 #420）"
       }
     },
     "authors": [
