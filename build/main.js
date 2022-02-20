@@ -400,7 +400,7 @@ async function readSettings(id) {
     controlEPaper(id, data);
 } // endReadSettings
 function startAdapter(options = {}) {
-    options = {
+    adapter = new utils.Adapter({
         ...options,
         name: 'hm-rpc',
         error: (e) => {
@@ -676,9 +676,7 @@ function startAdapter(options = {}) {
                 callback = null;
             }
         }
-    };
-    /** @ts-expect-error fix it */
-    adapter = new utils.Adapter(options);
+    });
     return adapter;
 }
 /**

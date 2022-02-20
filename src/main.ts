@@ -38,7 +38,7 @@ let rpcClient: any;
 
 let rpcServer: any;
 
-const metaValues: Record<string, any> = {};
+const metaValues: Record<string, ParamsetObject> = {};
 const dpTypes: Record<string, any> = {};
 
 let lastEvent = 0;
@@ -1293,6 +1293,51 @@ interface ParamsetObjectSpecialEntry {
     VALUE: number;
 }
 
+interface EPaperSignalObject {
+    TYPE: string;
+    ID: string;
+    STATES: Record<string, string>;
+    OPERATIONS: number;
+}
+
+interface EPaperToneObject {
+    TYPE: string;
+    ID: string;
+    STATES: Record<string, string>;
+    OPERATIONS: number;
+}
+
+interface EPaperToneIntervalObject {
+    TYPE: string;
+    ID: string;
+    MIN: number;
+    MAX: number;
+    OPERATIONS: number;
+    DEFAULT: number;
+}
+
+interface EPaperToneRepetitionsObject {
+    TYPE: string;
+    ID: string;
+    MIN: number;
+    MAX: number;
+    OPERATIONS: number;
+    DEFAULT: number;
+}
+
+interface EPaperLineObject {
+    TYPE: string;
+    ID: string;
+    OPERATIONS: number;
+}
+
+interface EPaperIconObject {
+    TYPE: string;
+    ID: string;
+    STATES: Record<string, string>;
+    OPERATIONS: number;
+}
+
 interface ParamsetObject {
     DEFAULT?: string | boolean | number;
     FLAGS: number;
@@ -1318,6 +1363,19 @@ interface ParamsetObject {
     SPECIAL?: ParamsetObjectSpecialEntry[];
     STATES?: any;
     CONTROL?: string;
+    EPAPER_LINE?: EPaperLineObject;
+    EPAPER_ICON?: EPaperIconObject;
+    EPAPER_LINE2?: EPaperLineObject;
+    EPAPER_ICON2?: EPaperIconObject;
+    EPAPER_LINE3?: EPaperLineObject;
+    EPAPER_ICON3?: EPaperIconObject;
+    EPAPER_LINE4?: EPaperLineObject;
+    EPAPER_ICON4?: EPaperIconObject;
+    EPAPER_SIGNAL: EPaperSignalObject;
+    EPAPER_TONE: EPaperToneObject;
+    EPAPER_TONE_INTERVAL: EPaperToneIntervalObject;
+    EPAPER_TONE_REPETITIONS: EPaperToneRepetitionsObject;
+    WORKING?: boolean;
 }
 
 /**
@@ -1326,7 +1384,10 @@ interface ParamsetObject {
  * @param channel - channel object with at least "_id" property
  * @param paramset - paramset object retrived by CCU
  */
-async function addParamsetObjects(channel: any, paramset: Record<string, ParamsetObject>): Promise<void> {
+async function addParamsetObjects(
+    channel: ioBroker.SettableDeviceObject | ioBroker.SettableChannelObject,
+    paramset: ParamsetObject
+): Promise<void> {
     for (const [key, paramObj] of Object.entries(paramset)) {
         const commonType: Record<string, 'boolean' | 'number' | 'string'> = {
             ACTION: 'boolean',
@@ -1513,7 +1574,9 @@ async function addParamsetObjects(channel: any, paramset: Record<string, Paramse
  *
  * @param valueParamsets
  */
-async function getValueParamsets(valueParamsets: any[]): Promise<void> {
+async function getValueParamsets(
+    valueParamsets: (ioBroker.SettableDeviceObject | ioBroker.SettableChannelObject)[]
+): Promise<void> {
     for (const obj of valueParamsets) {
         try {
             const cid = `${obj.native.PARENT_TYPE}.${obj.native.TYPE}.${obj.native.VERSION}`;
@@ -1691,7 +1754,7 @@ function addEPaperToMeta() {
  * @param deviceArr - array of devices
  */
 async function createDevices(deviceArr: any[]): Promise<void> {
-    const queueValueParamsets: ioBroker.SettableObject[] = [];
+    const queueValueParamsets: (ioBroker.SettableDeviceObject | ioBroker.SettableChannelObject)[] = [];
     for (const device of deviceArr) {
         if (typeof device.ADDRESS !== 'string') {
             // check that ADDRESS is given, else we don't know the id
@@ -1719,7 +1782,7 @@ async function createDevices(deviceArr: any[]): Promise<void> {
         }
 
         const id = device.ADDRESS.replace(':', '.').replace(adapter.FORBIDDEN_CHARS, '_');
-        const obj: ioBroker.SettableObject = {
+        const obj: ioBroker.SettableChannelObject | ioBroker.SettableDeviceObject = {
             _id: id,
             type: type,
             common: {
@@ -1948,7 +2011,7 @@ function connect(isFirst: boolean) {
 
     if (isFirst) {
         // create async methods at first init
-        rpcMethodCallAsync = (method: any, params: any) => {
+        rpcMethodCallAsync = (method: string, params: any[]) => {
             return new Promise((resolve, reject) => {
                 rpcClient.methodCall(method, params, (err: any, res: any) => {
                     if (err) {
