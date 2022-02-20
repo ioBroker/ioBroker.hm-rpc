@@ -20,7 +20,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 /*
- * Copyright (c) 2014-2021 bluefox <dogafox@gmail.com>
+ * Copyright (c) 2014-2022 bluefox <dogafox@gmail.com>
  *
  * Copyright (c) 2014 hobbyquaker
  *
@@ -399,9 +399,9 @@ async function readSettings(id) {
     await Promise.all(promises);
     controlEPaper(id, data);
 } // endReadSettings
-function startAdapter(options) {
-    options = options || {};
-    Object.assign(options, {
+function startAdapter(options = {}) {
+    options = {
+        ...options,
         name: 'hm-rpc',
         error: (e) => {
             if (e.code === 'EADDRNOTAVAIL') {
@@ -531,12 +531,11 @@ function startAdapter(options) {
                 adapter.log.error(`Cannot call setValue: ${e.message}`);
             }
         },
-        // Add messagebox Function for ioBroker.occ
         message: async (obj) => {
             adapter.log.debug(`[MSSG] Received: ${JSON.stringify(obj)}`);
             if (obj.command === undefined ||
                 obj.command === null ||
-                obj.message === undefined ||
+                typeof obj.message !== 'object' ||
                 obj.message === null) {
                 adapter.log.warn(`Received invalid command via message "${obj.command}" "${JSON.stringify(obj.message)}" from ${obj.from}`);
                 if (obj.callback) {
@@ -544,14 +543,11 @@ function startAdapter(options) {
                 }
                 return;
             }
-            /** @ts-expect-error types needed */
             if (obj.message.params === undefined || obj.message.params === null) {
                 try {
                     if (rpcClient && connected) {
                         // if device specific command, send it's ID and paramType
-                        const data = await rpcMethodCallAsync(obj.command, 
-                        /** @ts-expect-error types needed */
-                        obj.message.ID !== undefined ? [obj.message.ID, obj.message.paramType] : []);
+                        const data = await rpcMethodCallAsync(obj.command, obj.message.ID !== undefined ? [obj.message.ID, obj.message.paramType] : []);
                         if (obj.callback) {
                             adapter.sendTo(obj.from, obj.command, {
                                 result: data,
@@ -560,7 +556,6 @@ function startAdapter(options) {
                         }
                     }
                     else {
-                        /** @ts-expect-error types needed */
                         adapter.log.warn(`Cannot send "${obj.command}" "${obj.message.ID}": because not connected`);
                         if (obj.callback) {
                             adapter.sendTo(obj.from, obj.command, { error: 'not connected' }, obj.callback);
@@ -576,11 +571,8 @@ function startAdapter(options) {
                 try {
                     if (rpcClient && connected) {
                         const data = await rpcMethodCallAsync(obj.command, [
-                            /** @ts-expect-error types needed */
                             obj.message.ID,
-                            /** @ts-expect-error types needed */
                             obj.message.paramType,
-                            /** @ts-expect-error types needed */
                             obj.message.params
                         ]);
                         if (obj.callback) {
@@ -591,7 +583,6 @@ function startAdapter(options) {
                         }
                     }
                     else {
-                        /** @ts-expect-error types needed */
                         adapter.log.warn(`Cannot send "${obj.command}" "${obj.message.ID}": because not connected`);
                         if (obj.callback) {
                             adapter.sendTo(obj.from, obj.command, { error: 'not connected' }, obj.callback);
@@ -685,8 +676,8 @@ function startAdapter(options) {
                 callback = null;
             }
         }
-    });
-    /** @ts-expect-error types needed */
+    };
+    /** @ts-expect-error fix this */
     adapter = new utils.Adapter(options);
     return adapter;
 }
@@ -927,7 +918,7 @@ async function initRpcServer() {
     clientId = adapter.namespace;
     try {
         const obj = await adapter.getForeignObjectAsync(`system.adapter.${adapter.namespace}`);
-        /** @ts-expect-error types needed - create issue */
+        /** @ts-expect-error bug already reported */
         clientId = `${(_a = obj === null || obj === void 0 ? void 0 : obj.common) === null || _a === void 0 ? void 0 : _a.host}:${clientId}`;
     }
     catch (e) {
@@ -982,7 +973,7 @@ async function initRpcServer() {
     });
     rpcServer.on('system.listMethods', (err, params, callback) => {
         if (err) {
-            adapter.log.warn(` Error on system.listMethods: ${err}`);
+            adapter.log.warn(`Error on system.listMethods: ${err}`);
         }
         adapter.log.info(`${adapter.config.type}rpc <- system.listMethods ${JSON.stringify(params)}`);
         callback(null, [
@@ -1037,8 +1028,8 @@ async function initRpcServer() {
                         continue;
                     }
                     // lets get the device description
+                    /** @ts-expect-error bug reported */
                     const val = row.value;
-                    /** @ts-expect-error types needed */
                     if (typeof val.ADDRESS === 'undefined') {
                         continue;
                     }
@@ -1046,7 +1037,6 @@ async function initRpcServer() {
                     // and if it doesn't exist we can delete it
                     let index = -1;
                     for (let j = 0; j < newDevices.length; j++) {
-                        /** @ts-expect-error types needed */
                         if (newDevices[j].ADDRESS === val.ADDRESS && newDevices[j].VERSION === val.VERSION) {
                             index = j;
                             break;
@@ -1055,11 +1045,8 @@ async function initRpcServer() {
                     // if index is -1 than the newDevices doesn't have the
                     // device with address val.ADDRESS anymore, thus we can delete it
                     if (index === -1) {
-                        /** @ts-expect-error types needed */
                         if (val.ADDRESS && !adapter.config.dontDelete) {
-                            /** @ts-expect-error types needed */
-                            if (val.ADDRESS.indexOf(':') !== -1) {
-                                /** @ts-expect-error types needed */
+                            if (val.ADDRESS.includes(':')) {
                                 const address = val.ADDRESS.replace(':', '.').replace(adapter.FORBIDDEN_CHARS, '_');
                                 const parts = address.split('.');
                                 try {
@@ -1072,13 +1059,10 @@ async function initRpcServer() {
                             }
                             else {
                                 try {
-                                    /** @ts-expect-error types needed */
                                     await adapter.deleteDeviceAsync(val.ADDRESS);
-                                    /** @ts-expect-error types needed */
                                     adapter.log.info(`obsolete device ${val.ADDRESS} deleted`);
                                 }
                                 catch (e) {
-                                    /** @ts-expect-error types needed */
                                     adapter.log.error(`Could not delete obsolete device ${val.ADDRESS}: ${e.message}`);
                                 }
                             }
@@ -1123,10 +1107,9 @@ async function initRpcServer() {
                 if (row.id === `${adapter.namespace}.updated`) {
                     continue;
                 }
+                /** @ts-expect-error bug reported */
                 const val = row.value;
-                /** @ts-expect-error types needed */
                 if (val.ADDRESS) {
-                    /** @ts-expect-error types needed */
                     response.push({ ADDRESS: val.ADDRESS, VERSION: val.VERSION });
                 }
             }
@@ -1190,7 +1173,6 @@ async function initRpcServer() {
  * @param paramset - paramset object retrived by CCU
  */
 async function addParamsetObjects(channel, paramset) {
-    adapter.log.warn(JSON.stringify(paramset));
     for (const [key, paramObj] of Object.entries(paramset)) {
         const commonType = {
             ACTION: 'boolean',
@@ -1637,8 +1619,8 @@ async function getCuxDevices() {
                             continue;
                         }
                         // lets get the device description
+                        /** @ts-expect-error bug reported */
                         const val = row.value;
-                        /** @ts-expect-error types needed */
                         if (typeof val.ADDRESS === 'undefined') {
                             continue;
                         }
@@ -1646,7 +1628,6 @@ async function getCuxDevices() {
                         // and if it doesn't exist we can delete it
                         let index = -1;
                         for (let j = 0; j < newDevices.length; j++) {
-                            /** @ts-expect-error types needed */
                             if (newDevices[j].ADDRESS === val.ADDRESS && newDevices[j].VERSION === val.VERSION) {
                                 index = j;
                                 break;
@@ -1655,20 +1636,15 @@ async function getCuxDevices() {
                         // if index is -1 than the newDevices doesn't have the
                         // device with address val.ADDRESS anymore, thus we can delete it
                         if (index === -1) {
-                            /** @ts-expect-error types needed */
                             if (val.ADDRESS && !adapter.config.dontDelete) {
-                                /** @ts-expect-error types needed */
-                                if (val.ADDRESS.indexOf(':') !== -1) {
-                                    /** @ts-expect-error types needed */
+                                if (val.ADDRESS.includes(':')) {
                                     const address = val.ADDRESS.replace(':', '.').replace(adapter.FORBIDDEN_CHARS, '_');
                                     const parts = address.split('.');
                                     adapter.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
                                     adapter.log.info(`obsolete channel ${address} ${JSON.stringify(address)} deleted`);
                                 }
                                 else {
-                                    /** @ts-expect-error types needed */
                                     adapter.deleteDevice(val.ADDRESS);
-                                    /** @ts-expect-error types needed */
                                     adapter.log.info(`obsolete device ${val.ADDRESS} deleted`);
                                 }
                             }
