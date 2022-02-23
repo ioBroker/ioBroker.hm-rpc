@@ -14,8 +14,20 @@
       "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker",
       "zh-cn": "通过 XML-RPC 或 BIN-RPC 将 HomeMatic 接口进程（BidCos-Services、Homegear 和 CUxD）连接到 ioBroker"
     },
-    "version": "1.15.7",
+    "version": "1.15.8",
     "news": {
+      "1.15.8": {
+        "en": "we now ensure, that the `uuid` used for connection is really unique",
+        "de": "wir stellen nun sicher, dass die für die Verbindung verwendete `uuid` wirklich eindeutig ist",
+        "ru": "теперь мы гарантируем, что `uuid`, используемый для соединения, действительно уникален.",
+        "pt": "agora garantimos que o `uuid` usado para conexão é realmente único",
+        "nl": "we zorgen er nu voor dat de `uuid` die wordt gebruikt voor verbinding echt uniek is",
+        "fr": "nous nous assurons maintenant que le `uuid` utilisé pour la connexion est vraiment unique",
+        "it": "ora ci assicuriamo che l'uuid usato per la connessione sia davvero unico",
+        "es": "ahora nos aseguramos de que el `uuid` utilizado para la conexión sea realmente único",
+        "pl": "teraz upewniamy się, że `uuid` używany do połączenia jest naprawdę unikalny",
+        "zh-cn": "我们现在确保用于连接的 `uuid` 确实是唯一的"
+      },
       "1.15.7": {
         "en": "fixed new devices beeing created as `undefined`",
         "de": "Behoben, dass neue Geräte als „undefiniert“ erstellt wurden",
@@ -87,18 +99,6 @@
         "es": "también arreglamos el tipo de valor predeterminado si es booleano en los grupos de calentamiento",
         "pl": "poprawiliśmy również typ wartości domyślnej, jeśli wartość logiczna na grupach grzewczych",
         "zh-cn": "如果加热组上的布尔值，我们还修复了默认值的类型"
-      },
-      "1.15.1": {
-        "en": "we fixxed type of default value and min/max of heating groups (closes #443)",
-        "de": "Wir haben die Art des Standardwerts und das Minimum/Maximum der Heizgruppen korrigiert (schließt #443)",
-        "ru": "мы зафиксировали тип значения по умолчанию и мин/макс группы нагрева (закрывает #443)",
-        "pt": "fixamos o tipo de valor padrão e min/max de grupos de aquecimento (fecha #443)",
-        "nl": "we hebben het type standaardwaarde en min/max van verwarmingsgroepen vastgelegd (sluit #443)",
-        "fr": "nous fixons le type de valeur par défaut et le min/max des groupes de chauffage (ferme #443)",
-        "it": "abbiamo fissato il tipo di valore predefinito e min/max dei gruppi di riscaldamento (chiude #443)",
-        "es": "fijamos el tipo de valor predeterminado y min/max de grupos de calefacción (cierra #443)",
-        "pl": "ustaliliśmy typ wartości domyślnej oraz min/max grup grzewczych (zamyka #443)",
-        "zh-cn": "我们固定了默认值的类型和加热组的最小值/最大值（关闭 #443）"
       }
     },
     "authors": [

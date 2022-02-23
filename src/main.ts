@@ -27,6 +27,8 @@ import * as utils from '@iobroker/adapter-core';
 import { images } from './lib/images';
 import * as tools from './lib/tools';
 import { metaRoles } from './lib/roles';
+import { randomBytes } from 'crypto';
+
 let connected = false;
 const displays: Record<string, any> = {};
 let adapter: ioBroker.Adapter;
@@ -1011,6 +1013,8 @@ async function initRpcServer() {
     } catch (e: any) {
         adapter.log.warn(`Could not get hostname, using default id "${clientId}" to register: ${e.message}`);
     }
+
+    clientId += `:${randomBytes(16).toString('hex')}`;
 
     adapter.log.info(
         `${adapter.config.type}rpc server is trying to listen on ${adapter.config.adapterAddress}:${port}`

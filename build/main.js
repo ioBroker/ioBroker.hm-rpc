@@ -48,6 +48,7 @@ const utils = __importStar(require("@iobroker/adapter-core"));
 const images_1 = require("./lib/images");
 const tools = __importStar(require("./lib/tools"));
 const roles_1 = require("./lib/roles");
+const crypto_1 = require("crypto");
 let connected = false;
 const displays = {};
 let adapter;
@@ -914,6 +915,7 @@ async function initRpcServer() {
     catch (e) {
         adapter.log.warn(`Could not get hostname, using default id "${clientId}" to register: ${e.message}`);
     }
+    clientId += `:${(0, crypto_1.randomBytes)(16).toString('hex')}`;
     adapter.log.info(`${adapter.config.type}rpc server is trying to listen on ${adapter.config.adapterAddress}:${port}`);
     adapter.log.info(`${adapter.config.type}rpc client is trying to connect to ${adapter.config.homematicAddress}:${adapter.config.homematicPort}${homematicPath} with ${JSON.stringify([daemonURL, clientId])}`);
     connect(true);
