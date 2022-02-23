@@ -37,7 +37,7 @@
     "url": "https://github.com/ioBroker/ioBroker.hm-rpc"
   },
   "dependencies": {
-    "@iobroker/adapter-core": "^2.5.1",
+    "@iobroker/adapter-core": "^2.6.0",
     "binrpc": "^3.3.1",
     "homematic-xmlrpc": "^1.0.2"
   },

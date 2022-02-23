@@ -1007,7 +1007,6 @@ async function initRpcServer() {
 
     try {
         const obj = await adapter.getForeignObjectAsync(`system.adapter.${adapter.namespace}`);
-        /** @ts-expect-error bug already reported */
         clientId = `${obj?.common?.host}:${clientId}`;
     } catch (e: any) {
         adapter.log.warn(`Could not get hostname, using default id "${clientId}" to register: ${e.message}`);
@@ -1143,7 +1142,6 @@ async function initRpcServer() {
                     }
 
                     // lets get the device description
-                    /** @ts-expect-error bug reported */
                     const val: ListDevicesEntry = row.value;
 
                     if (typeof val.ADDRESS === 'undefined') {
@@ -1227,7 +1225,6 @@ async function initRpcServer() {
                 if (row.id === `${adapter.namespace}.updated`) {
                     continue;
                 }
-                /** @ts-expect-error bug reported */
                 const val: ListDevicesEntry = row.value;
 
                 if (val.ADDRESS) {
@@ -1438,7 +1435,7 @@ async function addParamsetObjects(
             } // endIf
 
             if (paramObj.SPECIAL) {
-                if (typeof obj.common.states !== 'object') {
+                if (typeof obj.common.states !== 'object' || Array.isArray(obj.common.states)) {
                     obj.common.states = {};
                 }
                 for (let i = 0; i < paramObj.SPECIAL.length; i++) {
@@ -1871,7 +1868,6 @@ async function getCuxDevices() {
                         }
 
                         // lets get the device description
-                        /** @ts-expect-error bug reported */
                         const val: ListDevicesEntry = row.value;
 
                         if (typeof val.ADDRESS === 'undefined') {
