@@ -78,6 +78,7 @@ export const images: Record<string, string> = {
     'HMW-LC-Sw2-DR': '26_hmw-lc-sw2-dr_thumb.png',
     'HM-PB-2-WM55-2': '75_hm-pb-2-wm55_thumb.png',
     'HmIP-WRC2': '112_hmip-wrc2_thumb.png',
+    'HmIP-WRCC2': '112_hmip-wrc2_thumb.png',
     'HmIP-STV': '201_hmip-stv_thumb.png',
     'HMW-Sys-PS7-DR': '36_hmw-sys-ps7-dr_thumb.png',
     'HmIP-CCU3': 'CCU3_thumb.png',
