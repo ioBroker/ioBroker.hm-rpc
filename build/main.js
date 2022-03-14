@@ -66,7 +66,6 @@ let connTimeout;
 let daemonURL = '';
 let daemonProto = '';
 let homematicPath;
-// msgBuffer = [{line: line2, icon: icon2}, {line: line3, icon: icon3}, {line: '', icon: ''}];
 // Icons:
 //      0x80 AUS
 //      0x81 EIN
@@ -88,11 +87,6 @@ let homematicPath;
 //      0xC7
 //      0xC9
 //      0xCA
-// Signale
-//      0xF0 AUS
-//      0xF1 Rotes Blitzen
-//      0xF2 Grünes Blitzen
-//      0xF3 Orangenes Blitzen
 function number2hex(num) {
     if (typeof num === 'number') {
         num = num.toString(16).toUpperCase();
@@ -103,6 +97,15 @@ function number2hex(num) {
     }
     return num;
 }
+/**
+ * Creates an combined EPAPER command which can be sent to the CCU
+ *
+ * @param lines
+ * @param signal 0xF0 AUS; 0xF1 Rotes Blitzen ;0xF2 Grünes Blitzen; 0xF3 Orangenes Blitzen
+ * @param ton
+ * @param repeats
+ * @param offset
+ */
 function combineEPaperCommand(lines, signal, ton, repeats, offset) {
     signal = number2hex(signal || '0xF0');
     ton = number2hex(ton || '0xC0');
@@ -952,12 +955,14 @@ async function initRpcServer() {
     rpcServer.on('system.multicall', (method, params, callback) => {
         updateConnection();
         const response = [];
-        for (const param of params[0]) {
-            if (methods[param.methodName]) {
+        const events = params[0];
+        for (const param of events) {
+            if (param.methodName === 'event') {
                 adapter.log.debug(`${adapter.config.type} multicall <${param.methodName}>: ${param.params}`);
                 response.push(methods[param.methodName](null, param.params));
             }
             else {
+                adapter.log.debug(`Unknown multicall event: ${param.methodName}: ${param.params}`);
                 response.push('');
             }
         }
@@ -980,19 +985,19 @@ async function initRpcServer() {
     });
     rpcServer.on('event', (err, params, callback) => {
         if (err) {
-            adapter.log.warn(`Error on system.listMethods: ${err}`);
+            adapter.log.warn(`Error on event: ${err}`);
         }
         updateConnection();
         try {
             callback(null, methods.event(err, params));
         }
         catch (e) {
-            adapter.log.error(`Cannot response on event: ${e.message}`);
+            adapter.log.error(`Cannot send response to event: ${e.message}`);
         }
     });
     rpcServer.on('newDevices', async (err, params, callback) => {
         if (err) {
-            adapter.log.warn(`Error on system.listMethods: ${err}`);
+            adapter.log.warn(`Error on newDevices: ${err}`);
         }
         let newDevices = params[1];
         if (!Array.isArray(newDevices)) {
@@ -1077,7 +1082,7 @@ async function initRpcServer() {
     });
     rpcServer.on('listDevices', async (err, params, callback) => {
         if (err) {
-            adapter.log.warn(`Error on system.listMethods: ${err}`);
+            adapter.log.warn(`Error on listDevices: ${err}`);
         }
         adapter.log.info(`${adapter.config.type}rpc <- listDevices ${JSON.stringify(params)}`);
         let doc;
@@ -1121,7 +1126,7 @@ async function initRpcServer() {
     });
     rpcServer.on('deleteDevices', (err, params, callback) => {
         if (err) {
-            adapter.log.warn(`Error on system.listMethods: ${err.message}`);
+            adapter.log.warn(`Error on deleteDevices: ${err.message}`);
         }
         adapter.log.info(`${adapter.config.type}rpc <- deleteDevices ${params[1].length}`);
         for (let deviceName of params[1]) {
