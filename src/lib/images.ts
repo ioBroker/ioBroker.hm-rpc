@@ -88,6 +88,7 @@ export const images: Record<string, string> = {
     'HM-Dis-WM55': '97_hm-dis-wm55_thumb.png',
     'HmIP-FALMOT-C12': '198_hmip-falmot-c12_thumb.png',
     'HmIP-SMI55': '168_hmip-smi55_thumb.png',
+    'HmIP-SMI55-2': '168_hmip-smi55_thumb.png',
     'HmIP-SMO': '132_hmip-smo_thumb.png',
     'HM-RC-2-PBU-FM-2': 'PushButton-2ch-wm_thumb.png',
     '263 130': '4_hm-lc-sw1-fm_thumb.png',
