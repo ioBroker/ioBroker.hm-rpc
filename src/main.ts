@@ -1036,7 +1036,8 @@ async function initRpcServer() {
 
     connect(true);
 
-    rpcServer.on('NotFound', (method: any, params: any) => {
+    // Not found has special structure and no callback
+    rpcServer.on('NotFound', (method: string, params: any) => {
         adapter.log.warn(
             `${adapter.config.type}rpc <- undefined method ${method} with parameters ${
                 typeof params === 'object' ? JSON.stringify(params).slice(0, 80) : params
@@ -1044,15 +1045,19 @@ async function initRpcServer() {
         );
     });
 
-    rpcServer.on('readdedDevice', (method: any, params: any) => {
+    type RPCCallback = (err: any, res: any) => void;
+
+    rpcServer.on('readdedDevice', (error: any, params: any, callback: RPCCallback) => {
         adapter.log.info(`Readded device ${JSON.stringify(params)}`);
+        callback(null, '');
     });
 
-    rpcServer.on('firmwareUpdateStatusChanged', (method: any, params: any) => {
+    rpcServer.on('firmwareUpdateStatusChanged', (error: any, params: any, callback: RPCCallback) => {
         adapter.log.info(`Firmware update status of ${params[1]} changed to ${params[2]}`);
+        callback(null, '');
     });
 
-    rpcServer.on('replaceDevice', async (method: any, params: any[]) => {
+    rpcServer.on('replaceDevice', async (error: any, params: any[], callback: RPCCallback) => {
         const oldDeviceName = params[1];
         const newDeviceName = params[2];
         adapter.log.info(`Device "${oldDeviceName}" has been replaced by "${newDeviceName}"`);
@@ -1069,6 +1074,8 @@ async function initRpcServer() {
         } catch (e: any) {
             adapter.log.error(`Error while creating replacement device "${newDeviceName}": ${e.message}`);
         }
+
+        callback(null, '');
     });
 
     rpcServer.on('error', (e: any) => {
@@ -1081,7 +1088,7 @@ async function initRpcServer() {
         params: any;
     }
 
-    rpcServer.on('system.multicall', (method: any, params: any, callback: any) => {
+    rpcServer.on('system.multicall', (err: any, params: any, callback: RPCCallback) => {
         updateConnection();
         const response = [];
         const events: MulticallEvent[] = params[0];
@@ -1098,7 +1105,7 @@ async function initRpcServer() {
         callback(null, response);
     });
 
-    rpcServer.on('system.listMethods', (err: any, params: any, callback: any) => {
+    rpcServer.on('system.listMethods', (err: any, params: any, callback: RPCCallback) => {
         if (err) {
             adapter.log.warn(`Error on system.listMethods: ${err}`);
         }
@@ -1114,7 +1121,7 @@ async function initRpcServer() {
         ]);
     });
 
-    rpcServer.on('event', (err: any, params: any, callback: any) => {
+    rpcServer.on('event', (err: any, params: any, callback: RPCCallback) => {
         if (err) {
             adapter.log.warn(`Error on event: ${err}`);
         }
@@ -1126,7 +1133,7 @@ async function initRpcServer() {
         }
     });
 
-    rpcServer.on('newDevices', async (err: any, params: any, callback: any) => {
+    rpcServer.on('newDevices', async (err: any, params: any, callback: RPCCallback) => {
         if (err) {
             adapter.log.warn(`Error on newDevices: ${err}`);
         }
@@ -1222,7 +1229,7 @@ async function initRpcServer() {
         callback(null, '');
     });
 
-    rpcServer.on('listDevices', async (err: any, params: any, callback: any) => {
+    rpcServer.on('listDevices', async (err: any, params: any, callback: RPCCallback) => {
         if (err) {
             adapter.log.warn(`Error on listDevices: ${err}`);
         }
@@ -1270,7 +1277,7 @@ async function initRpcServer() {
         }
     });
 
-    rpcServer.on('deleteDevices', (err: any, params: any, callback: any) => {
+    rpcServer.on('deleteDevices', (err: any, params: any, callback: RPCCallback) => {
         if (err) {
             adapter.log.warn(`Error on deleteDevices: ${err.message}`);
         }
@@ -1293,7 +1300,7 @@ async function initRpcServer() {
         }
     });
 
-    rpcServer.on('setReadyConfig', (err: any, params: any, callback: any) => {
+    rpcServer.on('setReadyConfig', (err: any, params: any, callback: RPCCallback) => {
         if (err) {
             adapter.log.warn(`Error on setReadyConfig: ${err.message}`);
         }

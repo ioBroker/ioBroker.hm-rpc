@@ -922,16 +922,19 @@ async function initRpcServer() {
     adapter.log.info(`${adapter.config.type}rpc server is trying to listen on ${adapter.config.adapterAddress}:${port}`);
     adapter.log.info(`${adapter.config.type}rpc client is trying to connect to ${adapter.config.homematicAddress}:${adapter.config.homematicPort}${homematicPath} with ${JSON.stringify([daemonURL, clientId])}`);
     connect(true);
+    // Not found has special structure and no callback
     rpcServer.on('NotFound', (method, params) => {
         adapter.log.warn(`${adapter.config.type}rpc <- undefined method ${method} with parameters ${typeof params === 'object' ? JSON.stringify(params).slice(0, 80) : params}`);
     });
-    rpcServer.on('readdedDevice', (method, params) => {
+    rpcServer.on('readdedDevice', (error, params, callback) => {
         adapter.log.info(`Readded device ${JSON.stringify(params)}`);
+        callback(null, '');
     });
-    rpcServer.on('firmwareUpdateStatusChanged', (method, params) => {
+    rpcServer.on('firmwareUpdateStatusChanged', (error, params, callback) => {
         adapter.log.info(`Firmware update status of ${params[1]} changed to ${params[2]}`);
+        callback(null, '');
     });
-    rpcServer.on('replaceDevice', async (method, params) => {
+    rpcServer.on('replaceDevice', async (error, params, callback) => {
         const oldDeviceName = params[1];
         const newDeviceName = params[2];
         adapter.log.info(`Device "${oldDeviceName}" has been replaced by "${newDeviceName}"`);
@@ -947,12 +950,13 @@ async function initRpcServer() {
         catch (e) {
             adapter.log.error(`Error while creating replacement device "${newDeviceName}": ${e.message}`);
         }
+        callback(null, '');
     });
     rpcServer.on('error', (e) => {
         // not sure if this can really be triggered
         adapter.log.error(`RPC Server error: ${e.message}`);
     });
-    rpcServer.on('system.multicall', (method, params, callback) => {
+    rpcServer.on('system.multicall', (err, params, callback) => {
         updateConnection();
         const response = [];
         const events = params[0];

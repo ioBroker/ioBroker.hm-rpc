@@ -14,8 +14,20 @@
       "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker",
       "zh-cn": "通过 XML-RPC 或 BIN-RPC 将 HomeMatic 接口进程（BidCos-Services、Homegear 和 CUxD）连接到 ioBroker"
     },
-    "version": "1.15.8",
+    "version": "1.15.9",
     "news": {
+      "1.15.9": {
+        "en": "fixed handling of `replaceDevice` event\nwe have fixed some log messages\nadded image of HmIP-SMI55-2",
+        "de": "Behandlung des `replaceDevice`-Ereignisses korrigiert\nWir haben einige Log-Meldungen behoben\nBild von HmIP-SMI55-2 hinzugefügt",
+        "ru": "исправлена обработка события replaceDevice\nмы исправили некоторые сообщения журнала\nдобавлено изображение HmIP-SMI55-2",
+        "pt": "manipulação corrigida do evento `replaceDevice`\ncorrigimos algumas mensagens de log\nimagem adicionada de HmIP-SMI55-2",
+        "nl": "vaste afhandeling van `replaceDevice`-gebeurtenis\nwe hebben enkele logberichten gerepareerd\ntoegevoegde afbeelding van HmIP-SMI55-2",
+        "fr": "gestion fixe de l'événement `replaceDevice`\nnous avons corrigé certains messages de journal\nimage ajoutée de HmIP-SMI55-2",
+        "it": "corretta gestione dell'evento `replaceDevice`\nabbiamo corretto alcuni messaggi di registro\naggiunta immagine di HmIP-SMI55-2",
+        "es": "manejo fijo del evento `replaceDevice`\nhemos arreglado algunos mensajes de registro\nimagen añadida de HmIP-SMI55-2",
+        "pl": "poprawiona obsługa zdarzenia `replaceDevice`\nnaprawiliśmy kilka komunikatów dziennika\ndodano obraz HmIP-SMI55-2",
+        "zh-cn": "修复了“replaceDevice”事件的处理\n我们修复了一些日志消息\n添加了 HmIP-SMI55-2 的图像"
+      },
       "1.15.8": {
         "en": "we now ensure, that the `uuid` used for connection is really unique",
         "de": "wir stellen nun sicher, dass die für die Verbindung verwendete `uuid` wirklich eindeutig ist",
@@ -87,18 +99,6 @@
         "es": "manejo de errores agregado en el servidor rpc (correcciones # 457)\nícono agregado de HmIP-eTRV-E-S (cierra #456)",
         "pl": "dodano obsługę błędów na serwerze RPC (poprawki #457)\ndodana ikona HmIP-eTRV-E-S (zamyka #456)",
         "zh-cn": "在 rpc 服务器上添加了错误处理（修复 #457）\n添加了 HmIP-eTRV-E-S 的图标（关闭 #456）"
-      },
-      "1.15.2": {
-        "en": "we also fixed type of default value if boolean on heating groups",
-        "de": "Wir haben auch den Typ des Standardwerts behoben, wenn er für Heizgruppen boolesch ist",
-        "ru": "мы также исправили тип значения по умолчанию, если логическое значение для групп нагрева",
-        "pt": "também fixamos o tipo de valor padrão se booleano nos grupos de aquecimento",
-        "nl": "we hebben ook het type standaardwaarde vastgesteld als boolean op verwarmingsgroepen",
-        "fr": "nous avons également fixé le type de valeur par défaut si booléen sur les groupes de chauffage",
-        "it": "abbiamo anche fissato il tipo di valore predefinito se booleano sui gruppi di riscaldamento",
-        "es": "también arreglamos el tipo de valor predeterminado si es booleano en los grupos de calentamiento",
-        "pl": "poprawiliśmy również typ wartości domyślnej, jeśli wartość logiczna na grupach grzewczych",
-        "zh-cn": "如果加热组上的布尔值，我们还修复了默认值的类型"
       }
     },
     "authors": [
