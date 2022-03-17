@@ -14,8 +14,20 @@
       "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker",
       "zh-cn": "通过 XML-RPC 或 BIN-RPC 将 HomeMatic 接口进程（BidCos-Services、Homegear 和 CUxD）连接到 ioBroker"
     },
-    "version": "1.15.9",
+    "version": "1.15.10",
     "news": {
+      "1.15.10": {
+        "en": "we use our own set of forbidden chars again",
+        "de": "Wir verwenden wieder unseren eigenen Satz verbotener Zeichen",
+        "ru": "мы снова используем наш собственный набор запрещенных символов",
+        "pt": "usamos nosso próprio conjunto de caracteres proibidos novamente",
+        "nl": "we gebruiken weer onze eigen set verboden tekens",
+        "fr": "nous utilisons à nouveau notre propre ensemble de caractères interdits",
+        "it": "usiamo di nuovo il nostro set di caratteri proibiti",
+        "es": "usamos nuestro propio conjunto de caracteres prohibidos nuevamente",
+        "pl": "ponownie używamy własnego zestawu zabronionych znaków",
+        "zh-cn": "我们再次使用我们自己的一组禁止字符"
+      },
       "1.15.9": {
         "en": "fixed handling of `replaceDevice` event\nwe have fixed some log messages\nadded image of HmIP-SMI55-2",
         "de": "Behandlung des `replaceDevice`-Ereignisses korrigiert\nWir haben einige Log-Meldungen behoben\nBild von HmIP-SMI55-2 hinzugefügt",
@@ -87,18 +99,6 @@
         "es": "controlador agregado para el evento `readdedDevice` (cierra #356)",
         "pl": "dodano obsługę zdarzenia `readdedDevice` (zamyka #356)",
         "zh-cn": "为 `readedDevice` 事件添加了处理程序（关闭 #356）"
-      },
-      "1.15.3": {
-        "en": "added error handling on rpc server (fixes #457)\nadded icon of HmIP-eTRV-E-S (closes #456)",
-        "de": "Fehlerbehandlung auf dem RPC-Server hinzugefügt (Korrekturen Nr. 457)\nIcon von HmIP-eTRV-E-S hinzugefügt (schließt #456)",
-        "ru": "добавлена обработка ошибок на rpc-сервере (исправлено № 457)\nдобавлена иконка HmIP-eTRV-E-S (закрывается #456)",
-        "pt": "adicionado tratamento de erros no servidor rpc (correções #457)\nadicionado ícone de HmIP-eTRV-E-S (fecha #456)",
-        "nl": "foutafhandeling toegevoegd op rpc-server (fixes #457)\ntoegevoegd icoon van HmIP-eTRV-E-S (sluit #456)",
-        "fr": "ajout de la gestion des erreurs sur le serveur rpc (corrections #457)\nicône ajoutée de HmIP-eTRV-E-S (ferme #456)",
-        "it": "aggiunta la gestione degli errori sul server rpc (correzioni n. 457)\naggiunta icona di HmIP-eTRV-E-S (chiude #456)",
-        "es": "manejo de errores agregado en el servidor rpc (correcciones # 457)\nícono agregado de HmIP-eTRV-E-S (cierra #456)",
-        "pl": "dodano obsługę błędów na serwerze RPC (poprawki #457)\ndodana ikona HmIP-eTRV-E-S (zamyka #456)",
-        "zh-cn": "在 rpc 服务器上添加了错误处理（修复 #457）\n添加了 HmIP-eTRV-E-S 的图标（关闭 #456）"
       }
     },
     "authors": [

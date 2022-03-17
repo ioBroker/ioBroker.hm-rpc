@@ -58,6 +58,8 @@ let daemonURL = '';
 let daemonProto = '';
 let homematicPath: string;
 
+const FORBIDDEN_CHARS = /[\][*,;'"`<>\\\s?]/g;
+
 // Icons:
 //      0x80 AUS
 //      0x81 EIN
@@ -954,7 +956,7 @@ const methods = {
         if (params[0] === 'CUxD' || !params[0].includes(adapter.name)) {
             params[0] = adapter.namespace;
         }
-        const channel = params[1].replace(':', '.').replace(adapter.FORBIDDEN_CHARS, '_');
+        const channel = params[1].replace(':', '.').replace(FORBIDDEN_CHARS, '_');
         if (params[0] === clientId) {
             // convert back our clientId to our namespace
             params[0] = adapter.namespace;
@@ -1191,7 +1193,7 @@ async function initRpcServer() {
                     if (index === -1) {
                         if (val.ADDRESS && !adapter.config.dontDelete) {
                             if (val.ADDRESS.includes(':')) {
-                                const address = val.ADDRESS.replace(':', '.').replace(adapter.FORBIDDEN_CHARS, '_');
+                                const address = val.ADDRESS.replace(':', '.').replace(FORBIDDEN_CHARS, '_');
                                 const parts = address.split('.');
                                 try {
                                     await adapter.deleteChannelAsync(parts[parts.length - 2], parts[parts.length - 1]);
@@ -1284,7 +1286,7 @@ async function initRpcServer() {
         adapter.log.info(`${adapter.config.type}rpc <- deleteDevices ${params[1].length}`);
         for (let deviceName of params[1]) {
             if (deviceName.includes(':')) {
-                deviceName = deviceName.replace(':', '.').replace(adapter.FORBIDDEN_CHARS, '_');
+                deviceName = deviceName.replace(':', '.').replace(FORBIDDEN_CHARS, '_');
                 adapter.log.info(`channel ${deviceName} ${JSON.stringify(deviceName)} deleted`);
                 const parts = deviceName.split('.');
                 adapter.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
@@ -1804,7 +1806,7 @@ async function createDevices(deviceArr: any[]): Promise<void> {
             icon = images[device.TYPE] ? `/icons/${images[device.TYPE]}` : '';
         }
 
-        const id = device.ADDRESS.replace(':', '.').replace(adapter.FORBIDDEN_CHARS, '_');
+        const id = device.ADDRESS.replace(':', '.').replace(FORBIDDEN_CHARS, '_');
         const obj: ioBroker.SettableChannelObject | ioBroker.SettableDeviceObject = {
             _id: id,
             type: type,
@@ -1917,7 +1919,7 @@ async function getCuxDevices() {
                         if (index === -1) {
                             if (val.ADDRESS && !adapter.config.dontDelete) {
                                 if (val.ADDRESS.includes(':')) {
-                                    const address = val.ADDRESS.replace(':', '.').replace(adapter.FORBIDDEN_CHARS, '_');
+                                    const address = val.ADDRESS.replace(':', '.').replace(FORBIDDEN_CHARS, '_');
                                     const parts = address.split('.');
                                     adapter.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
                                     adapter.log.info(`obsolete channel ${address} ${JSON.stringify(address)} deleted`);
