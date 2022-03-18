@@ -999,16 +999,16 @@ async function initRpcServer() {
     adapter.config.useHttps = adapter.config.useHttps || false;
 
     // adapterPort was introduced in v1.0.1. If not set yet then try 2000
-    const adapterPort = parseInt(adapter.config.port || adapter.config.homematicPort, 10) || 2000;
+    const desiredAapterPort = parseInt(adapter.config.port) || parseInt(adapter.config.homematicPort) || 2000;
     const callbackAddress = adapter.config.callbackAddress || adapter.config.adapterAddress;
-    const port = await adapter.getPortAsync(adapterPort);
-    daemonURL = `${daemonProto + callbackAddress}:${port}`;
+    const adapterPort = await adapter.getPortAsync(desiredAapterPort);
+    daemonURL = `${daemonProto + callbackAddress}:${adapterPort}`;
 
     try {
         // somehow we cannot catch EADDRNOTAVAIL, also not with a cb here
         rpcServer = rpc.createServer({
             host: adapter.config.adapterAddress,
-            port: port
+            port: adapterPort
         });
     } catch (e: any) {
         adapter.log.error(`Could not create RPC Server: ${e.message}`);
@@ -1028,7 +1028,7 @@ async function initRpcServer() {
     clientId += `:${randomBytes(16).toString('hex')}`;
 
     adapter.log.info(
-        `${adapter.config.type}rpc server is trying to listen on ${adapter.config.adapterAddress}:${port}`
+        `${adapter.config.type}rpc server is trying to listen on ${adapter.config.adapterAddress}:${adapterPort}`
     );
     adapter.log.info(
         `${adapter.config.type}rpc client is trying to connect to ${adapter.config.homematicAddress}:${

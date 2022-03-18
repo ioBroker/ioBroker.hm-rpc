@@ -14,8 +14,20 @@
       "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker",
       "zh-cn": "通过 XML-RPC 或 BIN-RPC 将 HomeMatic 接口进程（BidCos-Services、Homegear 和 CUxD）连接到 ioBroker"
     },
-    "version": "1.15.10",
+    "version": "1.15.11",
     "news": {
+      "1.15.11": {
+        "en": "fallback to old adapter port determination logic (closes #509)",
+        "de": "Fallback auf alte Adapter-Port-Ermittlungslogik (schließt #509)",
+        "ru": "откат к старой логике определения порта адаптера (закрывает #509)",
+        "pt": "fallback para a lógica de determinação de porta do adaptador antigo (fecha #509)",
+        "nl": "terugval op oude logica voor het bepalen van de adapterpoort (sluit #509 af)",
+        "fr": "retour à l'ancienne logique de détermination du port de l'adaptateur (ferme #509)",
+        "it": "fallback alla vecchia logica di determinazione della porta dell'adattatore (chiude il n. 509)",
+        "es": "respaldo a la antigua lógica de determinación del puerto del adaptador (cierra #509)",
+        "pl": "powrót do starej logiki określania portu karty (zamyka #509)",
+        "zh-cn": "回退到旧适配器端口确定逻辑（关闭 #509）"
+      },
       "1.15.10": {
         "en": "we use our own set of forbidden chars again",
         "de": "Wir verwenden wieder unseren eigenen Satz verbotener Zeichen",
@@ -87,18 +99,6 @@
         "es": "controlador agregado para el evento `readdedDevice` (cierra #356)\nmanejo de errores agregado en el servidor rpc (correcciones # 457)\nícono agregado de HmIP-eTRV-E-S (cierra #456)",
         "pl": "dodano obsługę zdarzenia `readdedDevice` (zamyka #356)\ndodano obsługę błędów na serwerze RPC (poprawki #457)\ndodana ikona HmIP-eTRV-E-S (zamyka #456)",
         "zh-cn": "为 `readedDevice` 事件添加了处理程序（关闭 #356）\n在 rpc 服务器上添加了错误处理（修复 #457）\n添加了 HmIP-eTRV-E-S 的图标（关闭 #456）"
-      },
-      "1.15.4": {
-        "en": "added handler for `readdedDevice` event (closes #356)",
-        "de": "Handler für `readdedDevice`-Ereignis hinzugefügt (schließt #356)",
-        "ru": "добавлен обработчик события `readdedDevice` (закрывается #356)",
-        "pt": "adicionado manipulador para o evento `readdedDevice` (fecha #356)",
-        "nl": "toegevoegde handler voor gebeurtenis `readdedDevice` (sluit #356 af)",
-        "fr": "ajout d'un gestionnaire pour l'événement `readdedDevice` (ferme #356)",
-        "it": "aggiunto gestore per l'evento `readdedDevice` (chiude #356)",
-        "es": "controlador agregado para el evento `readdedDevice` (cierra #356)",
-        "pl": "dodano obsługę zdarzenia `readdedDevice` (zamyka #356)",
-        "zh-cn": "为 `readedDevice` 事件添加了处理程序（关闭 #356）"
       }
     },
     "authors": [
