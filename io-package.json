@@ -14,8 +14,20 @@
       "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker",
       "zh-cn": "通过 XML-RPC 或 BIN-RPC 将 HomeMatic 接口进程（BidCos-Services、Homegear 和 CUxD）连接到 ioBroker"
     },
-    "version": "1.15.11",
+    "version": "1.15.12",
     "news": {
+      "1.15.12": {
+        "en": "we now adjust min/max correct if a `SPECIAL` value falls out of range (closes #459)",
+        "de": "Wir passen Min/Max jetzt korrekt an, wenn ein „SPECIAL“-Wert außerhalb des Bereichs liegt (schließt #459)",
+        "ru": "теперь мы правильно настраиваем min/max, если значение SPECIAL выходит за пределы допустимого диапазона (закрывается #459)",
+        "pt": "agora ajustamos o mínimo/máximo correto se um valor 'SPECIAL' estiver fora do intervalo (fecha #459)",
+        "nl": "we passen nu min/max correct aan als een `SPECIAL`-waarde buiten bereik valt (sluit #459)",
+        "fr": "nous ajustons maintenant min/max correctement si une valeur `SPECIAL` tombe hors de la plage (ferme #459)",
+        "it": "ora regoliamo min/max corretto se un valore `SPECIAL` non rientra nell'intervallo (chiude #459)",
+        "es": "ahora ajustamos min/max correcto si un valor 'ESPECIAL' cae fuera de rango (cierra #459)",
+        "pl": "teraz dostosowujemy minimalną/maksymalną wartość, jeśli wartość `SPECIAL` wykracza poza zakres (zamyka #459)",
+        "zh-cn": "如果“特殊”值超出范围，我们现在调整最小/最大值正确（关闭 #459）"
+      },
       "1.15.11": {
         "en": "fallback to old adapter port determination logic (closes #509)",
         "de": "Fallback auf alte Adapter-Port-Ermittlungslogik (schließt #509)",
@@ -87,18 +99,6 @@
         "es": "solución implementada para el error RSSI_DEVICE 128 si los dispositivos se conectan a HMIP-HAP (correcciones #346, #469, #402)",
         "pl": "zaimplementowane obejście błędu RSSI_DEVICE 128, jeśli urządzenia łączą się z HMIP-HAP (poprawki #346, #469, #402)",
         "zh-cn": "如果设备连接到 HMIP-HAP，则针对 RSSI_DEVICE 128 错误实施解决方法（修复 #346、#469、#402）"
-      },
-      "1.15.5": {
-        "en": "added handler for `readdedDevice` event (closes #356)\nadded error handling on rpc server (fixes #457)\nadded icon of HmIP-eTRV-E-S (closes #456)",
-        "de": "Handler für `readdedDevice`-Ereignis hinzugefügt (schließt #356)\nFehlerbehandlung auf dem RPC-Server hinzugefügt (Korrekturen Nr. 457)\nIcon von HmIP-eTRV-E-S hinzugefügt (schließt #456)",
-        "ru": "добавлен обработчик события `readdedDevice` (закрывается #356)\nдобавлена обработка ошибок на rpc-сервере (исправлено № 457)\nдобавлена иконка HmIP-eTRV-E-S (закрывается #456)",
-        "pt": "adicionado manipulador para o evento `readdedDevice` (fecha #356)\nadicionado tratamento de erros no servidor rpc (correções #457)\nadicionado ícone de HmIP-eTRV-E-S (fecha #456)",
-        "nl": "toegevoegde handler voor gebeurtenis `readdedDevice` (sluit #356 af)\nfoutafhandeling toegevoegd op rpc-server (fixes #457)\ntoegevoegd icoon van HmIP-eTRV-E-S (sluit #456)",
-        "fr": "ajout d'un gestionnaire pour l'événement `readdedDevice` (ferme #356)\najout de la gestion des erreurs sur le serveur rpc (corrections #457)\nicône ajoutée de HmIP-eTRV-E-S (ferme #456)",
-        "it": "aggiunto gestore per l'evento `readdedDevice` (chiude #356)\naggiunta la gestione degli errori sul server rpc (correzioni n. 457)\naggiunta icona di HmIP-eTRV-E-S (chiude #456)",
-        "es": "controlador agregado para el evento `readdedDevice` (cierra #356)\nmanejo de errores agregado en el servidor rpc (correcciones # 457)\nícono agregado de HmIP-eTRV-E-S (cierra #456)",
-        "pl": "dodano obsługę zdarzenia `readdedDevice` (zamyka #356)\ndodano obsługę błędów na serwerze RPC (poprawki #457)\ndodana ikona HmIP-eTRV-E-S (zamyka #456)",
-        "zh-cn": "为 `readedDevice` 事件添加了处理程序（关闭 #356）\n在 rpc 服务器上添加了错误处理（修复 #457）\n添加了 HmIP-eTRV-E-S 的图标（关闭 #456）"
       }
     },
     "authors": [

@@ -1465,12 +1465,7 @@ async function addParamsetObjects(
             } // endIf
 
             if (paramObj.SPECIAL) {
-                if (typeof obj.common.states !== 'object' || Array.isArray(obj.common.states)) {
-                    obj.common.states = {};
-                }
-                for (let i = 0; i < paramObj.SPECIAL.length; i++) {
-                    obj.common.states[paramObj.SPECIAL[i].VALUE] = paramObj.SPECIAL[i].ID;
-                }
+                addCommonSpecial(paramObj, obj);
             } // endIf
         } // endIf
 
@@ -1567,7 +1562,7 @@ async function addParamsetObjects(
             TYPE: paramObj.TYPE
         };
 
-        if (paramObj.MIN === 'number') {
+        if (typeof paramObj.MIN === 'number') {
             dpTypes[dpID].MIN = paramObj.MIN;
             dpTypes[dpID].MAX = paramObj.MAX;
             // Humidity is from 0 to 99. It is wrong.
@@ -2070,6 +2065,36 @@ function keepAlive() {
         sendPing();
     }
 } // endKeepAlive
+
+interface ParamsetObjectWithSpecial extends ParamsetObject {
+    SPECIAL: ParamsetObjectSpecialEntry[];
+}
+
+/**
+ * Derives the common properties of a Paramset SPECIAL attribute
+ *
+ * @param paramObj Paramset Object with SPECIAL property
+ * @param obj ioBroker state object which will be extended
+ */
+function addCommonSpecial(paramObj: ParamsetObjectWithSpecial, obj: ioBroker.SettableStateObject) {
+    if (typeof obj.common.states !== 'object' || Array.isArray(obj.common.states)) {
+        obj.common.states = {};
+    }
+
+    for (const entry of paramObj.SPECIAL) {
+        obj.common.states[entry.VALUE] = entry.ID;
+        // see issue #459, SPECIAL can be outside of min/max, we have to adapt
+        const realVal = paramObj.UNIT === '100%' ? entry.VALUE * 100 : entry.VALUE;
+
+        if (obj.common.min !== undefined && realVal < obj.common.min) {
+            obj.common.min = realVal;
+        }
+
+        if (obj.common.max !== undefined && realVal > obj.common.max) {
+            obj.common.max = realVal;
+        }
+    }
+}
 
 // If started as allInOne/compact mode => return function to create instance
 if (require.main === module) {
