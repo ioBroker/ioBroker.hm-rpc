@@ -60,7 +60,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "gulp": "^4.0.2",
     "hm-simulator": "^0.1.1",
-    "mocha": "^9.1.3",
+    "mocha": "^10.0.0",
     "prettier": "^2.5.1",
     "sinon-chai": "^3.7.0",
     "ts-node": "^10.4.0",
