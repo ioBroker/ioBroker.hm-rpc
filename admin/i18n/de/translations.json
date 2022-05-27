@@ -11,7 +11,7 @@
     "HomeMatic Address": "HomeMatic Adresse",
     "HomeMatic Port": "HomeMatic Port",
     "Homematic RPC adapter settings": "Homematic RPC Adapter Einstellungen",
-    "Listen on all IPs": "Anfragen für alle IPs beantworten",
+    "Listen on all IPs": "Zugriff von allen IPs zulassen",
     "Ok": "Ok",
     "Password": "Passwort",
     "Please specify callback address": "Bitte Callback IP-Adresse eingeben.",
