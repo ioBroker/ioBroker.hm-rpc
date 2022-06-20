@@ -2044,9 +2044,10 @@ function connect(isFirst: boolean) {
 
         rpcMethodCallAsync = async (method: string, params: any[]) => {
             try {
-                await rpcMethodCallAsyncHelper(method, params);
+                const res = await rpcMethodCallAsyncHelper(method, params);
+                return res;
             } catch (e: any) {
-                if ((method === 'setValue' && e.message.endsWith('Failure')) || e.message.endsWith('(UNREACH)')) {
+                if (method === 'setValue' && (e.message.endsWith('Failure') || e.message.endsWith('(UNREACH)'))) {
                     adapter.log.info(
                         `Temporary error occured for "${method}" with "${JSON.stringify(params)}": ${e.message}`
                     );
