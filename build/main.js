@@ -56,6 +56,7 @@ const crypto_1 = require("crypto");
 let connected = false;
 const displays = {};
 let adapter;
+/** Async variant of method call which also performs a retry on first error of "setValue" */
 let rpcMethodCallAsync;
 let clientId;
 let rpc;
@@ -1743,7 +1744,7 @@ function connect(isFirst) {
     }
     if (isFirst) {
         // create async methods at first init
-        rpcMethodCallAsync = (method, params) => {
+        const rpcMethodCallAsyncHelper = (method, params) => {
             return new Promise((resolve, reject) => {
                 rpcClient.methodCall(method, params, (err, res) => {
                     if (err) {
@@ -1754,6 +1755,32 @@ function connect(isFirst) {
                     }
                 });
             });
+        };
+        rpcMethodCallAsync = async (method, params) => {
+            try {
+                await rpcMethodCallAsyncHelper(method, params);
+            }
+            catch (e) {
+                if ((method === 'setValue' && e.message.endsWith('Failure')) || e.message.endsWith('(UNREACH)')) {
+                    adapter.log.debug(`Temporary error occured for "${method}" with "${JSON.stringify(params)}": ${e.message}`);
+                    // on random error due to temporary communicaiton issues try again once after some ms
+                    return new Promise((resolve, reject) => {
+                        setTimeout(() => {
+                            rpcClient.methodCall(method, params, (err, res) => {
+                                if (err) {
+                                    reject(err);
+                                }
+                                else {
+                                    resolve(res);
+                                }
+                            });
+                        }, 150);
+                    });
+                }
+                else {
+                    throw e;
+                }
+            }
         };
         sendInit();
     }
