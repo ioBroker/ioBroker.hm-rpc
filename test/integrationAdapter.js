@@ -7,13 +7,15 @@ const { tests } = require('@iobroker/testing');
 
 // Run tests
 tests.integration(path.join(__dirname, '..'), {
-    defineAdditionalTests(getHarness) {
-        // eslint-disable-next-line no-undef
-        describe('Test sendTo()', () => {
+    defineAdditionalTests({ suite }) {
+        suite('Test sendTo()', getHarness => {
+            let harness;
+            before(() => {
+                harness = getHarness();
+            });
+
             // eslint-disable-next-line no-undef
             it('Should work', async () => {
-                // Create a fresh harness instance each test!
-                const harness = getHarness();
                 // Start the adapter and wait until it has started
                 await harness.startAdapterAndWait();
                 return new Promise(resolve => {
