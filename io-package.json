@@ -14,8 +14,20 @@
       "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker",
       "zh-cn": "通过 XML-RPC 或 BIN-RPC 将 HomeMatic 接口进程（BidCos-Services、Homegear 和 CUxD）连接到 ioBroker"
     },
-    "version": "1.15.12",
+    "version": "1.15.13",
     "news": {
+      "1.15.13": {
+        "en": "Retry once on `(UNREACH)` and `Failure` errors to avoid tmeporary communication issues (closes #467)\nwe have updated some device icons",
+        "de": "Wiederholen Sie einmal auf (UNREACH) und Fehler, um tmeporäre Kommunikationsprobleme zu vermeiden (schließt #467)\nwir haben einige gerätesymbole aktualisiert",
+        "ru": "Повторяйтесь один раз на (UNREACH) и ошибках неисправности, чтобы избежать спорных вопросов связи (закрыты #467)\nмы обновили некоторые иконки устройства",
+        "pt": "Retira uma vez sobre (UNREACH) e erros de falha para evitar problemas de comunicação tmeporária (fecha #467)\nnós atualizamos alguns ícones de dispositivo",
+        "nl": "Herhaal één keer op en falen fouten om tmeporaire communicatieproblemen te voorkomen\nwe hebben wat apparaat iconen geüpload",
+        "fr": "Retry once on (UNREACH) and Failure erreurs to avoid tmeporary communication issues (closes #467)\nnous avons mis à jour quelques icônes de périphérique",
+        "it": "Riprovare una volta su (UNREACH) e Errori di errore per evitare problemi di comunicazione tmeporary (chiude #467)\nabbiamo aggiornato alcune icone del dispositivo",
+        "es": "Retry once on (UNREACH) and Failure errors to avoid tmeporary communication issues (closes #467)\nhemos actualizado algunos iconos de dispositivo",
+        "pl": "Retry raz na (UNREACH) oraz Failure error to avoid tmeporary communication (zamknięty #467)\nposiadać pewne ikony urządzeń",
+        "zh-cn": "恢复原状(UNREACH)和不失误以避免异常的通信问题(第467号)\n我们更新了一些装置的掩体"
+      },
       "1.15.12": {
         "en": "we now adjust min/max correct if a `SPECIAL` value falls out of range (closes #459)",
         "de": "Wir passen Min/Max jetzt korrekt an, wenn ein „SPECIAL“-Wert außerhalb des Bereichs liegt (schließt #459)",
@@ -87,18 +99,6 @@
         "es": "Se corrigieron nuevos dispositivos creados como `indefinidos`",
         "pl": "naprawiono nowe urządzenia tworzone jako `undefined`",
         "zh-cn": "修复了创建为“未定义”的新设备"
-      },
-      "1.15.6": {
-        "en": "implemented workaround for the RSSI_DEVICE 128 bug if devices connect to HMIP-HAP (fixes #346, #469, #402)",
-        "de": "Workaround für den Fehler RSSI_DEVICE 128 implementiert, wenn sich Geräte mit HMIP-HAP verbinden (Fixes Nr. 346, Nr. 469, Nr. 402)",
-        "ru": "реализован обходной путь для ошибки RSSI_DEVICE 128, если устройства подключаются к HMIP-HAP (исправления № 346, № 469, № 402)",
-        "pt": "solução alternativa implementada para o bug RSSI_DEVICE 128 se os dispositivos se conectarem ao HMIP-HAP (correções #346, #469, #402)",
-        "nl": "tijdelijke oplossing geïmplementeerd voor de RSSI_DEVICE 128-bug als apparaten verbinding maken met HMIP-HAP (fixes #346, #469, #402)",
-        "fr": "solution de contournement implémentée pour le bogue RSSI_DEVICE 128 si les appareils se connectent à HMIP-HAP (correctifs #346, #469, #402)",
-        "it": "soluzione alternativa implementata per il bug RSSI_DEVICE 128 se i dispositivi si connettono a HMIP-HAP (correzioni n. 346, n. 469, n. 402)",
-        "es": "solución implementada para el error RSSI_DEVICE 128 si los dispositivos se conectan a HMIP-HAP (correcciones #346, #469, #402)",
-        "pl": "zaimplementowane obejście błędu RSSI_DEVICE 128, jeśli urządzenia łączą się z HMIP-HAP (poprawki #346, #469, #402)",
-        "zh-cn": "如果设备连接到 HMIP-HAP，则针对 RSSI_DEVICE 128 错误实施解决方法（修复 #346、#469、#402）"
       }
     },
     "authors": [
