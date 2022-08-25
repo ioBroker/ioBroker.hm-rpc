@@ -152,8 +152,7 @@ via or/and operator. The then clause of the program can remain empty. Now your s
 	Placeholder for the next version (at the beginning of the line):
 	### __WORK IN PROGRESS__
 -->
-
-### __WORK IN PROGRESS__
+### 1.15.13 (2022-08-25)
 * (foxriver76) Retry once on `(UNREACH)` and `Failure` errors to avoid tmeporary communication issues (closes #467)
 * (foxriver76) we have updated some device icons
 
