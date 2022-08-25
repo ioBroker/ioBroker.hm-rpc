@@ -387,6 +387,8 @@ exports.images = {
     'HmIP-KRCK': 'HmIP-KRCK.png',
     'HmIP-eTRV-E': 'HmIP-eTRV-E.png',
     'HmIP-eTRV-E-S': 'HmIP-eTRV-E.png',
-    'HmIP-STE2-PCB': 'HmIP-STE2-PCB.png'
+    'HmIP-STE2-PCB': 'HmIP-STE2-PCB.png',
+    'HmIP-DLS': '218_hmip-dls_thumb.png',
+    'HmIP-WKP': '221_hmip-wkp_thumb.png'
 };
 //# sourceMappingURL=images.js.map
