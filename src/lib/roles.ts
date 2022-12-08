@@ -9,6 +9,7 @@ export const metaRoles: Record<string, Record<string, string>> = {
     dpCONTROL: {
         'DIMMER.LEVEL': 'level.dimmer',
         'BLIND.LEVEL': 'level.blind',
+        'SHUTTER_TRANSMITTER.LEVEL': 'level.blind',
         'LOCK.STATE': 'switch.lock',
         'DOOR_SENSOR.STATE': 'value.window',
         'DANGER.STATE': 'sensor.alarm.fire'

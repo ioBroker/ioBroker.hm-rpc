@@ -14,8 +14,21 @@
       "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker",
       "zh-cn": "通过 XML-RPC 或 BIN-RPC 将 HomeMatic 接口进程（BidCos-Services、Homegear 和 CUxD）连接到 ioBroker"
     },
-    "version": "1.15.15",
+    "version": "1.15.16",
     "news": {
+      "1.15.16": {
+        "en": "we have linked images of new devices\nwe ensure, that the `LEVEL` datapoint of blinds is of role `level.blind` (closes #681)",
+        "de": "wir haben bilder von neuen geräten verknüpft\nwir stellen sicher, dass der LEVEL-Datenpunkt von Blinds von role level.blind ist (schließt #681)",
+        "ru": "мы соединили изображения новых устройств\nмы обеспечиваем, что точка данных LEVEL слепых имеет роль level.blind (closes #681)",
+        "pt": "temos imagens ligadas de novos dispositivos\nnós asseguramos, que o ponto de dados LEVEL de blinds é de nível de papel.blind (fecha #681)",
+        "nl": "we hebben beelden van nieuwe apparaten\nwe zorgen ervoor dat de LEVL datapoint van blinden een rolniveau is",
+        "fr": "nous avons des images liées de nouveaux appareils\nnous assurons que le point de données LEVEL des aveugles est de niveau de rôle.blind (ferme #681)",
+        "it": "abbiamo collegato immagini di nuovi dispositivi\ngarantiamo, che il datapoint LEVEL delle tende è di livello di ruolo.blind (chiude #681)",
+        "es": "hemos conectado imágenes de nuevos dispositivos\naseguramos que el punto de datos LEVEL de las persianas es de nivel de función.blind (cerca #681)",
+        "pl": "posiadamy powiązania z nowymi urządzeniami\nwskazuje się, że LEVEL jest niewidomy (okrążając #681)",
+        "uk": "ми зв'язали зображення нових пристроїв\nми забезпечуємо, що LEVEL точки даних жалюзі є рівнем ролі.blind (закривається No681)",
+        "zh-cn": "我们有新装置的图像链接。\n我们确保盲人数据点的作用水平。"
+      },
       "1.15.15": {
         "en": "Retry once on `(UNREACH)` and `Failure` errors to avoid tmeporary communication issues (closes #467)\nwe have updated some device icons",
         "de": "Wiederholen Sie einmal auf (UNREACH) und Fehler, um tmeporäre Kommunikationsprobleme zu vermeiden (schließt #467)\nwir haben einige gerätesymbole aktualisiert",
