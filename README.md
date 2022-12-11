@@ -62,6 +62,8 @@ The port number on which the ioBroker will run. Let it 0 for automatically selec
 Sometimes the ioBroker server runs behind the router, to solve this problem, that inbound and outbound addresses are different, this option can be used.
 Here you can define the IP address of the router and the router will according to the port route the traffic to ioBroker.
 
+In case of a docker instance, you can write here directly the IP Address of the host of the docker. It is also important to route the adapter port (next to adapter adress) into the docker container. You can choose there an arbitrary port (e.g. 12001, 12010).
+
 Used if ioBroker runs in Docker.
 
 ### Check communication interval(sec)
