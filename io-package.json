@@ -100,21 +100,6 @@
         "es": "ahora nos aseguramos de que el `uuid` utilizado para la conexión sea realmente único",
         "pl": "teraz upewniamy się, że `uuid` używany do połączenia jest naprawdę unikalny",
         "zh-cn": "我们现在确保用于连接的 `uuid` 确实是唯一的"
-<<<<<<< HEAD
-=======
-      },
-      "1.15.7": {
-        "en": "fixed new devices beeing created as `undefined`",
-        "de": "Behoben, dass neue Geräte als „undefiniert“ erstellt wurden",
-        "ru": "исправлено создание новых устройств как `undefined`",
-        "pt": "corrigidos novos dispositivos sendo criados como 'indefinidos'",
-        "nl": "vaste nieuwe apparaten die zijn gemaakt als `undefined`",
-        "fr": "correction de nouveaux appareils créés comme \"indéfinis\"",
-        "it": "corretto il problema con la creazione di nuovi dispositivi come \"non definiti\".",
-        "es": "Se corrigieron nuevos dispositivos creados como `indefinidos`",
-        "pl": "naprawiono nowe urządzenia tworzone jako `undefined`",
-        "zh-cn": "修复了创建为“未定义”的新设备"
->>>>>>> cd0f33dbb13ca1fbdaf707c821c174ef65673ad1
       }
     },
     "authors": [
