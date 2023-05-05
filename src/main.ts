@@ -802,7 +802,7 @@ class HomematicRpc extends utils.Adapter {
         clientId = this.namespace;
 
         try {
-            const obj = await this.getForeignObjectAsync(`system.this.${this.namespace}`);
+            const obj = await this.getForeignObjectAsync(`system.adapter.${this.namespace}`);
             clientId = `${obj?.common?.host}:${clientId}`;
         } catch (e: any) {
             this.log.warn(`Could not get hostname, using default id "${clientId}" to register: ${e.message}`);
@@ -1587,7 +1587,7 @@ class HomematicRpc extends utils.Adapter {
             if (this.config.forceReInit) {
                 this.log.info('Restarting now, because we had a forced reinitialization run');
                 try {
-                    await this.extendForeignObjectAsync(`system.this.${this.namespace}`, {
+                    await this.extendForeignObjectAsync(`system.adapter.${this.namespace}`, {
                         native: { forceReInit: false }
                     });
                 } catch (e: any) {
