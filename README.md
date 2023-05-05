@@ -156,7 +156,7 @@ To update all available images execute `npm run update-images`
 <!--
 	Placeholder for the next version (at the beginning of the line):
 	### __WORK IN PROGRESS__
-->
+-->
 
 ### __WORK IN PROGRESS__
 * (foxriver76) added new images (closes #778, closes #873, closes #882)
