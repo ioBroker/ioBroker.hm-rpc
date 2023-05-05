@@ -1,3 +1,5 @@
+import { FixParamsetParams } from './_types';
+
 export const FORBIDDEN_CHARS = /[\][*,;'"`<>\\\s?]/g;
 
 /**
@@ -263,4 +265,23 @@ export function combineEPaperCommand(
 
     command = `${command + signal},0x03`;
     return command;
+}
+
+/**
+ * Fix different bugs in the CCU metadata
+ *
+ * @param params relevant parameters
+ */
+export function fixParamset(params: FixParamsetParams): void {
+    const { key, obj, paramObj } = params;
+
+    // #346: it seems like if devices connect to a HMIP-HAP, RSSI_DEVICE shows 128, eq3 should fix this, but lets workaround
+    if (key === 'RSSI_DEVICE') {
+        obj.common.max = 128;
+    }
+
+    // #617, #584: for the codes there is often a value greater than max set, so we remove the max for now
+    if (paramObj.CONTROL === 'MAINTENANCE.CODE_ID') {
+        delete obj.common.max;
+    }
 }

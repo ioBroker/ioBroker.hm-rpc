@@ -1,3 +1,4 @@
+import { FixParamsetParams } from './_types';
 export declare const FORBIDDEN_CHARS: RegExp;
 /**
  * decrypts a key with its related value
@@ -27,4 +28,10 @@ interface Line {
  * @param offset
  */
 export declare function combineEPaperCommand(lines: Line[], signal: string | number, ton: any, repeats: any, offset: any): string;
+/**
+ * Fix different bugs in the CCU metadata
+ *
+ * @param params relevant parameters
+ */
+export declare function fixParamset(params: FixParamsetParams): void;
 export {};

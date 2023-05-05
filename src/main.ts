@@ -4,6 +4,13 @@ import * as tools from './lib/tools';
 import { metaRoles } from './lib/roles';
 import { randomBytes } from 'crypto';
 import { setTimeout as wait } from 'timers/promises';
+import type {
+    ParamsetObjectWithSpecial,
+    ParamsetObject,
+    DatapointTypeObject,
+    MulticallEvent,
+    ListDevicesEntry
+} from './lib/_types';
 
 let connected = false;
 const displays: Record<string, any> = {};
@@ -14,117 +21,6 @@ let rpc: any;
 let rpcClient: any;
 
 let rpcServer: any;
-
-interface DatapointTypeObject {
-    UNIT: string;
-    TYPE: string;
-    MIN?: number;
-    MAX?: number;
-}
-
-interface ParamsetObjectWithSpecial extends ParamsetObject {
-    SPECIAL: ParamsetObjectSpecialEntry[];
-}
-
-interface MulticallEvent {
-    methodName: string;
-    params: any;
-}
-
-interface ParamsetObjectSpecialEntry {
-    ID: string;
-    VALUE: number;
-}
-
-interface EPaperSignalObject {
-    TYPE: string;
-    ID: string;
-    STATES: Record<string, string>;
-    OPERATIONS: number;
-}
-
-interface EPaperToneObject {
-    TYPE: string;
-    ID: string;
-    STATES: Record<string, string>;
-    OPERATIONS: number;
-}
-
-interface EPaperToneIntervalObject {
-    TYPE: string;
-    ID: string;
-    MIN: number;
-    MAX: number;
-    OPERATIONS: number;
-    DEFAULT: number;
-}
-
-interface EPaperToneRepetitionsObject {
-    TYPE: string;
-    ID: string;
-    MIN: number;
-    MAX: number;
-    OPERATIONS: number;
-    DEFAULT: number;
-}
-
-interface EPaperLineObject {
-    TYPE: string;
-    ID: string;
-    OPERATIONS: number;
-}
-
-interface EPaperIconObject {
-    TYPE: string;
-    ID: string;
-    STATES: Record<string, string>;
-    OPERATIONS: number;
-}
-
-interface ParamsetObject {
-    DEFAULT?: string | boolean | number;
-    FLAGS: number;
-    ID: string;
-    MAX: boolean | number | string;
-    MIN: boolean | number | string;
-    OPERATIONS: number;
-    TAB_ORDER: number;
-    TYPE:
-        | 'ACTION'
-        | 'BOOL'
-        | 'FLOAT'
-        | 'ENUM'
-        | 'INTEGER'
-        | 'EPAPER_LINE'
-        | 'EPAPER_ICON'
-        | 'EPAPER_TONE'
-        | 'EPAPER_SIGNAL'
-        | 'EPAPER_TONE_INTERVAL'
-        | 'EPAPER_TONE_REPETITIONS';
-    UNIT?: string;
-    VALUE_LIST?: string[];
-    SPECIAL?: ParamsetObjectSpecialEntry[];
-    STATES?: any;
-    CONTROL?: string;
-    EPAPER_LINE?: EPaperLineObject;
-    EPAPER_ICON?: EPaperIconObject;
-    EPAPER_LINE2?: EPaperLineObject;
-    EPAPER_ICON2?: EPaperIconObject;
-    EPAPER_LINE3?: EPaperLineObject;
-    EPAPER_ICON3?: EPaperIconObject;
-    EPAPER_LINE4?: EPaperLineObject;
-    EPAPER_ICON4?: EPaperIconObject;
-    EPAPER_SIGNAL: EPaperSignalObject;
-    EPAPER_TONE: EPaperToneObject;
-    EPAPER_TONE_INTERVAL: EPaperToneIntervalObject;
-    EPAPER_TONE_REPETITIONS: EPaperToneRepetitionsObject;
-    WORKING?: boolean;
-}
-
-interface ListDevicesEntry {
-    ADDRESS?: string;
-    VERSION?: string;
-}
 
 class HomematicRpc extends utils.Adapter {
     /** On failed rpc call retry in X ms */
@@ -1101,7 +997,7 @@ class HomematicRpc extends utils.Adapter {
      */
     private async addParamsetObjects(
         channel: ioBroker.SettableDeviceObject | ioBroker.SettableChannelObject,
-        paramset: ParamsetObject
+        paramset: Record<string, ParamsetObjectWithSpecial>
     ): Promise<void> {
         for (const [key, paramObj] of Object.entries(paramset)) {
             const commonType: Record<string, 'boolean' | 'number' | 'string'> = {
@@ -1267,10 +1163,7 @@ class HomematicRpc extends utils.Adapter {
                 obj.common.workingID = 'WORKING';
             }
 
-            // it seems like if devices connect to a HMIP-HAP, RSSI_DEVICE shows 128, eq3 should fix this, but lets workaround #346
-            if (key === 'RSSI_DEVICE') {
-                obj.common.max = 128;
-            }
+            tools.fixParamset({ key, obj, paramObj });
 
             try {
                 const res = await this.extendObjectAsync(`${channel._id}.${key}`, obj);
@@ -1560,6 +1453,7 @@ class HomematicRpc extends utils.Adapter {
                 this.log.info(
                     `${this.config.type}rpc -> getParamsetDescription ${JSON.stringify([obj.native.ADDRESS, 'VALUES'])}`
                 );
+
                 this.metaValues[cid] = await this.rpcMethodCallAsync('getParamsetDescription', [
                     obj.native.ADDRESS,
                     'VALUES'
@@ -1568,7 +1462,9 @@ class HomematicRpc extends utils.Adapter {
                 if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
                     this.addEPaperToMeta();
                 }
+                this.log.warn(JSON.stringify(this.metaValues));
 
+                // @ts-expect-error we will fix it
                 await this.addParamsetObjects(obj, this.metaValues[cid]);
             } catch (e: any) {
                 this.log.error(`Error on getParamsetDescription for [${obj.native.ADDRESS}, 'VALUES']": ${e.message}`);

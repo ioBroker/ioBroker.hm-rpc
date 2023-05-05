@@ -1059,10 +1059,7 @@ class HomematicRpc extends utils.Adapter {
             if (key === 'LEVEL' && paramset.WORKING) {
                 obj.common.workingID = 'WORKING';
             }
-            // it seems like if devices connect to a HMIP-HAP, RSSI_DEVICE shows 128, eq3 should fix this, but lets workaround #346
-            if (key === 'RSSI_DEVICE') {
-                obj.common.max = 128;
-            }
+            tools.fixParamset({ key, obj, paramObj });
             try {
                 const res = await this.extendObjectAsync(`${channel._id}.${key}`, obj);
                 this.log.debug(`object ${res.id} extended`);
@@ -1287,6 +1284,8 @@ class HomematicRpc extends utils.Adapter {
                 if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
                     this.addEPaperToMeta();
                 }
+                this.log.warn(JSON.stringify(this.metaValues));
+                // @ts-expect-error we will fix it
                 await this.addParamsetObjects(obj, this.metaValues[cid]);
             }
             catch (e) {

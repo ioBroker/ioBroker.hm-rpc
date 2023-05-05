@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.combineEPaperCommand = exports.number2hex = exports.replaceSpecialChars = exports.decrypt = exports.FORBIDDEN_CHARS = void 0;
+exports.fixParamset = exports.combineEPaperCommand = exports.number2hex = exports.replaceSpecialChars = exports.decrypt = exports.FORBIDDEN_CHARS = void 0;
 exports.FORBIDDEN_CHARS = /[\][*,;'"`<>\\\s?]/g;
 /**
  * decrypts a key with its related value
@@ -259,4 +259,21 @@ function combineEPaperCommand(lines, signal, ton, repeats, offset) {
     return command;
 }
 exports.combineEPaperCommand = combineEPaperCommand;
+/**
+ * Fix different bugs in the CCU metadata
+ *
+ * @param params relevant parameters
+ */
+function fixParamset(params) {
+    const { key, obj, paramObj } = params;
+    // #346: it seems like if devices connect to a HMIP-HAP, RSSI_DEVICE shows 128, eq3 should fix this, but lets workaround
+    if (key === 'RSSI_DEVICE') {
+        obj.common.max = 128;
+    }
+    // #617, #584: for the codes there is often a value greater than max set, so we remove the max for now
+    if (paramObj.CONTROL === 'MAINTENANCE.CODE_ID') {
+        delete obj.common.max;
+    }
+}
+exports.fixParamset = fixParamset;
 //# sourceMappingURL=tools.js.map
