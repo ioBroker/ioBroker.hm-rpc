@@ -338,11 +338,11 @@ class HomematicRpc extends utils.Adapter {
             if (displays[_id] && displays[_id].timer) {
                 clearTimeout(displays[_id].timer);
                 if (displays[_id].withTone) {
-                    displays[_id] = { timer: setTimeout(this.readSignals, 300, _id), withTone: true };
+                    displays[_id] = { timer: setTimeout(() => this.readSignals(_id), 300), withTone: true };
                     return;
                 }
             }
-            displays[_id] = { timer: setTimeout(this.readSettings, 300, _id), withTone: false };
+            displays[_id] = { timer: setTimeout(() => this.readSettings(_id), 300), withTone: false };
             return;
         }
         else if (type === 'EPAPER_SIGNAL' || type === 'EPAPER_TONE') {
@@ -350,7 +350,7 @@ class HomematicRpc extends utils.Adapter {
             if (displays[_id] && displays[_id].timer) {
                 clearTimeout(displays[_id].timer);
             }
-            displays[_id] = { timer: setTimeout(this.readSignals, 300, _id), withTone: true };
+            displays[_id] = { timer: setTimeout(() => this.readSignals(_id), 300), withTone: true };
             return;
         }
         else if (tmp[4] === 'DISPLAY_DATA_STRING') {
@@ -1611,7 +1611,7 @@ class HomematicRpc extends utils.Adapter {
         // Virtual Devices API does now also support PING (tested with 3.55.5.20201226 - see #308)
         if (!this.eventInterval) {
             this.log.debug('start ping interval');
-            this.eventInterval = setInterval(this.keepAlive, (this.config.checkInitInterval * 1000) / 2);
+            this.eventInterval = setInterval(() => this.keepAlive(), (this.config.checkInitInterval * 1000) / 2);
         }
     }
     /**

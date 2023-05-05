@@ -471,18 +471,18 @@ class HomematicRpc extends utils.Adapter {
             if (displays[_id] && displays[_id].timer) {
                 clearTimeout(displays[_id].timer);
                 if (displays[_id].withTone) {
-                    displays[_id] = { timer: setTimeout(this.readSignals, 300, _id), withTone: true };
+                    displays[_id] = { timer: setTimeout(() => this.readSignals(_id), 300), withTone: true };
                     return;
                 }
             }
-            displays[_id] = { timer: setTimeout(this.readSettings, 300, _id), withTone: false };
+            displays[_id] = { timer: setTimeout(() => this.readSettings(_id), 300), withTone: false };
             return;
         } else if (type === 'EPAPER_SIGNAL' || type === 'EPAPER_TONE') {
             const _id = `${tmp[0]}.${tmp[1]}.${tmp[2]}`;
             if (displays[_id] && displays[_id].timer) {
                 clearTimeout(displays[_id].timer);
             }
-            displays[_id] = { timer: setTimeout(this.readSignals, 300, _id), withTone: true };
+            displays[_id] = { timer: setTimeout(() => this.readSignals(_id), 300), withTone: true };
             return;
         } else if (tmp[4] === 'DISPLAY_DATA_STRING') {
             // new EPAPER HMIP-WRCD has own states but needs to encode special chars by DIN_66003
@@ -771,7 +771,7 @@ class HomematicRpc extends utils.Adapter {
             }
         } catch (e: any) {
             this.log.error(`Init not possible, going to stop: ${e.message}`);
-            setTimeout(() => this.stop && this.stop(), 30000);
+            setTimeout(() => this.stop && this.stop(), 30_000);
         }
     }
 
@@ -782,7 +782,7 @@ class HomematicRpc extends utils.Adapter {
         this.config.useHttps = this.config.useHttps || false;
 
         // adapterPort was introduced in v1.0.1. If not set yet then try 2000
-        const desiredAapterPort = parseInt(this.config.port) || parseInt(this.config.homematicPort) || 2000;
+        const desiredAapterPort = parseInt(this.config.port) || parseInt(this.config.homematicPort) || 2_000;
         const callbackAddress = this.config.callbackAddress || this.config.adapterAddress;
         const adapterPort = await this.getPortAsync(desiredAapterPort);
         this.daemonURL = `${this.daemonProto + callbackAddress}:${adapterPort}`;
@@ -1918,7 +1918,7 @@ class HomematicRpc extends utils.Adapter {
         // Virtual Devices API does now also support PING (tested with 3.55.5.20201226 - see #308)
         if (!this.eventInterval) {
             this.log.debug('start ping interval');
-            this.eventInterval = setInterval(this.keepAlive, (this.config.checkInitInterval * 1000) / 2);
+            this.eventInterval = setInterval(() => this.keepAlive(), (this.config.checkInitInterval * 1000) / 2);
         }
     }
 
