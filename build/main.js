@@ -644,7 +644,7 @@ class HomematicRpc extends utils.Adapter {
         // build up unique client id
         clientId = this.namespace;
         try {
-            const obj = await this.getForeignObjectAsync(`system.this.${this.namespace}`);
+            const obj = await this.getForeignObjectAsync(`system.adapter.${this.namespace}`);
             clientId = `${(_a = obj === null || obj === void 0 ? void 0 : obj.common) === null || _a === void 0 ? void 0 : _a.host}:${clientId}`;
         }
         catch (e) {
@@ -1306,7 +1306,7 @@ class HomematicRpc extends utils.Adapter {
             if (this.config.forceReInit) {
                 this.log.info('Restarting now, because we had a forced reinitialization run');
                 try {
-                    await this.extendForeignObjectAsync(`system.this.${this.namespace}`, {
+                    await this.extendForeignObjectAsync(`system.adapter.${this.namespace}`, {
                         native: { forceReInit: false }
                     });
                 }
