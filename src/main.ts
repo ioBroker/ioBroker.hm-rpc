@@ -1,40 +1,13 @@
-/*
- * Copyright (c) 2014-2022 bluefox <dogafox@gmail.com>
- *
- * Copyright (c) 2014 hobbyquaker
- *
- * The MIT License (MIT)
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
 import * as utils from '@iobroker/adapter-core';
 import { images } from './lib/images';
 import * as tools from './lib/tools';
 import { metaRoles } from './lib/roles';
 import { randomBytes } from 'crypto';
+import { setTimeout as wait } from 'timers/promises';
 
 let connected = false;
 const displays: Record<string, any> = {};
 let adapter: ioBroker.Adapter;
-
-/** Async variant of method call which also performs a retry on first error of "setValue" */
-let rpcMethodCallAsync: (method: string, params: any[]) => Promise<any>;
 
 let clientId: string;
 
@@ -50,6 +23,8 @@ interface DatapointTypeObject {
     MAX?: number;
 }
 
+/** On failed rpc call retry in X ms */
+const RETRY_DELAY_MS = 150;
 const metaValues: Record<string, ParamsetObject> = {};
 const dpTypes: Record<string, DatapointTypeObject> = {};
 
@@ -61,218 +36,58 @@ let daemonURL = '';
 let daemonProto = '';
 let homematicPath: string;
 
-const FORBIDDEN_CHARS = /[\][*,;'"`<>\\\s?]/g;
-
-// Icons:
-//      0x80 AUS
-//      0x81 EIN
-//      0x82 OFFEN
-//      0x83 geschlossen
-//      0x84 fehler
-//      0x85 alles ok
-//      0x86 information
-//      0x87 neue nachricht
-//      0x88 servicemeldung
-
-// Tonfolgen
-//      0xC0 AUS
-//      0xC1 LANG LANG
-//      0xC2 LANG KURZ
-//      0xC3 LANG KURZ KURZ
-//      0xC4 KURZ
-//      0xC5 KURZ KURZ
-//      0xC6 LANG
-//      0xC7
-//      0xC9
-//      0xCA
-
-function number2hex(num: number | string): string {
-    if (typeof num === 'number') {
-        num = num.toString(16).toUpperCase();
-        if (num.length < 2) {
-            num = `0${num}`;
-        }
-        num = `0x${num}`;
-    }
-
-    return num;
-}
-
-interface Line {
-    line: string | number;
-    icon: string | number;
+/**
+ * This method just performs an async rpc method call
+ *
+ * @param method the method name
+ * @param params the method specific parameters
+ */
+function rpcMethodCallAsyncHelper(method: string, params: any[]): Promise<any> {
+    return new Promise((resolve, reject) => {
+        rpcClient.methodCall(method, params, (err: any, res: any) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(res);
+            }
+        });
+    });
 }
 
 /**
- * Creates an combined EPAPER command which can be sent to the CCU
+ * Async variant of method call which also performs a retry on first error of "setValue"
  *
- * @param lines
- * @param signal 0xF0 AUS; 0xF1 Rotes Blitzen ;0xF2 Grünes Blitzen; 0xF3 Orangenes Blitzen
- * @param ton
- * @param repeats
- * @param offset
+ * @param method the method name
+ * @param params the method specific parameters
  */
-function combineEPaperCommand(lines: Line[], signal: string | number, ton: any, repeats: any, offset: any) {
-    signal = number2hex(signal || '0xF0');
-    ton = number2hex(ton || '0xC0');
-    const substitutions: Record<string, string> = {
-        A: '0x41',
-        B: '0x42',
-        C: '0x43',
-        D: '0x44',
-        E: '0x45',
-        F: '0x46',
-        G: '0x47',
-        H: '0x48',
-        I: '0x49',
-        J: '0x4A',
-        K: '0x4B',
-        L: '0x4C',
-        M: '0x4D',
-        N: '0x4E',
-        O: '0x4F',
-        P: '0x50',
-        Q: '0x51',
-        R: '0x52',
-        S: '0x53',
-        T: '0x54',
-        U: '0x55',
-        V: '0x56',
-        W: '0x57',
-        X: '0x58',
-        Y: '0x59',
-        Z: '0x5A',
-        a: '0x61',
-        b: '0x62',
-        c: '0x63',
-        d: '0x64',
-        e: '0x65',
-        f: '0x66',
-        g: '0x67',
-        h: '0x68',
-        i: '0x69',
-        j: '0x6A',
-        k: '0x6B',
-        l: '0x6C',
-        m: '0x6D',
-        n: '0x6E',
-        o: '0x6F',
-        p: '0x70',
-        q: '0x71',
-        r: '0x72',
-        s: '0x73',
-        t: '0x74',
-        u: '0x75',
-        v: '0x76',
-        w: '0x77',
-        x: '0x78',
-        y: '0x79',
-        z: '0x7A',
-        0: '0x30',
-        1: '0x31',
-        2: '0x32',
-        3: '0x33',
-        4: '0x34',
-        5: '0x35',
-        6: '0x36',
-        7: '0x37',
-        8: '0x38',
-        9: '0x39',
-        ' ': '0x20',
-        '!': '0x21',
-        '"': '0x22',
-        '%': '0x25',
-        '&': '0x26',
-        '=': '0x27',
-        '(': '0x28',
-        ')': '0x29',
-        '*': '0x2A',
-        '+': '0x2B',
-        ',': '0x2C',
-        '-': '0x2D',
-        '.': '0x2E',
-        '/': '0x2F',
-        Ä: '0x5B',
-        Ö: '0x23',
-        Ü: '0x24',
-        ä: '0x7B',
-        ö: '0x7C',
-        ü: '0x7D',
-        ß: '0x5F',
-        ':': '0x3A',
-        ';': '0x3B',
-        '@': '0x40',
-        '>': '0x3E'
-    };
-
-    let command = '0x02,0x0A';
-    for (const li of lines) {
-        if (li.line) {
-            const line = li.line.toString();
-            command = `${command},0x12`;
-            let i;
-            if (line.substring(0, 2) === '0x' && line.length === 4) {
-                command = `${command},${line}`;
-                i = 12;
-            } else {
-                i = 0;
-            }
-            while (i < line.length && i < 12) {
-                command += `,${substitutions[line[i]]}` || '0x2A';
-                i++;
-            }
+async function rpcMethodCallAsync(method: string, params: any[]): Promise<any> {
+    try {
+        const res = await rpcMethodCallAsyncHelper(method, params);
+        return res;
+    } catch (e: any) {
+        if (method === 'setValue' && (e.message.endsWith('Failure') || e.message.endsWith('(UNREACH)'))) {
+            adapter.log.info(`Temporary error occurred for "${method}" with "${JSON.stringify(params)}": ${e.message}`);
+            // on random error due to temporary communication issues try again once after some ms
+            await wait(RETRY_DELAY_MS);
+            return rpcMethodCallAsyncHelper(method, params);
+        } else {
+            throw e;
         }
-
-        if (li.icon) {
-            command += `,0x13,${number2hex(li.icon)}`;
-        }
-        command = `${command},0x0A`;
     }
-
-    command = `${command},0x14,${ton},0x1C,`;
-
-    if (repeats < 1) {
-        command = `${command}0xDF,0x1D,`;
-    } else if (repeats < 11) {
-        command = `${command}0xD${repeats - 1},0x1D,`;
-    } else if (repeats === 11) {
-        command = `${command}0xDA,0x1D,`;
-    } else if (repeats === 12) {
-        command = `${command}0xDB,0x1D,`;
-    } else if (repeats === 13) {
-        command = `${command}0xDC,0x1D,`;
-    } else if (repeats === 14) {
-        command = `${command}0xDD,0x1D,`;
-    } else {
-        command = `${command}0xDE,0x1D,`;
-    }
-
-    if (offset <= 100) {
-        command = `${command}0xE${offset / 10 - 1},0x16,`;
-    } else if (offset <= 110) {
-        command = `${command}0xEA,0x16,`;
-    } else if (offset <= 120) {
-        command = `${command}0xEB,0x16,`;
-    } else if (offset <= 130) {
-        command = `${command}0xEC,0x16,`;
-    } else if (offset <= 140) {
-        command = `${command}0xED,0x16,`;
-    } else if (offset <= 150) {
-        command = `${command}0xEE,0x16,`;
-    } else {
-        command = `${command}0xEF,0x16,`;
-    }
-
-    command = `${command + signal},0x03`;
-    return command;
 }
 
-async function controlEPaper(id: string, data: any) {
+async function controlEPaper(id: string, data: any): Promise<void> {
     const tmp = id.split('.');
     tmp[3] = '3';
     tmp[4] = 'SUBMIT';
 
-    const val = combineEPaperCommand(data.lines, data.signal || '0xF0', data.tone || '0xC0', data.repeats, data.offset);
+    const val = tools.combineEPaperCommand(
+        data.lines,
+        data.signal || '0xF0',
+        data.tone || '0xC0',
+        data.repeats,
+        data.offset
+    );
 
     try {
         if (rpcClient && connected) {
@@ -288,7 +103,7 @@ async function controlEPaper(id: string, data: any) {
     }
 }
 
-async function readSignals(id: string) {
+async function readSignals(id: string): Promise<void> {
     displays[id] = null;
     const data: Record<string, any> = {
         lines: [{}, {}, {}],
@@ -390,9 +205,9 @@ async function readSignals(id: string) {
 
     await Promise.all(promises);
     controlEPaper(id, data);
-} // endReadSignals
+}
 
-async function readSettings(id: string) {
+async function readSettings(id: string): Promise<void> {
     displays[id] = null;
     const data: Record<string, any> = {
         lines: [{}, {}, {}],
@@ -460,7 +275,7 @@ async function readSettings(id: string) {
     controlEPaper(id, data);
 } // endReadSettings
 
-function startAdapter(options: Partial<utils.AdapterOptions> = {}) {
+function startAdapter(options: Partial<utils.AdapterOptions> = {}): ioBroker.Adapter {
     adapter = new utils.Adapter({
         ...options,
         name: 'hm-rpc',
@@ -775,10 +590,8 @@ function startAdapter(options: Partial<utils.AdapterOptions> = {}) {
 
 /**
  * Main method inits rpc server and gets paramsets
- *
- * @return {Promise<void>}
  */
-async function main() {
+async function main(): Promise<void> {
     homematicPath = adapter.config.daemon === 'virtual-devices' ? '/groups/' : '/';
 
     adapter.config.reconnectInterval = adapter.config.reconnectInterval || 30;
@@ -881,10 +694,8 @@ async function main() {
 
 /**
  * Sends init to RPC server
- *
- * @return {Promise<void>}
  */
-async function sendInit() {
+async function sendInit(): Promise<void> {
     try {
         if (rpcClient && (rpcClient.connected === undefined || rpcClient.connected)) {
             adapter.log.debug(
@@ -912,10 +723,8 @@ async function sendInit() {
 
 /**
  * Send ping to API, if error response, set status disconnected and try reconnect
- *
- * @return {Promise<void>}
  */
-async function sendPing() {
+async function sendPing(): Promise<void> {
     if (rpcClient) {
         adapter.log.debug('Send PING...');
         try {
@@ -959,7 +768,7 @@ const methods = {
         if (params[0] === 'CUxD' || !params[0].includes(adapter.name)) {
             params[0] = adapter.namespace;
         }
-        const channel = params[1].replace(':', '.').replace(FORBIDDEN_CHARS, '_');
+        const channel = params[1].replace(':', '.').replace(tools.FORBIDDEN_CHARS, '_');
         if (params[0] === clientId) {
             // convert back our clientId to our namespace
             params[0] = adapter.namespace;
@@ -995,10 +804,8 @@ const methods = {
 
 /**
  * Inits the RPC server
- *
- * @return {Promise<void>}
  */
-async function initRpcServer() {
+async function initRpcServer(): Promise<void> {
     adapter.config.useHttps = adapter.config.useHttps || false;
 
     // adapterPort was introduced in v1.0.1. If not set yet then try 2000
@@ -1196,7 +1003,7 @@ async function initRpcServer() {
                     if (index === -1) {
                         if (val.ADDRESS && !adapter.config.dontDelete) {
                             if (val.ADDRESS.includes(':')) {
-                                const address = val.ADDRESS.replace(':', '.').replace(FORBIDDEN_CHARS, '_');
+                                const address = val.ADDRESS.replace(':', '.').replace(tools.FORBIDDEN_CHARS, '_');
                                 const parts = address.split('.');
                                 try {
                                     await adapter.deleteChannelAsync(parts[parts.length - 2], parts[parts.length - 1]);
@@ -1289,7 +1096,7 @@ async function initRpcServer() {
         adapter.log.info(`${adapter.config.type}rpc <- deleteDevices ${params[1].length}`);
         for (let deviceName of params[1]) {
             if (deviceName.includes(':')) {
-                deviceName = deviceName.replace(':', '.').replace(FORBIDDEN_CHARS, '_');
+                deviceName = deviceName.replace(':', '.').replace(tools.FORBIDDEN_CHARS, '_');
                 adapter.log.info(`channel ${deviceName} ${JSON.stringify(deviceName)} deleted`);
                 const parts = deviceName.split('.');
                 adapter.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
@@ -1646,9 +1453,9 @@ async function getValueParamsets(
             }
         }
     }
-} // endGetValueParamsets
+}
 
-function addEPaperToMeta() {
+function addEPaperToMeta(): void {
     // Check all versions from 9 to 12
     for (let i = 9; i < 13; i++) {
         const id = `HM-Dis-EP-WM55.MAINTENANCE.${i}`;
@@ -1804,7 +1611,7 @@ async function createDevices(deviceArr: any[]): Promise<void> {
             icon = images[device.TYPE] ? `/icons/${images[device.TYPE]}` : '';
         }
 
-        const id = device.ADDRESS.replace(':', '.').replace(FORBIDDEN_CHARS, '_');
+        const id = device.ADDRESS.replace(':', '.').replace(tools.FORBIDDEN_CHARS, '_');
         const obj: ioBroker.SettableChannelObject | ioBroker.SettableDeviceObject = {
             _id: id,
             type: type,
@@ -1862,10 +1669,8 @@ interface ListDevicesEntry {
 
 /**
  * Get all CuxD devices
- *
- * @return {Promise<void>}
  */
-async function getCuxDevices() {
+async function getCuxDevices(): Promise<void> {
     if (rpcClient) {
         // request devices from CUxD
         try {
@@ -1917,7 +1722,7 @@ async function getCuxDevices() {
                         if (index === -1) {
                             if (val.ADDRESS && !adapter.config.dontDelete) {
                                 if (val.ADDRESS.includes(':')) {
-                                    const address = val.ADDRESS.replace(':', '.').replace(FORBIDDEN_CHARS, '_');
+                                    const address = val.ADDRESS.replace(':', '.').replace(tools.FORBIDDEN_CHARS, '_');
                                     const parts = address.split('.');
                                     adapter.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
                                     adapter.log.info(`obsolete channel ${address} ${JSON.stringify(address)} deleted`);
@@ -1944,7 +1749,7 @@ async function getCuxDevices() {
     }
 }
 
-function updateConnection() {
+function updateConnection(): void {
     lastEvent = new Date().getTime();
 
     if (!connected) {
@@ -1971,7 +1776,7 @@ function updateConnection() {
     }
 }
 
-function connect(isFirst: boolean) {
+function connect(isFirst: boolean): void {
     if (!rpcClient && !adapter.config.useHttps) {
         try {
             rpcClient = rpc.createClient({
@@ -2029,46 +1834,6 @@ function connect(isFirst: boolean) {
     }
 
     if (isFirst) {
-        // create async methods at first init
-        const rpcMethodCallAsyncHelper = (method: string, params: any[]) => {
-            return new Promise((resolve, reject) => {
-                rpcClient.methodCall(method, params, (err: any, res: any) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(res);
-                    }
-                });
-            });
-        };
-
-        rpcMethodCallAsync = async (method: string, params: any[]) => {
-            try {
-                const res = await rpcMethodCallAsyncHelper(method, params);
-                return res;
-            } catch (e: any) {
-                if (method === 'setValue' && (e.message.endsWith('Failure') || e.message.endsWith('(UNREACH)'))) {
-                    adapter.log.info(
-                        `Temporary error occured for "${method}" with "${JSON.stringify(params)}": ${e.message}`
-                    );
-                    // on random error due to temporary communicaiton issues try again once after some ms
-                    return new Promise((resolve, reject) => {
-                        setTimeout(() => {
-                            rpcClient.methodCall(method, params, (err: any, res: any) => {
-                                if (err) {
-                                    reject(err);
-                                } else {
-                                    resolve(res);
-                                }
-                            });
-                        }, 150);
-                    });
-                } else {
-                    throw e;
-                }
-            }
-        };
-
         sendInit();
     }
 
@@ -2079,7 +1844,7 @@ function connect(isFirst: boolean) {
     }
 }
 
-function keepAlive() {
+function keepAlive(): void {
     adapter.log.debug('[KEEPALIVE] Check if connection is alive');
 
     if (connInterval) {
@@ -2107,7 +1872,7 @@ interface ParamsetObjectWithSpecial extends ParamsetObject {
  * @param paramObj Paramset Object with SPECIAL property
  * @param obj ioBroker state object which will be extended
  */
-function addCommonSpecial(paramObj: ParamsetObjectWithSpecial, obj: ioBroker.SettableStateObject) {
+function addCommonSpecial(paramObj: ParamsetObjectWithSpecial, obj: ioBroker.SettableStateObject): void {
     if (typeof obj.common.states !== 'object' || Array.isArray(obj.common.states)) {
         obj.common.states = {};
     }

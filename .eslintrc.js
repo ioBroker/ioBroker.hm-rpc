@@ -79,6 +79,13 @@ module.exports = {
             rules: {
                 '@typescript-eslint/no-parameter-properties': 'off',
                 '@typescript-eslint/no-explicit-any': 'off',
+                '@typescript-eslint/explicit-function-return-type': [
+                    'error',
+                    {
+                        allowExpressions: true,
+                        allowTypedFunctionExpressions: true
+                    }
+                ],
                 '@typescript-eslint/no-use-before-define': [
                     'error',
                     {
