@@ -72,13 +72,13 @@ class HomematicRpc extends utils.Adapter {
                 return '';
             }
 
+            val = tools.fixEvent({ val, dpType: this.dpTypes[name] });
+
             this.log.debug(
                 `${name} ==> UNIT: "${this.dpTypes[name] ? this.dpTypes[name].UNIT : 'none'}" (min: ${
                     this.dpTypes[name] ? this.dpTypes[name].MIN : 'none'
                 }, max: ${this.dpTypes[name] ? this.dpTypes[name].MAX : 'none'}) From "${params[3]}" => "${val}"`
             );
-
-            val = tools.fixEvent({ val, dpType: this.dpTypes[name] });
 
             this.setState(`${channel}.${params[2]}`, { val: val, ack: true });
             // unfortunately this is necessary
