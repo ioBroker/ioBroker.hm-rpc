@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fixParamset = exports.combineEPaperCommand = exports.number2hex = exports.replaceSpecialChars = exports.decrypt = exports.FORBIDDEN_CHARS = void 0;
+exports.fixEvent = exports.fixParamset = exports.combineEPaperCommand = exports.number2hex = exports.replaceSpecialChars = exports.decrypt = exports.FORBIDDEN_CHARS = void 0;
 exports.FORBIDDEN_CHARS = /[\][*,;'"`<>\\\s?]/g;
 /**
  * decrypts a key with its related value
@@ -276,4 +276,19 @@ function fixParamset(params) {
     }
 }
 exports.fixParamset = fixParamset;
+/**
+ * Fix different bugs in CCU which needs to be fixed on event level
+ *
+ * @param params relevant parameters
+ */
+function fixEvent(params) {
+    const { dpType } = params;
+    let { val } = params;
+    // #872: since CCU FW 3.69.6, CCU sometimes delivers empty string for SECTION which is a number
+    if (val === '' && dpType.TYPE === 'INTEGER') {
+        val = null;
+    }
+    return val;
+}
+exports.fixEvent = fixEvent;
 //# sourceMappingURL=tools.js.map

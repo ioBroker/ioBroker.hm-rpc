@@ -80,10 +80,7 @@ class HomematicRpc extends utils.Adapter {
                 }
                 const name = `${params[0]}.${channel}.${params[2]}`;
                 if (this.dpTypes[name]) {
-                    // it shouldn't be necessary to scale on % values, see https://github.com/ioBroker/ioBroker.hm-rpc/issues/263
-                    // backward compatibility -> max===1 unit===%
                     if (this.dpTypes[name].UNIT === '100%') {
-                        // || (dpTypes[name].UNIT === '%' && dpTypes[name].MAX === 1)) {
                         val = Math.round(params[3] * 1000) / 10;
                     }
                     else {
@@ -91,12 +88,12 @@ class HomematicRpc extends utils.Adapter {
                     }
                 }
                 else {
-                    // val = params[3];
                     // for every device we know (listDevices), there will be a dpType, so this way we filter out stuff like PONG event and https://github.com/ioBroker/ioBroker.hm-rpc/issues/298
                     this.log.debug(`${this.config.type}rpc <- event: ${name}:${params[3]} discarded, no matching device`);
                     return '';
                 }
                 this.log.debug(`${name} ==> UNIT: "${this.dpTypes[name] ? this.dpTypes[name].UNIT : 'none'}" (min: ${this.dpTypes[name] ? this.dpTypes[name].MIN : 'none'}, max: ${this.dpTypes[name] ? this.dpTypes[name].MAX : 'none'}) From "${params[3]}" => "${val}"`);
+                val = tools.fixEvent({ val, dpType: this.dpTypes[name] });
                 this.setState(`${channel}.${params[2]}`, { val: val, ack: true });
                 // unfortunately this is necessary
                 return '';
@@ -242,7 +239,7 @@ class HomematicRpc extends utils.Adapter {
                             // ignore
                         }
                     }
-                    if (rpcClient && rpcClient.socket) {
+                    if (rpcClient === null || rpcClient === void 0 ? void 0 : rpcClient.socket) {
                         try {
                             rpcClient.socket.destroy();
                         }
@@ -711,9 +708,12 @@ class HomematicRpc extends utils.Adapter {
             this.log.info(`${this.config.type}rpc <- system.listMethods ${JSON.stringify(params)}`);
             callback(null, [
                 'event',
+                'firmwareUpdateStatusChanged',
                 'deleteDevices',
                 'listDevices',
                 'newDevices',
+                'readdedDevice',
+                'replaceDevice',
                 'system.listMethods',
                 'system.multicall',
                 'setReadyConfig'
@@ -755,7 +755,7 @@ class HomematicRpc extends utils.Adapter {
                 catch (e) {
                     this.log.error(`getObjectViewAsync hm-rpc: ${e.message}`);
                 }
-                if (doc && doc.rows) {
+                if (doc === null || doc === void 0 ? void 0 : doc.rows) {
                     for (const row of doc.rows) {
                         if (row.id === `${this.namespace}.updated`) {
                             continue;

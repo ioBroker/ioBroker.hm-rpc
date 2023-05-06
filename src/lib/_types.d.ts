@@ -119,3 +119,10 @@ export interface FixParamsetParams {
     /** the object to fix */
     obj: ioBroker.SettableStateObject;
 }
+
+export interface FixEventParams {
+    /** the current datapoint value */
+    val: any;
+    /** the corresponding datapoint type */
+    dpType: DatapointTypeObject;
+}

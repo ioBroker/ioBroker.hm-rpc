@@ -1,4 +1,4 @@
-import { FixParamsetParams } from './_types';
+import { FixParamsetParams, FixEventParams } from './_types';
 export declare const FORBIDDEN_CHARS: RegExp;
 /**
  * decrypts a key with its related value
@@ -34,4 +34,10 @@ export declare function combineEPaperCommand(lines: Line[], signal: string | num
  * @param params relevant parameters
  */
 export declare function fixParamset(params: FixParamsetParams): void;
+/**
+ * Fix different bugs in CCU which needs to be fixed on event level
+ *
+ * @param params relevant parameters
+ */
+export declare function fixEvent(params: FixEventParams): any;
 export {};

@@ -1,4 +1,4 @@
-import { FixParamsetParams } from './_types';
+import { FixParamsetParams, FixEventParams } from './_types';
 
 export const FORBIDDEN_CHARS = /[\][*,;'"`<>\\\s?]/g;
 
@@ -284,4 +284,21 @@ export function fixParamset(params: FixParamsetParams): void {
     if (paramObj.CONTROL === 'MAINTENANCE.CODE_ID') {
         delete obj.common.max;
     }
+}
+
+/**
+ * Fix different bugs in CCU which needs to be fixed on event level
+ *
+ * @param params relevant parameters
+ */
+export function fixEvent(params: FixEventParams): any {
+    const { dpType } = params;
+    let { val } = params;
+
+    // #872: since CCU FW 3.69.6, CCU sometimes delivers empty string for SECTION which is a number
+    if (val === '' && dpType.TYPE === 'INTEGER') {
+        val = null;
+    }
+
+    return val;
 }

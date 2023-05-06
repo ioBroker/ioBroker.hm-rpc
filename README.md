@@ -161,6 +161,7 @@ To update all available images execute `npm run update-images`
 ### __WORK IN PROGRESS__
 * (foxriver76) added new images (closes #778, closes #873, closes #882)
 * (foxriver76) fix wrong paramsets (closes #617, closes #584)
+* (foxriver76) fix wrong events (closes #872)
 
 ### 1.15.16 (2022-12-08)
 * (foxriver76) we have linked images of new devices
