@@ -157,8 +157,7 @@ To update all available images execute `npm run update-images`
 	Placeholder for the next version (at the beginning of the line):
 	### __WORK IN PROGRESS__
 -->
-
-### __WORK IN PROGRESS__
+### 1.15.17 (2023-05-07)
 * (foxriver76) added new images (closes #778, closes #873, closes #882)
 * (foxriver76) fix wrong paramsets (closes #617, closes #584, closes #539, closes #764, closes #460, closes #748, closes #756)
 * (foxriver76) fix wrong events (closes #872)
@@ -399,7 +398,7 @@ of this approach (more requests to CCU on first setup)
 
 The MIT License (MIT)
 
-Copyright (c) 2014-2022 bluefox <dogafox@gmail.com>
+Copyright (c) 2014-2023 bluefox <dogafox@gmail.com>
 
 Copyright (c) 2014 hobbyquaker
 
