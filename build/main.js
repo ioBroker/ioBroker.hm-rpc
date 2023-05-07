@@ -1284,7 +1284,6 @@ class HomematicRpc extends utils.Adapter {
                 if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
                     this.addEPaperToMeta();
                 }
-                this.log.warn(JSON.stringify(this.metaValues));
                 // @ts-expect-error we will fix it
                 await this.addParamsetObjects(obj, this.metaValues[cid]);
             }

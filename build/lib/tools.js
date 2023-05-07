@@ -278,6 +278,10 @@ function fixParamset(params) {
     if (paramObj.CONTROL === 'HEATING_CONTROL.SETPOINT' && daemon === 'virtual-devices') {
         obj.common.min = 4.5;
     }
+    // #764: HMIP heating groups active profile is declared with a max of 3 but 6 is the real max
+    if (paramObj.CONTROL === 'HEATING_CONTROL_HMIP.ACTIVE_PROFILE' && daemon === 'virtual-devices') {
+        obj.common.max = 6;
+    }
 }
 exports.fixParamset = fixParamset;
 /**
