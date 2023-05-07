@@ -1059,7 +1059,7 @@ class HomematicRpc extends utils.Adapter {
             if (key === 'LEVEL' && paramset.WORKING) {
                 obj.common.workingID = 'WORKING';
             }
-            tools.fixParamset({ key, obj, paramObj });
+            tools.fixParamset({ key, obj, paramObj, daemon: this.config.daemon });
             try {
                 const res = await this.extendObjectAsync(`${channel._id}.${key}`, obj);
                 this.log.debug(`object ${res.id} extended`);

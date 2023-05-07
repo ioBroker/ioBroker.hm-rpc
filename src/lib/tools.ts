@@ -273,7 +273,7 @@ export function combineEPaperCommand(
  * @param params relevant parameters
  */
 export function fixParamset(params: FixParamsetParams): void {
-    const { key, obj, paramObj } = params;
+    const { key, obj, paramObj, daemon } = params;
 
     // #346: it seems like if devices connect to a HMIP-HAP, RSSI_DEVICE shows 128, eq3 should fix this, but lets workaround
     if (key === 'RSSI_DEVICE') {
@@ -283,6 +283,11 @@ export function fixParamset(params: FixParamsetParams): void {
     // #617, #584: for the codes there is often a value greater than max set, so we remove the max for now
     if (paramObj.CONTROL === 'MAINTENANCE.CODE_ID') {
         delete obj.common.max;
+    }
+
+    // # 539: while HMIP heating groups correctly have min 4.5 this is not the case for rfd somehow
+    if (paramObj.CONTROL === 'HEATING_CONTROL.SETPOINT' && daemon === 'virtual-devices') {
+        obj.common.min = 4.5;
     }
 }
 
