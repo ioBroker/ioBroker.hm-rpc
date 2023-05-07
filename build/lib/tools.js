@@ -265,22 +265,26 @@ exports.combineEPaperCommand = combineEPaperCommand;
  * @param params relevant parameters
  */
 function fixParamset(params) {
-    const { key, obj, paramObj, daemon } = params;
+    const { paramObj, daemon } = params;
     // #346: it seems like if devices connect to a HMIP-HAP, RSSI_DEVICE shows 128, eq3 should fix this, but lets workaround
-    if (key === 'RSSI_DEVICE') {
-        obj.common.max = 128;
+    if (paramObj.ID === 'RSSI_DEVICE') {
+        paramObj.MAX = 128;
     }
     // #617, #584: for the codes there is often a value greater than max set, so we remove the max for now
     if (paramObj.CONTROL === 'MAINTENANCE.CODE_ID') {
-        delete obj.common.max;
+        paramObj.MAX = 9999;
     }
     // # 539: while HMIP heating groups correctly have min 4.5 this is not the case for rfd somehow
     if (paramObj.CONTROL === 'HEATING_CONTROL.SETPOINT' && daemon === 'virtual-devices') {
-        obj.common.min = 4.5;
+        paramObj.MIN = 4.5;
     }
     // #764: HMIP heating groups active profile is declared with a max of 3 but 6 is the real max
     if (paramObj.CONTROL === 'HEATING_CONTROL_HMIP.ACTIVE_PROFILE' && daemon === 'virtual-devices') {
-        obj.common.max = 6;
+        paramObj.MAX = 6;
+    }
+    // #460 #748, #756: Heating control levels are displayed as UNIT: % with max of 1, but it should scale to 100
+    if (paramObj.CONTROL === 'HEATING_CONTROL_HMIP.LEVEL') {
+        paramObj.UNIT = '100%';
     }
 }
 exports.fixParamset = fixParamset;

@@ -57,6 +57,20 @@ class HomematicRpc extends utils.Adapter {
         this.lastEvent = 0;
         this.daemonURL = '';
         this.daemonProto = '';
+        this.COMMON_TYPE_MAPPING = {
+            ACTION: 'boolean',
+            BOOL: 'boolean',
+            FLOAT: 'number',
+            ENUM: 'number',
+            INTEGER: 'number',
+            STRING: 'string',
+            EPAPER_LINE: 'string',
+            EPAPER_ICON: 'string',
+            EPAPER_TONE: 'string',
+            EPAPER_SIGNAL: 'string',
+            EPAPER_TONE_INTERVAL: 'number',
+            EPAPER_TONE_REPETITIONS: 'number'
+        };
         this.methods = {
             event: (err, params) => {
                 if (err) {
@@ -905,27 +919,14 @@ class HomematicRpc extends utils.Adapter {
      */
     async addParamsetObjects(channel, paramset) {
         for (const [key, paramObj] of Object.entries(paramset)) {
-            const commonType = {
-                ACTION: 'boolean',
-                BOOL: 'boolean',
-                FLOAT: 'number',
-                ENUM: 'number',
-                INTEGER: 'number',
-                STRING: 'string',
-                EPAPER_LINE: 'string',
-                EPAPER_ICON: 'string',
-                EPAPER_TONE: 'string',
-                EPAPER_SIGNAL: 'string',
-                EPAPER_TONE_INTERVAL: 'number',
-                EPAPER_TONE_REPETITIONS: 'number'
-            };
+            tools.fixParamset({ paramObj, daemon: this.config.daemon });
             const obj = {
                 type: 'state',
                 common: {
                     name: key,
                     role: '',
                     def: paramObj.DEFAULT,
-                    type: commonType[paramObj.TYPE] || 'mixed',
+                    type: this.COMMON_TYPE_MAPPING[paramObj.TYPE] || 'mixed',
                     read: !!(paramObj.OPERATIONS & 1),
                     write: !!(paramObj.OPERATIONS & 2)
                 },
@@ -1059,7 +1060,6 @@ class HomematicRpc extends utils.Adapter {
             if (key === 'LEVEL' && paramset.WORKING) {
                 obj.common.workingID = 'WORKING';
             }
-            tools.fixParamset({ key, obj, paramObj, daemon: this.config.daemon });
             try {
                 const res = await this.extendObjectAsync(`${channel._id}.${key}`, obj);
                 this.log.debug(`object ${res.id} extended`);

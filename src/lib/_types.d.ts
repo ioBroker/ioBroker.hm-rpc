@@ -114,12 +114,8 @@ export interface ListDevicesEntry {
 export type Daemon = 'CUxD' | 'virtual-devices' | 'rfd' | 'hs485d' | 'HMIP';
 
 export interface FixParamsetParams {
-    /** the parameter key e.g. LEVEL */
-    key: string;
-    /** the paramset */
+    /** the paramset, which will be fixed */
     paramObj: ParamsetObjectWithSpecial | ParamsetObject;
-    /** the object to fix */
-    obj: ioBroker.SettableStateObject;
     /** selected daemon type */
     daemon: Daemon;
 }

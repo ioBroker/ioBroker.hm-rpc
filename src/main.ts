@@ -34,6 +34,20 @@ class HomematicRpc extends utils.Adapter {
     private daemonURL = '';
     private daemonProto = '';
     private homematicPath: string | undefined;
+    private readonly COMMON_TYPE_MAPPING = {
+        ACTION: 'boolean',
+        BOOL: 'boolean',
+        FLOAT: 'number',
+        ENUM: 'number',
+        INTEGER: 'number',
+        STRING: 'string',
+        EPAPER_LINE: 'string',
+        EPAPER_ICON: 'string',
+        EPAPER_TONE: 'string',
+        EPAPER_SIGNAL: 'string',
+        EPAPER_TONE_INTERVAL: 'number',
+        EPAPER_TONE_REPETITIONS: 'number'
+    } as const;
 
     private readonly methods = {
         event: (err: any, params: any) => {
@@ -1002,20 +1016,7 @@ class HomematicRpc extends utils.Adapter {
         paramset: Record<string, ParamsetObjectWithSpecial>
     ): Promise<void> {
         for (const [key, paramObj] of Object.entries(paramset)) {
-            const commonType: Record<string, 'boolean' | 'number' | 'string'> = {
-                ACTION: 'boolean',
-                BOOL: 'boolean',
-                FLOAT: 'number',
-                ENUM: 'number',
-                INTEGER: 'number',
-                STRING: 'string',
-                EPAPER_LINE: 'string',
-                EPAPER_ICON: 'string',
-                EPAPER_TONE: 'string',
-                EPAPER_SIGNAL: 'string',
-                EPAPER_TONE_INTERVAL: 'number',
-                EPAPER_TONE_REPETITIONS: 'number'
-            };
+            tools.fixParamset({ paramObj, daemon: this.config.daemon });
 
             const obj: ioBroker.SettableStateObject = {
                 type: 'state',
@@ -1023,7 +1024,7 @@ class HomematicRpc extends utils.Adapter {
                     name: key,
                     role: '', // will be filled
                     def: paramObj.DEFAULT,
-                    type: commonType[paramObj.TYPE] || 'mixed',
+                    type: this.COMMON_TYPE_MAPPING[paramObj.TYPE] || 'mixed',
                     read: !!(paramObj.OPERATIONS & 1),
                     write: !!(paramObj.OPERATIONS & 2)
                 },
@@ -1164,8 +1165,6 @@ class HomematicRpc extends utils.Adapter {
             if (key === 'LEVEL' && paramset.WORKING) {
                 obj.common.workingID = 'WORKING';
             }
-
-            tools.fixParamset({ key, obj, paramObj, daemon: this.config.daemon });
 
             try {
                 const res = await this.extendObjectAsync(`${channel._id}.${key}`, obj);
