@@ -14,8 +14,21 @@
       "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker",
       "zh-cn": "通过 XML-RPC 或 BIN-RPC 将 HomeMatic 接口进程（BidCos-Services、Homegear 和 CUxD）连接到 ioBroker"
     },
-    "version": "1.15.17",
+    "version": "1.15.18",
     "news": {
+      "1.15.18": {
+        "en": "no longer support EOL versions, please upgrade to node 16",
+        "de": "nicht mehr unterstützen EOL-Versionen, bitte aktualisieren Sie auf Knoten 16",
+        "ru": "больше не поддерживает версии EOL, пожалуйста, обновите до ноды 16",
+        "pt": "não suporta mais versões EOL, por favor atualize para o nó 16",
+        "nl": "vertaling:",
+        "fr": "ne supportez plus les versions EOL, s'il vous plaît mettre à niveau au n° 16",
+        "it": "non supporta più le versioni EOL, si prega di aggiornare al nodo 16",
+        "es": "no soporta versiones de EOL, por favor actualice a nodo 16",
+        "pl": "nie obsługuje już wersji EOL, ulepszanie węzła 16",
+        "uk": "не більше підтримки EOL версії, будь ласка, оновлення до вузла 16",
+        "zh-cn": "不再支持EOL版本,请升级为第16号。"
+      },
       "1.15.17": {
         "en": "added new images (closes #778, closes #873, closes #882)\nfix wrong paramsets (closes #617, closes #584, closes #539, closes #764, closes #460, closes #748, closes #756)\nfix wrong events (closes #872)",
         "de": "neue bilder hinzugefügt (schließt #778, schließt #873, schließt #882)\nfix falsche paramsets (schließt #617, schließt #584, schließt #539, schließt #764, schließt #460, schließt #748, schließt #756)\nfalsche ereignisse beheben (schließt #872)",
@@ -89,18 +102,6 @@
         "es": "usamos nuestro propio conjunto de caracteres prohibidos nuevamente",
         "pl": "ponownie używamy własnego zestawu zabronionych znaków",
         "zh-cn": "我们再次使用我们自己的一组禁止字符"
-      },
-      "1.15.9": {
-        "en": "fixed handling of `replaceDevice` event\nwe have fixed some log messages\nadded image of HmIP-SMI55-2",
-        "de": "Behandlung des `replaceDevice`-Ereignisses korrigiert\nWir haben einige Log-Meldungen behoben\nBild von HmIP-SMI55-2 hinzugefügt",
-        "ru": "исправлена обработка события replaceDevice\nмы исправили некоторые сообщения журнала\nдобавлено изображение HmIP-SMI55-2",
-        "pt": "manipulação corrigida do evento `replaceDevice`\ncorrigimos algumas mensagens de log\nimagem adicionada de HmIP-SMI55-2",
-        "nl": "vaste afhandeling van `replaceDevice`-gebeurtenis\nwe hebben enkele logberichten gerepareerd\ntoegevoegde afbeelding van HmIP-SMI55-2",
-        "fr": "gestion fixe de l'événement `replaceDevice`\nnous avons corrigé certains messages de journal\nimage ajoutée de HmIP-SMI55-2",
-        "it": "corretta gestione dell'evento `replaceDevice`\nabbiamo corretto alcuni messaggi di registro\naggiunta immagine di HmIP-SMI55-2",
-        "es": "manejo fijo del evento `replaceDevice`\nhemos arreglado algunos mensajes de registro\nimagen añadida de HmIP-SMI55-2",
-        "pl": "poprawiona obsługa zdarzenia `replaceDevice`\nnaprawiliśmy kilka komunikatów dziennika\ndodano obraz HmIP-SMI55-2",
-        "zh-cn": "修复了“replaceDevice”事件的处理\n我们修复了一些日志消息\n添加了 HmIP-SMI55-2 的图像"
       }
     },
     "authors": [
