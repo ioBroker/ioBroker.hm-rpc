@@ -23,16 +23,12 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [16.x]
-
     steps:
       - uses: actions/checkout@v1
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js 16.x
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16.x
 
       - name: Install Dependencies
         run: npm ci
@@ -59,7 +55,7 @@ jobs:
           # install-command: 'npm install'
           build: true
 
-  # Deploys the final package to NPM and Github Actions
+  # Deploys the final package to NPM and GitHub Actions
   deploy:
     # Trigger this step only when a commit on master is tagged with a version number
     if: |
@@ -69,18 +65,15 @@ jobs:
     needs: [adapter-tests]
 
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [14.x]
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js 16.x
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16.x
 
       - name: Extract the version and commit body from the tag
         id: extract_release
@@ -110,7 +103,7 @@ jobs:
           tag_name: ${{ github.ref }}
           release_name: Release v${{ steps.extract_release.outputs.VERSION }}
           draft: false
-          # Prerelease versions create pre-releases on Github
+          # Prerelease versions create pre-releases on GitHub
           prerelease: ${{ contains(steps.extract_release.outputs.VERSION, '-') }}
           body: ${{ steps.extract_release.outputs.BODY }}
 
