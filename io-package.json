@@ -195,6 +195,7 @@
   "objects": [
     {
       "_id": "_design/hm-rpc",
+      "type": "design",
       "language": "javascript",
       "views": {
         "listDevices": {

@@ -36,11 +36,11 @@ Usually:
 - 9292 for Virtual Devices (https: 49292)
 
 ### Daemon
-CCU/Homematic can support different types of devices (wired, wireless, HM-IP, CUxD) and for every type you should create the instance of adapter separately.
+CCU/Homematic can support different types of devices (wired, wireless, HM-IP, CUxD), and for every type you should create the instance of adapter separately.
 
 ### Protocol
-There are two protocols for communication XML-RPC and BIN-RPC. BIN-RPC is faster, but it can be, that the end device do not support it or supports it incorrect.
-In this case switch the protocol to XML.
+There are two protocols for communication XML-RPC and BIN-RPC. BIN-RPC is faster, but it can be, that the end device does not support it or supports it incorrect.
+In this case, switch the protocol to XML.
 
 *Notice:* CUxD can only communicate with BIN-RPC and HM-IP and RFD only via XML-RPC protocol.
 
@@ -53,16 +53,17 @@ The instance will be restarted immediately, synchronize all devices anew and dea
 ### Adapter Address
 This address has to be the IP under which the host that is running the adapter itself is reachable.
 This address is used by the CCU to connect to the adapter.
-This address cannot be "0.0.0.0", because CCU/Homematic cannot reach ioBroker under "0.0.0.0" IP address.
+This address cannot be `0.0.0.0`, because CCU/Homematic cannot reach ioBroker under "0.0.0.0" IP address.
 
 ### Adapter port
-The port number on which the ioBroker will run. Let it 0 for automatically selection.
+The port number on which the ioBroker will run. Let it 0 for automatic selection.
 
 ### Adapter Callback Address
-Sometimes the ioBroker server runs behind the router, to solve this problem, that inbound and outbound addresses are different, this option can be used.
-Here you can define the IP address of the router and the router will according to the port route the traffic to ioBroker.
+Sometimes the ioBroker server runs behind the router, to solve this problem (that inbound and outbound addresses are different), this option can be used.
+Here you can define the IP address of the router, and the router will route the traffic to ioBroker according to the port.
 
-In case of a docker instance, you can write here directly the IP address of the host of the docker. It is also important to route the adapter port (next to adapter address) into the docker container. You can choose there an arbitrary port (e.g. 12001, 12010).
+In case of a docker instance, you can write here directly the IP address of the host of the docker.
+It is also important to route the adapter port (next to adapter address) into the docker container. You can choose there an arbitrary port (e.g., 12001, 12010).
 
 Used if ioBroker runs in Docker.
 
@@ -73,22 +74,22 @@ Send pings to CCU/Homematic with such intervall.
 How many seconds will be waited before connect attempts.
 
 ### Don't delete devices on adapter start
-If this flag is not activated, the ioBroker will remove devices from configuration if device is not found at adapter start in CCU/Homematic.
+If this flag is not activated, the ioBroker will remove devices from configuration if a device is not found at adapter start in CCU/Homematic.
 Activate this flag to do *not* delete such a devices. This is to avoid a bug on CCU side, where HM-IP devices are not correctly transmitted to
 ioBroker and thus will be deleted on the adapter start and be recreated when transmitted, some milliseconds later. The flag is automatically checked
-when you selected HM-IP as daemon. However, when you delete devices while adapter is running, the adapter will be notified by CCU and will remove devices 
+when you select HM-IP as daemon. However, when you delete devices while the adapter is running, the adapter will be notified by CCU and will remove devices 
 which are removed on CCU.
 
 ### Use https
-If this flag is activated, the connection will be established via https instead http.
+If this flag is activated, the connection will be established via https instead of http.
 This only works with XML-RPC protocol.
 
 ### Username and password
-If 'use https' is activated you can fill in the username and password of a CCU user.
+If 'use https' is activated, you can fill in the username and password of a CCU user.
 In case the CCU needs authentication on the API, you have to provide the credentials here.
 
 ## Custom commands
-It is possible to send custom commands, e.g. to read and control the master area of a device which allows the user 
+It is possible to send custom commands, e.g., to read and control the master area of a device which allows the user 
 to configure heating week programs and more.
 
 This is done by sending a message to the adapter, which contains the method as first parameter, followed by an object which 
@@ -117,21 +118,21 @@ sendTo('hm-rpc.0', 'listDevices', {}, res => {
 });
 ```
 
-Set a value, like the adapter does on stateChange:
+Set a value, like the adapter does on `stateChange`:
 ```javascript
 sendTo('hm-rpc.1', 'setValue', {ID: '000453D77B9EDF:1', paramType: 'SET_POINT_TEMPERATURE', params: 15}, res => {
     log(JSON.stringify(res));
 });
 ```
 
-Get the paramsetDescription of a devices channel:
+Get the `paramsetDescription` of a devices channel:
 ```javascript
 sendTo('hm-rpc.1', 'getParamsetDescription', {ID: '000453D77B9EDF:1', paramType: 'VALUES'}, res => {
     log(JSON.stringify(res));
 });
 ```
 
-Get firmware information of a device (in this case we are logging the FW status):
+Get firmware information of a device (in this case, we are logging the FW status):
 ```javascript
 sendTo('hm-rpc.1', 'getDeviceDescription', {ID: '0000S8179E3DBE', paramType: 'FIRMWARE'}, res => {
     if (!res.error) {
@@ -143,11 +144,11 @@ sendTo('hm-rpc.1', 'getDeviceDescription', {ID: '0000S8179E3DBE', paramType: 'FI
 ```
 
 ## Additional information
-If you use HomeMatic switches or remotes their button states will only be acknowledged by CCU and thus 
-by ioBroker, when you have a running 'dummy' program on the CCU which depends on the related switch or remote.
+If you use HomeMatic switches or remotes, their button states will only be acknowledged by CCU and thus 
+by ioBroker when you have a running 'dummy' program on the CCU which depends on the related switch or remote.
 
-You can use a single dummy program for multiple buttons, by just adding all button states in the if clause connected 
-via or/and operator. The then clause of the program can remain empty. Now your state should be updated on a button press.
+You can use a single dummy program for multiple buttons, by just adding all button states in the if-clause connected 
+via or/and operator. The then-clause of the program can remain empty. Now your state should be updated on a button press.
 
 ## Development
 To update all available images execute `npm run update-images`
@@ -155,8 +156,11 @@ To update all available images execute `npm run update-images`
 ## Changelog
 <!--
 	Placeholder for the next version (at the beginning of the line):
-	### __WORK IN PROGRESS__
+	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (bluefox) Updated packages
+
 ### 1.15.18 (2023-05-08)
 * (foxriver76) no longer support EOL versions, please upgrade to node 16
 
