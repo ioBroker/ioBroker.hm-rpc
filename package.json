@@ -86,13 +86,16 @@
     "prebuild": "rimraf ./build",
     "build:ts": "tsc -p tsconfig.build.json",
     "build": "npm run build:ts",
-    "release": "release-script",
     "test:ts": "mocha --config test/mocharc.custom.json src/**/*.test.ts",
     "test:package": "mocha test/packageFiles --exit",
     "test:integration": "mocha test/integrationAdapter --exit",
     "test:unit": "mocha test/unitAdapter --exit",
     "test": "npm run test:ts && npm run test:package",
     "update-images": "node build/utils/updateImages.js",
+    "release": "release-script",
+    "release-patch": "release-script patch --yes",
+    "release-minor": "release-script minor --yes",
+    "release-major": "release-script major --yes",
     "update-packages": "ncu --upgrade"
   },
   "readmeFilename": "README.md"
