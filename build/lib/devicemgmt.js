@@ -133,7 +133,7 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
             // @ts-ignore
             data.schema.items.availableFirmware = {
                 type: 'staticText',
-                text: `Available firmware: ${device.native.AVAILABLE_FIRMWARE}`,
+                text: `${device.native.AVAILABLE_FIRMWARE}`,
                 newLine: false
             };
         }
