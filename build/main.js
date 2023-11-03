@@ -23,12 +23,14 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.HomematicRpc = void 0;
 const utils = __importStar(require("@iobroker/adapter-core"));
 const images_1 = require("./lib/images");
 const tools = __importStar(require("./lib/tools"));
 const roles_1 = require("./lib/roles");
 const crypto_1 = require("crypto");
 const promises_1 = require("timers/promises");
+const devicemgmt_1 = require("./lib/devicemgmt");
 let connected = false;
 const displays = {};
 let clientId;
@@ -117,6 +119,7 @@ class HomematicRpc extends utils.Adapter {
         this.on('stateChange', this.onStateChange.bind(this));
         this.on('message', this.onMessage.bind(this));
         this.on('unload', this.onUnload.bind(this));
+        this.deviceManagement = new devicemgmt_1.dmHmRpc(this);
     }
     /**
      * Is called when databases are connected and adapter received configuration.
@@ -422,6 +425,9 @@ class HomematicRpc extends utils.Adapter {
      */
     async onMessage(obj) {
         this.log.debug(`[MSSG] Received: ${JSON.stringify(obj)}`);
+        if (obj.command.startsWith('dm:')) {
+            return;
+        }
         if (obj.command === undefined ||
             obj.command === null ||
             typeof obj.message !== 'object' ||
@@ -1635,6 +1641,7 @@ class HomematicRpc extends utils.Adapter {
         }
     }
 }
+exports.HomematicRpc = HomematicRpc;
 if (require.main !== module) {
     // Export the constructor in compact mode
     module.exports = (options) => new HomematicRpc(options);
