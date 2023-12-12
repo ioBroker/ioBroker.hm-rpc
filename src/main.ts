@@ -12,6 +12,8 @@ import type {
     ListDevicesEntry
 } from './lib/_types';
 
+import { dmHmRpc } from './lib/devicemgmt';
+
 let connected = false;
 const displays: Record<string, any> = {};
 
@@ -22,14 +24,14 @@ let rpcClient: any;
 
 let rpcServer: any;
 
-class HomematicRpc extends utils.Adapter {
+export class HomematicRpc extends utils.Adapter {
     /** On failed rpc call retry in X ms */
     private readonly RETRY_DELAY_MS = 150;
     private readonly metaValues: Record<string, ParamsetObject> = {};
     private readonly dpTypes: Record<string, DatapointTypeObject> = {};
     private lastEvent = 0;
-    private eventInterval: NodeJS.Timer | undefined;
-    private connInterval: NodeJS.Timer | undefined;
+    private eventInterval: NodeJS.Timeout | undefined;
+    private connInterval: NodeJS.Timeout | undefined;
     private connTimeout: NodeJS.Timeout | undefined;
     private daemonURL = '';
     private daemonProto = '';
@@ -48,6 +50,8 @@ class HomematicRpc extends utils.Adapter {
         EPAPER_TONE_INTERVAL: 'number',
         EPAPER_TONE_REPETITIONS: 'number'
     } as const;
+
+    private readonly deviceManagement: dmHmRpc;
 
     private readonly methods = {
         event: (err: any, params: any) => {
@@ -122,6 +126,8 @@ class HomematicRpc extends utils.Adapter {
         this.on('stateChange', this.onStateChange.bind(this));
         this.on('message', this.onMessage.bind(this));
         this.on('unload', this.onUnload.bind(this));
+
+        this.deviceManagement = new dmHmRpc(this);
     }
 
     /**
@@ -453,6 +459,10 @@ class HomematicRpc extends utils.Adapter {
      */
     private async onMessage(obj: ioBroker.Message): Promise<void> {
         this.log.debug(`[MSSG] Received: ${JSON.stringify(obj)}`);
+
+        if (obj.command.startsWith('dm:')) {
+            return;
+        }
 
         if (
             obj.command === undefined ||
