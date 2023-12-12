@@ -1,4 +1,4 @@
-import { ActionContext, DeviceDetails, DeviceInfo, DeviceManagement, DeviceRefresh, InstanceDetails, DeviceStatus } from '@jey-cee/dm-utils';
+import { ActionContext, DeviceDetails, DeviceInfo, DeviceManagement, DeviceRefresh, InstanceDetails } from '@iobroker/dm-utils';
 import { HomematicRpc } from '../main';
 
 export class dmHmRpc extends DeviceManagement<HomematicRpc>{

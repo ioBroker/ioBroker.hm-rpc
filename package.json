@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "@iobroker/adapter-core": "^3.0.4",
-    "@jey-cee/dm-utils": "^0.0.5",
+    "@iobroker/dm-utils": "^0.1.3",
     "binrpc": "^3.3.1",
     "homematic-xmlrpc": "^1.0.2"
   },

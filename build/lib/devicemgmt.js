@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.dmHmRpc = void 0;
-const dm_utils_1 = require("@jey-cee/dm-utils");
+const dm_utils_1 = require("@iobroker/dm-utils");
 class dmHmRpc extends dm_utils_1.DeviceManagement {
     getInstanceInfo() {
         const data = {
