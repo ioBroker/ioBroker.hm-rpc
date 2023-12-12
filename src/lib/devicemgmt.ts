@@ -42,7 +42,7 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc>{
         const devices = await this.adapter.getDevicesAsync();
         const arrDevices = [];
         for (const i in devices) {
-            const status: {connection?: string, rssi?: string, lowbat?: string | number | boolean} = {};
+            const status: { connection?: string, rssi?: string, lowbat?: string | number | boolean } = {};
 
             let hasDetails = false;
             if(devices[i].native.AVAILABLE_FIRMWARE || devices[i].native.FIRMWARE) {
@@ -66,7 +66,7 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc>{
             const res = {
                 id: devices[i]._id,
                 name: devices[i].common.name,
-                icon: devices[i].common.icon ? `/adapter/hm-rpc${devices[i].common.icon}` : null,
+                icon: devices[i].common.icon ? `../../adapter/hm-rpc${devices[i].common.icon}` : null,
                 manufacturer: 'EQ-3 AG',
                 model: devices[i].native.TYPE ? devices[i].native.TYPE : null,
                 status: status,
@@ -165,7 +165,6 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc>{
             data: {
                 newName: ''
             },
-            // @ts-ignore
             title: {
                 en: 'Enter new name',
                 de: 'Neuen Namen eingeben',
@@ -177,6 +176,7 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc>{
                 es: 'Ingrese un nuevo nombre',
                 pl: 'Wpisz nowe imię',
                 'zh-cn': '输入新名称',
+                // @ts-expect-error
                 uk: 'Введіть нове ім\'я'
             }
         });

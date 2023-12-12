@@ -930,7 +930,7 @@ class HomematicRpc extends utils.Adapter {
                 type: 'state',
                 common: {
                     name: key,
-                    role: '',
+                    role: '', // will be filled
                     def: paramObj.DEFAULT,
                     type: this.COMMON_TYPE_MAPPING[paramObj.TYPE] || 'mixed',
                     read: !!(paramObj.OPERATIONS & 1),

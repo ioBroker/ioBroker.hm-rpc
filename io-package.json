@@ -147,6 +147,9 @@
         "js-controller": ">=3.3.0"
       }
     ],
+    "supportedMessages": {
+      "deviceManager": true
+    },
     "plugins": {
       "sentry": {
         "dsn": "https://1bc0c96f48e44483b283bc5fc0ca91e2@sentry.iobroker.net/10",

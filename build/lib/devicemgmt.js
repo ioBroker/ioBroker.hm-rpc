@@ -62,7 +62,7 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
             const res = {
                 id: devices[i]._id,
                 name: devices[i].common.name,
-                icon: devices[i].common.icon ? `/adapter/hm-rpc${devices[i].common.icon}` : null,
+                icon: devices[i].common.icon ? `../../adapter/hm-rpc${devices[i].common.icon}` : null,
                 manufacturer: 'EQ-3 AG',
                 model: devices[i].native.TYPE ? devices[i].native.TYPE : null,
                 status: status,
@@ -153,7 +153,6 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
             data: {
                 newName: ''
             },
-            // @ts-ignore
             title: {
                 en: 'Enter new name',
                 de: 'Neuen Namen eingeben',
@@ -165,6 +164,7 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                 es: 'Ingrese un nuevo nombre',
                 pl: 'Wpisz nowe imię',
                 'zh-cn': '输入新名称',
+                // @ts-expect-error
                 uk: 'Введіть нове ім\'я'
             }
         });
