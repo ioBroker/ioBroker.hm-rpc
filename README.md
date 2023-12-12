@@ -177,7 +177,7 @@ To update all available images execute `npm run update-images`
 * (foxriver76) we ensure, that the `LEVEL` datapoint of blinds is of role `level.blind` (closes #681)
 
 ### 1.15.15 (2022-08-25)
-* (foxriver76) Retry once on `(UNREACH)` and `Failure` errors to avoid tmeporary communication issues (closes #467)
+* (foxriver76) Retry once on `(UNREACH)` and `Failure` errors to avoid temporary communication issues (closes #467)
 * (foxriver76) we have updated some device icons
 
 ### 1.15.12 (2022-03-19)
@@ -381,7 +381,7 @@ of this approach (more requests to CCU on first setup)
 * (foxriver76) fixed problem with max values of value lists
 
 ### 1.12.0 (2019-12-05)
-* (foxriver76) no longer use adapter.objects
+* (foxriver76) no longer use `adapter.objects`
 * (foxriver76) js-controller v > 2 required
 
 ### 1.11.1 (2019-11-20)
