@@ -30,7 +30,7 @@ const tools = __importStar(require("./lib/tools"));
 const roles_1 = require("./lib/roles");
 const crypto_1 = require("crypto");
 const promises_1 = require("timers/promises");
-const devicemgmt_1 = require("./lib/devicemgmt");
+const deviceManager_1 = require("./lib/deviceManager");
 let connected = false;
 const displays = {};
 let clientId;
@@ -119,7 +119,7 @@ class HomematicRpc extends utils.Adapter {
         this.on('stateChange', this.onStateChange.bind(this));
         this.on('message', this.onMessage.bind(this));
         this.on('unload', this.onUnload.bind(this));
-        this.deviceManagement = new devicemgmt_1.dmHmRpc(this);
+        this.deviceManagement = new deviceManager_1.dmHmRpc(this);
     }
     /**
      * Is called when databases are connected and adapter received configuration.

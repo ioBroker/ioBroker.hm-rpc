@@ -12,7 +12,7 @@ import type {
     ListDevicesEntry
 } from './lib/_types';
 
-import { dmHmRpc } from './lib/devicemgmt';
+import { dmHmRpc } from './lib/deviceManager';
 
 let connected = false;
 const displays: Record<string, any> = {};
