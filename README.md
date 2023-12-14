@@ -17,7 +17,7 @@ Connects HomeMatic Interface-Processes (BidCos-Services, Homegear and CUxD) via 
 Sentry.io is a service for developers to get an overview about errors from their applications. Exactly this is implemented in this adapter.
 
 When the adapter crashes or another Code error happens, this error message that also appears in the ioBroker log is submitted to Sentry. 
-When you have allowed ioBroker GmbH to collect diagnostic data then also your installation ID (this is just a unique ID **without** any additional infos about you, email, name or such) is included. This allows Sentry to group errors and show how many unique users are affected by such an error. All of these helps me to provide error free adapters that basically never crashs.
+When you have allowed ioBroker GmbH to collect diagnostic data, then also your installation ID (this is just a unique ID **without** any additional infos about you, email, name or such) is included. This allows Sentry to group errors and show how many unique users are affected by such an error. All of these helps me to provide error-free adapters that basically never crash.
 
 ## Configuration
 
@@ -160,6 +160,7 @@ To update all available images execute `npm run update-images`
 -->
 ### **WORK IN PROGRESS**
 * (JeyCee) Added support for the device manager
+* (bluefox) Added JSON config
 
 ### 1.15.19 (2023-08-08)
 * (bluefox) Updated packages
@@ -198,7 +199,7 @@ To update all available images execute `npm run update-images`
 * (foxriver76) we now ensure, that the `uuid` used for connection is really unique
 
 ### 1.15.7 (2022-02-20)
-* (foxriver76) fixed new devices beeing created as `undefined`
+* (foxriver76) fixed new devices being created as `undefined`
 
 ### 1.15.6 (2022-02-16)
 * (foxriver76) implemented workaround for the RSSI_DEVICE 128 bug if devices connect to HMIP-HAP (fixes #346, #469, #402)
@@ -307,7 +308,7 @@ To update all available images execute `npm run update-images`
 * (foxriver76) now logging exact command on error
 
 ### 1.14.18 (2020-08-08)
-* (foxriver76) fix issue when CuxD listDevices does not deliver valid array
+* (foxriver76) fix issue when CuxD listDevices does not deliver a valid array
 * (foxriver76) fix error with % scaling in some edge cases
 
 ### 1.14.15 (2020-07-21)
@@ -317,14 +318,14 @@ To update all available images execute `npm run update-images`
 * (bluefox) Added roles for presence sensor
 
 ### 1.14.13 (2020-07-07)
-* (foxriver76) fix edge case on E-PAPER command (IOBROKER-HM-RPC-5Z)
+* (foxriver76) fixed the edge case on E-PAPER command (IOBROKER-HM-RPC-5Z)
 * (foxriver76) Catch error on `createDevices` if CCU does not deliver valid ADDRESS (IOBROKER-HM-RPC-5X)
 
 ### 1.14.12 (2020-07-03)
 * (foxriver76) Continue execution if error on retrieving a paramset from CCU
 
 ### 1.14.11 (2020-06-21)
-* (bluefox) Change name of Instance according to the role (RF, Wired, HM-IP)
+* (bluefox) Change name of Instance, according to the role (RF, Wired, HM-IP)
 
 ### 1.14.10 (2020-06-14)
 * (foxriver76) removed metadata caching completely because metadata can be dynamic due to FW update or CuxD
@@ -333,13 +334,13 @@ To update all available images execute `npm run update-images`
 * (foxriver76) added some HM-IP roles for channel 0
 
 ### 1.14.5 (2020-05-29)
-* (foxriver76) fixed edge case problem IOBROKER-HM-RPC-5E
+* (foxriver76) fixed the edge case problem IOBROKER-HM-RPC-5E
 
 ### 1.14.4 (2020-05-28)
 * (jens-maus) updated all device images to latest ones include HM-IP-wired ones
 
 ### 1.14.3 (2020-05-18)
-* (foxriver76) catch edge case error if row.value has no native
+* (foxriver76) catch edge case error if `row.value` has no native
 
 ### 1.14.2 (2020-04-24)
 * (foxriver76) catch errors on rpc client creation
@@ -347,7 +348,7 @@ To update all available images execute `npm run update-images`
 ### 1.14.1 (2020-04-23)
 * (foxriver76) catch potential errors on createServer
 * (foxriver76) new metadata approach: we only store metadata gathered by the user,
-otherwise cached metadata can be very old and outdated, we have to monitor performance
+otherwise cached metadata can be very old and outdated, we have to monitor the performance 
 of this approach (more requests to CCU on first setup)
 * (foxriver76) add name and icon to meta folder
 * (foxriver76) minor code improvements

@@ -160,7 +160,7 @@
       }
     },
     "adminUI": {
-      "config": "materialize"
+      "config": "json"
     },
     "titleLang": {
       "en": "HomeMatic RPC",

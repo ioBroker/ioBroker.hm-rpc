@@ -1,0 +1,199 @@
+{
+  "i18n": true,
+  "type": "tabs",
+  "items": {
+    "_main": {
+      "type": "panel",
+      "label": "Main settings",
+      "items": {
+        "homematicAddress": {
+          "type": "text",
+          "label": "HomeMatic Address",
+          "sm": 10,
+          "md": 4,
+          "lg": 2
+        },
+        "homematicPort": {
+          "type": "port",
+          "label": "HomeMatic Port",
+          "sm": 2,
+          "md": 2,
+          "lg": 1,
+          "onChange": {
+            "alsoDependsOn": [
+              "useHttps",
+              "daemon",
+              "type"
+            ],
+            "calculateFunc": "data.daemon === 'rfd' ? (data.useHttps && data.type !== 'bin' ? 42001 : 2001) : (data.daemon === 'virtual-devices' ? (data.useHttps && data.type !== 'bin' ? 49292 : 9292) : (data.daemon === 'hs485d' ? (data.useHttps && data.type !== 'bin' ? 42000 : 2000) : (data.daemon === 'CUxD' ? 8701 : (data.daemon === 'HMIP' ? (data.useHttps && data.type !== 'bin' ? 42010 : 2010) : data.homematicPort))))",
+            "ignoreOwnChanges": true
+          }
+        },
+        "adapterAddress": {
+          "newLine": true,
+          "type": "ip",
+          "label": "Adapter Address",
+          "sm": 10,
+          "md": 4,
+          "lg": 2
+        },
+        "port": {
+          "type": "number",
+          "min": 0,
+          "max": 65535,
+          "label": "Adapter Port",
+          "sm": 2,
+          "md": 2,
+          "lg": 1
+        },
+        "daemon": {
+          "newLine": true,
+          "type": "select",
+          "label": "Daemon",
+          "options": [
+            {
+              "label": "rfd",
+              "value": "rfd"
+            },
+            {
+              "label": "Virtual Devices",
+              "value": "virtual-devices"
+            },
+            {
+              "label": "hs485d",
+              "value": "hs485d"
+            },
+            {
+              "label": "CUxD",
+              "value": "CUxD"
+            },
+            {
+              "label": "HomeMatic IP",
+              "value": "HMIP"
+            },
+            {
+              "label": "Homegear",
+              "value": "Homegear"
+            }
+          ],
+          "sm": 10,
+          "md": 4,
+          "lg": 2
+        },
+        "type": {
+          "type": "select",
+          "label": "Protocol",
+          "options": [
+            {
+              "label": "XML-RPC",
+              "value": "xml"
+            },
+            {
+              "label": "BIN-RPC",
+              "value": "bin"
+            }
+          ],
+          "sm": 2,
+          "md": 2,
+          "lg": 1
+        },
+        "forceReInit": {
+          "newLine": true,
+          "type": "checkbox",
+          "label": "Force objects re-init",
+          "sm": 12
+        }
+      }
+    },
+    "_advanced": {
+      "type": "panel",
+      "label": "Additional settings",
+      "items": {
+        "callbackAddress": {
+          "type": "text",
+          "label": "Adapter Callback Address",
+          "sm": 10,
+          "md": 4,
+          "lg": 2
+        },
+        "checkInitInterval": {
+          "newLine": true,
+          "type": "number",
+          "label": "Check communication interval",
+          "help": "in seconds",
+          "sm": 10,
+          "md": 4,
+          "lg": 2
+        },
+        "reconnectInterval": {
+          "type": "number",
+          "label": "Reconnect interval",
+          "help": "in seconds",
+          "sm": 10,
+          "md": 4,
+          "lg": 2
+        },
+        "dontDelete": {
+          "newLine": true,
+          "type": "checkbox",
+          "label": "Don't delete devices",
+          "sm": 12
+        },
+        "useHttps": {
+          "newLine": true,
+          "type": "checkbox",
+          "label": "Use https",
+          "sm": 12,
+          "disabled": "data.type === 'bin'",
+          "onChange": {
+            "alsoDependsOn": [
+              "type"
+            ],
+            "calculateFunc": "data.type === 'bin' ? false : data.useHttps"
+          }
+        },
+        "username": {
+          "newLine": true,
+          "type": "text",
+          "label": "Username",
+          "sm": 4,
+          "lg": 2,
+          "hidden": "data.type === 'bin'"
+        },
+        "password": {
+          "repeat": true,
+          "type": "password",
+          "label": "Password",
+          "hidden": "data.type === 'bin'",
+          "sm": 8,
+          "lg": 4
+        }
+      }
+    },
+    "_deviceManager": {
+      "type": "panel",
+      "label": "Device manager",
+      "items": {
+        "_dm": {
+          "type": "deviceManager",
+          "sm": 12,
+          "style": {
+            "width": "100%",
+            "height": "100%",
+            "overflow": "hidden"
+          }
+        }
+      },
+      "style": {
+        "width": "100%",
+        "height": "100%",
+        "overflow": "hidden"
+      },
+      "innerStyle": {
+        "width": "100%",
+        "height": "100%",
+        "overflow": "hidden"
+      }
+    }
+  }
+}
