@@ -119,12 +119,12 @@ class HomematicRpc extends utils.Adapter {
         this.on('stateChange', this.onStateChange.bind(this));
         this.on('message', this.onMessage.bind(this));
         this.on('unload', this.onUnload.bind(this));
-        this.deviceManagement = new deviceManager_1.dmHmRpc(this);
     }
     /**
      * Is called when databases are connected and adapter received configuration.
      */
     async onReady() {
+        this.deviceManagement = new deviceManager_1.dmHmRpc(this);
         this.subscribeStates('*');
         this.homematicPath = this.config.daemon === 'virtual-devices' ? '/groups/' : '/';
         this.config.reconnectInterval = this.config.reconnectInterval || 30;
@@ -633,7 +633,7 @@ class HomematicRpc extends utils.Adapter {
         }
         catch (e) {
             this.log.error(`Init not possible, going to stop: ${e.message}`);
-            setTimeout(() => this.stop && this.stop(), 30000);
+            // setTimeout(() => this.stop && this.stop(), 30_000);
         }
     }
     /**
@@ -995,6 +995,9 @@ class HomematicRpc extends utils.Adapter {
             }
             else if (paramObj.TYPE === 'ACTION' && obj.common.write) {
                 obj.common.role = 'button';
+            }
+            if (obj.common.role.includes('button') && !obj.common.write) {
+                obj.common.write = true;
             }
             // sometimes min/max/def is string on hmip meta in combination with value_list
             // note, that there are cases (Virtual heating devices) which also provide min/max/def with

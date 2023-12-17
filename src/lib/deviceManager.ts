@@ -4,21 +4,37 @@ import {
     DeviceManagement,
     DeviceRefresh,
     DeviceStatus,
-    MessageContext,
     ErrorResponse
 } from '@iobroker/dm-utils';
-import { DeviceInfo, InstanceDetails, DeviceControl } from '@iobroker/dm-utils/build/types/adapter';
-import { ControlState } from '@iobroker/dm-utils/build/types/base';
-import ChannelDetector, { DetectOptions, Types, PatternControl } from '@iobroker/type-detector';
+import { DeviceInfo, DeviceControl } from '@iobroker/dm-utils/build/types/adapter';
+import { ControlState, ChannelInfo } from '@iobroker/dm-utils/build/types/base';
+import ChannelDetector, { DetectOptions, PatternControl } from '@iobroker/type-detector';
 
 import { HomematicRpc } from '../main';
 
+function getText(text: ioBroker.StringOrTranslated, lang: ioBroker.Languages): string {
+    if (typeof text === 'string') {
+        return text;
+    }
+    if (text) {
+        return text[lang] || text.en;
+    }
+
+    return '';
+}
+
 export class dmHmRpc extends DeviceManagement<HomematicRpc> {
     private typeDetector: ChannelDetector;
+    private language: ioBroker.Languages = 'en';
 
     constructor(adapter: HomematicRpc) {
         super(adapter);
         this.typeDetector = new ChannelDetector();
+        adapter.getForeignObjectAsync('system.config').then(obj => {
+            if (obj && obj.common && obj.common.language) {
+                this.language = obj.common.language;
+            }
+        });
     }
 
     protected async listDevices(): Promise<DeviceInfo[]> {
@@ -125,6 +141,23 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
             }
         }
 
+        controls.sort((a, b) => {
+            if (a.channel && b.channel) {
+                const aName = getText(a.channel.name, this.language);
+                const bName = getText(b.channel.name, this.language);
+
+                if (aName === bName || (a.channel.order === b.channel.order && a.channel.order !== undefined)) {
+                    return a.id.localeCompare(b.id);
+                }
+                if (a.channel.order !== undefined && b.channel.order !== undefined) {
+                    return a.channel.order - b.channel.order;
+                }
+                return bName.localeCompare(bName);
+            }
+
+            return a.id.localeCompare(b.id);
+        });
+
         return controls.length ? controls : undefined;
     }
 
@@ -132,45 +165,56 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
         tdControl: PatternControl,
         objects: Record<string, ioBroker.Object>
     ): DeviceControl[] | undefined {
-        const parts = tdControl.states[0].id.split('.');
+        const controls: DeviceControl[] = [];
 
-        if (tdControl.type === Types.button) {
-            const control: DeviceControl = {
-                id: `${parts[3]}.${parts[4]}`,
-                type: 'button',
-                stateId: tdControl.states[0].id,
-                label: tdControl.states[0].name,
-                handler: async (
-                    deviceId: string,
-                    actionId: string,
-                    state: ControlState
-                ): Promise<ErrorResponse | ioBroker.State> => {
-                    await this.adapter.setForeignStateAsync(actionId, state, false);
-                    const currentState = await this.adapter.getStateAsync(`${deviceId}.${actionId}`);
-                    if (currentState) {
-                        return currentState;
-                    }
-                    return {
-                        error: {
-                            message: 'Can not get current state',
-                            code: 305
-                        }
-                    };
-                }
+        tdControl.states.forEach(state => {
+            const parts = state.id.split('.');
+            const stateName: string = (
+                parts.pop() ||
+                objects[state.id].native.CONTROL ||
+                state.id.split('.').pop() ||
+                state.name ||
+                ''
+            ).replaceAll('_', ' ');
+            const channelId = parts.join('.');
+            const channel: ChannelInfo = {
+                name: objects[channelId].common.name || objects[channelId].native.TYPE || parts[parts.length - 1],
+                description: objects[channelId].native.TYPE,
+                order: parseInt(parts[parts.length - 1], 10)
             };
-            return [control];
-        }
 
-        if (tdControl.type === Types.lock) {
-            const controls: DeviceControl[] = [];
-            tdControl.states.forEach(state => {
-                if (objects[state.id] && objects[state.id].common) {
-                    if (objects[state.id].common.role?.includes('switch')) {
+            if (objects[state.id] && objects[state.id].common) {
+                if (
+                    objects[state.id].common.write !== false ||
+                    objects[state.id].common.role?.includes('button') ||
+                    stateName?.startsWith('PRESS ')
+                ) {
+                    if (objects[state.id].common.states) {
+                        const options: { label: ioBroker.StringOrTranslated; value: ControlState }[] = [];
+                        if (Array.isArray(objects[state.id].common.states)) {
+                            objects[state.id].common.states.forEach((value: number) => {
+                                options.push({
+                                    label: value.toString(),
+                                    value
+                                });
+                            });
+                        } else {
+                            Object.keys(objects[state.id].common.states).forEach(value => {
+                                options.push({
+                                    label: objects[state.id].common.states[value],
+                                    value
+                                });
+                            });
+                        }
+
                         controls.push({
                             id: state.id,
-                            type: 'switch',
+                            type: 'select',
+                            options,
+                            channel,
+                            description: objects[state.id].common.desc,
                             stateId: state.id,
-                            label: objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
+                            label: stateName, // objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
                             getStateHandler: async (
                                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
                                 deviceId: string,
@@ -208,21 +252,185 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                                 };
                             }
                         });
-                    } else if (objects[state.id].common.role?.includes('button')) {
-                        controls.push({
+                    } else if (objects[state.id].common.type === 'number') {
+                        const control: DeviceControl = {
                             id: state.id,
-                            type: 'button',
                             stateId: state.id,
-                            label: objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
+                            description: objects[state.id].common.desc,
+                            type: 'number',
+                            channel,
+                            unit: objects[state.id].common.unit,
+                            label: stateName, // objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
+                            min: objects[state.id].common.min,
+                            max: objects[state.id].common.max,
+                            getStateHandler: async (
+                                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                                deviceId: string,
+                                actionId: string
+                            ): Promise<ioBroker.State | ErrorResponse> => {
+                                const currentState = await this.adapter.getForeignStateAsync(actionId);
+                                if (currentState) {
+                                    return currentState;
+                                }
+                                return {
+                                    error: {
+                                        message: 'Can not get current state',
+                                        code: 305
+                                    }
+                                };
+                            },
                             handler: async (
+                                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                                 deviceId: string,
                                 actionId: string,
                                 state: ControlState
                             ): Promise<ErrorResponse | ioBroker.State> => {
                                 console.log(state);
 
-                                await this.adapter.setForeignStateAsync(actionId, true, false);
-                                const currentState = await this.adapter.getStateAsync(`${deviceId}.${actionId}`);
+                                await this.adapter.setForeignStateAsync(actionId, state, false);
+                                const currentState = await this.adapter.getStateAsync(actionId);
+                                if (currentState) {
+                                    return currentState;
+                                }
+                                return {
+                                    error: {
+                                        message: 'Can not get current state',
+                                        code: 305
+                                    }
+                                };
+                            }
+                        };
+
+                        if (objects[state.id].common.unit === '%') {
+                            control.type = 'slider';
+                            control.min = 0;
+                            control.max = 100;
+                        } else if (
+                            objects[state.id].common.min === undefined &&
+                            objects[state.id].common.max === undefined
+                        ) {
+                            control.type = 'number';
+                        } else if (
+                            objects[state.id].common.min === undefined &&
+                            objects[state.id].common.max !== undefined
+                        ) {
+                            control.type = 'slider';
+                            objects[state.id].common.min = 0;
+                        }
+
+                        controls.push(control);
+                    } else if (objects[state.id].common.type === 'boolean') {
+                        if (
+                            objects[state.id].common.read === false ||
+                            objects[state.id].common.role?.includes('button') ||
+                            stateName?.startsWith('PRESS ')
+                        ) {
+                            controls.push({
+                                id: state.id,
+                                type: 'button',
+                                stateId: state.id,
+                                channel,
+                                label: stateName, // objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
+                                handler: async (
+                                    deviceId: string,
+                                    actionId: string,
+                                    state: ControlState
+                                ): Promise<ErrorResponse | ioBroker.State> => {
+                                    console.log(state);
+
+                                    await this.adapter.setForeignStateAsync(actionId, true, false);
+                                    const currentState = await this.adapter.getStateAsync(actionId);
+                                    if (currentState) {
+                                        return currentState;
+                                    }
+                                    return {
+                                        error: {
+                                            message: 'Can not get current state',
+                                            code: 305
+                                        }
+                                    };
+                                }
+                            });
+                        } else {
+                            controls.push({
+                                id: state.id,
+                                type: 'switch',
+                                channel,
+                                stateId: state.id,
+                                label: stateName, // objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
+                                getStateHandler: async (
+                                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                                    deviceId: string,
+                                    actionId: string
+                                ): Promise<ioBroker.State | ErrorResponse> => {
+                                    const currentState = await this.adapter.getForeignStateAsync(actionId);
+                                    if (currentState) {
+                                        return currentState;
+                                    }
+                                    return {
+                                        error: {
+                                            message: 'Can not get current state',
+                                            code: 305
+                                        }
+                                    };
+                                },
+                                handler: async (
+                                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                                    deviceId: string,
+                                    actionId: string,
+                                    state: ControlState
+                                ): Promise<ErrorResponse | ioBroker.State> => {
+                                    console.log(state);
+
+                                    await this.adapter.setForeignStateAsync(actionId, state, false);
+                                    const currentState = await this.adapter.getStateAsync(actionId);
+                                    if (currentState) {
+                                        return currentState;
+                                    }
+                                    return {
+                                        error: {
+                                            message: 'Can not get current state',
+                                            code: 305
+                                        }
+                                    };
+                                }
+                            });
+                        }
+                    } else {
+                        controls.push({
+                            id: state.id,
+                            type: 'text',
+                            unit: objects[state.id].common.unit,
+                            description: objects[state.id].common.desc,
+                            stateId: state.id,
+                            channel,
+                            label: stateName, // objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
+                            getStateHandler: async (
+                                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                                deviceId: string,
+                                actionId: string
+                            ): Promise<ioBroker.State | ErrorResponse> => {
+                                const currentState = await this.adapter.getForeignStateAsync(actionId);
+                                if (currentState) {
+                                    return currentState;
+                                }
+                                return {
+                                    error: {
+                                        message: 'Can not get current state',
+                                        code: 305
+                                    }
+                                };
+                            },
+                            handler: async (
+                                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                                deviceId: string,
+                                actionId: string,
+                                state: ControlState
+                            ): Promise<ErrorResponse | ioBroker.State> => {
+                                console.log(state);
+
+                                await this.adapter.setForeignStateAsync(actionId, state, false);
+                                const currentState = await this.adapter.getStateAsync(actionId);
                                 if (currentState) {
                                     return currentState;
                                 }
@@ -235,11 +443,52 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                             }
                         });
                     }
-                }
-            });
+                } else if (objects[state.id].common.read !== false) {
+                    const states = objects[state.id].common.states;
 
-            return controls;
-        }
+                    controls.push({
+                        id: state.id,
+                        type: 'info',
+                        stateId: state.id,
+                        description: objects[state.id].common.desc,
+                        channel,
+                        unit: objects[state.id].common.unit,
+                        label: stateName, // objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
+                        getStateHandler: async (
+                            deviceId: string,
+                            actionId: string
+                        ): Promise<ErrorResponse | ioBroker.State> => {
+                            console.log(state);
+
+                            const currentState = await this.adapter.getStateAsync(actionId);
+                            if (currentState) {
+                                if (states) {
+                                    const translatedValue = states[currentState.val as number | string];
+                                    if (translatedValue !== undefined) {
+                                        currentState.val = translatedValue;
+                                    }
+                                }
+                                if (currentState.val === true) {
+                                    currentState.val = 'true';
+                                } else if (currentState.val === false) {
+                                    currentState.val = 'false';
+                                }
+
+                                return currentState;
+                            }
+                            return {
+                                error: {
+                                    message: 'Can not get current state',
+                                    code: 305
+                                }
+                            };
+                        }
+                    });
+                }
+            }
+        });
+
+        return controls;
     }
 
     protected async getDeviceDetails(id: string): Promise<DeviceDetails | null | { error: string }> {

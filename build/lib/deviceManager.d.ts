@@ -3,6 +3,7 @@ import { DeviceInfo } from '@iobroker/dm-utils/build/types/adapter';
 import { HomematicRpc } from '../main';
 export declare class dmHmRpc extends DeviceManagement<HomematicRpc> {
     private typeDetector;
+    private language;
     constructor(adapter: HomematicRpc);
     protected listDevices(): Promise<DeviceInfo[]>;
     private getControls;

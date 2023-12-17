@@ -51,7 +51,7 @@ export class HomematicRpc extends utils.Adapter {
         EPAPER_TONE_REPETITIONS: 'number'
     } as const;
 
-    private readonly deviceManagement: dmHmRpc;
+    private deviceManagement: dmHmRpc | undefined;
 
     private readonly methods = {
         event: (err: any, params: any) => {
@@ -126,14 +126,14 @@ export class HomematicRpc extends utils.Adapter {
         this.on('stateChange', this.onStateChange.bind(this));
         this.on('message', this.onMessage.bind(this));
         this.on('unload', this.onUnload.bind(this));
-
-        this.deviceManagement = new dmHmRpc(this);
     }
 
     /**
      * Is called when databases are connected and adapter received configuration.
      */
     private async onReady(): Promise<void> {
+        this.deviceManagement = new dmHmRpc(this);
+
         this.subscribeStates('*');
 
         this.homematicPath = this.config.daemon === 'virtual-devices' ? '/groups/' : '/';
@@ -690,7 +690,7 @@ export class HomematicRpc extends utils.Adapter {
             }
         } catch (e: any) {
             this.log.error(`Init not possible, going to stop: ${e.message}`);
-            setTimeout(() => this.stop && this.stop(), 30_000);
+            // setTimeout(() => this.stop && this.stop(), 30_000);
         }
     }
 
@@ -1105,6 +1105,10 @@ export class HomematicRpc extends utils.Adapter {
                 obj.common.role = metaRoles.dpNAME[key];
             } else if (paramObj.TYPE === 'ACTION' && obj.common.write) {
                 obj.common.role = 'button';
+            }
+
+            if (obj.common.role.includes('button') && !obj.common.write) {
+                obj.common.write = true;
             }
 
             // sometimes min/max/def is string on hmip meta in combination with value_list

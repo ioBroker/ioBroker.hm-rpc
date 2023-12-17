@@ -1,35 +1,30 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.dmHmRpc = void 0;
 const dm_utils_1 = require("@iobroker/dm-utils");
-const type_detector_1 = __importStar(require("@iobroker/type-detector"));
+const type_detector_1 = __importDefault(require("@iobroker/type-detector"));
+function getText(text, lang) {
+    if (typeof text === 'string') {
+        return text;
+    }
+    if (text) {
+        return text[lang] || text.en;
+    }
+    return '';
+}
 class dmHmRpc extends dm_utils_1.DeviceManagement {
     constructor(adapter) {
         super(adapter);
+        this.language = 'en';
         this.typeDetector = new type_detector_1.default();
+        adapter.getForeignObjectAsync('system.config').then(obj => {
+            if (obj && obj.common && obj.common.language) {
+                this.language = obj.common.language;
+            }
+        });
     }
     async listDevices() {
         const devices = await this.adapter.getDevicesAsync();
@@ -126,43 +121,68 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                 });
             }
         }
+        controls.sort((a, b) => {
+            if (a.channel && b.channel) {
+                const aName = getText(a.channel.name, this.language);
+                const bName = getText(b.channel.name, this.language);
+                if (aName === bName || (a.channel.order === b.channel.order && a.channel.order !== undefined)) {
+                    return a.id.localeCompare(b.id);
+                }
+                if (a.channel.order !== undefined && b.channel.order !== undefined) {
+                    return a.channel.order - b.channel.order;
+                }
+                return bName.localeCompare(bName);
+            }
+            return a.id.localeCompare(b.id);
+        });
         return controls.length ? controls : undefined;
     }
     typedControl2DeviceManager(tdControl, objects) {
-        const parts = tdControl.states[0].id.split('.');
-        if (tdControl.type === type_detector_1.Types.button) {
-            const control = {
-                id: `${parts[3]}.${parts[4]}`,
-                type: 'button',
-                stateId: tdControl.states[0].id,
-                label: tdControl.states[0].name,
-                handler: async (deviceId, actionId, state) => {
-                    await this.adapter.setForeignStateAsync(actionId, state, false);
-                    const currentState = await this.adapter.getStateAsync(`${deviceId}.${actionId}`);
-                    if (currentState) {
-                        return currentState;
-                    }
-                    return {
-                        error: {
-                            message: 'Can not get current state',
-                            code: 305
-                        }
-                    };
-                }
+        const controls = [];
+        tdControl.states.forEach(state => {
+            var _a, _b;
+            const parts = state.id.split('.');
+            const stateName = (parts.pop() ||
+                objects[state.id].native.CONTROL ||
+                state.id.split('.').pop() ||
+                state.name ||
+                '').replaceAll('_', ' ');
+            const channelId = parts.join('.');
+            const channel = {
+                name: objects[channelId].common.name || objects[channelId].native.TYPE || parts[parts.length - 1],
+                description: objects[channelId].native.TYPE,
+                order: parseInt(parts[parts.length - 1], 10)
             };
-            return [control];
-        }
-        if (tdControl.type === type_detector_1.Types.lock) {
-            const controls = [];
-            tdControl.states.forEach(state => {
-                var _a, _b;
-                if (objects[state.id] && objects[state.id].common) {
-                    if ((_a = objects[state.id].common.role) === null || _a === void 0 ? void 0 : _a.includes('switch')) {
+            if (objects[state.id] && objects[state.id].common) {
+                if (objects[state.id].common.write !== false ||
+                    ((_a = objects[state.id].common.role) === null || _a === void 0 ? void 0 : _a.includes('button')) ||
+                    (stateName === null || stateName === void 0 ? void 0 : stateName.startsWith('PRESS '))) {
+                    if (objects[state.id].common.states) {
+                        const options = [];
+                        if (Array.isArray(objects[state.id].common.states)) {
+                            objects[state.id].common.states.forEach((value) => {
+                                options.push({
+                                    label: value.toString(),
+                                    value
+                                });
+                            });
+                        }
+                        else {
+                            Object.keys(objects[state.id].common.states).forEach(value => {
+                                options.push({
+                                    label: objects[state.id].common.states[value],
+                                    value
+                                });
+                            });
+                        }
                         controls.push({
                             id: state.id,
-                            type: 'switch',
+                            type: 'select',
+                            options,
+                            channel,
+                            description: objects[state.id].common.desc,
                             stateId: state.id,
-                            label: objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
+                            label: stateName, // objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
                             getStateHandler: async (
                             // eslint-disable-next-line @typescript-eslint/no-unused-vars
                             deviceId, actionId) => {
@@ -195,16 +215,159 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                             }
                         });
                     }
-                    else if ((_b = objects[state.id].common.role) === null || _b === void 0 ? void 0 : _b.includes('button')) {
+                    else if (objects[state.id].common.type === 'number') {
+                        const control = {
+                            id: state.id,
+                            stateId: state.id,
+                            description: objects[state.id].common.desc,
+                            type: 'number',
+                            channel,
+                            unit: objects[state.id].common.unit,
+                            label: stateName, // objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
+                            min: objects[state.id].common.min,
+                            max: objects[state.id].common.max,
+                            getStateHandler: async (
+                            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                            deviceId, actionId) => {
+                                const currentState = await this.adapter.getForeignStateAsync(actionId);
+                                if (currentState) {
+                                    return currentState;
+                                }
+                                return {
+                                    error: {
+                                        message: 'Can not get current state',
+                                        code: 305
+                                    }
+                                };
+                            },
+                            handler: async (
+                            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                            deviceId, actionId, state) => {
+                                console.log(state);
+                                await this.adapter.setForeignStateAsync(actionId, state, false);
+                                const currentState = await this.adapter.getStateAsync(actionId);
+                                if (currentState) {
+                                    return currentState;
+                                }
+                                return {
+                                    error: {
+                                        message: 'Can not get current state',
+                                        code: 305
+                                    }
+                                };
+                            }
+                        };
+                        if (objects[state.id].common.unit === '%') {
+                            control.type = 'slider';
+                            control.min = 0;
+                            control.max = 100;
+                        }
+                        else if (objects[state.id].common.min === undefined &&
+                            objects[state.id].common.max === undefined) {
+                            control.type = 'number';
+                        }
+                        else if (objects[state.id].common.min === undefined &&
+                            objects[state.id].common.max !== undefined) {
+                            control.type = 'slider';
+                            objects[state.id].common.min = 0;
+                        }
+                        controls.push(control);
+                    }
+                    else if (objects[state.id].common.type === 'boolean') {
+                        if (objects[state.id].common.read === false ||
+                            ((_b = objects[state.id].common.role) === null || _b === void 0 ? void 0 : _b.includes('button')) ||
+                            (stateName === null || stateName === void 0 ? void 0 : stateName.startsWith('PRESS '))) {
+                            controls.push({
+                                id: state.id,
+                                type: 'button',
+                                stateId: state.id,
+                                channel,
+                                label: stateName, // objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
+                                handler: async (deviceId, actionId, state) => {
+                                    console.log(state);
+                                    await this.adapter.setForeignStateAsync(actionId, true, false);
+                                    const currentState = await this.adapter.getStateAsync(actionId);
+                                    if (currentState) {
+                                        return currentState;
+                                    }
+                                    return {
+                                        error: {
+                                            message: 'Can not get current state',
+                                            code: 305
+                                        }
+                                    };
+                                }
+                            });
+                        }
+                        else {
+                            controls.push({
+                                id: state.id,
+                                type: 'switch',
+                                channel,
+                                stateId: state.id,
+                                label: stateName, // objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
+                                getStateHandler: async (
+                                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                                deviceId, actionId) => {
+                                    const currentState = await this.adapter.getForeignStateAsync(actionId);
+                                    if (currentState) {
+                                        return currentState;
+                                    }
+                                    return {
+                                        error: {
+                                            message: 'Can not get current state',
+                                            code: 305
+                                        }
+                                    };
+                                },
+                                handler: async (
+                                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                                deviceId, actionId, state) => {
+                                    console.log(state);
+                                    await this.adapter.setForeignStateAsync(actionId, state, false);
+                                    const currentState = await this.adapter.getStateAsync(actionId);
+                                    if (currentState) {
+                                        return currentState;
+                                    }
+                                    return {
+                                        error: {
+                                            message: 'Can not get current state',
+                                            code: 305
+                                        }
+                                    };
+                                }
+                            });
+                        }
+                    }
+                    else {
                         controls.push({
                             id: state.id,
-                            type: 'button',
+                            type: 'text',
+                            unit: objects[state.id].common.unit,
+                            description: objects[state.id].common.desc,
                             stateId: state.id,
-                            label: objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
-                            handler: async (deviceId, actionId, state) => {
+                            channel,
+                            label: stateName, // objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
+                            getStateHandler: async (
+                            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                            deviceId, actionId) => {
+                                const currentState = await this.adapter.getForeignStateAsync(actionId);
+                                if (currentState) {
+                                    return currentState;
+                                }
+                                return {
+                                    error: {
+                                        message: 'Can not get current state',
+                                        code: 305
+                                    }
+                                };
+                            },
+                            handler: async (
+                            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                            deviceId, actionId, state) => {
                                 console.log(state);
-                                await this.adapter.setForeignStateAsync(actionId, true, false);
-                                const currentState = await this.adapter.getStateAsync(`${deviceId}.${actionId}`);
+                                await this.adapter.setForeignStateAsync(actionId, state, false);
+                                const currentState = await this.adapter.getStateAsync(actionId);
                                 if (currentState) {
                                     return currentState;
                                 }
@@ -218,9 +381,46 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                         });
                     }
                 }
-            });
-            return controls;
-        }
+                else if (objects[state.id].common.read !== false) {
+                    const states = objects[state.id].common.states;
+                    controls.push({
+                        id: state.id,
+                        type: 'info',
+                        stateId: state.id,
+                        description: objects[state.id].common.desc,
+                        channel,
+                        unit: objects[state.id].common.unit,
+                        label: stateName, // objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
+                        getStateHandler: async (deviceId, actionId) => {
+                            console.log(state);
+                            const currentState = await this.adapter.getStateAsync(actionId);
+                            if (currentState) {
+                                if (states) {
+                                    const translatedValue = states[currentState.val];
+                                    if (translatedValue !== undefined) {
+                                        currentState.val = translatedValue;
+                                    }
+                                }
+                                if (currentState.val === true) {
+                                    currentState.val = 'true';
+                                }
+                                else if (currentState.val === false) {
+                                    currentState.val = 'false';
+                                }
+                                return currentState;
+                            }
+                            return {
+                                error: {
+                                    message: 'Can not get current state',
+                                    code: 305
+                                }
+                            };
+                        }
+                    });
+                }
+            }
+        });
+        return controls;
     }
     async getDeviceDetails(id) {
         const devices = await this.adapter.getDevicesAsync();

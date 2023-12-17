@@ -12,7 +12,7 @@ export declare class HomematicRpc extends utils.Adapter {
     private daemonProto;
     private homematicPath;
     private readonly COMMON_TYPE_MAPPING;
-    private readonly deviceManagement;
+    private deviceManagement;
     private readonly methods;
     constructor(options?: Partial<utils.AdapterOptions>);
     /**
