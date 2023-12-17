@@ -176,6 +176,7 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                 state.name ||
                 ''
             ).replaceAll('_', ' ');
+
             const channelId = parts.join('.');
             const channel: ChannelInfo = {
                 name: objects[channelId].common.name || objects[channelId].native.TYPE || parts[parts.length - 1],
