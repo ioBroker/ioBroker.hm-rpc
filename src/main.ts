@@ -682,7 +682,7 @@ export class HomematicRpc extends utils.Adapter {
             }
         } catch (e: any) {
             this.log.error(`Init not possible, going to stop: ${e.message}`);
-            // setTimeout(() => this.stop && this.stop(), 30_000);
+            this.setTimeout(() => this.stop && this.stop(), 30_000);
         }
     }
 
