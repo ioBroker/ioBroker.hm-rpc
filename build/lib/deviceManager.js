@@ -183,9 +183,7 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                             description: objects[state.id].common.desc,
                             stateId: state.id,
                             label: stateName, // objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
-                            getStateHandler: async (
-                            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                            deviceId, actionId) => {
+                            getStateHandler: async (deviceId, actionId) => {
                                 const currentState = await this.adapter.getForeignStateAsync(actionId);
                                 if (currentState) {
                                     return currentState;
@@ -197,9 +195,7 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                                     }
                                 };
                             },
-                            handler: async (
-                            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                            deviceId, actionId, state) => {
+                            handler: async (deviceId, actionId, state) => {
                                 console.log(state);
                                 await this.adapter.setForeignStateAsync(actionId, state, false);
                                 const currentState = await this.adapter.getStateAsync(actionId);
@@ -226,9 +222,7 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                             label: stateName, // objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
                             min: objects[state.id].common.min,
                             max: objects[state.id].common.max,
-                            getStateHandler: async (
-                            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                            deviceId, actionId) => {
+                            getStateHandler: async (deviceId, actionId) => {
                                 const currentState = await this.adapter.getForeignStateAsync(actionId);
                                 if (currentState) {
                                     return currentState;
@@ -240,9 +234,7 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                                     }
                                 };
                             },
-                            handler: async (
-                            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                            deviceId, actionId, state) => {
+                            handler: async (deviceId, actionId, state) => {
                                 console.log(state);
                                 await this.adapter.setForeignStateAsync(actionId, state, false);
                                 const currentState = await this.adapter.getStateAsync(actionId);
@@ -306,9 +298,7 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                                 channel,
                                 stateId: state.id,
                                 label: stateName, // objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
-                                getStateHandler: async (
-                                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                                deviceId, actionId) => {
+                                getStateHandler: async (deviceId, actionId) => {
                                     const currentState = await this.adapter.getForeignStateAsync(actionId);
                                     if (currentState) {
                                         return currentState;
@@ -320,9 +310,7 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                                         }
                                     };
                                 },
-                                handler: async (
-                                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                                deviceId, actionId, state) => {
+                                handler: async (deviceId, actionId, state) => {
                                     console.log(state);
                                     await this.adapter.setForeignStateAsync(actionId, state, false);
                                     const currentState = await this.adapter.getStateAsync(actionId);
@@ -348,9 +336,7 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                             stateId: state.id,
                             channel,
                             label: stateName, // objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
-                            getStateHandler: async (
-                            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                            deviceId, actionId) => {
+                            getStateHandler: async (deviceId, actionId) => {
                                 const currentState = await this.adapter.getForeignStateAsync(actionId);
                                 if (currentState) {
                                     return currentState;
@@ -362,9 +348,7 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                                     }
                                 };
                             },
-                            handler: async (
-                            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                            deviceId, actionId, state) => {
+                            handler: async (deviceId, actionId, state) => {
                                 console.log(state);
                                 await this.adapter.setForeignStateAsync(actionId, state, false);
                                 const currentState = await this.adapter.getStateAsync(actionId);

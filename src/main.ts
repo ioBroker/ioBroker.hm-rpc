@@ -3,7 +3,6 @@ import { images } from './lib/images';
 import * as tools from './lib/tools';
 import { metaRoles } from './lib/roles';
 import { randomBytes } from 'crypto';
-import { setTimeout as wait } from 'timers/promises';
 import type {
     ParamsetObjectWithSpecial,
     ParamsetObject,
@@ -30,9 +29,8 @@ export class HomematicRpc extends utils.Adapter {
     private readonly metaValues: Record<string, ParamsetObject> = {};
     private readonly dpTypes: Record<string, DatapointTypeObject> = {};
     private lastEvent = 0;
-    private eventInterval: NodeJS.Timeout | undefined;
-    private connInterval: NodeJS.Timeout | undefined;
-    private connTimeout: NodeJS.Timeout | undefined;
+    private eventInterval?: NodeJS.Timeout | void;
+    private connInterval?: NodeJS.Timeout | void;
     private daemonURL = '';
     private daemonProto = '';
     private homematicPath: string | undefined;
@@ -253,11 +251,6 @@ export class HomematicRpc extends utils.Adapter {
                 this.connInterval = undefined;
             }
 
-            if (this.connTimeout) {
-                clearTimeout(this.connTimeout);
-                this.connTimeout = undefined;
-            }
-
             if (this.config && rpcClient) {
                 this.log.info(
                     `${this.config.type}rpc -> ${this.config.homematicAddress}:${this.config.homematicPort}${
@@ -386,18 +379,18 @@ export class HomematicRpc extends utils.Adapter {
             if (displays[_id] && displays[_id].timer) {
                 clearTimeout(displays[_id].timer);
                 if (displays[_id].withTone) {
-                    displays[_id] = { timer: setTimeout(() => this.readSignals(_id), 300), withTone: true };
+                    displays[_id] = { timer: this.setTimeout(() => this.readSignals(_id), 300), withTone: true };
                     return;
                 }
             }
-            displays[_id] = { timer: setTimeout(() => this.readSettings(_id), 300), withTone: false };
+            displays[_id] = { timer: this.setTimeout(() => this.readSettings(_id), 300), withTone: false };
             return;
         } else if (type === 'EPAPER_SIGNAL' || type === 'EPAPER_TONE') {
             const _id = `${tmp[0]}.${tmp[1]}.${tmp[2]}`;
             if (displays[_id] && displays[_id].timer) {
                 clearTimeout(displays[_id].timer);
             }
-            displays[_id] = { timer: setTimeout(() => this.readSignals(_id), 300), withTone: true };
+            displays[_id] = { timer: this.setTimeout(() => this.readSignals(_id), 300), withTone: true };
             return;
         } else if (tmp[4] === 'DISPLAY_DATA_STRING') {
             // new EPAPER HMIP-WRCD has own states but needs to encode special chars by DIN_66003
@@ -596,7 +589,6 @@ export class HomematicRpc extends utils.Adapter {
             });
         }
 
-        this.connTimeout = undefined;
         this.log.debug('Connect...');
         if (this.eventInterval) {
             this.log.debug('clear ping interval');
@@ -611,7 +603,7 @@ export class HomematicRpc extends utils.Adapter {
         // Periodically try to reconnect
         if (!this.connInterval) {
             this.log.debug('start connecting interval');
-            this.connInterval = setInterval(() => this.sendInit(), this.config.reconnectInterval * 1_000);
+            this.connInterval = this.setInterval(() => this.sendInit(), this.config.reconnectInterval * 1_000);
         }
     }
 
@@ -1223,7 +1215,7 @@ export class HomematicRpc extends utils.Adapter {
                     `Temporary error occurred for "${method}" with "${JSON.stringify(params)}": ${e.message}`
                 );
                 // on random error due to temporary communication issues try again once after some ms
-                await wait(this.RETRY_DELAY_MS);
+                await this.delay(this.RETRY_DELAY_MS);
                 return this.rpcMethodCallAsyncHelper(method, params);
             } else {
                 throw e;
@@ -1819,16 +1811,11 @@ export class HomematicRpc extends utils.Adapter {
             clearInterval(this.connInterval);
             this.connInterval = undefined;
         }
-        if (this.connTimeout) {
-            this.log.debug('clear connecting timeout');
-            clearTimeout(this.connTimeout);
-            this.connTimeout = undefined;
-        }
 
         // Virtual Devices API does now also support PING (tested with 3.55.5.20201226 - see #308)
         if (!this.eventInterval) {
             this.log.debug('start ping interval');
-            this.eventInterval = setInterval(() => this.keepAlive(), (this.config.checkInitInterval * 1000) / 2);
+            this.eventInterval = this.setInterval(() => this.keepAlive(), (this.config.checkInitInterval * 1000) / 2);
         }
     }
 

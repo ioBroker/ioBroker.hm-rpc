@@ -161,6 +161,7 @@ To update all available images execute `npm run update-images`
 ### **WORK IN PROGRESS**
 * (JeyCee) Added support for the device manager
 * (bluefox) Added JSON config
+* (foxriver76) port to adapters internal `setTimeout/setInterval` methods
 
 ### 1.15.19 (2023-08-08)
 * (bluefox) Updated packages

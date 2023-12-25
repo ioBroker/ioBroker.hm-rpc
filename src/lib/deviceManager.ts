@@ -4,9 +4,10 @@ import {
     DeviceManagement,
     DeviceRefresh,
     DeviceStatus,
-    ErrorResponse
+    ErrorResponse,
+    type DeviceInfo,
+    type DeviceControl
 } from '@iobroker/dm-utils';
-import { DeviceInfo, DeviceControl } from '@iobroker/dm-utils/build/types/adapter';
 import { ControlState, ChannelInfo } from '@iobroker/dm-utils/build/types/base';
 import ChannelDetector, { DetectOptions, PatternControl } from '@iobroker/type-detector';
 
@@ -217,7 +218,6 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                             stateId: state.id,
                             label: stateName, // objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
                             getStateHandler: async (
-                                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                                 deviceId: string,
                                 actionId: string
                             ): Promise<ioBroker.State | ErrorResponse> => {
@@ -233,7 +233,6 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                                 };
                             },
                             handler: async (
-                                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                                 deviceId: string,
                                 actionId: string,
                                 state: ControlState
@@ -265,7 +264,6 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                             min: objects[state.id].common.min,
                             max: objects[state.id].common.max,
                             getStateHandler: async (
-                                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                                 deviceId: string,
                                 actionId: string
                             ): Promise<ioBroker.State | ErrorResponse> => {
@@ -281,7 +279,6 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                                 };
                             },
                             handler: async (
-                                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                                 deviceId: string,
                                 actionId: string,
                                 state: ControlState
@@ -360,7 +357,6 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                                 stateId: state.id,
                                 label: stateName, // objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
                                 getStateHandler: async (
-                                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
                                     deviceId: string,
                                     actionId: string
                                 ): Promise<ioBroker.State | ErrorResponse> => {
@@ -376,7 +372,6 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                                     };
                                 },
                                 handler: async (
-                                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
                                     deviceId: string,
                                     actionId: string,
                                     state: ControlState
@@ -407,7 +402,6 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                             channel,
                             label: stateName, // objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
                             getStateHandler: async (
-                                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                                 deviceId: string,
                                 actionId: string
                             ): Promise<ioBroker.State | ErrorResponse> => {
@@ -423,7 +417,6 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                                 };
                             },
                             handler: async (
-                                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                                 deviceId: string,
                                 actionId: string,
                                 state: ControlState

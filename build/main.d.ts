@@ -5,9 +5,8 @@ export declare class HomematicRpc extends utils.Adapter {
     private readonly metaValues;
     private readonly dpTypes;
     private lastEvent;
-    private eventInterval;
-    private connInterval;
-    private connTimeout;
+    private eventInterval?;
+    private connInterval?;
     private daemonURL;
     private daemonProto;
     private homematicPath;

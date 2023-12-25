@@ -1,5 +1,4 @@
-import { ActionContext, DeviceDetails, DeviceManagement, DeviceRefresh } from '@iobroker/dm-utils';
-import { DeviceInfo } from '@iobroker/dm-utils/build/types/adapter';
+import { ActionContext, DeviceDetails, DeviceManagement, DeviceRefresh, type DeviceInfo } from '@iobroker/dm-utils';
 import { HomematicRpc } from '../main';
 export declare class dmHmRpc extends DeviceManagement<HomematicRpc> {
     private typeDetector;
