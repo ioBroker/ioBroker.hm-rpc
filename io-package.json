@@ -12,6 +12,7 @@
       "it": "Collega l'interfaccia HomeMatic: i processi (BidCos-Services, Homegear e CUxD) tramite XML-RPC o BIN-RPC su ioBroker",
       "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
       "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker",
+      "uk": "Підключає HomeMatic інтерфейси (BidCos-сервіси, Homegear і CUxD) через XML-RPC або BIN-RPC до ioBroker",
       "zh-cn": "通过 XML-RPC 或 BIN-RPC 将 HomeMatic 接口进程（BidCos-Services、Homegear 和 CUxD）连接到 ioBroker"
     },
     "version": "1.16.0",
@@ -92,18 +93,6 @@
         "es": "Retry once on (UNREACH) and Failure errors to avoid tmeporary communication issues (closes #467)\nhemos actualizado algunos iconos de dispositivo",
         "pl": "Retry raz na (UNREACH) oraz Failure error to avoid tmeporary communication (zamknięty #467)\nposiadać pewne ikony urządzeń",
         "zh-cn": "恢复原状(UNREACH)和不失误以避免异常的通信问题(第467号)\n我们更新了一些装置的掩体"
-      },
-      "1.15.12": {
-        "en": "we now adjust min/max correct if a `SPECIAL` value falls out of range (closes #459)",
-        "de": "Wir passen Min/Max jetzt korrekt an, wenn ein „SPECIAL“-Wert außerhalb des Bereichs liegt (schließt #459)",
-        "ru": "теперь мы правильно настраиваем min/max, если значение SPECIAL выходит за пределы допустимого диапазона (закрывается #459)",
-        "pt": "agora ajustamos o mínimo/máximo correto se um valor 'SPECIAL' estiver fora do intervalo (fecha #459)",
-        "nl": "we passen nu min/max correct aan als een `SPECIAL`-waarde buiten bereik valt (sluit #459)",
-        "fr": "nous ajustons maintenant min/max correctement si une valeur `SPECIAL` tombe hors de la plage (ferme #459)",
-        "it": "ora regoliamo min/max corretto se un valore `SPECIAL` non rientra nell'intervallo (chiude #459)",
-        "es": "ahora ajustamos min/max correcto si un valor 'ESPECIAL' cae fuera de rango (cierra #459)",
-        "pl": "teraz dostosowujemy minimalną/maksymalną wartość, jeśli wartość `SPECIAL` wykracza poza zakres (zamyka #459)",
-        "zh-cn": "如果“特殊”值超出范围，我们现在调整最小/最大值正确（关闭 #459）"
       }
     },
     "authors": [
@@ -169,13 +158,18 @@
       "ru": "HomeMatic RPC",
       "pt": "HomeMatic RPC",
       "nl": "HomeMatic RPC",
-      "fr": "AccueilMatic RPC",
+      "fr": "HomeMatic RPC",
       "it": "HomeMatic RPC",
       "es": "HomeMatic RPC",
       "pl": "HomeMatic RPC",
+      "uk": "HomeMatic RPC",
       "zh-cn": "HomeMatic RPC"
     },
-    "tier": 2
+    "tier": 2,
+    "licenseInformation": {
+      "type": "free",
+      "link": "https://github.com/ioBroker/ioBroker.hm-rpc/blob/master/LICENSE"
+    }
   },
   "native": {
     "homematicAddress": "192.168.0.100",

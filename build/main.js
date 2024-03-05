@@ -47,7 +47,7 @@ class HomematicRpc extends utils.Adapter {
                     // doesn't work in that case, so let it correctly be handled by controller at least we can log
                     // return true;
                 }
-                // don't know how to handle so let it burn ;-)
+                // don't know how to handle, so let it burn ;-)
                 return false;
             }
         });
@@ -223,11 +223,11 @@ class HomematicRpc extends utils.Adapter {
     async onUnload(callback) {
         try {
             if (this.eventInterval) {
-                clearInterval(this.eventInterval);
+                this.clearInterval(this.eventInterval);
                 this.eventInterval = undefined;
             }
             if (this.connInterval) {
-                clearInterval(this.connInterval);
+                this.clearInterval(this.connInterval);
                 this.connInterval = undefined;
             }
             if (this.config && rpcClient) {
@@ -542,7 +542,7 @@ class HomematicRpc extends utils.Adapter {
         this.log.debug('Connect...');
         if (this.eventInterval) {
             this.log.debug('clear ping interval');
-            clearInterval(this.eventInterval);
+            this.clearInterval(this.eventInterval);
             this.eventInterval = undefined;
         }
         if (isFirst) {
@@ -590,7 +590,7 @@ class HomematicRpc extends utils.Adapter {
     keepAlive() {
         this.log.debug('[KEEPALIVE] Check if connection is alive');
         if (this.connInterval) {
-            clearInterval(this.connInterval);
+            this.clearInterval(this.connInterval);
             this.connInterval = undefined;
         }
         const _now = Date.now();
@@ -1601,7 +1601,7 @@ class HomematicRpc extends utils.Adapter {
         }
         if (this.connInterval) {
             this.log.debug('clear connecting interval');
-            clearInterval(this.connInterval);
+            this.clearInterval(this.connInterval);
             this.connInterval = undefined;
         }
         // Virtual Devices API does now also support PING (tested with 3.55.5.20201226 - see #308)

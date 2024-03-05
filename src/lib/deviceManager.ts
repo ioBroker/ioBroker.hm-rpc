@@ -82,7 +82,6 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                             es: 'Renombrar este dispositivo',
                             pl: 'Zmień nazwę tego urządzenia',
                             'zh-cn': '重命名此设备',
-                            // @ts-expect-error
                             uk: 'Перейменуйте цей пристрій'
                         },
                         handler: this.handleRenameDevice.bind(this)
@@ -557,7 +556,6 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                     es: 'Ingrese un nuevo nombre',
                     pl: 'Wpisz nowe imię',
                     'zh-cn': '输入新名称',
-                    // @ts-expect-error
                     uk: "Введіть нове ім'я"
                 }
             }

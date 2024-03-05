@@ -29,8 +29,8 @@ export class HomematicRpc extends utils.Adapter {
     private readonly metaValues: Record<string, ParamsetObject> = {};
     private readonly dpTypes: Record<string, DatapointTypeObject> = {};
     private lastEvent = 0;
-    private eventInterval?: NodeJS.Timeout | void;
-    private connInterval?: NodeJS.Timeout | void;
+    private eventInterval?: ioBroker.Interval;
+    private connInterval?: ioBroker.Interval;
     private daemonURL = '';
     private daemonProto = '';
     private homematicPath: string | undefined;
@@ -115,7 +115,7 @@ export class HomematicRpc extends utils.Adapter {
                     // return true;
                 }
 
-                // don't know how to handle so let it burn ;-)
+                // don't know how to handle, so let it burn ;-)
                 return false;
             }
         });
@@ -242,12 +242,12 @@ export class HomematicRpc extends utils.Adapter {
     private async onUnload(callback: () => void): Promise<void> {
         try {
             if (this.eventInterval) {
-                clearInterval(this.eventInterval);
+                this.clearInterval(this.eventInterval);
                 this.eventInterval = undefined;
             }
 
             if (this.connInterval) {
-                clearInterval(this.connInterval);
+                this.clearInterval(this.connInterval);
                 this.connInterval = undefined;
             }
 
@@ -592,7 +592,7 @@ export class HomematicRpc extends utils.Adapter {
         this.log.debug('Connect...');
         if (this.eventInterval) {
             this.log.debug('clear ping interval');
-            clearInterval(this.eventInterval);
+            this.clearInterval(this.eventInterval);
             this.eventInterval = undefined;
         }
 
@@ -643,7 +643,7 @@ export class HomematicRpc extends utils.Adapter {
         this.log.debug('[KEEPALIVE] Check if connection is alive');
 
         if (this.connInterval) {
-            clearInterval(this.connInterval);
+            this.clearInterval(this.connInterval);
             this.connInterval = undefined;
         }
 
@@ -1808,7 +1808,7 @@ export class HomematicRpc extends utils.Adapter {
 
         if (this.connInterval) {
             this.log.debug('clear connecting interval');
-            clearInterval(this.connInterval);
+            this.clearInterval(this.connInterval);
             this.connInterval = undefined;
         }
 
