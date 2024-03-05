@@ -46,7 +46,7 @@ In this case, switch the protocol to XML.
 
 ### Synchronize objects (once)
 After very first start the instance read *all* devices from CCU/Homematic.
-If you changed the configuration (rename devices, add or removed devices) you can synchronise the configuration in ioBroker by enabling this option.
+If you changed the configuration (renamed devices, added or removed devices) you can synchronise the configuration in ioBroker by enabling this option.
 
 The instance will be restarted immediately, synchronize all devices anew and deactivate this option itself.
 
@@ -125,7 +125,7 @@ sendTo('hm-rpc.1', 'setValue', {ID: '000453D77B9EDF:1', paramType: 'SET_POINT_TE
 });
 ```
 
-Get the `paramsetDescription` of a devices channel:
+Get the `paramsetDescription` of a device's channel:
 ```javascript
 sendTo('hm-rpc.1', 'getParamsetDescription', {ID: '000453D77B9EDF:1', paramType: 'VALUES'}, res => {
     log(JSON.stringify(res));
@@ -410,7 +410,7 @@ of this approach (more requests to CCU on first setup)
 
 The MIT License (MIT)
 
-Copyright (c) 2014-2023 bluefox <dogafox@gmail.com>
+Copyright (c) 2014-2024 bluefox <dogafox@gmail.com>
 
 Copyright (c) 2014 hobbyquaker
 

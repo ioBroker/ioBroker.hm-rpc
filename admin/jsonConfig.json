@@ -93,9 +93,9 @@
               "value": "bin"
             }
           ],
-          "sm": 2,
-          "md": 2,
-          "lg": 1
+          "sm": 12,
+          "md": 4,
+          "lg": 2
         },
         "forceReInit": {
           "newLine": true,
