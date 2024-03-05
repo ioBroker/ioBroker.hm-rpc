@@ -158,6 +158,9 @@ To update all available images execute `npm run update-images`
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (bluefox) Improved the configuration layout
+
 ### 1.16.0 (2023-12-25)
 * (JeyCee) Added support for the device manager
 * (bluefox) Added JSON config
