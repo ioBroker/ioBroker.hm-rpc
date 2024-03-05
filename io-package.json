@@ -15,8 +15,21 @@
       "uk": "Підключає HomeMatic інтерфейси (BidCos-сервіси, Homegear і CUxD) через XML-RPC або BIN-RPC до ioBroker",
       "zh-cn": "通过 XML-RPC 或 BIN-RPC 将 HomeMatic 接口进程（BidCos-Services、Homegear 和 CUxD）连接到 ioBroker"
     },
-    "version": "1.16.0",
+    "version": "1.16.1",
     "news": {
+      "1.16.1": {
+        "en": "Improved the configuration layout",
+        "de": "Verbessert das Konfigurationslayout",
+        "ru": "Улучшен макет конфигурации",
+        "pt": "Melhorou o layout de configuração",
+        "nl": "De configuratie-indeling verbeterd",
+        "fr": "Amélioration de la configuration",
+        "it": "Migliorato il layout di configurazione",
+        "es": "Mejora de la configuración",
+        "pl": "Ulepszenie układu konfiguracji",
+        "uk": "Покращення макета конфігурації",
+        "zh-cn": "改进配置布局"
+      },
       "1.16.0": {
         "en": "Added support for the device manager\nAdded JSON config\nport to adapters internal `setTimeout/setInterval` methods",
         "de": "Unterstützung für den Gerätemanager hinzugefügt\nJSON config\nport zu Adaptern internes SetTimeout/setInterval Methoden",
