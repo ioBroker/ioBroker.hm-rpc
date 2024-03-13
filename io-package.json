@@ -105,7 +105,8 @@
         "it": "Riprovare una volta su (UNREACH) e Errori di errore per evitare problemi di comunicazione tmeporary (chiude #467)\nabbiamo aggiornato alcune icone del dispositivo",
         "es": "Retry once on (UNREACH) and Failure errors to avoid tmeporary communication issues (closes #467)\nhemos actualizado algunos iconos de dispositivo",
         "pl": "Retry raz na (UNREACH) oraz Failure error to avoid tmeporary communication (zamknięty #467)\nposiadać pewne ikony urządzeń",
-        "zh-cn": "恢复原状(UNREACH)和不失误以避免异常的通信问题(第467号)\n我们更新了一些装置的掩体"
+        "zh-cn": "恢复原状(UNREACH)和不失误以避免异常的通信问题(第467号)\n我们更新了一些装置的掩体",
+        "uk": "Повторіть один раз після помилок `(UNREACH)` і `Failure`, щоб уникнути тимчасових проблем із зв'язком (закриває #467)\nми оновили деякі значки пристроїв"
       }
     },
     "authors": [
@@ -274,7 +275,19 @@
       "_id": "updated",
       "type": "state",
       "common": {
-        "name": "Some new devices added",
+        "name": {
+          "en": "New devices added",
+          "de": "Neue Geräte hinzugefügt",
+          "ru": "Новые добавленные устройства",
+          "pt": "Novos dispositivos adicionados",
+          "nl": "Nieuwe apparaten toegevoegd",
+          "fr": "Nouveaux appareils ajoutés",
+          "it": "Nuovi dispositivi aggiunti",
+          "es": "Nuevos dispositivos añadidos",
+          "pl": "Dodano nowe urządzenia",
+          "uk": "Додані нові пристрої",
+          "zh-cn": "新增设备"
+        },
         "type": "boolean",
         "read": true,
         "write": true
@@ -284,7 +297,19 @@
       "_id": "info",
       "type": "channel",
       "common": {
-        "name": "Information"
+        "name": {
+          "en": "Information",
+          "de": "Informationen",
+          "ru": "Информация",
+          "pt": "Informação",
+          "nl": "Informatie",
+          "fr": "Informations",
+          "it": "Informazioni",
+          "es": "Información",
+          "pl": "Informacje",
+          "uk": "Інформація",
+          "zh-cn": "资料"
+        }
       },
       "native": {}
     },
@@ -292,9 +317,21 @@
       "_id": "info.connection",
       "type": "state",
       "common": {
-        "role": "indicator.connected",
-        "name": "If connected to CCU",
+        "name": {
+          "en": "Connected to CCU",
+          "de": "Verbindung mit CCU",
+          "ru": "Подключен к CCU",
+          "pt": "Conectado ao CCU",
+          "nl": "Verbonden met CCU",
+          "fr": "Connecté au CCU",
+          "it": "Collegato a CCU",
+          "es": "Conectado a la CCU",
+          "pl": "Połączone z CCU",
+          "uk": "Підключення до CCU",
+          "zh-cn": "已连接到 CCU"
+        },
         "type": "boolean",
+        "role": "indicator.connected",
         "read": true,
         "write": false,
         "def": false
