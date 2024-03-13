@@ -10,15 +10,15 @@
           "type": "text",
           "label": "HomeMatic Address",
           "sm": 10,
-          "md": 4,
-          "lg": 2
+          "md": 6,
+          "lg": 4
         },
         "homematicPort": {
           "type": "port",
           "label": "HomeMatic Port",
           "sm": 2,
           "md": 2,
-          "lg": 1,
+          "lg": 2,
           "onChange": {
             "alsoDependsOn": [
               "useHttps",
@@ -34,8 +34,8 @@
           "type": "ip",
           "label": "Adapter Address",
           "sm": 10,
-          "md": 4,
-          "lg": 2
+          "md": 6,
+          "lg": 4
         },
         "port": {
           "type": "number",
@@ -44,13 +44,17 @@
           "label": "Adapter Port",
           "sm": 2,
           "md": 2,
-          "lg": 1
+          "lg": 2
         },
         "daemon": {
           "newLine": true,
           "type": "select",
           "label": "Daemon",
           "options": [
+            {
+              "label": "HomeMatic IP",
+              "value": "HMIP"
+            },
             {
               "label": "rfd",
               "value": "rfd"
@@ -68,17 +72,13 @@
               "value": "CUxD"
             },
             {
-              "label": "HomeMatic IP",
-              "value": "HMIP"
-            },
-            {
               "label": "Homegear",
               "value": "Homegear"
             }
           ],
           "sm": 10,
-          "md": 4,
-          "lg": 2
+          "md": 6,
+          "lg": 4
         },
         "type": {
           "type": "select",
@@ -101,7 +101,9 @@
           "newLine": true,
           "type": "checkbox",
           "label": "Force objects re-init",
-          "sm": 12
+          "sm": 10,
+          "md": 6,
+          "lg": 4
         }
       }
     },
@@ -113,8 +115,8 @@
           "type": "text",
           "label": "Adapter Callback Address",
           "sm": 10,
-          "md": 4,
-          "lg": 2
+          "md": 6,
+          "lg": 4
         },
         "checkInitInterval": {
           "newLine": true,
@@ -137,13 +139,17 @@
           "newLine": true,
           "type": "checkbox",
           "label": "Don't delete devices",
-          "sm": 12
+          "sm": 10,
+          "md": 6,
+          "lg": 4
         },
         "useHttps": {
           "newLine": true,
           "type": "checkbox",
           "label": "Use https",
-          "sm": 12,
+          "sm": 10,
+          "md": 6,
+          "lg": 4,
           "disabled": "data.type === 'bin'",
           "onChange": {
             "alsoDependsOn": [
@@ -156,8 +162,9 @@
           "newLine": true,
           "type": "text",
           "label": "Username",
-          "sm": 4,
-          "lg": 2,
+          "sm": 12,
+          "md": 4,
+          "lg": 4,
           "hidden": "data.type === 'bin'"
         },
         "password": {
@@ -165,7 +172,8 @@
           "type": "password",
           "label": "Password",
           "hidden": "data.type === 'bin'",
-          "sm": 8,
+          "sm": 6,
+          "md": 4,
           "lg": 4
         }
       }
