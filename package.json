@@ -31,9 +31,10 @@
   "license": "MIT",
   "keywords": [
     "ioBroker",
+    "Smart Home",
+    "home automation",
     "hm-rpc",
-    "homematic",
-    "home automation"
+    "homematic"
   ],
   "repository": {
     "type": "git",
