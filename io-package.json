@@ -112,7 +112,6 @@
       "hobbyquaker <hq@ccu.io>",
       "Moritz Heusinger <moritz.heusinger@gmail.com>"
     ],
-    "license": "MIT",
     "mode": "daemon",
     "platform": "Javascript/Node.js",
     "loglevel": "info",
@@ -180,6 +179,7 @@
     },
     "tier": 2,
     "licenseInformation": {
+      "license": "MIT",
       "type": "free",
       "link": "https://github.com/ioBroker/ioBroker.hm-rpc/blob/master/LICENSE"
     },
