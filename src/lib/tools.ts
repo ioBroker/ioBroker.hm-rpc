@@ -3,20 +3,6 @@ import { FixParamsetParams, FixEventParams } from './_types';
 export const FORBIDDEN_CHARS = /[\][*,;'"`<>\\\s?]/g;
 
 /**
- * decrypts a key with its related value
- *
- * @param key
- * @param value
- */
-export function decrypt(key: string, value: string): string {
-    let result = '';
-    for (let i = 0; i < value.length; ++i) {
-        result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
-    }
-    return result;
-}
-
-/**
  * replaces special chars by DIN_66003
  *
  * @param text

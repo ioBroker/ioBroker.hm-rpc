@@ -182,7 +182,49 @@
     "licenseInformation": {
       "type": "free",
       "link": "https://github.com/ioBroker/ioBroker.hm-rpc/blob/master/LICENSE"
-    }
+    },
+    "messages": [
+      {
+        "condition": {
+          "operand": "and",
+          "rules": [
+            "oldVersion<1.17.0",
+            "newVersion>=1.17.0"
+          ]
+        },
+        "title": {
+          "en": "Reenter your credentials for https",
+          "de": "Geben Sie erneut Ihre Anmeldeinformationen für https ein",
+          "ru": "Восстановить свои учетные данные для https",
+          "pt": "Insira suas credenciais para https",
+          "nl": "Uw referenties voor https opnieuw invoeren",
+          "fr": "Entrez de nouveau vos identifiants pour https",
+          "it": "Reinserire le credenziali per https",
+          "es": "Ingrese sus credenciales para https",
+          "pl": "Wprowadź swoje referencje do https",
+          "uk": "Відновити свої облікові дані за посиланням",
+          "zh-cn": "重新输入您的 https 证书"
+        },
+        "text": {
+          "en": "The internal encryption method has been changed. Please enter your username and password in the instance configuration again.",
+          "de": "Die interne Verschlüsselungsmethode wurde geändert. Bitte geben Sie Ihren Benutzernamen und Ihr Passwort erneut in der Instanzkonfiguration ein.",
+          "ru": "Был изменен внутренний метод шифрования. Пожалуйста, введите ваше имя пользователя и пароль в конфигурации экземпляра снова.",
+          "pt": "O método de criptografia interna foi alterado. Digite seu nome de usuário e senha na configuração da instância novamente.",
+          "nl": "De interne coderingsmethode is gewijzigd. Voer uw gebruikersnaam en wachtwoord in de instantieconfiguratie opnieuw in.",
+          "fr": "La méthode de chiffrement interne a été modifiée. Veuillez à nouveau saisir votre nom d'utilisateur et votre mot de passe dans la configuration de l'instance.",
+          "it": "Il metodo di crittografia interna è stato modificato. Inserisci nuovamente il nome utente e la password nella configurazione dell'istanza.",
+          "es": "El método de cifrado interno ha sido cambiado. Ingrese su nombre de usuario y contraseña en la configuración de instancia de nuevo.",
+          "pl": "Wewnętrzna metoda szyfrowania została zmieniona. Proszę podać nazwę użytkownika i hasło w konfiguracji instancji ponownie.",
+          "uk": "Змінено метод внутрішнього шифрування. Будь ласка, введіть ім'я користувача та пароль в налаштуваннях екземпляра знову.",
+          "zh-cn": "内部加密方法已经改变. 请在实例配置中再次输入您的用户名和密码 ."
+        },
+        "level": "warn",
+        "buttons": [
+          "agree",
+          "cancel"
+        ]
+      }
+    ]
   },
   "native": {
     "homematicAddress": "192.168.0.100",
@@ -201,6 +243,10 @@
     "dontDelete": false
   },
   "protectedNative": [
+    "username",
+    "password"
+  ],
+  "encryptedNative": [
     "username",
     "password"
   ],
