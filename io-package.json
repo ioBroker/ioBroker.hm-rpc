@@ -238,7 +238,7 @@
     "callbackAddress": "",
     "port": "0",
     "type": "xml",
-    "daemon": "rfd",
+    "daemon": "HMIP",
     "checkInitInterval": 180,
     "reconnectInterval": 30,
     "forceReInit": false,
