@@ -117,7 +117,6 @@
     "loglevel": "info",
     "readme": "https://github.com/ioBroker/ioBroker.hm-rpc/blob/master/README.md",
     "icon": "homematic.png",
-    "materialize": true,
     "compact": true,
     "extIcon": "https://raw.githubusercontent.com/ioBroker/ioBroker.hm-rpc/master/admin/homematic.png",
     "keywords": [
@@ -147,6 +146,11 @@
     "dependencies": [
       {
         "js-controller": ">=3.3.0"
+      }
+    ],
+    "globalDependencies": [
+      {
+        "admin": ">=6.0.0"
       }
     ],
     "supportedMessages": {
