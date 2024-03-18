@@ -96,7 +96,7 @@ class HomematicRpc extends utils.Adapter {
                 const name = `${params[0]}.${channel}.${params[2]}`;
                 if (this.dpTypes[name]) {
                     if (this.dpTypes[name].UNIT === '100%') {
-                        val = Math.round(params[3] * 1000) / 10;
+                        val = Math.round(params[3] * 1_000) / 10;
                     }
                     else {
                         val = params[3];
@@ -247,15 +247,15 @@ class HomematicRpc extends utils.Adapter {
                                 rpcServer.server.unref();
                             });
                         }
-                        catch (_a) {
+                        catch {
                             // ignore
                         }
                     }
-                    if (rpcClient === null || rpcClient === void 0 ? void 0 : rpcClient.socket) {
+                    if (rpcClient?.socket) {
                         try {
                             rpcClient.socket.destroy();
                         }
-                        catch (_b) {
+                        catch {
                             // ignore
                         }
                     }
@@ -512,32 +512,20 @@ class HomematicRpc extends utils.Adapter {
             }
         }
         else if (!rpcClient) {
-            this.getForeignObject('system.config', (err, obj) => {
-                let password;
-                let username;
-                if (obj && obj.native && obj.native.secret) {
-                    password = tools.decrypt(obj.native.secret, this.config.password || '');
-                    username = tools.decrypt(obj.native.secret, this.config.username || '');
-                }
-                else {
-                    password = tools.decrypt('Zgfr56gFe87jJOM', this.config.password || '');
-                    username = tools.decrypt('Zgfr56gFe87jJOM', this.config.username || '');
-                }
-                try {
-                    rpcClient = rpc.createSecureClient({
-                        host: this.config.homematicAddress,
-                        port: this.config.homematicPort,
-                        path: this.homematicPath,
-                        reconnectTimeout: this.config.reconnectInterval * 1000,
-                        basic_auth: { user: username, pass: password },
-                        rejectUnauthorized: false
-                    });
-                }
-                catch (e) {
-                    this.log.error(`Could not create secure ${this.config.type}-rpc client: ${e.message}`);
-                    return void this.restart();
-                }
-            });
+            try {
+                rpcClient = rpc.createSecureClient({
+                    host: this.config.homematicAddress,
+                    port: this.config.homematicPort,
+                    path: this.homematicPath,
+                    reconnectTimeout: this.config.reconnectInterval * 1_000,
+                    basic_auth: { user: this.config.username, pass: this.config.password },
+                    rejectUnauthorized: false
+                });
+            }
+            catch (e) {
+                this.log.error(`Could not create secure ${this.config.type}-rpc client: ${e.message}`);
+                return void this.restart();
+            }
         }
         this.log.debug('Connect...');
         if (this.eventInterval) {
@@ -551,7 +539,7 @@ class HomematicRpc extends utils.Adapter {
         // Periodically try to reconnect
         if (!this.connInterval) {
             this.log.debug('start connecting interval');
-            this.connInterval = this.setInterval(() => this.sendInit(), this.config.reconnectInterval * 1000);
+            this.connInterval = this.setInterval(() => this.sendInit(), this.config.reconnectInterval * 1_000);
         }
     }
     /**
@@ -595,7 +583,7 @@ class HomematicRpc extends utils.Adapter {
         }
         const _now = Date.now();
         // Check last event time. If timeout => send init again
-        if (!this.lastEvent || _now - this.lastEvent >= this.config.checkInitInterval * 1000) {
+        if (!this.lastEvent || _now - this.lastEvent >= this.config.checkInitInterval * 1_000) {
             this.log.debug('[KEEPALIVE] Connection timed out, initializing new connection');
             this.connect(false);
         }
@@ -627,17 +615,16 @@ class HomematicRpc extends utils.Adapter {
         }
         catch (e) {
             this.log.error(`Init not possible, going to stop: ${e.message}`);
-            this.setTimeout(() => this.stop && this.stop(), 30000);
+            this.setTimeout(() => this.stop && this.stop(), 30_000);
         }
     }
     /**
      * Inits the RPC server
      */
     async initRpcServer() {
-        var _a;
         this.config.useHttps = this.config.useHttps || false;
         // adapterPort was introduced in v1.0.1. If not set yet then try 2000
-        const desiredAapterPort = parseInt(this.config.port) || parseInt(this.config.homematicPort) || 2000;
+        const desiredAapterPort = parseInt(this.config.port) || parseInt(this.config.homematicPort) || 2_000;
         const callbackAddress = this.config.callbackAddress || this.config.adapterAddress;
         const adapterPort = await this.getPortAsync(desiredAapterPort);
         this.daemonURL = `${this.daemonProto + callbackAddress}:${adapterPort}`;
@@ -656,7 +643,7 @@ class HomematicRpc extends utils.Adapter {
         clientId = this.namespace;
         try {
             const obj = await this.getForeignObjectAsync(`system.adapter.${this.namespace}`);
-            clientId = `${(_a = obj === null || obj === void 0 ? void 0 : obj.common) === null || _a === void 0 ? void 0 : _a.host}:${clientId}`;
+            clientId = `${obj?.common?.host}:${clientId}`;
         }
         catch (e) {
             this.log.warn(`Could not get hostname, using default id "${clientId}" to register: ${e.message}`);
@@ -769,7 +756,7 @@ class HomematicRpc extends utils.Adapter {
                 catch (e) {
                     this.log.error(`getObjectViewAsync hm-rpc: ${e.message}`);
                 }
-                if (doc === null || doc === void 0 ? void 0 : doc.rows) {
+                if (doc?.rows) {
                     for (const row of doc.rows) {
                         if (row.id === `${this.namespace}.updated`) {
                             continue;

@@ -37,8 +37,8 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
             const status = {
                 connection: connected ? (connected.val ? 'disconnected' : 'connected') : 'connected',
                 rssi: rssi ? parseFloat((rssi.val || '0').toString()) : undefined,
-                battery: (lowBat === null || lowBat === void 0 ? void 0 : lowBat.val) ? !lowBat.val : undefined,
-                warning: (sabotage === null || sabotage === void 0 ? void 0 : sabotage.val) ? 'Sabotage' : undefined
+                battery: lowBat?.val ? !lowBat.val : undefined,
+                warning: sabotage?.val ? 'Sabotage' : undefined
             };
             let hasDetails = false;
             if (devices[i].native.AVAILABLE_FIRMWARE || devices[i].native.FIRMWARE) {
@@ -139,7 +139,6 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
     typedControl2DeviceManager(tdControl, objects) {
         const controls = [];
         tdControl.states.forEach(state => {
-            var _a, _b;
             const parts = state.id.split('.');
             const stateName = (parts.pop() ||
                 objects[state.id].native.CONTROL ||
@@ -154,8 +153,8 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
             };
             if (objects[state.id] && objects[state.id].common) {
                 if (objects[state.id].common.write !== false ||
-                    ((_a = objects[state.id].common.role) === null || _a === void 0 ? void 0 : _a.includes('button')) ||
-                    (stateName === null || stateName === void 0 ? void 0 : stateName.startsWith('PRESS '))) {
+                    objects[state.id].common.role?.includes('button') ||
+                    stateName?.startsWith('PRESS ')) {
                     if (objects[state.id].common.states) {
                         const options = [];
                         if (Array.isArray(objects[state.id].common.states)) {
@@ -266,8 +265,8 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                     }
                     else if (objects[state.id].common.type === 'boolean') {
                         if (objects[state.id].common.read === false ||
-                            ((_b = objects[state.id].common.role) === null || _b === void 0 ? void 0 : _b.includes('button')) ||
-                            (stateName === null || stateName === void 0 ? void 0 : stateName.startsWith('PRESS '))) {
+                            objects[state.id].common.role?.includes('button') ||
+                            stateName?.startsWith('PRESS ')) {
                             controls.push({
                                 id: state.id,
                                 type: 'button',
@@ -474,7 +473,7 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                 uk: "Введіть нове ім'я"
             }
         });
-        if ((result === null || result === void 0 ? void 0 : result.newName) === undefined || (result === null || result === void 0 ? void 0 : result.newName) === '') {
+        if (result?.newName === undefined || result?.newName === '') {
             return { refresh: false };
         }
         const obj = {

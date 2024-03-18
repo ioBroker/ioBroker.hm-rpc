@@ -1,21 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fixEvent = exports.fixParamset = exports.combineEPaperCommand = exports.number2hex = exports.replaceSpecialChars = exports.decrypt = exports.FORBIDDEN_CHARS = void 0;
+exports.fixEvent = exports.fixParamset = exports.combineEPaperCommand = exports.number2hex = exports.replaceSpecialChars = exports.FORBIDDEN_CHARS = void 0;
 exports.FORBIDDEN_CHARS = /[\][*,;'"`<>\\\s?]/g;
-/**
- * decrypts a key with its related value
- *
- * @param key
- * @param value
- */
-function decrypt(key, value) {
-    let result = '';
-    for (let i = 0; i < value.length; ++i) {
-        result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
-    }
-    return result;
-}
-exports.decrypt = decrypt;
 /**
  * replaces special chars by DIN_66003
  *
@@ -272,7 +258,7 @@ function fixParamset(params) {
     }
     // #617, #584: for the codes there is often a value greater than max set, so we remove the max for now
     if (paramObj.CONTROL === 'MAINTENANCE.CODE_ID') {
-        paramObj.MAX = 9999;
+        paramObj.MAX = 9_999;
     }
     // # 539: while HMIP heating groups correctly have min 4.5 this is not the case for rfd somehow
     if (paramObj.CONTROL === 'HEATING_CONTROL.SETPOINT' && daemon === 'virtual-devices') {
