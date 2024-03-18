@@ -561,32 +561,19 @@ export class HomematicRpc extends utils.Adapter {
                 });
             }
         } else if (!rpcClient) {
-            this.getForeignObject('system.config', (err, obj) => {
-                let password;
-                let username;
-
-                if (obj && obj.native && obj.native.secret) {
-                    password = tools.decrypt(obj.native.secret, this.config.password || '');
-                    username = tools.decrypt(obj.native.secret, this.config.username || '');
-                } else {
-                    password = tools.decrypt('Zgfr56gFe87jJOM', this.config.password || '');
-                    username = tools.decrypt('Zgfr56gFe87jJOM', this.config.username || '');
-                }
-
-                try {
-                    rpcClient = rpc.createSecureClient({
-                        host: this.config.homematicAddress,
-                        port: this.config.homematicPort,
-                        path: this.homematicPath,
-                        reconnectTimeout: this.config.reconnectInterval * 1_000,
-                        basic_auth: { user: username, pass: password },
-                        rejectUnauthorized: false
-                    });
-                } catch (e: any) {
-                    this.log.error(`Could not create secure ${this.config.type}-rpc client: ${e.message}`);
-                    return void this.restart();
-                }
-            });
+            try {
+                rpcClient = rpc.createSecureClient({
+                    host: this.config.homematicAddress,
+                    port: this.config.homematicPort,
+                    path: this.homematicPath,
+                    reconnectTimeout: this.config.reconnectInterval * 1_000,
+                    basic_auth: { user: this.config.username, pass: this.config.password },
+                    rejectUnauthorized: false
+                });
+            } catch (e: any) {
+                this.log.error(`Could not create secure ${this.config.type}-rpc client: ${e.message}`);
+                return void this.restart();
+            }
         }
 
         this.log.debug('Connect...');

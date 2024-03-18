@@ -105,20 +105,19 @@
         "it": "Riprovare una volta su (UNREACH) e Errori di errore per evitare problemi di comunicazione tmeporary (chiude #467)\nabbiamo aggiornato alcune icone del dispositivo",
         "es": "Retry once on (UNREACH) and Failure errors to avoid tmeporary communication issues (closes #467)\nhemos actualizado algunos iconos de dispositivo",
         "pl": "Retry raz na (UNREACH) oraz Failure error to avoid tmeporary communication (zamknięty #467)\nposiadać pewne ikony urządzeń",
-        "zh-cn": "恢复原状(UNREACH)和不失误以避免异常的通信问题(第467号)\n我们更新了一些装置的掩体"
+        "zh-cn": "恢复原状(UNREACH)和不失误以避免异常的通信问题(第467号)\n我们更新了一些装置的掩体",
+        "uk": "Повторіть один раз після помилок `(UNREACH)` і `Failure`, щоб уникнути тимчасових проблем із зв'язком (закриває #467)\nми оновили деякі значки пристроїв"
       }
     },
     "authors": [
       "hobbyquaker <hq@ccu.io>",
       "Moritz Heusinger <moritz.heusinger@gmail.com>"
     ],
-    "license": "MIT",
     "mode": "daemon",
     "platform": "Javascript/Node.js",
     "loglevel": "info",
     "readme": "https://github.com/ioBroker/ioBroker.hm-rpc/blob/master/README.md",
     "icon": "homematic.png",
-    "materialize": true,
     "compact": true,
     "extIcon": "https://raw.githubusercontent.com/ioBroker/ioBroker.hm-rpc/master/admin/homematic.png",
     "keywords": [
@@ -148,6 +147,11 @@
     "dependencies": [
       {
         "js-controller": ">=3.3.0"
+      }
+    ],
+    "globalDependencies": [
+      {
+        "admin": ">=6.0.0"
       }
     ],
     "supportedMessages": {
@@ -180,9 +184,52 @@
     },
     "tier": 2,
     "licenseInformation": {
+      "license": "MIT",
       "type": "free",
       "link": "https://github.com/ioBroker/ioBroker.hm-rpc/blob/master/LICENSE"
-    }
+    },
+    "messages": [
+      {
+        "condition": {
+          "operand": "and",
+          "rules": [
+            "oldVersion<1.17.0",
+            "newVersion>=1.17.0"
+          ]
+        },
+        "title": {
+          "en": "Reenter your credentials for https",
+          "de": "Geben Sie erneut Ihre Anmeldeinformationen für https ein",
+          "ru": "Восстановить свои учетные данные для https",
+          "pt": "Insira suas credenciais para https",
+          "nl": "Uw referenties voor https opnieuw invoeren",
+          "fr": "Entrez de nouveau vos identifiants pour https",
+          "it": "Reinserire le credenziali per https",
+          "es": "Ingrese sus credenciales para https",
+          "pl": "Wprowadź swoje referencje do https",
+          "uk": "Відновити свої облікові дані за посиланням",
+          "zh-cn": "重新输入您的 https 证书"
+        },
+        "text": {
+          "en": "The internal encryption method has been changed. Please enter your username and password in the instance configuration again.",
+          "de": "Die interne Verschlüsselungsmethode wurde geändert. Bitte geben Sie Ihren Benutzernamen und Ihr Passwort erneut in der Instanzkonfiguration ein.",
+          "ru": "Был изменен внутренний метод шифрования. Пожалуйста, введите ваше имя пользователя и пароль в конфигурации экземпляра снова.",
+          "pt": "O método de criptografia interna foi alterado. Digite seu nome de usuário e senha na configuração da instância novamente.",
+          "nl": "De interne coderingsmethode is gewijzigd. Voer uw gebruikersnaam en wachtwoord in de instantieconfiguratie opnieuw in.",
+          "fr": "La méthode de chiffrement interne a été modifiée. Veuillez à nouveau saisir votre nom d'utilisateur et votre mot de passe dans la configuration de l'instance.",
+          "it": "Il metodo di crittografia interna è stato modificato. Inserisci nuovamente il nome utente e la password nella configurazione dell'istanza.",
+          "es": "El método de cifrado interno ha sido cambiado. Ingrese su nombre de usuario y contraseña en la configuración de instancia de nuevo.",
+          "pl": "Wewnętrzna metoda szyfrowania została zmieniona. Proszę podać nazwę użytkownika i hasło w konfiguracji instancji ponownie.",
+          "uk": "Змінено метод внутрішнього шифрування. Будь ласка, введіть ім'я користувача та пароль в налаштуваннях екземпляра знову.",
+          "zh-cn": "内部加密方法已经改变. 请在实例配置中再次输入您的用户名和密码 ."
+        },
+        "level": "warn",
+        "buttons": [
+          "agree",
+          "cancel"
+        ]
+      }
+    ]
   },
   "native": {
     "homematicAddress": "192.168.0.100",
@@ -191,7 +238,7 @@
     "callbackAddress": "",
     "port": "0",
     "type": "xml",
-    "daemon": "rfd",
+    "daemon": "HMIP",
     "checkInitInterval": 180,
     "reconnectInterval": 30,
     "forceReInit": false,
@@ -201,6 +248,10 @@
     "dontDelete": false
   },
   "protectedNative": [
+    "username",
+    "password"
+  ],
+  "encryptedNative": [
     "username",
     "password"
   ],
@@ -224,7 +275,19 @@
       "_id": "updated",
       "type": "state",
       "common": {
-        "name": "Some new devices added",
+        "name": {
+          "en": "New devices added",
+          "de": "Neue Geräte hinzugefügt",
+          "ru": "Новые добавленные устройства",
+          "pt": "Novos dispositivos adicionados",
+          "nl": "Nieuwe apparaten toegevoegd",
+          "fr": "Nouveaux appareils ajoutés",
+          "it": "Nuovi dispositivi aggiunti",
+          "es": "Nuevos dispositivos añadidos",
+          "pl": "Dodano nowe urządzenia",
+          "uk": "Додані нові пристрої",
+          "zh-cn": "新增设备"
+        },
         "type": "boolean",
         "read": true,
         "write": true
@@ -234,7 +297,19 @@
       "_id": "info",
       "type": "channel",
       "common": {
-        "name": "Information"
+        "name": {
+          "en": "Information",
+          "de": "Informationen",
+          "ru": "Информация",
+          "pt": "Informação",
+          "nl": "Informatie",
+          "fr": "Informations",
+          "it": "Informazioni",
+          "es": "Información",
+          "pl": "Informacje",
+          "uk": "Інформація",
+          "zh-cn": "资料"
+        }
       },
       "native": {}
     },
@@ -242,9 +317,21 @@
       "_id": "info.connection",
       "type": "state",
       "common": {
-        "role": "indicator.connected",
-        "name": "If connected to CCU",
+        "name": {
+          "en": "Connected to CCU",
+          "de": "Verbindung mit CCU",
+          "ru": "Подключен к CCU",
+          "pt": "Conectado ao CCU",
+          "nl": "Verbonden met CCU",
+          "fr": "Connecté au CCU",
+          "it": "Collegato a CCU",
+          "es": "Conectado a la CCU",
+          "pl": "Połączone z CCU",
+          "uk": "Підключення до CCU",
+          "zh-cn": "已连接到 CCU"
+        },
         "type": "boolean",
+        "role": "indicator.connected",
         "read": true,
         "write": false,
         "def": false
