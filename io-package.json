@@ -15,8 +15,21 @@
       "uk": "Підключає HomeMatic інтерфейси (BidCos-сервіси, Homegear і CUxD) через XML-RPC або BIN-RPC до ioBroker",
       "zh-cn": "通过 XML-RPC 或 BIN-RPC 将 HomeMatic 接口进程（BidCos-Services、Homegear 和 CUxD）连接到 ioBroker"
     },
-    "version": "1.17.0",
+    "version": "2.0.0",
     "news": {
+      "2.0.0": {
+        "en": "Updated packages\nRemoved support of Node.js 16",
+        "de": "Aktualisierte Pakete\nAusgenommene Unterstützung von Node.js 16",
+        "ru": "Обновленные пакеты\nУдаленная поддержка Node.js 16",
+        "pt": "Pacotes atualizados\nSuporte removido de Node.js 16",
+        "nl": "Bijgewerkte pakketten\nVerwijderde ondersteuning van Node.js 16",
+        "fr": "Paquets mis à jour\nSupport supprimé de Node.js 16",
+        "it": "Pacchetti aggiornati\nSostegno rimosso di Node.js 16",
+        "es": "Paquetes actualizados\nApoyo eliminado de Node.js 16",
+        "pl": "Aktualizacja pakietów\nUsunięte wsparcie Node.js 16",
+        "uk": "Оновлені пакети\nВилучена підтримка Node.js 16",
+        "zh-cn": "更新软件包\n删除节点.js 16 的支持"
+      },
       "1.17.0": {
         "en": "Fixed encrypted configuration",
         "de": "Feste verschlüsselte Konfiguration",
@@ -94,19 +107,6 @@
         "pl": "dodano nowe obrazy (zamknięte #778, zbliżone #873, bliskie #882)\nrezultat niewłaściwych paramisty (zamknięty #617), zamyka #584, skradzi #539, zamyka #460, zamyka #748\nrezultaty nieprawidłowych zdarzeń (zasada #872)",
         "uk": "додано нові зображення (закривається #778, закривається #873, закривається #882)\nвиправити неправильні парамети (закривається #617, закривається #584, закривається #764, закривається #460, закривається #748, закривається #756)\nвиправити неправильні події (закриває #872)",
         "zh-cn": "新的图像(第778号行动)接近第873号,接近第882号。\nfix 错误规定(编号:第617号,接近第584号,接近第539号,接近第764号,接近第460号,接近第748号,接近第756号)\nfix 错误事件(第872号)"
-      },
-      "1.15.16": {
-        "en": "we have linked images of new devices\nwe ensure, that the `LEVEL` datapoint of blinds is of role `level.blind` (closes #681)",
-        "de": "wir haben bilder von neuen geräten verknüpft\nwir stellen sicher, dass der LEVEL-Datenpunkt von Blinds von role level.blind ist (schließt #681)",
-        "ru": "мы соединили изображения новых устройств\nмы обеспечиваем, что точка данных LEVEL слепых имеет роль level.blind (closes #681)",
-        "pt": "temos imagens ligadas de novos dispositivos\nnós asseguramos, que o ponto de dados LEVEL de blinds é de nível de papel.blind (fecha #681)",
-        "nl": "we hebben beelden van nieuwe apparaten\nwe zorgen ervoor dat de LEVL datapoint van blinden een rolniveau is",
-        "fr": "nous avons des images liées de nouveaux appareils\nnous assurons que le point de données LEVEL des aveugles est de niveau de rôle.blind (ferme #681)",
-        "it": "abbiamo collegato immagini di nuovi dispositivi\ngarantiamo, che il datapoint LEVEL delle tende è di livello di ruolo.blind (chiude #681)",
-        "es": "hemos conectado imágenes de nuevos dispositivos\naseguramos que el punto de datos LEVEL de las persianas es de nivel de función.blind (cerca #681)",
-        "pl": "posiadamy powiązania z nowymi urządzeniami\nwskazuje się, że LEVEL jest niewidomy (okrążając #681)",
-        "uk": "ми зв'язали зображення нових пристроїв\nми забезпечуємо, що LEVEL точки даних жалюзі є рівнем ролі.blind (закривається No681)",
-        "zh-cn": "我们有新装置的图像链接。\n我们确保盲人数据点的作用水平。"
       }
     },
     "authors": [
