@@ -160,6 +160,7 @@ To update all available images execute `npm run update-images`
 -->
 ### **WORK IN PROGRESS**
 * (bluefox) Updated packages
+* (bluefox) Removed support of Node.js 16
 
 ### 1.17.0 (2024-03-18)
 * (klein0r) Fixed encrypted configuration
