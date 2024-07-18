@@ -1,6 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fixEvent = exports.fixParamset = exports.combineEPaperCommand = exports.number2hex = exports.replaceSpecialChars = exports.FORBIDDEN_CHARS = void 0;
+exports.FORBIDDEN_CHARS = void 0;
+exports.replaceSpecialChars = replaceSpecialChars;
+exports.number2hex = number2hex;
+exports.combineEPaperCommand = combineEPaperCommand;
+exports.fixParamset = fixParamset;
+exports.fixEvent = fixEvent;
 exports.FORBIDDEN_CHARS = /[\][*,;'"`<>\\\s?]/g;
 /**
  * replaces special chars by DIN_66003
@@ -41,7 +46,6 @@ function replaceSpecialChars(text) {
     } // endFor
     return result;
 }
-exports.replaceSpecialChars = replaceSpecialChars;
 // Icons:
 //      0x80 AUS
 //      0x81 EIN
@@ -73,7 +77,6 @@ function number2hex(num) {
     }
     return num;
 }
-exports.number2hex = number2hex;
 /**
  * Creates an combined EPAPER command which can be sent to the CCU
  *
@@ -244,7 +247,6 @@ function combineEPaperCommand(lines, signal, ton, repeats, offset) {
     command = `${command + signal},0x03`;
     return command;
 }
-exports.combineEPaperCommand = combineEPaperCommand;
 /**
  * Fix different bugs in the CCU metadata
  *
@@ -273,7 +275,6 @@ function fixParamset(params) {
         paramObj.UNIT = '100%';
     }
 }
-exports.fixParamset = fixParamset;
 /**
  * Fix different bugs in CCU which needs to be fixed on event level
  *
@@ -288,5 +289,4 @@ function fixEvent(params) {
     }
     return val;
 }
-exports.fixEvent = fixEvent;
 //# sourceMappingURL=tools.js.map

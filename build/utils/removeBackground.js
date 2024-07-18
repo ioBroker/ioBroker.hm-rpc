@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.buildLines = void 0;
+exports.buildLines = buildLines;
 const fs_1 = __importDefault(require("fs"));
 const child_process_1 = require("child_process");
 const os_1 = require("os");
@@ -46,5 +46,4 @@ async function buildLines() {
     }
     console.log('Script saved.');
 }
-exports.buildLines = buildLines;
 //# sourceMappingURL=removeBackground.js.map
