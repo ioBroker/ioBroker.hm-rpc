@@ -158,7 +158,7 @@ To update all available images execute `npm run update-images`
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 2.0.2 (2024-08-26)
 * (bluefox) Updated packages
 
 ### 2.0.0 (2024-07-18)
