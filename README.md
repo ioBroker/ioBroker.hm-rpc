@@ -46,7 +46,7 @@ In this case, switch the protocol to XML.
 
 ### Synchronize objects (once)
 After very first start the instance read *all* devices from CCU/Homematic.
-If you changed the configuration (renamed devices, added or removed devices) you can synchronise the configuration in ioBroker by enabling this option.
+If you changed the configuration (renamed devices, added or removed devices), you can synchronise the configuration in ioBroker by enabling this option.
 
 The instance will be restarted immediately, synchronize all devices anew and deactivate this option itself.
 
@@ -71,7 +71,7 @@ Used if ioBroker runs in Docker.
 Send pings to CCU/Homematic with such intervall.
 
 ### Reconnect interval (sec)
-How many seconds will be waited before connect attempts.
+So many seconds will be waited before connect attempts.
 
 ### Don't delete devices on adapter start
 If this flag is not activated, the ioBroker will remove devices from configuration if a device is not found at adapter start in CCU/Homematic.
@@ -93,8 +93,8 @@ It is possible to send custom commands, e.g., to read and control the master are
 to configure heating week programs and more.
 
 This is done by sending a message to the adapter, which contains the method as first parameter, followed by an object which 
-has to contain the ``ID`` of the target device as well as optional the ``paramType``, which specifies e.g. the MASTER area.
-Additional parameters have to be sent in the ``params`` object.
+has to contain the `ID` of the target device as well as optional the `paramType`, which specifies e.g. the MASTER area.
+Additional parameters have to be sent in the `params` object.
 
 **Examples:**
 
@@ -158,6 +158,9 @@ To update all available images execute `npm run update-images`
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (bluefox) Updated packages
+
 ### 2.0.0 (2024-07-18)
 * (bluefox) Updated packages
 * (bluefox) Removed support of Node.js 16
