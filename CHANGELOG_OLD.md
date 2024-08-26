@@ -1,4 +1,7 @@
 # Older changes
+## 1.15.19 (2023-08-08)
+* (bluefox) Updated packages
+
 ## 1.15.18 (2023-05-08)
 * (foxriver76) no longer support EOL versions, please upgrade to node 16
 

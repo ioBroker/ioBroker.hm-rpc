@@ -158,7 +158,7 @@ To update all available images execute `npm run update-images`
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 2.0.1 (2024-08-26)
 * (bluefox) Updated packages
 
 ### 2.0.0 (2024-07-18)
@@ -175,9 +175,6 @@ To update all available images execute `npm run update-images`
 * (JeyCee) Added support for the device manager
 * (bluefox) Added JSON config
 * (foxriver76) port to adapters internal `setTimeout/setInterval` methods
-
-### 1.15.19 (2023-08-08)
-* (bluefox) Updated packages
 
 ### Older entries
 [here](OLD_CHANGELOG.md)

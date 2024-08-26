@@ -15,8 +15,21 @@
       "uk": "Підключає HomeMatic інтерфейси (BidCos-сервіси, Homegear і CUxD) через XML-RPC або BIN-RPC до ioBroker",
       "zh-cn": "通过 XML-RPC 或 BIN-RPC 将 HomeMatic 接口进程（BidCos-Services、Homegear 和 CUxD）连接到 ioBroker"
     },
-    "version": "2.0.0",
+    "version": "2.0.1",
     "news": {
+      "2.0.1": {
+        "en": "Updated packages",
+        "de": "Aktualisierte Pakete",
+        "ru": "Обновленные пакеты",
+        "pt": "Pacotes atualizados",
+        "nl": "Bijgewerkte pakketten",
+        "fr": "Paquets mis à jour",
+        "it": "Pacchetti aggiornati",
+        "es": "Paquetes actualizados",
+        "pl": "Aktualizacja pakietów",
+        "uk": "Оновлені пакети",
+        "zh-cn": "更新软件包"
+      },
       "2.0.0": {
         "en": "Updated packages\nRemoved support of Node.js 16",
         "de": "Aktualisierte Pakete\nAusgenommene Unterstützung von Node.js 16",
@@ -94,19 +107,6 @@
         "pl": "nie obsługuje już wersji EOL, ulepszanie węzła 16",
         "uk": "не більше підтримки EOL версії, будь ласка, оновлення до вузла 16",
         "zh-cn": "不再支持EOL版本,请升级为第16号。"
-      },
-      "1.15.17": {
-        "en": "added new images (closes #778, closes #873, closes #882)\nfix wrong paramsets (closes #617, closes #584, closes #539, closes #764, closes #460, closes #748, closes #756)\nfix wrong events (closes #872)",
-        "de": "neue bilder hinzugefügt (schließt #778, schließt #873, schließt #882)\nfix falsche paramsets (schließt #617, schließt #584, schließt #539, schließt #764, schließt #460, schließt #748, schließt #756)\nfalsche ereignisse beheben (schließt #872)",
-        "ru": "добавлены новые изображения (closes #778, closes #873, closes #882)\nисправить неправильные парамесеты (закрыты #617, закрывает #584, закрывает #539, закрывает #764, закрывает #460, закрывает #748, закрывает #756)\nисправить неправильные события (заметки #872)",
-        "pt": "adicionado novas imagens (fecha #778, fecha #873, fecha #882)\ncorrigir paramsets errados (fecha #617, fecha #584, fecha #539, fecha #764, fecha #460, fecha #748, fecha #756)\ncorrigir eventos errados (fecha #872)",
-        "nl": "vertaling:\nvertaling:\nvertaling:",
-        "fr": "ajout de nouvelles images (fermeture #778, fermeture #873, fermeture #882)\nréparer les faux paramsets (ferme #617, ferme #584, ferme #539, ferme #764, ferme #460, ferme #748, ferme #756)\ncorriger les mauvais événements (fermeture #872)",
-        "it": "aggiunto nuove immagini (chiude #778, chiude #873, chiude #882)\ncorrezione paramsets sbagliato (chiude #617, chiude #584, chiude #539, chiude #764, chiude #460, chiude #748, chiude #756)\ncorreggere gli eventi sbagliati (chiude #872)",
-        "es": "nuevas imágenes (cerca #778, cierra #873, cierra #882)\ncorrige parásitos equivocados (cerca #617, cierra #584, cierra #539, cierra #764, cierra #460, cierra #748, cierra #756)\narreglar eventos incorrectos (cerca #872)",
-        "pl": "dodano nowe obrazy (zamknięte #778, zbliżone #873, bliskie #882)\nrezultat niewłaściwych paramisty (zamknięty #617), zamyka #584, skradzi #539, zamyka #460, zamyka #748\nrezultaty nieprawidłowych zdarzeń (zasada #872)",
-        "uk": "додано нові зображення (закривається #778, закривається #873, закривається #882)\nвиправити неправильні парамети (закривається #617, закривається #584, закривається #764, закривається #460, закривається #748, закривається #756)\nвиправити неправильні події (закриває #872)",
-        "zh-cn": "新的图像(第778号行动)接近第873号,接近第882号。\nfix 错误规定(编号:第617号,接近第584号,接近第539号,接近第764号,接近第460号,接近第748号,接近第756号)\nfix 错误事件(第872号)"
       }
     },
     "authors": [
@@ -146,7 +146,7 @@
     "supportStopInstance": false,
     "dependencies": [
       {
-        "js-controller": ">=3.3.0"
+        "js-controller": ">=5.0.19"
       }
     ],
     "globalDependencies": [
@@ -185,8 +185,7 @@
     "tier": 2,
     "licenseInformation": {
       "license": "MIT",
-      "type": "free",
-      "link": "https://github.com/ioBroker/ioBroker.hm-rpc/blob/master/LICENSE"
+      "type": "free"
     },
     "messages": [
       {
