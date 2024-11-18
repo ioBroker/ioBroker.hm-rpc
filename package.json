@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "@iobroker/adapter-core": "^3.1.6",
-    "@iobroker/dm-utils": "^0.3.1",
+    "@iobroker/dm-utils": "^0.6.0",
     "@iobroker/type-detector": "^4.0.1",
     "binrpc": "^3.3.1",
     "homematic-xmlrpc": "^1.0.2"
