@@ -6,6 +6,7 @@
     "BIN-RPC does not work with HTTPS. HTTPS has been disabled.": "BIN-RPC не работает с HTTPS. HTTPS отключен.",
     "Check communication interval": "Интервал проверки соединения",
     "Daemon": "Служба",
+    "Device manager": "Диспетчер устройств",
     "Don't delete devices": "Не удаляйте устройства при старте адаптера",
     "Force objects re-init": "Синхронизировать объекты (один раз)",
     "HomeMatic Address": "Адрес HomeMatic",

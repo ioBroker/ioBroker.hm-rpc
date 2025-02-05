@@ -6,6 +6,7 @@
     "BIN-RPC does not work with HTTPS. HTTPS has been disabled.": "BIN-RPC不适用于HTTPS。 HTTPS已被禁用。",
     "Check communication interval": "检查通信间隔",
     "Daemon": "守护进程",
+    "Device manager": "装置经理",
     "Don't delete devices": "不要在适配器启动时删除设备",
     "Force objects re-init": "同步对象（一次）",
     "HomeMatic Address": "HomeMatic地址",
