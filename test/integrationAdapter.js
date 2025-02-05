@@ -1,6 +1,6 @@
 'use strict';
 
-const path = require('path');
+const path = require('node:path');
 const { tests } = require('@iobroker/testing');
 // TODO: activate after https://github.com/hobbyquaker/hm-simulator/pull/1
 // const hmSim = require('hm-simulator');
@@ -84,5 +84,5 @@ tests.integration(path.join(__dirname, '..'), {
             });
         });
          */
-    } // endDefineAdditionalTests
+    }, // endDefineAdditionalTests
 });

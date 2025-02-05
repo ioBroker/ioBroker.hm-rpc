@@ -1,17 +1,15 @@
 // Specialized tsconfig to only compile .ts-files in the src dir
 {
-  "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "allowJs": true,
-    "checkJs": false,
-    "noEmit": false,
-    "declaration": true
-  },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.js" // js too now
-  ],
-  "exclude": [
-    "src/**/*.test.ts"
-  ]
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "allowJs": true,
+        "checkJs": false,
+        "noEmit": false,
+        "declaration": true
+    },
+    "include": [
+        "src/**/*.ts",
+        "src/**/*.js" // js too now
+    ],
+    "exclude": ["src/**/*.test.ts"]
 }

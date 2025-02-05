@@ -15,7 +15,7 @@ const FOLDER_URL = 'https://github.com/eq-3/occu/tree/master/WebUI/www/config/im
         console.log('Successfully downloaded images');
         try {
             await moveImages();
-            // Create script to remove background of images
+            // Create a script to remove background of images
             await (0, removeBackground_1.buildLines)();
         }
         catch (e) {

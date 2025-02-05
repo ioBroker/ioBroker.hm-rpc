@@ -24,7 +24,7 @@ function getSize(name: string): Promise<Size> {
             (error, stdout) => {
                 const [x, y] = stdout.split('x');
                 resolve({ x: parseInt(x) - 1, y: parseInt(y) - 1 });
-            }
+            },
         );
     });
 }
@@ -39,12 +39,12 @@ export async function buildLines(): Promise<void> {
         const size = await getSize(name);
         if (os.startsWith('win')) {
             lines.push(
-                `imageMagic\\magick admin/icons/${name} -fill none -draw "alpha 0,0 floodfill" -draw "alpha ${size.x},${size.y} floodfill" -draw "alpha 0,${size.y} floodfill" -draw "alpha ${size.x},0 floodfill" -channel alpha -blur 0x2 result\\${name}`
+                `imageMagic\\magick admin/icons/${name} -fill none -draw "alpha 0,0 floodfill" -draw "alpha ${size.x},${size.y} floodfill" -draw "alpha 0,${size.y} floodfill" -draw "alpha ${size.x},0 floodfill" -channel alpha -blur 0x2 result\\${name}`,
             );
             lines.push(`imageMagic\\magick.exe result\\${name} -brightness-contrast 0x10 result\\${name}`);
         } else {
             lines.push(
-                `convert admin/icons/${name} -fill none -draw "matte 0,0 floodfill" -draw "matte ${size.x},${size.y} floodfill" -draw "matte 0,${size.y} floodfill" -draw "matte ${size.x},0 floodfill" -channel alpha -blur 0x2 result/${name}`
+                `convert admin/icons/${name} -fill none -draw "matte 0,0 floodfill" -draw "matte ${size.x},${size.y} floodfill" -draw "matte 0,${size.y} floodfill" -draw "matte ${size.x},0 floodfill" -channel alpha -blur 0x2 result/${name}`,
             );
             lines.push(`convert result/${name} -brightness-contrast 0x10 result/${name}`);
         }
@@ -53,7 +53,7 @@ export async function buildLines(): Promise<void> {
     if (os.startsWith('win')) {
         fs.writeFileSync(`remove.bat`, lines.join('\n'));
     } else {
-        fs.writeFileSync(`remove.sh`, 'mkdir result\n' + lines.join('\n'));
+        fs.writeFileSync(`remove.sh`, `mkdir result\n${lines.join('\n')}`);
     }
     console.log('Script saved.');
 }

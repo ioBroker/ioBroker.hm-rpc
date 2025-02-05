@@ -38,7 +38,7 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                 connection: connected ? (connected.val ? 'disconnected' : 'connected') : 'connected',
                 rssi: rssi ? parseFloat((rssi.val || '0').toString()) : undefined,
                 battery: lowBat?.val ? !lowBat.val : undefined,
-                warning: sabotage?.val ? 'Sabotage' : undefined
+                warning: sabotage?.val ? 'Sabotage' : undefined,
             };
             let hasDetails = false;
             if (devices[i].native.AVAILABLE_FIRMWARE || devices[i].native.FIRMWARE) {
@@ -67,12 +67,12 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                             es: 'Renombrar este dispositivo',
                             pl: 'Zmień nazwę tego urządzenia',
                             'zh-cn': '重命名此设备',
-                            uk: 'Перейменуйте цей пристрій'
+                            uk: 'Перейменуйте цей пристрій',
                         },
-                        handler: this.handleRenameDevice.bind(this)
-                    }
+                        handler: this.handleRenameDevice.bind(this),
+                    },
                 ],
-                controls: await this.getControls(devices[i])
+                controls: await this.getControls(devices[i]),
             };
             arrDevices.push(res);
         }
@@ -103,7 +103,7 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                 _keysOptional: keys,
                 _usedIdsOptional: [],
                 objects,
-                id: channel._id
+                id: channel._id,
             };
             const tdControls = this.typeDetector.detect(options);
             if (tdControls) {
@@ -149,7 +149,7 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
             const channel = {
                 name: objects[channelId].common.name || objects[channelId].native.TYPE || parts[parts.length - 1],
                 description: objects[channelId].native.TYPE,
-                order: parseInt(parts[parts.length - 1], 10)
+                order: parseInt(parts[parts.length - 1], 10),
             };
             if (objects[state.id] && objects[state.id].common) {
                 if (objects[state.id].common.write !== false ||
@@ -161,7 +161,7 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                             objects[state.id].common.states.forEach((value) => {
                                 options.push({
                                     label: value.toString(),
-                                    value
+                                    value,
                                 });
                             });
                         }
@@ -169,7 +169,7 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                             Object.keys(objects[state.id].common.states).forEach(value => {
                                 options.push({
                                     label: objects[state.id].common.states[value],
-                                    value
+                                    value,
                                 });
                             });
                         }
@@ -189,8 +189,8 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                                 return {
                                     error: {
                                         message: 'Can not get current state',
-                                        code: 305
-                                    }
+                                        code: 305,
+                                    },
                                 };
                             },
                             handler: async (deviceId, actionId, state) => {
@@ -203,10 +203,10 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                                 return {
                                     error: {
                                         message: 'Can not get current state',
-                                        code: 305
-                                    }
+                                        code: 305,
+                                    },
                                 };
-                            }
+                            },
                         });
                     }
                     else if (objects[state.id].common.type === 'number') {
@@ -228,8 +228,8 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                                 return {
                                     error: {
                                         message: 'Can not get current state',
-                                        code: 305
-                                    }
+                                        code: 305,
+                                    },
                                 };
                             },
                             handler: async (deviceId, actionId, state) => {
@@ -242,10 +242,10 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                                 return {
                                     error: {
                                         message: 'Can not get current state',
-                                        code: 305
-                                    }
+                                        code: 305,
+                                    },
                                 };
-                            }
+                            },
                         };
                         if (objects[state.id].common.unit === '%') {
                             control.type = 'slider';
@@ -283,10 +283,10 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                                     return {
                                         error: {
                                             message: 'Can not get current state',
-                                            code: 305
-                                        }
+                                            code: 305,
+                                        },
                                     };
-                                }
+                                },
                             });
                         }
                         else {
@@ -304,8 +304,8 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                                     return {
                                         error: {
                                             message: 'Can not get current state',
-                                            code: 305
-                                        }
+                                            code: 305,
+                                        },
                                     };
                                 },
                                 handler: async (deviceId, actionId, state) => {
@@ -318,10 +318,10 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                                     return {
                                         error: {
                                             message: 'Can not get current state',
-                                            code: 305
-                                        }
+                                            code: 305,
+                                        },
                                     };
-                                }
+                                },
                             });
                         }
                     }
@@ -342,8 +342,8 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                                 return {
                                     error: {
                                         message: 'Can not get current state',
-                                        code: 305
-                                    }
+                                        code: 305,
+                                    },
                                 };
                             },
                             handler: async (deviceId, actionId, state) => {
@@ -356,10 +356,10 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                                 return {
                                     error: {
                                         message: 'Can not get current state',
-                                        code: 305
-                                    }
+                                        code: 305,
+                                    },
                                 };
-                            }
+                            },
                         });
                     }
                 }
@@ -394,10 +394,10 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                             return {
                                 error: {
                                     message: 'Can not get current state',
-                                    code: 305
-                                }
+                                    code: 305,
+                                },
                             };
-                        }
+                        },
                     });
                 }
             }
@@ -414,20 +414,20 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
             id: device._id,
             schema: {
                 type: 'panel',
-                items: {}
-            }
+                items: {},
+            },
         };
         if (device.native.FIRMWARE) {
             data.schema.items.firmwareLabel = {
                 type: 'staticText',
                 text: `Installed firmware:`,
                 style: { fontWeight: 'bold' },
-                newLine: false
+                newLine: false,
             };
             data.schema.items.firmware = {
                 type: 'staticText',
                 text: `${device.native.FIRMWARE}`,
-                newLine: false
+                newLine: false,
             };
         }
         if (device.native.AVAILABLE_FIRMWARE) {
@@ -435,12 +435,12 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                 type: 'staticText',
                 text: `Available firmware:`,
                 style: { fontWeight: 'bold' },
-                newLine: true
+                newLine: true,
             };
             data.schema.items.availableFirmware = {
                 type: 'staticText',
                 text: `${device.native.AVAILABLE_FIRMWARE}`,
-                newLine: false
+                newLine: false,
             };
         }
         return data;
@@ -452,12 +452,12 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                 newName: {
                     type: 'text',
                     trim: false,
-                    placeholder: ''
-                }
-            }
+                    placeholder: '',
+                },
+            },
         }, {
             data: {
-                newName: ''
+                newName: '',
             },
             title: {
                 en: 'Enter new name',
@@ -470,16 +470,16 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                 es: 'Ingrese un nuevo nombre',
                 pl: 'Wpisz nowe imię',
                 'zh-cn': '输入新名称',
-                uk: "Введіть нове ім'я"
-            }
+                uk: "Введіть нове ім'я",
+            },
         });
         if (result?.newName === undefined || result?.newName === '') {
             return { refresh: false };
         }
         const obj = {
             common: {
-                name: result.newName
-            }
+                name: result.newName,
+            },
         };
         const res = await this.adapter.extendObjectAsync(id, obj);
         if (res === null) {

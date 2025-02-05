@@ -1,13 +1,11 @@
-import { FixParamsetParams, FixEventParams } from './_types';
+import type { FixParamsetParams, FixEventParams } from './_types';
 export declare const FORBIDDEN_CHARS: RegExp;
 /**
  * replaces special chars by DIN_66003
- *
- * @param text
  */
 export declare function replaceSpecialChars(text: string): string;
 export declare function number2hex(num: number | string): string;
-interface Line {
+export interface Line {
     line: string | number;
     icon: string | number;
 }
@@ -20,7 +18,7 @@ interface Line {
  * @param repeats
  * @param offset
  */
-export declare function combineEPaperCommand(lines: Line[], signal: string | number, ton: any, repeats: any, offset: any): string;
+export declare function combineEPaperCommand(lines: Line[], signal: string | number, ton: number | string, repeats: number | undefined, offset: number | undefined): string;
 /**
  * Fix different bugs in the CCU metadata
  *
@@ -32,5 +30,4 @@ export declare function fixParamset(params: FixParamsetParams): void;
  *
  * @param params relevant parameters
  */
-export declare function fixEvent(params: FixEventParams): any;
-export {};
+export declare function fixEvent(params: FixEventParams): null | string | number;

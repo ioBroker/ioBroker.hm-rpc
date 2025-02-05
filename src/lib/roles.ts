@@ -4,7 +4,7 @@ export const metaRoles: Record<string, Record<string, string>> = {
         BLIND: 'blind',
         SWITCH: 'switch',
         KEY: 'button',
-        SHUTTER_CONTACT: 'sensor'
+        SHUTTER_CONTACT: 'sensor',
     },
     dpCONTROL: {
         'DIMMER.LEVEL': 'level.dimmer',
@@ -12,7 +12,7 @@ export const metaRoles: Record<string, Record<string, string>> = {
         'SHUTTER_TRANSMITTER.LEVEL': 'level.blind',
         'LOCK.STATE': 'switch.lock',
         'DOOR_SENSOR.STATE': 'value.window',
-        'DANGER.STATE': 'sensor.alarm.fire'
+        'DANGER.STATE': 'sensor.alarm.fire',
     },
     chTYPE_dpNAME: {
         'DIMMER.LEVEL': 'level.dimmer',
@@ -20,7 +20,7 @@ export const metaRoles: Record<string, Record<string, string>> = {
         'DIMMER.LEVEL_REAL': 'value.dimmer',
         'VIRTUAL_DIMMER.LEVEL': 'level.dimmer',
         'VIRTUAL_DIMMER.OLD_LEVEL': 'value.dimmer',
-        'VIRTUAL_DIMMER.LEVEL_REAL': 'value.dimmer'
+        'VIRTUAL_DIMMER.LEVEL_REAL': 'value.dimmer',
     },
     dpNAME: {
         BATTERY_STATE: 'value.voltage',
@@ -84,7 +84,7 @@ export const metaRoles: Record<string, Record<string, string>> = {
         FREQUENCY: 'value.frequency',
         POWER: 'value.power',
         VOLTAGE: 'value.voltage',
-        ERROR_CODE: 'value'
+        ERROR_CODE: 'value',
     },
     dvTYPE: {
         'HM-Sec-SD': 'sensor.alarm.fire',
@@ -102,6 +102,6 @@ export const metaRoles: Record<string, Record<string, string>> = {
         'HmIP-SRH': 'value.tilt',
         'HM-Sec-WDS-2': 'sensor.alarm.flood',
         'HmIP-SWD': 'sensor.alarm.flood',
-        'HmIP-SWSD': 'sensor.alarm.fire'
-    }
+        'HmIP-SWSD': 'sensor.alarm.fire',
+    },
 };

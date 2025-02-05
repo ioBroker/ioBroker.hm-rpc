@@ -1,17 +1,17 @@
 import {
-    ActionContext,
-    DeviceDetails,
+    type ActionContext,
+    type DeviceDetails,
     DeviceManagement,
-    DeviceRefresh,
-    DeviceStatus,
-    ErrorResponse,
+    type DeviceRefresh,
+    type DeviceStatus,
+    type ErrorResponse,
     type DeviceInfo,
-    type DeviceControl
+    type DeviceControl,
 } from '@iobroker/dm-utils';
-import { ControlState, ChannelInfo } from '@iobroker/dm-utils/build/types/base';
-import ChannelDetector, { DetectOptions, PatternControl } from '@iobroker/type-detector';
+import type { ControlState, ChannelInfo } from '@iobroker/dm-utils/build/types/base';
+import ChannelDetector, { type DetectOptions, type PatternControl } from '@iobroker/type-detector';
 
-import { HomematicRpc } from '../main';
+import type { HomematicRpc } from '../main';
 
 function getText(text: ioBroker.StringOrTranslated, lang: ioBroker.Languages): string {
     if (typeof text === 'string') {
@@ -51,7 +51,7 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                 connection: connected ? (connected.val ? 'disconnected' : 'connected') : 'connected',
                 rssi: rssi ? parseFloat((rssi.val || '0').toString()) : undefined,
                 battery: lowBat?.val ? !lowBat.val : undefined,
-                warning: sabotage?.val ? 'Sabotage' : undefined
+                warning: sabotage?.val ? 'Sabotage' : undefined,
             };
 
             let hasDetails = false;
@@ -82,12 +82,12 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                             es: 'Renombrar este dispositivo',
                             pl: 'Zmień nazwę tego urządzenia',
                             'zh-cn': '重命名此设备',
-                            uk: 'Перейменуйте цей пристрій'
+                            uk: 'Перейменуйте цей пристрій',
                         },
-                        handler: this.handleRenameDevice.bind(this)
-                    }
+                        handler: this.handleRenameDevice.bind(this),
+                    },
                 ],
-                controls: await this.getControls(devices[i])
+                controls: await this.getControls(devices[i]),
             };
 
             arrDevices.push(res);
@@ -122,7 +122,7 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                 _keysOptional: keys,
                 _usedIdsOptional: [],
                 objects,
-                id: channel._id
+                id: channel._id,
             };
 
             const tdControls = this.typeDetector.detect(options);
@@ -163,7 +163,7 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
 
     private typedControl2DeviceManager(
         tdControl: PatternControl,
-        objects: Record<string, ioBroker.Object>
+        objects: Record<string, ioBroker.Object>,
     ): DeviceControl[] | undefined {
         const controls: DeviceControl[] = [];
 
@@ -181,7 +181,7 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
             const channel: ChannelInfo = {
                 name: objects[channelId].common.name || objects[channelId].native.TYPE || parts[parts.length - 1],
                 description: objects[channelId].native.TYPE,
-                order: parseInt(parts[parts.length - 1], 10)
+                order: parseInt(parts[parts.length - 1], 10),
             };
 
             if (objects[state.id] && objects[state.id].common) {
@@ -196,14 +196,14 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                             objects[state.id].common.states.forEach((value: number) => {
                                 options.push({
                                     label: value.toString(),
-                                    value
+                                    value,
                                 });
                             });
                         } else {
                             Object.keys(objects[state.id].common.states).forEach(value => {
                                 options.push({
                                     label: objects[state.id].common.states[value],
-                                    value
+                                    value,
                                 });
                             });
                         }
@@ -218,7 +218,7 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                             label: stateName, // objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
                             getStateHandler: async (
                                 deviceId: string,
-                                actionId: string
+                                actionId: string,
                             ): Promise<ioBroker.State | ErrorResponse> => {
                                 const currentState = await this.adapter.getForeignStateAsync(actionId);
                                 if (currentState) {
@@ -227,14 +227,14 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                                 return {
                                     error: {
                                         message: 'Can not get current state',
-                                        code: 305
-                                    }
+                                        code: 305,
+                                    },
                                 };
                             },
                             handler: async (
                                 deviceId: string,
                                 actionId: string,
-                                state: ControlState
+                                state: ControlState,
                             ): Promise<ErrorResponse | ioBroker.State> => {
                                 console.log(state);
 
@@ -246,10 +246,10 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                                 return {
                                     error: {
                                         message: 'Can not get current state',
-                                        code: 305
-                                    }
+                                        code: 305,
+                                    },
                                 };
-                            }
+                            },
                         });
                     } else if (objects[state.id].common.type === 'number') {
                         const control: DeviceControl = {
@@ -264,7 +264,7 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                             max: objects[state.id].common.max,
                             getStateHandler: async (
                                 deviceId: string,
-                                actionId: string
+                                actionId: string,
                             ): Promise<ioBroker.State | ErrorResponse> => {
                                 const currentState = await this.adapter.getForeignStateAsync(actionId);
                                 if (currentState) {
@@ -273,14 +273,14 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                                 return {
                                     error: {
                                         message: 'Can not get current state',
-                                        code: 305
-                                    }
+                                        code: 305,
+                                    },
                                 };
                             },
                             handler: async (
                                 deviceId: string,
                                 actionId: string,
-                                state: ControlState
+                                state: ControlState,
                             ): Promise<ErrorResponse | ioBroker.State> => {
                                 console.log(state);
 
@@ -292,10 +292,10 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                                 return {
                                     error: {
                                         message: 'Can not get current state',
-                                        code: 305
-                                    }
+                                        code: 305,
+                                    },
                                 };
-                            }
+                            },
                         };
 
                         if (objects[state.id].common.unit === '%') {
@@ -331,7 +331,7 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                                 handler: async (
                                     deviceId: string,
                                     actionId: string,
-                                    state: ControlState
+                                    state: ControlState,
                                 ): Promise<ErrorResponse | ioBroker.State> => {
                                     console.log(state);
 
@@ -343,10 +343,10 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                                     return {
                                         error: {
                                             message: 'Can not get current state',
-                                            code: 305
-                                        }
+                                            code: 305,
+                                        },
                                     };
-                                }
+                                },
                             });
                         } else {
                             controls.push({
@@ -357,7 +357,7 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                                 label: stateName, // objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
                                 getStateHandler: async (
                                     deviceId: string,
-                                    actionId: string
+                                    actionId: string,
                                 ): Promise<ioBroker.State | ErrorResponse> => {
                                     const currentState = await this.adapter.getForeignStateAsync(actionId);
                                     if (currentState) {
@@ -366,14 +366,14 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                                     return {
                                         error: {
                                             message: 'Can not get current state',
-                                            code: 305
-                                        }
+                                            code: 305,
+                                        },
                                     };
                                 },
                                 handler: async (
                                     deviceId: string,
                                     actionId: string,
-                                    state: ControlState
+                                    state: ControlState,
                                 ): Promise<ErrorResponse | ioBroker.State> => {
                                     console.log(state);
 
@@ -385,10 +385,10 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                                     return {
                                         error: {
                                             message: 'Can not get current state',
-                                            code: 305
-                                        }
+                                            code: 305,
+                                        },
                                     };
-                                }
+                                },
                             });
                         }
                     } else {
@@ -402,7 +402,7 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                             label: stateName, // objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
                             getStateHandler: async (
                                 deviceId: string,
-                                actionId: string
+                                actionId: string,
                             ): Promise<ioBroker.State | ErrorResponse> => {
                                 const currentState = await this.adapter.getForeignStateAsync(actionId);
                                 if (currentState) {
@@ -411,14 +411,14 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                                 return {
                                     error: {
                                         message: 'Can not get current state',
-                                        code: 305
-                                    }
+                                        code: 305,
+                                    },
                                 };
                             },
                             handler: async (
                                 deviceId: string,
                                 actionId: string,
-                                state: ControlState
+                                state: ControlState,
                             ): Promise<ErrorResponse | ioBroker.State> => {
                                 console.log(state);
 
@@ -430,10 +430,10 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                                 return {
                                     error: {
                                         message: 'Can not get current state',
-                                        code: 305
-                                    }
+                                        code: 305,
+                                    },
                                 };
-                            }
+                            },
                         });
                     }
                 } else if (objects[state.id].common.read !== false) {
@@ -449,7 +449,7 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                         label: stateName, // objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
                         getStateHandler: async (
                             deviceId: string,
-                            actionId: string
+                            actionId: string,
                         ): Promise<ErrorResponse | ioBroker.State> => {
                             console.log(state);
 
@@ -472,10 +472,10 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                             return {
                                 error: {
                                     message: 'Can not get current state',
-                                    code: 305
-                                }
+                                    code: 305,
+                                },
                             };
-                        }
+                        },
                     });
                 }
             }
@@ -494,8 +494,8 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
             id: device._id,
             schema: {
                 type: 'panel',
-                items: {}
-            }
+                items: {},
+            },
         };
 
         if (device.native.FIRMWARE) {
@@ -503,12 +503,12 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                 type: 'staticText',
                 text: `Installed firmware:`,
                 style: { fontWeight: 'bold' },
-                newLine: false
+                newLine: false,
             };
             data.schema.items.firmware = {
                 type: 'staticText',
                 text: `${device.native.FIRMWARE}`,
-                newLine: false
+                newLine: false,
             };
         }
 
@@ -517,12 +517,12 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                 type: 'staticText',
                 text: `Available firmware:`,
                 style: { fontWeight: 'bold' },
-                newLine: true
+                newLine: true,
             };
             data.schema.items.availableFirmware = {
                 type: 'staticText',
                 text: `${device.native.AVAILABLE_FIRMWARE}`,
-                newLine: false
+                newLine: false,
             };
         }
 
@@ -537,13 +537,13 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                     newName: {
                         type: 'text',
                         trim: false,
-                        placeholder: ''
-                    }
-                }
+                        placeholder: '',
+                    },
+                },
             },
             {
                 data: {
-                    newName: ''
+                    newName: '',
                 },
                 title: {
                     en: 'Enter new name',
@@ -556,17 +556,17 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                     es: 'Ingrese un nuevo nombre',
                     pl: 'Wpisz nowe imię',
                     'zh-cn': '输入新名称',
-                    uk: "Введіть нове ім'я"
-                }
-            }
+                    uk: "Введіть нове ім'я",
+                },
+            },
         );
         if (result?.newName === undefined || result?.newName === '') {
             return { refresh: false };
         }
         const obj = {
             common: {
-                name: result.newName
-            }
+                name: result.newName,
+            },
         };
         const res = await this.adapter.extendObjectAsync(id, obj);
         if (res === null) {

@@ -1,4 +1,4 @@
-import * as utils from '@iobroker/adapter-core';
+import { Adapter, type AdapterOptions } from '@iobroker/adapter-core';
 import { images } from './lib/images';
 import * as tools from './lib/tools';
 import { metaRoles } from './lib/roles';
@@ -8,13 +8,14 @@ import type {
     ParamsetObject,
     DatapointTypeObject,
     MulticallEvent,
-    ListDevicesEntry
+    ListDevicesEntry,
 } from './lib/_types';
 
 import { dmHmRpc } from './lib/deviceManager';
+import type { Line } from './lib/tools';
 
 let connected = false;
-const displays: Record<string, any> = {};
+const displays: Record<string, { timer: ioBroker.Timeout | undefined; withTone: boolean } | null> = {};
 
 let clientId: string;
 
@@ -23,7 +24,7 @@ let rpcClient: any;
 
 let rpcServer: any;
 
-export class HomematicRpc extends utils.Adapter {
+export class HomematicRpc extends Adapter {
     /** On failed rpc call retry in X ms */
     private readonly RETRY_DELAY_MS = 150;
     private readonly metaValues: Record<string, ParamsetObject> = {};
@@ -46,7 +47,7 @@ export class HomematicRpc extends utils.Adapter {
         EPAPER_TONE: 'string',
         EPAPER_SIGNAL: 'string',
         EPAPER_TONE_INTERVAL: 'number',
-        EPAPER_TONE_REPETITIONS: 'number'
+        EPAPER_TONE_REPETITIONS: 'number',
     } as const;
 
     private deviceManagement: dmHmRpc | undefined;
@@ -64,7 +65,7 @@ export class HomematicRpc extends utils.Adapter {
             }
 
             this.log.debug(`${this.config.type}rpc <- event ${JSON.stringify(params)}`);
-            let val;
+            let val: string | number | undefined | null;
             // CUxD ignores all prefixes!!
             if (params[0] === 'CUxD' || !params[0].includes(this.name)) {
                 params[0] = this.namespace;
@@ -93,23 +94,23 @@ export class HomematicRpc extends utils.Adapter {
             this.log.debug(
                 `${name} ==> UNIT: "${this.dpTypes[name] ? this.dpTypes[name].UNIT : 'none'}" (min: ${
                     this.dpTypes[name] ? this.dpTypes[name].MIN : 'none'
-                }, max: ${this.dpTypes[name] ? this.dpTypes[name].MAX : 'none'}) From "${params[3]}" => "${val}"`
+                }, max: ${this.dpTypes[name] ? this.dpTypes[name].MAX : 'none'}) From "${params[3]}" => "${val}"`,
             );
 
             this.setState(`${channel}.${params[2]}`, { val: val, ack: true });
-            // unfortunately this is necessary
+            // unfortunately, this is necessary
             return '';
-        }
+        },
     };
 
-    constructor(options: Partial<utils.AdapterOptions> = {}) {
+    constructor(options: Partial<AdapterOptions> = {}) {
         super({
             ...options,
             name: 'hm-rpc',
             error: (e: any) => {
                 if (e.code === 'EADDRNOTAVAIL') {
                     this.log.error(
-                        `Address ${this.config.adapterAddress} not available, maybe your HOST IP has changed due to migration`
+                        `Address ${this.config.adapterAddress} not available, maybe your HOST IP has changed due to migration`,
                     );
                     // doesn't work in that case, so let it correctly be handled by controller at least we can log
                     // return true;
@@ -117,7 +118,7 @@ export class HomematicRpc extends utils.Adapter {
 
                 // don't know how to handle, so let it burn ;-)
                 return false;
-            }
+            },
         });
 
         this.on('ready', this.onReady.bind(this));
@@ -148,22 +149,28 @@ export class HomematicRpc extends utils.Adapter {
             this.config.checkInitInterval = 10;
         }
 
-        this.setState('info.connection', false, true);
+        await this.setState('info.connection', false, true);
 
         if (this.config.type === 'bin') {
-            rpc = require('binrpc');
+            // @ts-expect-error no types
+            rpc = await import('binrpc');
             this.daemonProto = 'xmlrpc_bin://';
         } else {
-            rpc = require('homematic-xmlrpc');
+            // @ts-expect-error no types
+            rpc = await import('homematic-xmlrpc');
             this.config.type = 'xml';
             this.daemonProto = 'http://';
+        }
+
+        if (rpc.default) {
+            rpc = rpc.default;
         }
 
         // Clean up objects if still hm-rpc.meta exist
         try {
             const doc = await this.getObjectListAsync({
                 startkey: 'hm-rpc.meta',
-                endkey: 'hm-rpc.meta\u9999'
+                endkey: 'hm-rpc.meta\u9999',
             });
 
             if (doc && doc.rows) {
@@ -174,19 +181,19 @@ export class HomematicRpc extends utils.Adapter {
                 for (const row of doc.rows) {
                     try {
                         await this.delForeignObjectAsync(row.id);
-                    } catch (e: any) {
-                        this.log.warn(`Could not delete ${row.id}: ${e.message}`);
+                    } catch (e: unknown) {
+                        this.log.warn(`Could not delete ${row.id}: ${(e as Error).message}`);
                     }
                 }
             }
-        } catch (e: any) {
-            this.log.error(`getObjectListAsync hm-rpc: ${e.message}`);
+        } catch (e: unknown) {
+            this.log.error(`getObjectListAsync hm-rpc: ${(e as Error).message}`);
         }
 
         try {
             const res = await this.getObjectViewAsync('system', 'state', {
                 startkey: `${this.namespace}.`,
-                endkey: `${this.namespace}.\u9999`
+                endkey: `${this.namespace}.\u9999`,
             });
 
             if (res.rows) {
@@ -203,7 +210,7 @@ export class HomematicRpc extends utils.Adapter {
                     } else {
                         this.dpTypes[row.id] = {
                             UNIT: obj.native.UNIT,
-                            TYPE: obj.native.TYPE
+                            TYPE: obj.native.TYPE,
                         };
 
                         if (typeof obj.native.MIN === 'number') {
@@ -226,12 +233,12 @@ export class HomematicRpc extends utils.Adapter {
                     }
                 }
             }
-        } catch (e: any) {
-            this.log.error(`Could not get state view on start: ${e.message}`);
+        } catch (e: unknown) {
+            this.log.error(`Could not get state view on start: ${(e as Error).message}`);
         }
 
         // Start Adapter
-        this.initRpcServer();
+        await this.initRpcServer();
     }
 
     /**
@@ -255,7 +262,7 @@ export class HomematicRpc extends utils.Adapter {
                 this.log.info(
                     `${this.config.type}rpc -> ${this.config.homematicAddress}:${this.config.homematicPort}${
                         this.homematicPath
-                    } init ${JSON.stringify([this.daemonURL, ''])}`
+                    } init ${JSON.stringify([this.daemonURL, ''])}`,
                 );
                 try {
                     // tell CCU that we are no longer the client under this URL - legacy idk if necessary
@@ -263,7 +270,7 @@ export class HomematicRpc extends utils.Adapter {
                     if (connected) {
                         this.log.info('Disconnected');
                         connected = false;
-                        this.setState('info.connection', false, true);
+                        await this.setState('info.connection', false, true);
                     }
 
                     if (rpcServer && rpcServer.server) {
@@ -288,13 +295,13 @@ export class HomematicRpc extends utils.Adapter {
                     if (typeof callback === 'function') {
                         callback();
                     }
-                } catch (e: any) {
+                } catch (e: unknown) {
                     if (connected) {
                         this.log.info('Disconnected');
                         connected = false;
                         this.setState('info.connection', false, true);
                     }
-                    this.log.error(`Cannot call init: [${this.daemonURL}, ""] ${e.message}`);
+                    this.log.error(`Cannot call init: [${this.daemonURL}, ""] ${(e as Error).message}`);
                     if (typeof callback === 'function') {
                         callback();
                     }
@@ -304,11 +311,11 @@ export class HomematicRpc extends utils.Adapter {
                     callback();
                 }
             }
-        } catch (e: any) {
+        } catch (e: unknown) {
             if (this.log) {
-                this.log.error(`Unload error: ${e.message}`);
+                this.log.error(`Unload error: ${(e as Error).message}`);
             } else {
-                console.log(`Unload error: ${e.message}`);
+                console.log(`Unload error: ${(e as Error).message}`);
             }
             if (typeof callback === 'function') {
                 callback();
@@ -376,7 +383,7 @@ export class HomematicRpc extends utils.Adapter {
 
         if (type === 'EPAPER_LINE' || type === 'EPAPER_ICON') {
             const _id = `${tmp[0]}.${tmp[1]}.${tmp[2]}`;
-            if (displays[_id] && displays[_id].timer) {
+            if (displays[_id]?.timer) {
                 clearTimeout(displays[_id].timer);
                 if (displays[_id].withTone) {
                     displays[_id] = { timer: this.setTimeout(() => this.readSignals(_id), 300), withTone: true };
@@ -434,20 +441,21 @@ export class HomematicRpc extends utils.Adapter {
             } else {
                 this.log.warn(`Cannot setValue "${id}", because not connected.`);
             }
-        } catch (e: any) {
+        } catch (e: unknown) {
             this.log.error(
                 `${this.config.type}rpc -> setValue ${JSON.stringify([
                     `${tmp[2]}:${tmp[3]}`,
                     tmp[4],
-                    state.val
-                ])} ${type}`
+                    state.val,
+                ])} ${type}`,
             );
-            this.log.error(`Cannot call setValue: ${e.message}`);
+            this.log.error(`Cannot call setValue: ${(e as Error).message}`);
         }
     }
 
     /**
      * Handle messages send to this instance
+     *
      * @param obj the message object
      */
     private async onMessage(obj: ioBroker.Message): Promise<void> {
@@ -466,7 +474,7 @@ export class HomematicRpc extends utils.Adapter {
             this.log.warn(
                 `Received invalid command via message "${obj.command}" "${JSON.stringify(obj.message)}" from ${
                     obj.from
-                }`
+                }`,
             );
             if (obj.callback) {
                 this.sendTo(obj.from, obj.command, { error: 'Invalid command' }, obj.callback);
@@ -480,7 +488,7 @@ export class HomematicRpc extends utils.Adapter {
                     // if device specific command, send it's ID and paramType
                     const data = await this.rpcMethodCallAsync(
                         obj.command,
-                        obj.message.ID !== undefined ? [obj.message.ID, obj.message.paramType] : []
+                        obj.message.ID !== undefined ? [obj.message.ID, obj.message.paramType] : [],
                     );
                     if (obj.callback) {
                         this.sendTo(
@@ -488,9 +496,9 @@ export class HomematicRpc extends utils.Adapter {
                             obj.command,
                             {
                                 result: data,
-                                error: null
+                                error: null,
                             },
-                            obj.callback
+                            obj.callback,
                         );
                     }
                 } else {
@@ -499,8 +507,8 @@ export class HomematicRpc extends utils.Adapter {
                         this.sendTo(obj.from, obj.command, { error: 'not connected' }, obj.callback);
                     }
                 }
-            } catch (e: any) {
-                this.log.error(`Cannot call ${obj.command}: ${e.message}`);
+            } catch (e: unknown) {
+                this.log.error(`Cannot call ${obj.command}: ${(e as Error).message}`);
                 this.sendTo(obj.from, obj.command, { error: e }, obj.callback);
             }
         } else {
@@ -509,7 +517,7 @@ export class HomematicRpc extends utils.Adapter {
                     const data = await this.rpcMethodCallAsync(obj.command, [
                         obj.message.ID,
                         obj.message.paramType,
-                        obj.message.params
+                        obj.message.params,
                     ]);
                     if (obj.callback) {
                         this.sendTo(
@@ -517,9 +525,9 @@ export class HomematicRpc extends utils.Adapter {
                             obj.command,
                             {
                                 result: data,
-                                error: null
+                                error: null,
                             },
-                            obj.callback
+                            obj.callback,
                         );
                     }
                 } else {
@@ -528,8 +536,8 @@ export class HomematicRpc extends utils.Adapter {
                         this.sendTo(obj.from, obj.command, { error: 'not connected' }, obj.callback);
                     }
                 }
-            } catch (e: any) {
-                this.log.error(`Cannot call ${obj.command}: ${e.message}`);
+            } catch (e: unknown) {
+                this.log.error(`Cannot call ${obj.command}: ${(e as Error).message}`);
                 this.sendTo(obj.from, obj.command, { error: e }, obj.callback);
             }
         }
@@ -547,10 +555,10 @@ export class HomematicRpc extends utils.Adapter {
                     host: this.config.homematicAddress,
                     port: this.config.homematicPort,
                     path: this.homematicPath,
-                    reconnectTimeout: this.config.reconnectInterval * 1000
+                    reconnectTimeout: this.config.reconnectInterval * 1000,
                 });
-            } catch (e: any) {
-                this.log.error(`Could not create non-secure ${this.config.type}-rpc client: ${e.message}`);
+            } catch (e: unknown) {
+                this.log.error(`Could not create non-secure ${this.config.type}-rpc client: ${(e as Error).message}`);
                 return void this.restart();
             }
 
@@ -568,10 +576,10 @@ export class HomematicRpc extends utils.Adapter {
                     path: this.homematicPath,
                     reconnectTimeout: this.config.reconnectInterval * 1_000,
                     basic_auth: { user: this.config.username, pass: this.config.password },
-                    rejectUnauthorized: false
+                    rejectUnauthorized: false,
                 });
-            } catch (e: any) {
-                this.log.error(`Could not create secure ${this.config.type}-rpc client: ${e.message}`);
+            } catch (e: unknown) {
+                this.log.error(`Could not create secure ${this.config.type}-rpc client: ${(e as Error).message}`);
                 return void this.restart();
             }
         }
@@ -603,8 +611,8 @@ export class HomematicRpc extends utils.Adapter {
             try {
                 await this.rpcMethodCallAsync('ping', [clientId]);
                 this.log.debug('PING ok');
-            } catch (e: any) {
-                this.log.error(`Ping error [${clientId}]: ${e.message}`);
+            } catch (e: unknown) {
+                this.log.error(`Ping error [${clientId}]: ${(e as Error).message}`);
                 if (connected) {
                     this.log.info('Disconnected');
                     connected = false;
@@ -653,22 +661,22 @@ export class HomematicRpc extends utils.Adapter {
                 this.log.debug(
                     `${this.config.type}rpc -> ${this.config.homematicAddress}:${this.config.homematicPort}${
                         this.homematicPath
-                    } init ${JSON.stringify([this.daemonURL, clientId])}`
+                    } init ${JSON.stringify([this.daemonURL, clientId])}`,
                 );
                 await this.rpcMethodCallAsync('init', [this.daemonURL, clientId]);
                 if (this.config.daemon === 'CUxD') {
                     try {
                         await this.getCuxDevices();
                         this.updateConnection();
-                    } catch (e: any) {
-                        this.log.error(`getCuxDevices error: ${e.message}`);
+                    } catch (e: unknown) {
+                        this.log.error(`getCuxDevices error: ${(e as Error).message}`);
                     }
                 } else {
                     this.updateConnection();
                 }
             }
-        } catch (e: any) {
-            this.log.error(`Init not possible, going to stop: ${e.message}`);
+        } catch (e: unknown) {
+            this.log.error(`Init not possible, going to stop: ${(e as Error).message}`);
             this.setTimeout(() => this.stop && this.stop(), 30_000);
         }
     }
@@ -689,10 +697,10 @@ export class HomematicRpc extends utils.Adapter {
             // somehow we cannot catch EADDRNOTAVAIL, also not with a cb here
             rpcServer = rpc.createServer({
                 host: this.config.adapterAddress,
-                port: adapterPort
+                port: adapterPort,
             });
-        } catch (e: any) {
-            this.log.error(`Could not create RPC Server: ${e.message}`);
+        } catch (e: unknown) {
+            this.log.error(`Could not create RPC Server: ${(e as Error).message}`);
             return void this.restart();
         }
 
@@ -702,19 +710,21 @@ export class HomematicRpc extends utils.Adapter {
         try {
             const obj = await this.getForeignObjectAsync(`system.adapter.${this.namespace}`);
             clientId = `${obj?.common?.host}:${clientId}`;
-        } catch (e: any) {
-            this.log.warn(`Could not get hostname, using default id "${clientId}" to register: ${e.message}`);
+        } catch (e: unknown) {
+            this.log.warn(
+                `Could not get hostname, using default id "${clientId}" to register: ${(e as Error).message}`,
+            );
         }
 
         clientId += `:${randomBytes(16).toString('hex')}`;
 
         this.log.info(
-            `${this.config.type}rpc server is trying to listen on ${this.config.adapterAddress}:${adapterPort}`
+            `${this.config.type}rpc server is trying to listen on ${this.config.adapterAddress}:${adapterPort}`,
         );
         this.log.info(
             `${this.config.type}rpc client is trying to connect to ${this.config.homematicAddress}:${
                 this.config.homematicPort
-            }${this.homematicPath} with ${JSON.stringify([this.daemonURL, clientId])}`
+            }${this.homematicPath} with ${JSON.stringify([this.daemonURL, clientId])}`,
         );
 
         this.connect(true);
@@ -724,7 +734,7 @@ export class HomematicRpc extends utils.Adapter {
             this.log.warn(
                 `${this.config.type}rpc <- undefined method ${method} with parameters ${
                     typeof params === 'object' ? JSON.stringify(params).slice(0, 80) : params
-                }`
+                }`,
             );
         });
 
@@ -740,7 +750,7 @@ export class HomematicRpc extends utils.Adapter {
             callback(null, '');
         });
 
-        rpcServer.on('replaceDevice', async (error: any, params: any[], callback: RPCCallback) => {
+        rpcServer.on('replaceDevice', async (error: any, params: [string, string, string], callback: RPCCallback) => {
             const oldDeviceName = params[1];
             const newDeviceName = params[2];
             this.log.info(`Device "${oldDeviceName}" has been replaced by "${newDeviceName}"`);
@@ -754,8 +764,8 @@ export class HomematicRpc extends utils.Adapter {
             try {
                 const res = await this.rpcMethodCallAsync('getDeviceDescription', [newDeviceName]);
                 await this.createDevices([res]);
-            } catch (e: any) {
-                this.log.error(`Error while creating replacement device "${newDeviceName}": ${e.message}`);
+            } catch (e: unknown) {
+                this.log.error(`Error while creating replacement device "${newDeviceName}": ${(e as Error).message}`);
             }
 
             callback(null, '');
@@ -763,7 +773,7 @@ export class HomematicRpc extends utils.Adapter {
 
         rpcServer.on('error', (e: any) => {
             // not sure if this can really be triggered
-            this.log.error(`RPC Server error: ${e.message}`);
+            this.log.error(`RPC Server error: ${(e as Error).message}`);
         });
 
         rpcServer.on('system.multicall', (err: any, params: any, callback: RPCCallback) => {
@@ -798,7 +808,7 @@ export class HomematicRpc extends utils.Adapter {
                 'replaceDevice',
                 'system.listMethods',
                 'system.multicall',
-                'setReadyConfig'
+                'setReadyConfig',
             ]);
         });
 
@@ -809,8 +819,8 @@ export class HomematicRpc extends utils.Adapter {
             this.updateConnection();
             try {
                 callback(null, this.methods.event(err, params));
-            } catch (e: any) {
-                this.log.error(`Cannot send response to event: ${e.message}`);
+            } catch (e: unknown) {
+                this.log.error(`Cannot send response to event: ${(e as Error).message}`);
             }
         });
 
@@ -838,10 +848,10 @@ export class HomematicRpc extends utils.Adapter {
                 try {
                     doc = await this.getObjectViewAsync('hm-rpc', 'listDevices', {
                         startkey: `${this.namespace}.`,
-                        endkey: `${this.namespace}.\u9999`
+                        endkey: `${this.namespace}.\u9999`,
                     });
-                } catch (e: any) {
-                    this.log.error(`getObjectViewAsync hm-rpc: ${e.message}`);
+                } catch (e: unknown) {
+                    this.log.error(`getObjectViewAsync hm-rpc: ${(e as Error).message}`);
                 }
 
                 if (doc?.rows) {
@@ -877,19 +887,21 @@ export class HomematicRpc extends utils.Adapter {
                                     try {
                                         await this.deleteChannelAsync(parts[parts.length - 2], parts[parts.length - 1]);
                                         this.log.info(`obsolete channel ${address} ${JSON.stringify(address)} deleted`);
-                                    } catch (e: any) {
+                                    } catch (e: unknown) {
                                         this.log.error(
                                             `Could not delete obsolete channel ${address} ${JSON.stringify(address)}: ${
-                                                e.message
-                                            }`
+                                                (e as Error).message
+                                            }`,
                                         );
                                     }
                                 } else {
                                     try {
                                         await this.deleteDeviceAsync(val.ADDRESS);
                                         this.log.info(`obsolete device ${val.ADDRESS} deleted`);
-                                    } catch (e: any) {
-                                        this.log.error(`Could not delete obsolete device ${val.ADDRESS}: ${e.message}`);
+                                    } catch (e: unknown) {
+                                        this.log.error(
+                                            `Could not delete obsolete device ${val.ADDRESS}: ${(e as Error).message}`,
+                                        );
                                     }
                                 }
                             }
@@ -919,10 +931,10 @@ export class HomematicRpc extends utils.Adapter {
             try {
                 doc = await this.getObjectViewAsync('hm-rpc', 'listDevices', {
                     startkey: `${this.namespace}.`,
-                    endkey: `${this.namespace}.\u9999`
+                    endkey: `${this.namespace}.\u9999`,
                 });
-            } catch (e: any) {
-                this.log.error(`Error on listDevices (getObjectView): ${e.message}`);
+            } catch (e: unknown) {
+                this.log.error(`Error on listDevices (getObjectView): ${(e as Error).message}`);
             }
 
             const response = [];
@@ -952,8 +964,8 @@ export class HomematicRpc extends utils.Adapter {
                 }
 
                 callback(null, response);
-            } catch (e: any) {
-                this.log.error(`Cannot respond on listDevices: ${e.message}`);
+            } catch (e: unknown) {
+                this.log.error(`Cannot respond on listDevices: ${(e as Error).message}`);
                 this.log.error(JSON.stringify(response));
             }
         });
@@ -976,8 +988,8 @@ export class HomematicRpc extends utils.Adapter {
             }
             try {
                 callback(null, '');
-            } catch (e: any) {
-                this.log.error(`Cannot response on deleteDevices: ${e.message}`);
+            } catch (e: unknown) {
+                this.log.error(`Cannot response on deleteDevices: ${(e as Error).message}`);
             }
         });
 
@@ -988,8 +1000,8 @@ export class HomematicRpc extends utils.Adapter {
             this.log.info(`${this.config.type}rpc <- setReadyConfig ${JSON.stringify(params)}`);
             try {
                 callback(null, '');
-            } catch (e: any) {
-                this.log.error(`Cannot response on setReadyConfig: ${e.message}`);
+            } catch (e: unknown) {
+                this.log.error(`Cannot response on setReadyConfig: ${(e as Error).message}`);
             }
         });
     }
@@ -998,11 +1010,11 @@ export class HomematicRpc extends utils.Adapter {
      * Adds the paramset objects of the given paramset to the given channel
      *
      * @param channel - channel object with at least "_id" property
-     * @param paramset - paramset object retrived by CCU
+     * @param paramset - a paramset object retrieved by CCU
      */
     private async addParamsetObjects(
         channel: ioBroker.SettableDeviceObject | ioBroker.SettableChannelObject,
-        paramset: Record<string, ParamsetObjectWithSpecial>
+        paramset: Record<string, ParamsetObjectWithSpecial>,
     ): Promise<void> {
         for (const [key, paramObj] of Object.entries(paramset)) {
             tools.fixParamset({ paramObj, daemon: this.config.daemon });
@@ -1015,9 +1027,9 @@ export class HomematicRpc extends utils.Adapter {
                     def: paramObj.DEFAULT,
                     type: this.COMMON_TYPE_MAPPING[paramObj.TYPE] || 'mixed',
                     read: !!(paramObj.OPERATIONS & 1),
-                    write: !!(paramObj.OPERATIONS & 2)
+                    write: !!(paramObj.OPERATIONS & 2),
                 },
-                native: paramObj
+                native: paramObj,
             };
 
             // Heating groups are send everything as string
@@ -1143,7 +1155,7 @@ export class HomematicRpc extends utils.Adapter {
 
             this.dpTypes[dpID] = {
                 UNIT: paramObj.UNIT,
-                TYPE: paramObj.TYPE
+                TYPE: paramObj.TYPE,
             };
 
             if (typeof paramObj.MIN === 'number') {
@@ -1162,8 +1174,8 @@ export class HomematicRpc extends utils.Adapter {
             try {
                 const res = await this.extendObjectAsync(`${channel._id}.${key}`, obj);
                 this.log.debug(`object ${res.id} extended`);
-            } catch (e: any) {
-                this.log.error(`Could not extend object ${channel._id}.${key}: ${e.message}`);
+            } catch (e: unknown) {
+                this.log.error(`Could not extend object ${channel._id}.${key}: ${(e as Error).message}`);
             }
         }
     }
@@ -1178,7 +1190,7 @@ export class HomematicRpc extends utils.Adapter {
         return new Promise((resolve, reject) => {
             rpcClient.methodCall(method, params, (err: any, res: any) => {
                 if (err) {
-                    reject(err);
+                    reject(new Error(err));
                 } else {
                     resolve(res);
                 }
@@ -1187,7 +1199,7 @@ export class HomematicRpc extends utils.Adapter {
     }
 
     /**
-     * Async variant of method call which also performs a retry on first error of "setValue"
+     * Async variant of method call which also performs a retry on the first error of "setValue"
      *
      * @param method the method name
      * @param params the method specific parameters
@@ -1196,27 +1208,29 @@ export class HomematicRpc extends utils.Adapter {
         try {
             const res = await this.rpcMethodCallAsyncHelper(method, params);
             return res;
-        } catch (e: any) {
-            if (method === 'setValue' && (e.message.endsWith('Failure') || e.message.endsWith('(UNREACH)'))) {
+        } catch (e: unknown) {
+            if (
+                method === 'setValue' &&
+                ((e as Error).message.endsWith('Failure') || (e as Error).message.endsWith('(UNREACH)'))
+            ) {
                 this.log.info(
-                    `Temporary error occurred for "${method}" with "${JSON.stringify(params)}": ${e.message}`
+                    `Temporary error occurred for "${method}" with "${JSON.stringify(params)}": ${(e as Error).message}`,
                 );
-                // on random error due to temporary communication issues try again once after some ms
+                // on random error due to temporary communication issues, try again once after some ms
                 await this.delay(this.RETRY_DELAY_MS);
                 return this.rpcMethodCallAsyncHelper(method, params);
-            } else {
-                throw e;
             }
+            throw e;
         }
     }
 
     /**
      * Control the EPAPER display
-     *
-     * @param id
-     * @param data
      */
-    private async controlEPaper(id: string, data: any): Promise<void> {
+    private async controlEPaper(
+        id: string,
+        data: { lines: Line[]; signal: string; tone: string; repeats?: number; offset?: number },
+    ): Promise<void> {
         const tmp = id.split('.');
         tmp[3] = '3';
         tmp[4] = 'SUBMIT';
@@ -1226,7 +1240,7 @@ export class HomematicRpc extends utils.Adapter {
             data.signal || '0xF0',
             data.tone || '0xC0',
             data.repeats,
-            data.offset
+            data.offset,
         );
 
         try {
@@ -1235,203 +1249,199 @@ export class HomematicRpc extends utils.Adapter {
             } else {
                 this.log.warn(`Cannot setValue "${id}", because not connected.`);
             }
-        } catch (e: any) {
+        } catch (e: unknown) {
             this.log.error(
-                `${this.config.type}rpc -> setValue ${JSON.stringify([`${tmp[2]}:${tmp[3]}`, tmp[4], val])}`
+                `${this.config.type}rpc -> setValue ${JSON.stringify([`${tmp[2]}:${tmp[3]}`, tmp[4], val])}`,
             );
-            this.log.error(`Cannot call setValue: ${e.message}`);
+            this.log.error(`Cannot call setValue: ${(e as Error).message}`);
         }
     }
 
     /**
      * Read signal from EPAPER display
-     *
-     * @param id
      */
     private async readSignals(id: string): Promise<void> {
         displays[id] = null;
-        const data: Record<string, any> = {
-            lines: [{}, {}, {}],
+        const data: { lines: Line[]; signal: string; tone: string; repeats?: number; offset?: number } = {
+            lines: [
+                { line: '', icon: '' },
+                { line: '', icon: '' },
+                { line: '', icon: '' },
+            ],
             signal: '0xF0',
-            tone: '0xC0'
+            tone: '0xC0',
         };
 
-        const promises = [];
+        const promises: Promise<void>[] = [];
 
         promises.push(
-            new Promise<void>(resolve => {
-                this.getForeignState(`${id}.0.EPAPER_LINE2`, (err, state) => {
-                    data.lines[0].line = state ? state.val || '' : '';
-                    resolve();
-                });
-            })
+            this.getForeignStateAsync(`${id}.0.EPAPER_LINE2`)
+                .then(state => {
+                    data.lines[0].line = state ? (state.val as string) || '' : '';
+                })
+                .catch(e => this.log.error(`Cannot read state ${id}.0.EPAPER_LINE2: ${(e as Error).message}`)),
         );
 
         promises.push(
-            new Promise<void>(resolve => {
-                this.getForeignState(`${id}.0.EPAPER_ICON2`, (err, state) => {
-                    data.lines[0].icon = state ? state.val || '' : '';
-                    resolve();
-                });
-            })
+            this.getForeignStateAsync(`${id}.0.EPAPER_ICON2`)
+                .then(state => {
+                    data.lines[0].icon = state ? (state.val as string) || '' : '';
+                })
+                .catch(e => this.log.error(`Cannot read state ${id}.0.EPAPER_ICON2: ${(e as Error).message}`)),
         );
 
         promises.push(
-            new Promise<void>(resolve => {
-                this.getForeignState(`${id}.0.EPAPER_LINE3`, (err, state) => {
-                    data.lines[1].line = state ? state.val || '' : '';
-                    resolve();
-                });
-            })
+            this.getForeignStateAsync(`${id}.0.EPAPER_LINE3`)
+                .then(state => {
+                    data.lines[1].line = state ? (state.val as string) || '' : '';
+                })
+                .catch(e => this.log.error(`Cannot read state ${id}.0.EPAPER_LINE3: ${(e as Error).message}`)),
         );
 
         promises.push(
-            new Promise<void>(resolve => {
-                this.getForeignState(`${id}.0.EPAPER_ICON3`, (err, state) => {
-                    data.lines[1].icon = state ? state.val || '' : '';
-                    resolve();
-                });
-            })
+            this.getForeignStateAsync(`${id}.0.EPAPER_ICON3`)
+                .then(state => {
+                    data.lines[1].icon = state ? (state.val as string) || '' : '';
+                })
+                .catch(e => this.log.error(`Cannot read state ${id}.0.EPAPER_ICON3: ${(e as Error).message}`)),
         );
 
         promises.push(
-            new Promise<void>(resolve => {
-                this.getForeignState(`${id}.0.EPAPER_LINE4`, (err, state) => {
-                    data.lines[2].line = state ? state.val || '' : '';
-                    resolve();
-                });
-            })
+            this.getForeignStateAsync(`${id}.0.EPAPER_LINE4`)
+                .then(state => {
+                    data.lines[2].line = state ? (state.val as string) || '' : '';
+                })
+                .catch(e => this.log.error(`Cannot read state ${id}.0.EPAPER_LINE4: ${(e as Error).message}`)),
         );
 
         promises.push(
-            new Promise<void>(resolve => {
-                this.getForeignState(`${id}.0.EPAPER_ICON4`, (err, state) => {
-                    data.lines[2].icon = state ? state.val || '' : '';
-                    resolve();
-                });
-            })
+            this.getForeignStateAsync(`${id}.0.EPAPER_ICON4`)
+                .then(state => {
+                    data.lines[2].icon = state ? (state.val as string) || '' : '';
+                })
+                .catch(e => this.log.error(`Cannot read state ${id}.0.EPAPER_ICON4: ${(e as Error).message}`)),
         );
 
         promises.push(
-            new Promise<void>(resolve => {
-                this.getForeignState(`${id}.0.EPAPER_SIGNAL`, (err, state) => {
-                    data.signal = state ? state.val || '0xF0' : '0xF0';
-                    resolve();
-                });
-            })
+            this.getForeignStateAsync(`${id}.0.EPAPER_SIGNAL`)
+                .then(state => {
+                    data.signal = state ? (state.val as string) || '0xF0' : '0xF0';
+                })
+                .catch(e => this.log.error(`Cannot read state ${id}.0.EPAPER_SIGNAL: ${(e as Error).message}`)),
         );
 
         promises.push(
-            new Promise<void>(resolve => {
-                this.getForeignState(`${id}.0.EPAPER_TONE`, (err, state) => {
-                    data.tone = state ? state.val || '0xC0' : '0xC0';
-                    resolve();
-                });
-            })
+            this.getForeignStateAsync(`${id}.0.EPAPER_TONE`)
+                .then(state => {
+                    data.tone = state ? (state.val as string) || '0xC0' : '0xC0';
+                })
+                .catch(e => this.log.error(`Cannot read state ${id}.0.EPAPER_TONE: ${(e as Error).message}`)),
         );
 
         promises.push(
-            new Promise<void>(resolve => {
-                this.getForeignState(`${id}.0.EPAPER_TONE_INTERVAL`, (err, state) => {
-                    data.offset = state ? state.val : 10;
-                    resolve();
-                });
-            })
+            this.getForeignStateAsync(`${id}.0.EPAPER_TONE_INTERVAL`)
+                .then(state => {
+                    data.offset = state
+                        ? state.val === undefined || state.val === null || state.val === ''
+                            ? 10
+                            : parseInt(state.val as string, 10)
+                        : 10;
+                })
+                .catch(e => this.log.error(`Cannot read state ${id}.0.EPAPER_TONE_INTERVAL: ${(e as Error).message}`)),
         );
 
         promises.push(
-            new Promise<void>(resolve => {
-                this.getForeignState(`${id}.0.EPAPER_TONE_REPETITIONS`, (err, state) => {
-                    data.repeats = state ? state.val : 1;
-                    resolve();
-                });
-            })
+            this.getForeignStateAsync(`${id}.0.EPAPER_TONE_REPETITIONS`)
+                .then(state => {
+                    data.repeats = state
+                        ? state.val === undefined || state.val === null || state.val === ''
+                            ? 1
+                            : parseInt(state.val as string, 10)
+                        : 1;
+                })
+                .catch(e =>
+                    this.log.error(`Cannot read state ${id}.0.EPAPER_TONE_REPETITIONS: ${(e as Error).message}`),
+                ),
         );
 
         await Promise.all(promises);
-        this.controlEPaper(id, data);
+        await this.controlEPaper(id, data);
     }
 
     /**
      * Read the settings from EPAPER display
-     *
-     * @param id
      */
     private async readSettings(id: string): Promise<void> {
         displays[id] = null;
-        const data: Record<string, any> = {
-            lines: [{}, {}, {}],
+        const data: { lines: Line[]; signal: string; tone: string } = {
+            lines: [
+                { line: '', icon: '' },
+                { line: '', icon: '' },
+                { line: '', icon: '' },
+            ],
             signal: '0xF0',
-            tone: '0xC0'
+            tone: '0xC0',
         };
 
-        const promises = [];
+        const promises: Promise<void>[] = [];
 
         promises.push(
-            new Promise<void>(resolve => {
-                this.getForeignState(`${id}.0.EPAPER_LINE2`, (err, state) => {
-                    data.lines[0].line = state ? state.val || '' : '';
-                    resolve();
-                });
-            })
+            this.getForeignStateAsync(`${id}.0.EPAPER_LINE2`)
+                .then(state => {
+                    data.lines[0].line = state ? (state.val as string) || '' : '';
+                })
+                .catch(e => this.log.error(`Cannot read state ${id}.0.EPAPER_LINE2: ${(e as Error).message}`)),
         );
 
         promises.push(
-            new Promise<void>(resolve => {
-                this.getForeignState(`${id}.0.EPAPER_ICON2`, (err, state) => {
-                    data.lines[0].icon = state ? state.val || '' : '';
-                    resolve();
-                });
-            })
+            this.getForeignStateAsync(`${id}.0.EPAPER_ICON2`)
+                .then(state => {
+                    data.lines[0].icon = state ? (state.val as string) || '' : '';
+                })
+                .catch(e => this.log.error(`Cannot read state ${id}.0.EPAPER_ICON2: ${(e as Error).message}`)),
         );
 
         promises.push(
-            new Promise<void>(resolve => {
-                this.getForeignState(`${id}.0.EPAPER_LINE3`, (err, state) => {
-                    data.lines[1].line = state ? state.val || '' : '';
-                    resolve();
-                });
-            })
+            this.getForeignStateAsync(`${id}.0.EPAPER_LINE3`)
+                .then(state => {
+                    data.lines[1].line = state ? (state.val as string) || '' : '';
+                })
+                .catch(e => this.log.error(`Cannot read state ${id}.0.EPAPER_LINE3: ${(e as Error).message}`)),
         );
 
         promises.push(
-            new Promise<void>(resolve => {
-                this.getForeignState(`${id}.0.EPAPER_ICON3`, (err, state) => {
-                    data.lines[1].icon = state ? state.val || '' : '';
-                    resolve();
-                });
-            })
+            this.getForeignStateAsync(`${id}.0.EPAPER_ICON3`)
+                .then(state => {
+                    data.lines[1].icon = state ? (state.val as string) || '' : '';
+                })
+                .catch(e => this.log.error(`Cannot read state ${id}.0.EPAPER_ICON3: ${(e as Error).message}`)),
         );
 
         promises.push(
-            new Promise<void>(resolve => {
-                this.getForeignState(`${id}.0.EPAPER_LINE4`, (err, state) => {
-                    data.lines[2].line = state ? state.val || '' : '';
-                    resolve();
-                });
-            })
+            this.getForeignStateAsync(`${id}.0.EPAPER_LINE4`)
+                .then(state => {
+                    data.lines[2].line = state ? (state.val as string) || '' : '';
+                })
+                .catch(e => this.log.error(`Cannot read state ${id}.0.EPAPER_LINE4: ${(e as Error).message}`)),
         );
 
         promises.push(
-            new Promise<void>(resolve => {
-                this.getForeignState(`${id}.0.EPAPER_ICON4`, (err, state) => {
-                    data.lines[2].icon = state ? state.val || '' : '';
-                    resolve();
-                });
-            })
+            this.getForeignStateAsync(`${id}.0.EPAPER_ICON4`)
+                .then(state => {
+                    data.lines[2].icon = state ? (state.val as string) || '' : '';
+                })
+                .catch(e => this.log.error(`Cannot read state ${id}.0.EPAPER_ICON4: ${(e as Error).message}`)),
         );
 
         await Promise.all(promises);
-        this.controlEPaper(id, data);
+        await this.controlEPaper(id, data);
     }
 
     /**
      * Get value paramsets and add them
-     *
-     * @param valueParamsets
      */
     private async getValueParamsets(
-        valueParamsets: (ioBroker.SettableDeviceObject | ioBroker.SettableChannelObject)[]
+        valueParamsets: (ioBroker.SettableDeviceObject | ioBroker.SettableChannelObject)[],
     ): Promise<void> {
         for (const obj of valueParamsets) {
             try {
@@ -1445,12 +1455,12 @@ export class HomematicRpc extends utils.Adapter {
                 }
 
                 this.log.info(
-                    `${this.config.type}rpc -> getParamsetDescription ${JSON.stringify([obj.native.ADDRESS, 'VALUES'])}`
+                    `${this.config.type}rpc -> getParamsetDescription ${JSON.stringify([obj.native.ADDRESS, 'VALUES'])}`,
                 );
 
                 this.metaValues[cid] = await this.rpcMethodCallAsync('getParamsetDescription', [
                     obj.native.ADDRESS,
-                    'VALUES'
+                    'VALUES',
                 ]);
 
                 if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
@@ -1459,8 +1469,10 @@ export class HomematicRpc extends utils.Adapter {
 
                 // @ts-expect-error we will fix it
                 await this.addParamsetObjects(obj, this.metaValues[cid]);
-            } catch (e: any) {
-                this.log.error(`Error on getParamsetDescription for [${obj.native.ADDRESS}, 'VALUES']": ${e.message}`);
+            } catch (e: unknown) {
+                this.log.error(
+                    `Error on getParamsetDescription for [${obj.native.ADDRESS}, 'VALUES']": ${(e as Error).message}`,
+                );
             }
         }
 
@@ -1469,18 +1481,18 @@ export class HomematicRpc extends utils.Adapter {
             // Inform hm-rega about new devices
             try {
                 await this.setStateAsync('updated', true, false);
-            } catch (e: any) {
-                this.log.error(`Could not inform hm-rega about new devices: ${e.message}`);
+            } catch (e: unknown) {
+                this.log.error(`Could not inform hm-rega about new devices: ${(e as Error).message}`);
             }
             // If it has been a force reinit run, set it to false and restart
             if (this.config.forceReInit) {
                 this.log.info('Restarting now, because we had a forced reinitialization run');
                 try {
                     await this.extendForeignObjectAsync(`system.adapter.${this.namespace}`, {
-                        native: { forceReInit: false }
+                        native: { forceReInit: false },
                     });
-                } catch (e: any) {
-                    this.log.error(`Could not restart and set forceReinit to false: ${e.message}`);
+                } catch (e: unknown) {
+                    this.log.error(`Could not restart and set forceReinit to false: ${(e as Error).message}`);
                 }
             }
         }
@@ -1504,7 +1516,7 @@ export class HomematicRpc extends utils.Adapter {
                 obj.EPAPER_LINE2 = {
                     TYPE: 'EPAPER_LINE',
                     ID: 'LINE2',
-                    OPERATIONS: 2
+                    OPERATIONS: 2,
                 };
                 obj.EPAPER_ICON2 = {
                     TYPE: 'EPAPER_ICON',
@@ -1519,14 +1531,14 @@ export class HomematicRpc extends utils.Adapter {
                         '0x85': 'All OK',
                         '0x86': 'Information',
                         '0x87': 'New message',
-                        '0x88': 'Service message'
+                        '0x88': 'Service message',
                     },
-                    OPERATIONS: 2
+                    OPERATIONS: 2,
                 };
                 obj.EPAPER_LINE3 = {
                     TYPE: 'EPAPER_LINE',
                     ID: 'LINE3',
-                    OPERATIONS: 2
+                    OPERATIONS: 2,
                 };
                 obj.EPAPER_ICON3 = {
                     TYPE: 'EPAPER_ICON',
@@ -1541,14 +1553,14 @@ export class HomematicRpc extends utils.Adapter {
                         '0x85': 'All OK',
                         '0x86': 'Information',
                         '0x87': 'New message',
-                        '0x88': 'Service message'
+                        '0x88': 'Service message',
                     },
-                    OPERATIONS: 2
+                    OPERATIONS: 2,
                 };
                 obj.EPAPER_LINE4 = {
                     TYPE: 'EPAPER_LINE',
                     ID: 'LINE4',
-                    OPERATIONS: 2
+                    OPERATIONS: 2,
                 };
                 obj.EPAPER_ICON4 = {
                     TYPE: 'EPAPER_ICON',
@@ -1563,9 +1575,9 @@ export class HomematicRpc extends utils.Adapter {
                         '0x85': 'All OK',
                         '0x86': 'Information',
                         '0x87': 'New message',
-                        '0x88': 'Service message'
+                        '0x88': 'Service message',
                     },
-                    OPERATIONS: 2
+                    OPERATIONS: 2,
                 };
                 obj.EPAPER_SIGNAL = {
                     TYPE: 'EPAPER_SIGNAL',
@@ -1574,9 +1586,9 @@ export class HomematicRpc extends utils.Adapter {
                         '0xF0': 'OFF',
                         '0xF1': 'Red blink',
                         '0xF2': 'Green blink',
-                        '0xF3': 'Orange blink'
+                        '0xF3': 'Orange blink',
                     },
-                    OPERATIONS: 2
+                    OPERATIONS: 2,
                 };
                 obj.EPAPER_TONE = {
                     TYPE: 'EPAPER_TONE',
@@ -1588,9 +1600,9 @@ export class HomematicRpc extends utils.Adapter {
                         '0xC3': 'Long Short Short',
                         '0xC4': 'Short',
                         '0xC5': 'Short Short',
-                        '0xC6': 'Long'
+                        '0xC6': 'Long',
                     },
-                    OPERATIONS: 2
+                    OPERATIONS: 2,
                 };
                 obj.EPAPER_TONE_INTERVAL = {
                     TYPE: 'EPAPER_TONE_INTERVAL',
@@ -1598,7 +1610,7 @@ export class HomematicRpc extends utils.Adapter {
                     MIN: 10,
                     MAX: 160,
                     OPERATIONS: 2,
-                    DEFAULT: 10
+                    DEFAULT: 10,
                 };
                 obj.EPAPER_TONE_REPETITIONS = {
                     TYPE: 'EPAPER_TONE_REPETITIONS',
@@ -1606,7 +1618,7 @@ export class HomematicRpc extends utils.Adapter {
                     MIN: 0,
                     MAX: 15,
                     OPERATIONS: 2,
-                    DEFAULT: 1
+                    DEFAULT: 1,
                 };
             }
         }
@@ -1651,9 +1663,9 @@ export class HomematicRpc extends utils.Adapter {
                 type: type,
                 common: {
                     name: device.ADDRESS,
-                    role: role
+                    role: role,
                 },
-                native: device
+                native: device,
             };
 
             if (icon) {
@@ -1664,7 +1676,7 @@ export class HomematicRpc extends utils.Adapter {
 
             this.dpTypes[dpID] = {
                 UNIT: device.UNIT,
-                TYPE: device.TYPE
+                TYPE: device.TYPE,
             };
 
             if (typeof device.MIN === 'number') {
@@ -1684,8 +1696,8 @@ export class HomematicRpc extends utils.Adapter {
             try {
                 const res = await this.setObjectAsync(id, obj);
                 this.log.debug(`object ${res.id} created`);
-            } catch (e: any) {
-                this.log.error(`object ${id} error on creation: ${e.message}`);
+            } catch (e: unknown) {
+                this.log.error(`object ${id} error on creation: ${(e as Error).message}`);
             }
 
             if (obj.type === 'channel') {
@@ -1717,10 +1729,10 @@ export class HomematicRpc extends utils.Adapter {
                     try {
                         doc = await this.getObjectViewAsync('hm-rpc', 'listDevices', {
                             startkey: `${this.namespace}.`,
-                            endkey: `${this.namespace}.\u9999`
+                            endkey: `${this.namespace}.\u9999`,
                         });
-                    } catch (e: any) {
-                        this.log.error(`getObjectView hm-rpc: ${e.message}`);
+                    } catch (e: unknown) {
+                        this.log.error(`getObjectView hm-rpc: ${(e as Error).message}`);
                     }
 
                     if (doc && doc.rows) {
@@ -1753,7 +1765,7 @@ export class HomematicRpc extends utils.Adapter {
                                     if (val.ADDRESS.includes(':')) {
                                         const address = val.ADDRESS.replace(':', '.').replace(
                                             tools.FORBIDDEN_CHARS,
-                                            '_'
+                                            '_',
                                         );
                                         const parts = address.split('.');
                                         this.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
@@ -1775,8 +1787,8 @@ export class HomematicRpc extends utils.Adapter {
                 } else {
                     await this.createDevices(newDevices);
                 }
-            } catch (e: any) {
-                this.log.error(`Cannot call listDevices: ${e.message}`);
+            } catch (e: unknown) {
+                this.log.error(`Cannot call listDevices: ${(e as Error).message}`);
             }
         }
     }
@@ -1835,7 +1847,7 @@ export class HomematicRpc extends utils.Adapter {
 
 if (require.main !== module) {
     // Export the constructor in compact mode
-    module.exports = (options: Partial<utils.AdapterOptions> | undefined) => new HomematicRpc(options);
+    module.exports = (options: Partial<AdapterOptions> | undefined) => new HomematicRpc(options);
 } else {
     // otherwise start the instance directly
     (() => new HomematicRpc())();

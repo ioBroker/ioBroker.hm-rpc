@@ -11,7 +11,7 @@ exec(`fetcher --url="${FOLDER_URL}" --out=tmp`, async (err, stdout, stderr) => {
         console.log('Successfully downloaded images');
         try {
             await moveImages();
-            // Create script to remove background of images
+            // Create a script to remove background of images
             await buildLines();
         } catch (e: any) {
             console.error(`Could not move images: ${e.message}`);

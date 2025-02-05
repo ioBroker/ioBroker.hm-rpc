@@ -1,5 +1,5 @@
-import * as utils from '@iobroker/adapter-core';
-export declare class HomematicRpc extends utils.Adapter {
+import { Adapter, type AdapterOptions } from '@iobroker/adapter-core';
+export declare class HomematicRpc extends Adapter {
     /** On failed rpc call retry in X ms */
     private readonly RETRY_DELAY_MS;
     private readonly metaValues;
@@ -13,7 +13,7 @@ export declare class HomematicRpc extends utils.Adapter {
     private readonly COMMON_TYPE_MAPPING;
     private deviceManagement;
     private readonly methods;
-    constructor(options?: Partial<utils.AdapterOptions>);
+    constructor(options?: Partial<AdapterOptions>);
     /**
      * Is called when databases are connected and adapter received configuration.
      */
@@ -33,6 +33,7 @@ export declare class HomematicRpc extends utils.Adapter {
     private onStateChange;
     /**
      * Handle messages send to this instance
+     *
      * @param obj the message object
      */
     private onMessage;
@@ -62,7 +63,7 @@ export declare class HomematicRpc extends utils.Adapter {
      * Adds the paramset objects of the given paramset to the given channel
      *
      * @param channel - channel object with at least "_id" property
-     * @param paramset - paramset object retrived by CCU
+     * @param paramset - a paramset object retrieved by CCU
      */
     private addParamsetObjects;
     /**
@@ -73,7 +74,7 @@ export declare class HomematicRpc extends utils.Adapter {
      */
     private rpcMethodCallAsyncHelper;
     /**
-     * Async variant of method call which also performs a retry on first error of "setValue"
+     * Async variant of method call which also performs a retry on the first error of "setValue"
      *
      * @param method the method name
      * @param params the method specific parameters
@@ -81,27 +82,18 @@ export declare class HomematicRpc extends utils.Adapter {
     private rpcMethodCallAsync;
     /**
      * Control the EPAPER display
-     *
-     * @param id
-     * @param data
      */
     private controlEPaper;
     /**
      * Read signal from EPAPER display
-     *
-     * @param id
      */
     private readSignals;
     /**
      * Read the settings from EPAPER display
-     *
-     * @param id
      */
     private readSettings;
     /**
      * Get value paramsets and add them
-     *
-     * @param valueParamsets
      */
     private getValueParamsets;
     /**

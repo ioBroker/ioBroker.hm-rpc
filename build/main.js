@@ -15,16 +15,26 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HomematicRpc = void 0;
-const utils = __importStar(require("@iobroker/adapter-core"));
+const adapter_core_1 = require("@iobroker/adapter-core");
 const images_1 = require("./lib/images");
 const tools = __importStar(require("./lib/tools"));
 const roles_1 = require("./lib/roles");
@@ -36,7 +46,7 @@ let clientId;
 let rpc;
 let rpcClient;
 let rpcServer;
-class HomematicRpc extends utils.Adapter {
+class HomematicRpc extends adapter_core_1.Adapter {
     constructor(options = {}) {
         super({
             ...options,
@@ -49,7 +59,7 @@ class HomematicRpc extends utils.Adapter {
                 }
                 // don't know how to handle, so let it burn ;-)
                 return false;
-            }
+            },
         });
         /** On failed rpc call retry in X ms */
         this.RETRY_DELAY_MS = 150;
@@ -70,7 +80,7 @@ class HomematicRpc extends utils.Adapter {
             EPAPER_TONE: 'string',
             EPAPER_SIGNAL: 'string',
             EPAPER_TONE_INTERVAL: 'number',
-            EPAPER_TONE_REPETITIONS: 'number'
+            EPAPER_TONE_REPETITIONS: 'number',
         };
         this.methods = {
             event: (err, params) => {
@@ -110,9 +120,9 @@ class HomematicRpc extends utils.Adapter {
                 val = tools.fixEvent({ val, dpType: this.dpTypes[name] });
                 this.log.debug(`${name} ==> UNIT: "${this.dpTypes[name] ? this.dpTypes[name].UNIT : 'none'}" (min: ${this.dpTypes[name] ? this.dpTypes[name].MIN : 'none'}, max: ${this.dpTypes[name] ? this.dpTypes[name].MAX : 'none'}) From "${params[3]}" => "${val}"`);
                 this.setState(`${channel}.${params[2]}`, { val: val, ack: true });
-                // unfortunately this is necessary
+                // unfortunately, this is necessary
                 return '';
-            }
+            },
         };
         this.on('ready', this.onReady.bind(this));
         this.on('stateChange', this.onStateChange.bind(this));
@@ -136,21 +146,26 @@ class HomematicRpc extends utils.Adapter {
             this.log.error('Check init interval is less than 10 seconds. Set init interval to 10 seconds.');
             this.config.checkInitInterval = 10;
         }
-        this.setState('info.connection', false, true);
+        await this.setState('info.connection', false, true);
         if (this.config.type === 'bin') {
-            rpc = require('binrpc');
+            // @ts-expect-error no types
+            rpc = await Promise.resolve().then(() => __importStar(require('binrpc')));
             this.daemonProto = 'xmlrpc_bin://';
         }
         else {
-            rpc = require('homematic-xmlrpc');
+            // @ts-expect-error no types
+            rpc = await Promise.resolve().then(() => __importStar(require('homematic-xmlrpc')));
             this.config.type = 'xml';
             this.daemonProto = 'http://';
+        }
+        if (rpc.default) {
+            rpc = rpc.default;
         }
         // Clean up objects if still hm-rpc.meta exist
         try {
             const doc = await this.getObjectListAsync({
                 startkey: 'hm-rpc.meta',
-                endkey: 'hm-rpc.meta\u9999'
+                endkey: 'hm-rpc.meta\u9999',
             });
             if (doc && doc.rows) {
                 if (doc.rows.length >= 50) {
@@ -172,7 +187,7 @@ class HomematicRpc extends utils.Adapter {
         try {
             const res = await this.getObjectViewAsync('system', 'state', {
                 startkey: `${this.namespace}.`,
-                endkey: `${this.namespace}.\u9999`
+                endkey: `${this.namespace}.\u9999`,
             });
             if (res.rows) {
                 for (const row of res.rows) {
@@ -187,7 +202,7 @@ class HomematicRpc extends utils.Adapter {
                     else {
                         this.dpTypes[row.id] = {
                             UNIT: obj.native.UNIT,
-                            TYPE: obj.native.TYPE
+                            TYPE: obj.native.TYPE,
                         };
                         if (typeof obj.native.MIN === 'number') {
                             this.dpTypes[row.id].MIN = obj.native.MIN;
@@ -213,7 +228,7 @@ class HomematicRpc extends utils.Adapter {
             this.log.error(`Could not get state view on start: ${e.message}`);
         }
         // Start Adapter
-        this.initRpcServer();
+        await this.initRpcServer();
     }
     /**
      * Is called when adapter shuts down - callback has to be called under any circumstances!
@@ -238,7 +253,7 @@ class HomematicRpc extends utils.Adapter {
                     if (connected) {
                         this.log.info('Disconnected');
                         connected = false;
-                        this.setState('info.connection', false, true);
+                        await this.setState('info.connection', false, true);
                     }
                     if (rpcServer && rpcServer.server) {
                         try {
@@ -344,7 +359,7 @@ class HomematicRpc extends utils.Adapter {
         }
         if (type === 'EPAPER_LINE' || type === 'EPAPER_ICON') {
             const _id = `${tmp[0]}.${tmp[1]}.${tmp[2]}`;
-            if (displays[_id] && displays[_id].timer) {
+            if (displays[_id]?.timer) {
                 clearTimeout(displays[_id].timer);
                 if (displays[_id].withTone) {
                     displays[_id] = { timer: this.setTimeout(() => this.readSignals(_id), 300), withTone: true };
@@ -409,13 +424,14 @@ class HomematicRpc extends utils.Adapter {
             this.log.error(`${this.config.type}rpc -> setValue ${JSON.stringify([
                 `${tmp[2]}:${tmp[3]}`,
                 tmp[4],
-                state.val
+                state.val,
             ])} ${type}`);
             this.log.error(`Cannot call setValue: ${e.message}`);
         }
     }
     /**
      * Handle messages send to this instance
+     *
      * @param obj the message object
      */
     async onMessage(obj) {
@@ -441,7 +457,7 @@ class HomematicRpc extends utils.Adapter {
                     if (obj.callback) {
                         this.sendTo(obj.from, obj.command, {
                             result: data,
-                            error: null
+                            error: null,
                         }, obj.callback);
                     }
                 }
@@ -463,12 +479,12 @@ class HomematicRpc extends utils.Adapter {
                     const data = await this.rpcMethodCallAsync(obj.command, [
                         obj.message.ID,
                         obj.message.paramType,
-                        obj.message.params
+                        obj.message.params,
                     ]);
                     if (obj.callback) {
                         this.sendTo(obj.from, obj.command, {
                             result: data,
-                            error: null
+                            error: null,
                         }, obj.callback);
                     }
                 }
@@ -497,7 +513,7 @@ class HomematicRpc extends utils.Adapter {
                     host: this.config.homematicAddress,
                     port: this.config.homematicPort,
                     path: this.homematicPath,
-                    reconnectTimeout: this.config.reconnectInterval * 1000
+                    reconnectTimeout: this.config.reconnectInterval * 1000,
                 });
             }
             catch (e) {
@@ -519,7 +535,7 @@ class HomematicRpc extends utils.Adapter {
                     path: this.homematicPath,
                     reconnectTimeout: this.config.reconnectInterval * 1_000,
                     basic_auth: { user: this.config.username, pass: this.config.password },
-                    rejectUnauthorized: false
+                    rejectUnauthorized: false,
                 });
             }
             catch (e) {
@@ -632,7 +648,7 @@ class HomematicRpc extends utils.Adapter {
             // somehow we cannot catch EADDRNOTAVAIL, also not with a cb here
             rpcServer = rpc.createServer({
                 host: this.config.adapterAddress,
-                port: adapterPort
+                port: adapterPort,
             });
         }
         catch (e) {
@@ -717,7 +733,7 @@ class HomematicRpc extends utils.Adapter {
                 'replaceDevice',
                 'system.listMethods',
                 'system.multicall',
-                'setReadyConfig'
+                'setReadyConfig',
             ]);
         });
         rpcServer.on('event', (err, params, callback) => {
@@ -750,7 +766,7 @@ class HomematicRpc extends utils.Adapter {
                 try {
                     doc = await this.getObjectViewAsync('hm-rpc', 'listDevices', {
                         startkey: `${this.namespace}.`,
-                        endkey: `${this.namespace}.\u9999`
+                        endkey: `${this.namespace}.\u9999`,
                     });
                 }
                 catch (e) {
@@ -826,7 +842,7 @@ class HomematicRpc extends utils.Adapter {
             try {
                 doc = await this.getObjectViewAsync('hm-rpc', 'listDevices', {
                     startkey: `${this.namespace}.`,
-                    endkey: `${this.namespace}.\u9999`
+                    endkey: `${this.namespace}.\u9999`,
                 });
             }
             catch (e) {
@@ -902,7 +918,7 @@ class HomematicRpc extends utils.Adapter {
      * Adds the paramset objects of the given paramset to the given channel
      *
      * @param channel - channel object with at least "_id" property
-     * @param paramset - paramset object retrived by CCU
+     * @param paramset - a paramset object retrieved by CCU
      */
     async addParamsetObjects(channel, paramset) {
         for (const [key, paramObj] of Object.entries(paramset)) {
@@ -915,9 +931,9 @@ class HomematicRpc extends utils.Adapter {
                     def: paramObj.DEFAULT,
                     type: this.COMMON_TYPE_MAPPING[paramObj.TYPE] || 'mixed',
                     read: !!(paramObj.OPERATIONS & 1),
-                    write: !!(paramObj.OPERATIONS & 2)
+                    write: !!(paramObj.OPERATIONS & 2),
                 },
-                native: paramObj
+                native: paramObj,
             };
             // Heating groups are send everything as string
             if (typeof obj.common.def === 'string' && obj.common.type === 'number') {
@@ -1037,7 +1053,7 @@ class HomematicRpc extends utils.Adapter {
             const dpID = `${this.namespace}.${channel._id}.${key}`;
             this.dpTypes[dpID] = {
                 UNIT: paramObj.UNIT,
-                TYPE: paramObj.TYPE
+                TYPE: paramObj.TYPE,
             };
             if (typeof paramObj.MIN === 'number') {
                 this.dpTypes[dpID].MIN = paramObj.MIN;
@@ -1069,7 +1085,7 @@ class HomematicRpc extends utils.Adapter {
         return new Promise((resolve, reject) => {
             rpcClient.methodCall(method, params, (err, res) => {
                 if (err) {
-                    reject(err);
+                    reject(new Error(err));
                 }
                 else {
                     resolve(res);
@@ -1078,7 +1094,7 @@ class HomematicRpc extends utils.Adapter {
         });
     }
     /**
-     * Async variant of method call which also performs a retry on first error of "setValue"
+     * Async variant of method call which also performs a retry on the first error of "setValue"
      *
      * @param method the method name
      * @param params the method specific parameters
@@ -1089,22 +1105,18 @@ class HomematicRpc extends utils.Adapter {
             return res;
         }
         catch (e) {
-            if (method === 'setValue' && (e.message.endsWith('Failure') || e.message.endsWith('(UNREACH)'))) {
+            if (method === 'setValue' &&
+                (e.message.endsWith('Failure') || e.message.endsWith('(UNREACH)'))) {
                 this.log.info(`Temporary error occurred for "${method}" with "${JSON.stringify(params)}": ${e.message}`);
-                // on random error due to temporary communication issues try again once after some ms
+                // on random error due to temporary communication issues, try again once after some ms
                 await this.delay(this.RETRY_DELAY_MS);
                 return this.rpcMethodCallAsyncHelper(method, params);
             }
-            else {
-                throw e;
-            }
+            throw e;
         }
     }
     /**
      * Control the EPAPER display
-     *
-     * @param id
-     * @param data
      */
     async controlEPaper(id, data) {
         const tmp = id.split('.');
@@ -1126,136 +1138,130 @@ class HomematicRpc extends utils.Adapter {
     }
     /**
      * Read signal from EPAPER display
-     *
-     * @param id
      */
     async readSignals(id) {
         displays[id] = null;
         const data = {
-            lines: [{}, {}, {}],
+            lines: [
+                { line: '', icon: '' },
+                { line: '', icon: '' },
+                { line: '', icon: '' },
+            ],
             signal: '0xF0',
-            tone: '0xC0'
+            tone: '0xC0',
         };
         const promises = [];
-        promises.push(new Promise(resolve => {
-            this.getForeignState(`${id}.0.EPAPER_LINE2`, (err, state) => {
-                data.lines[0].line = state ? state.val || '' : '';
-                resolve();
-            });
-        }));
-        promises.push(new Promise(resolve => {
-            this.getForeignState(`${id}.0.EPAPER_ICON2`, (err, state) => {
-                data.lines[0].icon = state ? state.val || '' : '';
-                resolve();
-            });
-        }));
-        promises.push(new Promise(resolve => {
-            this.getForeignState(`${id}.0.EPAPER_LINE3`, (err, state) => {
-                data.lines[1].line = state ? state.val || '' : '';
-                resolve();
-            });
-        }));
-        promises.push(new Promise(resolve => {
-            this.getForeignState(`${id}.0.EPAPER_ICON3`, (err, state) => {
-                data.lines[1].icon = state ? state.val || '' : '';
-                resolve();
-            });
-        }));
-        promises.push(new Promise(resolve => {
-            this.getForeignState(`${id}.0.EPAPER_LINE4`, (err, state) => {
-                data.lines[2].line = state ? state.val || '' : '';
-                resolve();
-            });
-        }));
-        promises.push(new Promise(resolve => {
-            this.getForeignState(`${id}.0.EPAPER_ICON4`, (err, state) => {
-                data.lines[2].icon = state ? state.val || '' : '';
-                resolve();
-            });
-        }));
-        promises.push(new Promise(resolve => {
-            this.getForeignState(`${id}.0.EPAPER_SIGNAL`, (err, state) => {
-                data.signal = state ? state.val || '0xF0' : '0xF0';
-                resolve();
-            });
-        }));
-        promises.push(new Promise(resolve => {
-            this.getForeignState(`${id}.0.EPAPER_TONE`, (err, state) => {
-                data.tone = state ? state.val || '0xC0' : '0xC0';
-                resolve();
-            });
-        }));
-        promises.push(new Promise(resolve => {
-            this.getForeignState(`${id}.0.EPAPER_TONE_INTERVAL`, (err, state) => {
-                data.offset = state ? state.val : 10;
-                resolve();
-            });
-        }));
-        promises.push(new Promise(resolve => {
-            this.getForeignState(`${id}.0.EPAPER_TONE_REPETITIONS`, (err, state) => {
-                data.repeats = state ? state.val : 1;
-                resolve();
-            });
-        }));
+        promises.push(this.getForeignStateAsync(`${id}.0.EPAPER_LINE2`)
+            .then(state => {
+            data.lines[0].line = state ? state.val || '' : '';
+        })
+            .catch(e => this.log.error(`Cannot read state ${id}.0.EPAPER_LINE2: ${e.message}`)));
+        promises.push(this.getForeignStateAsync(`${id}.0.EPAPER_ICON2`)
+            .then(state => {
+            data.lines[0].icon = state ? state.val || '' : '';
+        })
+            .catch(e => this.log.error(`Cannot read state ${id}.0.EPAPER_ICON2: ${e.message}`)));
+        promises.push(this.getForeignStateAsync(`${id}.0.EPAPER_LINE3`)
+            .then(state => {
+            data.lines[1].line = state ? state.val || '' : '';
+        })
+            .catch(e => this.log.error(`Cannot read state ${id}.0.EPAPER_LINE3: ${e.message}`)));
+        promises.push(this.getForeignStateAsync(`${id}.0.EPAPER_ICON3`)
+            .then(state => {
+            data.lines[1].icon = state ? state.val || '' : '';
+        })
+            .catch(e => this.log.error(`Cannot read state ${id}.0.EPAPER_ICON3: ${e.message}`)));
+        promises.push(this.getForeignStateAsync(`${id}.0.EPAPER_LINE4`)
+            .then(state => {
+            data.lines[2].line = state ? state.val || '' : '';
+        })
+            .catch(e => this.log.error(`Cannot read state ${id}.0.EPAPER_LINE4: ${e.message}`)));
+        promises.push(this.getForeignStateAsync(`${id}.0.EPAPER_ICON4`)
+            .then(state => {
+            data.lines[2].icon = state ? state.val || '' : '';
+        })
+            .catch(e => this.log.error(`Cannot read state ${id}.0.EPAPER_ICON4: ${e.message}`)));
+        promises.push(this.getForeignStateAsync(`${id}.0.EPAPER_SIGNAL`)
+            .then(state => {
+            data.signal = state ? state.val || '0xF0' : '0xF0';
+        })
+            .catch(e => this.log.error(`Cannot read state ${id}.0.EPAPER_SIGNAL: ${e.message}`)));
+        promises.push(this.getForeignStateAsync(`${id}.0.EPAPER_TONE`)
+            .then(state => {
+            data.tone = state ? state.val || '0xC0' : '0xC0';
+        })
+            .catch(e => this.log.error(`Cannot read state ${id}.0.EPAPER_TONE: ${e.message}`)));
+        promises.push(this.getForeignStateAsync(`${id}.0.EPAPER_TONE_INTERVAL`)
+            .then(state => {
+            data.offset = state
+                ? state.val === undefined || state.val === null || state.val === ''
+                    ? 10
+                    : parseInt(state.val, 10)
+                : 10;
+        })
+            .catch(e => this.log.error(`Cannot read state ${id}.0.EPAPER_TONE_INTERVAL: ${e.message}`)));
+        promises.push(this.getForeignStateAsync(`${id}.0.EPAPER_TONE_REPETITIONS`)
+            .then(state => {
+            data.repeats = state
+                ? state.val === undefined || state.val === null || state.val === ''
+                    ? 1
+                    : parseInt(state.val, 10)
+                : 1;
+        })
+            .catch(e => this.log.error(`Cannot read state ${id}.0.EPAPER_TONE_REPETITIONS: ${e.message}`)));
         await Promise.all(promises);
-        this.controlEPaper(id, data);
+        await this.controlEPaper(id, data);
     }
     /**
      * Read the settings from EPAPER display
-     *
-     * @param id
      */
     async readSettings(id) {
         displays[id] = null;
         const data = {
-            lines: [{}, {}, {}],
+            lines: [
+                { line: '', icon: '' },
+                { line: '', icon: '' },
+                { line: '', icon: '' },
+            ],
             signal: '0xF0',
-            tone: '0xC0'
+            tone: '0xC0',
         };
         const promises = [];
-        promises.push(new Promise(resolve => {
-            this.getForeignState(`${id}.0.EPAPER_LINE2`, (err, state) => {
-                data.lines[0].line = state ? state.val || '' : '';
-                resolve();
-            });
-        }));
-        promises.push(new Promise(resolve => {
-            this.getForeignState(`${id}.0.EPAPER_ICON2`, (err, state) => {
-                data.lines[0].icon = state ? state.val || '' : '';
-                resolve();
-            });
-        }));
-        promises.push(new Promise(resolve => {
-            this.getForeignState(`${id}.0.EPAPER_LINE3`, (err, state) => {
-                data.lines[1].line = state ? state.val || '' : '';
-                resolve();
-            });
-        }));
-        promises.push(new Promise(resolve => {
-            this.getForeignState(`${id}.0.EPAPER_ICON3`, (err, state) => {
-                data.lines[1].icon = state ? state.val || '' : '';
-                resolve();
-            });
-        }));
-        promises.push(new Promise(resolve => {
-            this.getForeignState(`${id}.0.EPAPER_LINE4`, (err, state) => {
-                data.lines[2].line = state ? state.val || '' : '';
-                resolve();
-            });
-        }));
-        promises.push(new Promise(resolve => {
-            this.getForeignState(`${id}.0.EPAPER_ICON4`, (err, state) => {
-                data.lines[2].icon = state ? state.val || '' : '';
-                resolve();
-            });
-        }));
+        promises.push(this.getForeignStateAsync(`${id}.0.EPAPER_LINE2`)
+            .then(state => {
+            data.lines[0].line = state ? state.val || '' : '';
+        })
+            .catch(e => this.log.error(`Cannot read state ${id}.0.EPAPER_LINE2: ${e.message}`)));
+        promises.push(this.getForeignStateAsync(`${id}.0.EPAPER_ICON2`)
+            .then(state => {
+            data.lines[0].icon = state ? state.val || '' : '';
+        })
+            .catch(e => this.log.error(`Cannot read state ${id}.0.EPAPER_ICON2: ${e.message}`)));
+        promises.push(this.getForeignStateAsync(`${id}.0.EPAPER_LINE3`)
+            .then(state => {
+            data.lines[1].line = state ? state.val || '' : '';
+        })
+            .catch(e => this.log.error(`Cannot read state ${id}.0.EPAPER_LINE3: ${e.message}`)));
+        promises.push(this.getForeignStateAsync(`${id}.0.EPAPER_ICON3`)
+            .then(state => {
+            data.lines[1].icon = state ? state.val || '' : '';
+        })
+            .catch(e => this.log.error(`Cannot read state ${id}.0.EPAPER_ICON3: ${e.message}`)));
+        promises.push(this.getForeignStateAsync(`${id}.0.EPAPER_LINE4`)
+            .then(state => {
+            data.lines[2].line = state ? state.val || '' : '';
+        })
+            .catch(e => this.log.error(`Cannot read state ${id}.0.EPAPER_LINE4: ${e.message}`)));
+        promises.push(this.getForeignStateAsync(`${id}.0.EPAPER_ICON4`)
+            .then(state => {
+            data.lines[2].icon = state ? state.val || '' : '';
+        })
+            .catch(e => this.log.error(`Cannot read state ${id}.0.EPAPER_ICON4: ${e.message}`)));
         await Promise.all(promises);
-        this.controlEPaper(id, data);
+        await this.controlEPaper(id, data);
     }
     /**
      * Get value paramsets and add them
-     *
-     * @param valueParamsets
      */
     async getValueParamsets(valueParamsets) {
         for (const obj of valueParamsets) {
@@ -1269,7 +1275,7 @@ class HomematicRpc extends utils.Adapter {
                 this.log.info(`${this.config.type}rpc -> getParamsetDescription ${JSON.stringify([obj.native.ADDRESS, 'VALUES'])}`);
                 this.metaValues[cid] = await this.rpcMethodCallAsync('getParamsetDescription', [
                     obj.native.ADDRESS,
-                    'VALUES'
+                    'VALUES',
                 ]);
                 if (obj.native && obj.native.PARENT_TYPE === 'HM-Dis-EP-WM55' && obj.native.TYPE === 'MAINTENANCE') {
                     this.addEPaperToMeta();
@@ -1295,7 +1301,7 @@ class HomematicRpc extends utils.Adapter {
                 this.log.info('Restarting now, because we had a forced reinitialization run');
                 try {
                     await this.extendForeignObjectAsync(`system.adapter.${this.namespace}`, {
-                        native: { forceReInit: false }
+                        native: { forceReInit: false },
                     });
                 }
                 catch (e) {
@@ -1319,7 +1325,7 @@ class HomematicRpc extends utils.Adapter {
                 obj.EPAPER_LINE2 = {
                     TYPE: 'EPAPER_LINE',
                     ID: 'LINE2',
-                    OPERATIONS: 2
+                    OPERATIONS: 2,
                 };
                 obj.EPAPER_ICON2 = {
                     TYPE: 'EPAPER_ICON',
@@ -1334,14 +1340,14 @@ class HomematicRpc extends utils.Adapter {
                         '0x85': 'All OK',
                         '0x86': 'Information',
                         '0x87': 'New message',
-                        '0x88': 'Service message'
+                        '0x88': 'Service message',
                     },
-                    OPERATIONS: 2
+                    OPERATIONS: 2,
                 };
                 obj.EPAPER_LINE3 = {
                     TYPE: 'EPAPER_LINE',
                     ID: 'LINE3',
-                    OPERATIONS: 2
+                    OPERATIONS: 2,
                 };
                 obj.EPAPER_ICON3 = {
                     TYPE: 'EPAPER_ICON',
@@ -1356,14 +1362,14 @@ class HomematicRpc extends utils.Adapter {
                         '0x85': 'All OK',
                         '0x86': 'Information',
                         '0x87': 'New message',
-                        '0x88': 'Service message'
+                        '0x88': 'Service message',
                     },
-                    OPERATIONS: 2
+                    OPERATIONS: 2,
                 };
                 obj.EPAPER_LINE4 = {
                     TYPE: 'EPAPER_LINE',
                     ID: 'LINE4',
-                    OPERATIONS: 2
+                    OPERATIONS: 2,
                 };
                 obj.EPAPER_ICON4 = {
                     TYPE: 'EPAPER_ICON',
@@ -1378,9 +1384,9 @@ class HomematicRpc extends utils.Adapter {
                         '0x85': 'All OK',
                         '0x86': 'Information',
                         '0x87': 'New message',
-                        '0x88': 'Service message'
+                        '0x88': 'Service message',
                     },
-                    OPERATIONS: 2
+                    OPERATIONS: 2,
                 };
                 obj.EPAPER_SIGNAL = {
                     TYPE: 'EPAPER_SIGNAL',
@@ -1389,9 +1395,9 @@ class HomematicRpc extends utils.Adapter {
                         '0xF0': 'OFF',
                         '0xF1': 'Red blink',
                         '0xF2': 'Green blink',
-                        '0xF3': 'Orange blink'
+                        '0xF3': 'Orange blink',
                     },
-                    OPERATIONS: 2
+                    OPERATIONS: 2,
                 };
                 obj.EPAPER_TONE = {
                     TYPE: 'EPAPER_TONE',
@@ -1403,9 +1409,9 @@ class HomematicRpc extends utils.Adapter {
                         '0xC3': 'Long Short Short',
                         '0xC4': 'Short',
                         '0xC5': 'Short Short',
-                        '0xC6': 'Long'
+                        '0xC6': 'Long',
                     },
-                    OPERATIONS: 2
+                    OPERATIONS: 2,
                 };
                 obj.EPAPER_TONE_INTERVAL = {
                     TYPE: 'EPAPER_TONE_INTERVAL',
@@ -1413,7 +1419,7 @@ class HomematicRpc extends utils.Adapter {
                     MIN: 10,
                     MAX: 160,
                     OPERATIONS: 2,
-                    DEFAULT: 10
+                    DEFAULT: 10,
                 };
                 obj.EPAPER_TONE_REPETITIONS = {
                     TYPE: 'EPAPER_TONE_REPETITIONS',
@@ -1421,7 +1427,7 @@ class HomematicRpc extends utils.Adapter {
                     MIN: 0,
                     MAX: 15,
                     OPERATIONS: 2,
-                    DEFAULT: 1
+                    DEFAULT: 1,
                 };
             }
         }
@@ -1462,9 +1468,9 @@ class HomematicRpc extends utils.Adapter {
                 type: type,
                 common: {
                     name: device.ADDRESS,
-                    role: role
+                    role: role,
                 },
-                native: device
+                native: device,
             };
             if (icon) {
                 obj.common.icon = icon;
@@ -1472,7 +1478,7 @@ class HomematicRpc extends utils.Adapter {
             const dpID = `${this.namespace}.${obj._id}`;
             this.dpTypes[dpID] = {
                 UNIT: device.UNIT,
-                TYPE: device.TYPE
+                TYPE: device.TYPE,
             };
             if (typeof device.MIN === 'number') {
                 this.dpTypes[dpID].MIN = device.MIN;
@@ -1516,7 +1522,7 @@ class HomematicRpc extends utils.Adapter {
                     try {
                         doc = await this.getObjectViewAsync('hm-rpc', 'listDevices', {
                             startkey: `${this.namespace}.`,
-                            endkey: `${this.namespace}.\u9999`
+                            endkey: `${this.namespace}.\u9999`,
                         });
                     }
                     catch (e) {

@@ -1,11 +1,9 @@
-import { FixParamsetParams, FixEventParams } from './_types';
+import type { FixParamsetParams, FixEventParams } from './_types';
 
 export const FORBIDDEN_CHARS = /[\][*,;'"`<>\\\s?]/g;
 
 /**
  * replaces special chars by DIN_66003
- *
- * @param text
  */
 export function replaceSpecialChars(text: string): string {
     const specialChars: Record<string, string> = {
@@ -33,7 +31,7 @@ export function replaceSpecialChars(text: string): string {
         ':': '\x3A',
         ';': '\x3B',
         '@': '\x40',
-        '>': '\x3E'
+        '>': '\x3E',
     };
 
     let result = '';
@@ -78,7 +76,7 @@ export function number2hex(num: number | string): string {
     return num;
 }
 
-interface Line {
+export interface Line {
     line: string | number;
     icon: string | number;
 }
@@ -95,9 +93,9 @@ interface Line {
 export function combineEPaperCommand(
     lines: Line[],
     signal: string | number,
-    ton: any,
-    repeats: any,
-    offset: any
+    ton: number | string,
+    repeats: number | undefined,
+    offset: number | undefined,
 ): string {
     signal = number2hex(signal || '0xF0');
     ton = number2hex(ton || '0xC0');
@@ -188,7 +186,7 @@ export function combineEPaperCommand(
         ':': '0x3A',
         ';': '0x3B',
         '@': '0x40',
-        '>': '0x3E'
+        '>': '0x3E',
     };
 
     let command = '0x02,0x0A';
@@ -204,7 +202,7 @@ export function combineEPaperCommand(
                 i = 0;
             }
             while (i < line.length && i < 12) {
-                command += `,${substitutions[line[i]]}` || '0x2A';
+                command += `,${substitutions[line[i]]}`;
                 i++;
             }
         }
@@ -217,7 +215,7 @@ export function combineEPaperCommand(
 
     command = `${command},0x14,${ton},0x1C,`;
 
-    if (repeats < 1) {
+    if (!repeats || repeats < 1) {
         command = `${command}0xDF,0x1D,`;
     } else if (repeats < 11) {
         command = `${command}0xD${repeats - 1},0x1D,`;
@@ -233,8 +231,8 @@ export function combineEPaperCommand(
         command = `${command}0xDE,0x1D,`;
     }
 
-    if (offset <= 100) {
-        command = `${command}0xE${offset / 10 - 1},0x16,`;
+    if (!offset || offset <= 100) {
+        command = `${command}0xE${(offset || 0) / 10 - 1},0x16,`;
     } else if (offset <= 110) {
         command = `${command}0xEA,0x16,`;
     } else if (offset <= 120) {
@@ -292,11 +290,11 @@ export function fixParamset(params: FixParamsetParams): void {
  *
  * @param params relevant parameters
  */
-export function fixEvent(params: FixEventParams): any {
+export function fixEvent(params: FixEventParams): null | string | number {
     const { dpType } = params;
     let { val } = params;
 
-    // #872: since CCU FW 3.69.6, CCU sometimes delivers empty string for SECTION which is a number
+    // #872: since CCU FW 3.69.6, CCU sometimes delivers empty string for SECTION, which is a number
     if (val === '' && dpType.TYPE === 'INTEGER') {
         val = null;
     }

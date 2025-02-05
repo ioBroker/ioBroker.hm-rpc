@@ -9,8 +9,6 @@ exports.fixEvent = fixEvent;
 exports.FORBIDDEN_CHARS = /[\][*,;'"`<>\\\s?]/g;
 /**
  * replaces special chars by DIN_66003
- *
- * @param text
  */
 function replaceSpecialChars(text) {
     const specialChars = {
@@ -38,7 +36,7 @@ function replaceSpecialChars(text) {
         ':': '\x3A',
         ';': '\x3B',
         '@': '\x40',
-        '>': '\x3E'
+        '>': '\x3E',
     };
     let result = '';
     for (const char of text) {
@@ -176,7 +174,7 @@ function combineEPaperCommand(lines, signal, ton, repeats, offset) {
         ':': '0x3A',
         ';': '0x3B',
         '@': '0x40',
-        '>': '0x3E'
+        '>': '0x3E',
     };
     let command = '0x02,0x0A';
     for (const li of lines) {
@@ -192,7 +190,7 @@ function combineEPaperCommand(lines, signal, ton, repeats, offset) {
                 i = 0;
             }
             while (i < line.length && i < 12) {
-                command += `,${substitutions[line[i]]}` || '0x2A';
+                command += `,${substitutions[line[i]]}`;
                 i++;
             }
         }
@@ -202,7 +200,7 @@ function combineEPaperCommand(lines, signal, ton, repeats, offset) {
         command = `${command},0x0A`;
     }
     command = `${command},0x14,${ton},0x1C,`;
-    if (repeats < 1) {
+    if (!repeats || repeats < 1) {
         command = `${command}0xDF,0x1D,`;
     }
     else if (repeats < 11) {
@@ -223,8 +221,8 @@ function combineEPaperCommand(lines, signal, ton, repeats, offset) {
     else {
         command = `${command}0xDE,0x1D,`;
     }
-    if (offset <= 100) {
-        command = `${command}0xE${offset / 10 - 1},0x16,`;
+    if (!offset || offset <= 100) {
+        command = `${command}0xE${(offset || 0) / 10 - 1},0x16,`;
     }
     else if (offset <= 110) {
         command = `${command}0xEA,0x16,`;
@@ -283,7 +281,7 @@ function fixParamset(params) {
 function fixEvent(params) {
     const { dpType } = params;
     let { val } = params;
-    // #872: since CCU FW 3.69.6, CCU sometimes delivers empty string for SECTION which is a number
+    // #872: since CCU FW 3.69.6, CCU sometimes delivers empty string for SECTION, which is a number
     if (val === '' && dpType.TYPE === 'INTEGER') {
         val = null;
     }

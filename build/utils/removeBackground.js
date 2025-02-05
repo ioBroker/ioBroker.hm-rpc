@@ -42,7 +42,7 @@ async function buildLines() {
         fs_1.default.writeFileSync(`remove.bat`, lines.join('\n'));
     }
     else {
-        fs_1.default.writeFileSync(`remove.sh`, 'mkdir result\n' + lines.join('\n'));
+        fs_1.default.writeFileSync(`remove.sh`, `mkdir result\n${lines.join('\n')}`);
     }
     console.log('Script saved.');
 }
