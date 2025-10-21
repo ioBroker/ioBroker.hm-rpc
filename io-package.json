@@ -1,324 +1,341 @@
 {
-    "common": {
-        "name": "hm-rpc",
-        "title": "HomeMatic RPC",
-        "desc": {
-            "en": "Connects HomeMatic Interface-Processes (BidCos-Services, Homegear and CUxD) via XML-RPC or BIN-RPC to ioBroker",
-            "de": "Verbindet HomeMatic Interface-Prozesse (BidCos-Services, Homegear und CUxD) via XML-RPC oder BIN-RPC mit ioBroker",
-            "ru": "Подключает HomeMatic интерфейсы (BidCos-сервисы, Homegear и CUxD) через XML-RPC или BIN-RPC к ioBroker",
-            "pt": "Conecta HomeMatic Interface-Processes (BidCos-Services, Homegear e CUxD) via XML-RPC ou BIN-RPC para ioBroker",
-            "nl": "Verbindt HomeMatic Interface-processen (BidCos-Services, Homegear en CUxD) via XML-RPC of BIN-RPC met ioBroker",
-            "fr": "Connecte les processus d'interface HomeMatic (BidCos-Services, Homegear et CUxD) via XML-RPC ou BIN-RPC à ioBroker",
-            "it": "Collega l'interfaccia HomeMatic: i processi (BidCos-Services, Homegear e CUxD) tramite XML-RPC o BIN-RPC su ioBroker",
-            "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
-            "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker",
-            "uk": "Підключає HomeMatic інтерфейси (BidCos-сервіси, Homegear і CUxD) через XML-RPC або BIN-RPC до ioBroker",
-            "zh-cn": "通过 XML-RPC 或 BIN-RPC 将 HomeMatic 接口进程（BidCos-Services、Homegear 和 CUxD）连接到 ioBroker"
-        },
-        "version": "2.0.2",
-        "news": {
-            "2.0.2": {
-                "en": "Updated packages",
-                "de": "Aktualisierte Pakete",
-                "ru": "Обновленные пакеты",
-                "pt": "Pacotes atualizados",
-                "nl": "Bijgewerkte pakketten",
-                "fr": "Paquets mis à jour",
-                "it": "Pacchetti aggiornati",
-                "es": "Paquetes actualizados",
-                "pl": "Aktualizacja pakietów",
-                "uk": "Оновлені пакети",
-                "zh-cn": "更新软件包"
-            },
-            "2.0.0": {
-                "en": "Updated packages\nRemoved support of Node.js 16",
-                "de": "Aktualisierte Pakete\nAusgenommene Unterstützung von Node.js 16",
-                "ru": "Обновленные пакеты\nУдаленная поддержка Node.js 16",
-                "pt": "Pacotes atualizados\nSuporte removido de Node.js 16",
-                "nl": "Bijgewerkte pakketten\nVerwijderde ondersteuning van Node.js 16",
-                "fr": "Paquets mis à jour\nSupport supprimé de Node.js 16",
-                "it": "Pacchetti aggiornati\nSostegno rimosso di Node.js 16",
-                "es": "Paquetes actualizados\nApoyo eliminado de Node.js 16",
-                "pl": "Aktualizacja pakietów\nUsunięte wsparcie Node.js 16",
-                "uk": "Оновлені пакети\nВилучена підтримка Node.js 16",
-                "zh-cn": "更新软件包\n删除节点.js 16 的支持"
-            },
-            "1.17.0": {
-                "en": "Fixed encrypted configuration",
-                "de": "Feste verschlüsselte Konfiguration",
-                "ru": "Исправленная зашифрованная конфигурация",
-                "pt": "Configuração criptografada fixa",
-                "nl": "Vaste versleutelde configuratie",
-                "fr": "Configuration chiffrée corrigée",
-                "it": "Configurazione crittografata fissa",
-                "es": "Configuración encriptada fija",
-                "pl": "Zaszyfrowana konfiguracja",
-                "uk": "Фіксована зашифрована конфігурація",
-                "zh-cn": "固定加密配置"
-            },
-            "1.16.1": {
-                "en": "Improved the configuration layout",
-                "de": "Verbessert das Konfigurationslayout",
-                "ru": "Улучшен макет конфигурации",
-                "pt": "Melhorou o layout de configuração",
-                "nl": "De configuratie-indeling verbeterd",
-                "fr": "Amélioration de la configuration",
-                "it": "Migliorato il layout di configurazione",
-                "es": "Mejora de la configuración",
-                "pl": "Ulepszenie układu konfiguracji",
-                "uk": "Покращення макета конфігурації",
-                "zh-cn": "改进配置布局"
-            },
-            "1.16.0": {
-                "en": "Added support for the device manager\nAdded JSON config\nport to adapters internal `setTimeout/setInterval` methods",
-                "de": "Unterstützung für den Gerätemanager hinzugefügt\nJSON config\nport zu Adaptern internes SetTimeout/setInterval Methoden",
-                "ru": "Добавлена поддержка менеджера устройства\nДобавлено JSON config\nпорт для адаптеров внутренний наборTimeout/setInterval методы",
-                "pt": "Adicionado suporte para o gerenciador de dispositivos\nAdicionado JSON config\nporta para adaptadores conjunto internoTimeout/set Métodos de Interval",
-                "nl": "Advies voor de apparaatmanager\n_\nhaven tot aanpassingen in de interne setTimeout/setInterval methodes",
-                "fr": "Ajout du support pour le gestionnaire de périphérique\nAjouté JSON config\nport aux adaptateurs setTimeout/setInterval methods",
-                "it": "Aggiunto supporto per il gestore del dispositivo\nAggiunto JSON config\nporta agli adattatori set internoTempo/setModalità Intervallo",
-                "es": "Añadido soporte para el administrador del dispositivo\nConfiguración JSON\nport a adaptadores setTimeout/setMetodos de intervalor",
-                "pl": "Wsparcie dla menedżera urządzenia\nStrona internetowa JSON\nport w celu adaptowania wewnętrznego zestawu czasu/setInterval",
-                "uk": "Додано підтримку диспетчера пристроїв\nДодано налаштування JSON\nпорт для адаптерів внутрішніх setTimeout/setInterval методів",
-                "zh-cn": "向装置管理人员增援\n增 编\nb. 港口调整内部制度/固定汇率方法"
-            },
-            "1.15.19": {
-                "en": "Updated packages",
-                "de": "Aktualisierte Pakete",
-                "ru": "Обновленные пакеты",
-                "pt": "Pacotes atualizados",
-                "nl": "Verouderde pakketten",
-                "fr": "Forfaits mis à jour",
-                "it": "Pacchetti aggiornati",
-                "es": "Paquetes actualizados",
-                "pl": "Pakiet upoważniony",
-                "uk": "Оновлені пакети",
-                "zh-cn": "最新一揽子计划"
-            },
-            "1.15.18": {
-                "en": "no longer support EOL versions, please upgrade to node 16",
-                "de": "nicht mehr unterstützen EOL-Versionen, bitte aktualisieren Sie auf Knoten 16",
-                "ru": "больше не поддерживает версии EOL, пожалуйста, обновите до ноды 16",
-                "pt": "não suporta mais versões EOL, por favor atualize para o nó 16",
-                "nl": "vertaling:",
-                "fr": "ne supportez plus les versions EOL, s'il vous plaît mettre à niveau au n° 16",
-                "it": "non supporta più le versioni EOL, si prega di aggiornare al nodo 16",
-                "es": "no soporta versiones de EOL, por favor actualice a nodo 16",
-                "pl": "nie obsługuje już wersji EOL, ulepszanie węzła 16",
-                "uk": "не більше підтримки EOL версії, будь ласка, оновлення до вузла 16",
-                "zh-cn": "不再支持EOL版本,请升级为第16号。"
-            }
-        },
-        "authors": ["hobbyquaker <hq@ccu.io>", "Moritz Heusinger <moritz.heusinger@gmail.com>"],
-        "mode": "daemon",
-        "platform": "Javascript/Node.js",
-        "loglevel": "info",
-        "readme": "https://github.com/ioBroker/ioBroker.hm-rpc/blob/master/README.md",
-        "icon": "homematic.png",
-        "compact": true,
-        "extIcon": "https://raw.githubusercontent.com/ioBroker/ioBroker.hm-rpc/master/admin/homematic.png",
-        "keywords": [
-            "homematic",
-            "bidcos",
-            "eq3",
-            "ELV",
-            "CCU",
-            "CCU1",
-            "CCU2",
-            "rpc",
-            "xmlrpc",
-            "homegear",
-            "binrpc",
-            "CUxD",
-            "FS20",
-            "FHT",
-            "HMS",
-            "EnOcean"
-        ],
-        "type": "iot-systems",
-        "connectionType": "local",
-        "dataSource": "push",
-        "stopTimeout": 1000,
-        "messagebox": true,
-        "supportStopInstance": false,
-        "dependencies": [
-            {
-                "js-controller": ">=5.0.19"
-            }
-        ],
-        "globalDependencies": [
-            {
-                "admin": ">=6.0.0"
-            }
-        ],
-        "supportedMessages": {
-            "deviceManager": true
-        },
-        "plugins": {
-            "sentry": {
-                "dsn": "https://1bc0c96f48e44483b283bc5fc0ca91e2@sentry.iobroker.net/10",
-                "pathWhitelist": [],
-                "errorBlacklist": ["SyntaxError"]
-            }
-        },
-        "adminUI": {
-            "config": "json"
-        },
-        "titleLang": {
-            "en": "HomeMatic RPC",
-            "de": "HomeMatic RPC",
-            "ru": "HomeMatic RPC",
-            "pt": "HomeMatic RPC",
-            "nl": "HomeMatic RPC",
-            "fr": "HomeMatic RPC",
-            "it": "HomeMatic RPC",
-            "es": "HomeMatic RPC",
-            "pl": "HomeMatic RPC",
-            "uk": "HomeMatic RPC",
-            "zh-cn": "HomeMatic RPC"
-        },
-        "tier": 2,
-        "licenseInformation": {
-            "license": "MIT",
-            "type": "free"
-        },
-        "messages": [
-            {
-                "condition": {
-                    "operand": "and",
-                    "rules": ["oldVersion<1.17.0", "newVersion>=1.17.0"]
-                },
-                "title": {
-                    "en": "Reenter your credentials for https",
-                    "de": "Geben Sie erneut Ihre Anmeldeinformationen für https ein",
-                    "ru": "Восстановить свои учетные данные для https",
-                    "pt": "Insira suas credenciais para https",
-                    "nl": "Uw referenties voor https opnieuw invoeren",
-                    "fr": "Entrez de nouveau vos identifiants pour https",
-                    "it": "Reinserire le credenziali per https",
-                    "es": "Ingrese sus credenciales para https",
-                    "pl": "Wprowadź swoje referencje do https",
-                    "uk": "Відновити свої облікові дані за посиланням",
-                    "zh-cn": "重新输入您的 https 证书"
-                },
-                "text": {
-                    "en": "The internal encryption method has been changed. Please enter your username and password in the instance configuration again.",
-                    "de": "Die interne Verschlüsselungsmethode wurde geändert. Bitte geben Sie Ihren Benutzernamen und Ihr Passwort erneut in der Instanzkonfiguration ein.",
-                    "ru": "Был изменен внутренний метод шифрования. Пожалуйста, введите ваше имя пользователя и пароль в конфигурации экземпляра снова.",
-                    "pt": "O método de criptografia interna foi alterado. Digite seu nome de usuário e senha na configuração da instância novamente.",
-                    "nl": "De interne coderingsmethode is gewijzigd. Voer uw gebruikersnaam en wachtwoord in de instantieconfiguratie opnieuw in.",
-                    "fr": "La méthode de chiffrement interne a été modifiée. Veuillez à nouveau saisir votre nom d'utilisateur et votre mot de passe dans la configuration de l'instance.",
-                    "it": "Il metodo di crittografia interna è stato modificato. Inserisci nuovamente il nome utente e la password nella configurazione dell'istanza.",
-                    "es": "El método de cifrado interno ha sido cambiado. Ingrese su nombre de usuario y contraseña en la configuración de instancia de nuevo.",
-                    "pl": "Wewnętrzna metoda szyfrowania została zmieniona. Proszę podać nazwę użytkownika i hasło w konfiguracji instancji ponownie.",
-                    "uk": "Змінено метод внутрішнього шифрування. Будь ласка, введіть ім'я користувача та пароль в налаштуваннях екземпляра знову.",
-                    "zh-cn": "内部加密方法已经改变. 请在实例配置中再次输入您的用户名和密码 ."
-                },
-                "level": "warn",
-                "buttons": ["agree", "cancel"]
-            }
-        ]
+  "common": {
+    "name": "hm-rpc",
+    "title": "HomeMatic RPC",
+    "desc": {
+      "en": "Connects HomeMatic Interface-Processes (BidCos-Services, Homegear and CUxD) via XML-RPC or BIN-RPC to ioBroker",
+      "de": "Verbindet HomeMatic Interface-Prozesse (BidCos-Services, Homegear und CUxD) via XML-RPC oder BIN-RPC mit ioBroker",
+      "ru": "Подключает HomeMatic интерфейсы (BidCos-сервисы, Homegear и CUxD) через XML-RPC или BIN-RPC к ioBroker",
+      "pt": "Conecta HomeMatic Interface-Processes (BidCos-Services, Homegear e CUxD) via XML-RPC ou BIN-RPC para ioBroker",
+      "nl": "Verbindt HomeMatic Interface-processen (BidCos-Services, Homegear en CUxD) via XML-RPC of BIN-RPC met ioBroker",
+      "fr": "Connecte les processus d'interface HomeMatic (BidCos-Services, Homegear et CUxD) via XML-RPC ou BIN-RPC à ioBroker",
+      "it": "Collega l'interfaccia HomeMatic: i processi (BidCos-Services, Homegear e CUxD) tramite XML-RPC o BIN-RPC su ioBroker",
+      "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
+      "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker",
+      "uk": "Підключає HomeMatic інтерфейси (BidCos-сервіси, Homegear і CUxD) через XML-RPC або BIN-RPC до ioBroker",
+      "zh-cn": "通过 XML-RPC 或 BIN-RPC 将 HomeMatic 接口进程（BidCos-Services、Homegear 和 CUxD）连接到 ioBroker"
     },
-    "native": {
-        "homematicAddress": "192.168.0.100",
-        "adapterAddress": "0.0.0.0",
-        "homematicPort": "2001",
-        "callbackAddress": "",
-        "port": "0",
-        "type": "xml",
-        "daemon": "HMIP",
-        "checkInitInterval": 180,
-        "reconnectInterval": 30,
-        "forceReInit": false,
-        "username": "",
-        "password": "",
-        "useHttps": false,
-        "dontDelete": false
+    "version": "3.0.0",
+    "news": {
+      "3.0.0": {
+        "en": "Updated packages and used `@iobroker/eslint-config`\nRenamed some roles for the better typing detection\nRemoved support of Node.js 18",
+        "de": "Aktualisierte Pakete und verwendete `@iobroker/eslint-config`\nUmbenannt einige Rollen für die bessere Typerkennung\nAusgenommene Unterstützung von Node.js 18",
+        "ru": "Обновленные пакеты и использованная '@iobroker/eslint-config'\nПереименовали некоторые роли для лучшего обнаружения типизации\nСнята поддержка Node.js 18",
+        "pt": "Pacotes atualizados e usados `@iobroker/eslint-config`\nRenomeou alguns papéis para a melhor detecção de digitação\nSuporte removido de Node.js 18",
+        "nl": "Bijgewerkte pakketten en gebruikte \nHernoemde een aantal rollen voor de betere typedetectie\nVerwijderde ondersteuning van Node.js 18",
+        "fr": "Mise à jour des paquets et utilisation `@iobroker/eslint-config`\nRenommé certains rôles pour une meilleure détection de frappe\nSupport supprimé de Node.js 18",
+        "it": "Pacchetti aggiornati e usati `@iobroker/eslint-config`\nRinominati alcuni ruoli per il miglior rilevamento della digitazione\nSupporto rimosso di Node.js 18",
+        "es": "Paquetes actualizados y utilizados `@iobroker/eslint-config`\nRenombrado algunos papeles para la mejor detección de la escritura\nApoyo eliminado de Node.js 18",
+        "pl": "Zaktualizowane pakiety i używane '@ iobroker / eslint- configt'\nZmiana nazwy niektórych ról dla lepszej wykrywania maszynopisania\nUsunięte wsparcie Node.js 18",
+        "uk": "Оновлені пакети та використовуються `@iobroker/eslint-config``\nПерейменовані деякі ролі для кращого виявлення наборів\nВилучена підтримка Node.js 18",
+        "zh-cn": "更新了软件包并使用了 XQio 经纪人/slint- config\n为更好的打字检测重新命名了一些角色\n删除对 Node.js 的支持 18"
+      },
+      "2.0.2": {
+        "en": "Updated packages",
+        "de": "Aktualisierte Pakete",
+        "ru": "Обновленные пакеты",
+        "pt": "Pacotes atualizados",
+        "nl": "Bijgewerkte pakketten",
+        "fr": "Paquets mis à jour",
+        "it": "Pacchetti aggiornati",
+        "es": "Paquetes actualizados",
+        "pl": "Aktualizacja pakietów",
+        "uk": "Оновлені пакети",
+        "zh-cn": "更新软件包"
+      },
+      "2.0.0": {
+        "en": "Updated packages\nRemoved support of Node.js 16",
+        "de": "Aktualisierte Pakete\nAusgenommene Unterstützung von Node.js 16",
+        "ru": "Обновленные пакеты\nУдаленная поддержка Node.js 16",
+        "pt": "Pacotes atualizados\nSuporte removido de Node.js 16",
+        "nl": "Bijgewerkte pakketten\nVerwijderde ondersteuning van Node.js 16",
+        "fr": "Paquets mis à jour\nSupport supprimé de Node.js 16",
+        "it": "Pacchetti aggiornati\nSostegno rimosso di Node.js 16",
+        "es": "Paquetes actualizados\nApoyo eliminado de Node.js 16",
+        "pl": "Aktualizacja pakietów\nUsunięte wsparcie Node.js 16",
+        "uk": "Оновлені пакети\nВилучена підтримка Node.js 16",
+        "zh-cn": "更新软件包\n删除节点.js 16 的支持"
+      },
+      "1.17.0": {
+        "en": "Fixed encrypted configuration",
+        "de": "Feste verschlüsselte Konfiguration",
+        "ru": "Исправленная зашифрованная конфигурация",
+        "pt": "Configuração criptografada fixa",
+        "nl": "Vaste versleutelde configuratie",
+        "fr": "Configuration chiffrée corrigée",
+        "it": "Configurazione crittografata fissa",
+        "es": "Configuración encriptada fija",
+        "pl": "Zaszyfrowana konfiguracja",
+        "uk": "Фіксована зашифрована конфігурація",
+        "zh-cn": "固定加密配置"
+      },
+      "1.16.1": {
+        "en": "Improved the configuration layout",
+        "de": "Verbessert das Konfigurationslayout",
+        "ru": "Улучшен макет конфигурации",
+        "pt": "Melhorou o layout de configuração",
+        "nl": "De configuratie-indeling verbeterd",
+        "fr": "Amélioration de la configuration",
+        "it": "Migliorato il layout di configurazione",
+        "es": "Mejora de la configuración",
+        "pl": "Ulepszenie układu konfiguracji",
+        "uk": "Покращення макета конфігурації",
+        "zh-cn": "改进配置布局"
+      },
+      "1.16.0": {
+        "en": "Added support for the device manager\nAdded JSON config\nport to adapters internal `setTimeout/setInterval` methods",
+        "de": "Unterstützung für den Gerätemanager hinzugefügt\nJSON config\nport zu Adaptern internes SetTimeout/setInterval Methoden",
+        "ru": "Добавлена поддержка менеджера устройства\nДобавлено JSON config\nпорт для адаптеров внутренний наборTimeout/setInterval методы",
+        "pt": "Adicionado suporte para o gerenciador de dispositivos\nAdicionado JSON config\nporta para adaptadores conjunto internoTimeout/set Métodos de Interval",
+        "nl": "Advies voor de apparaatmanager\n_\nhaven tot aanpassingen in de interne setTimeout/setInterval methodes",
+        "fr": "Ajout du support pour le gestionnaire de périphérique\nAjouté JSON config\nport aux adaptateurs setTimeout/setInterval methods",
+        "it": "Aggiunto supporto per il gestore del dispositivo\nAggiunto JSON config\nporta agli adattatori set internoTempo/setModalità Intervallo",
+        "es": "Añadido soporte para el administrador del dispositivo\nConfiguración JSON\nport a adaptadores setTimeout/setMetodos de intervalor",
+        "pl": "Wsparcie dla menedżera urządzenia\nStrona internetowa JSON\nport w celu adaptowania wewnętrznego zestawu czasu/setInterval",
+        "uk": "Додано підтримку диспетчера пристроїв\nДодано налаштування JSON\nпорт для адаптерів внутрішніх setTimeout/setInterval методів",
+        "zh-cn": "向装置管理人员增援\n增 编\nb. 港口调整内部制度/固定汇率方法"
+      },
+      "1.15.19": {
+        "en": "Updated packages",
+        "de": "Aktualisierte Pakete",
+        "ru": "Обновленные пакеты",
+        "pt": "Pacotes atualizados",
+        "nl": "Verouderde pakketten",
+        "fr": "Forfaits mis à jour",
+        "it": "Pacchetti aggiornati",
+        "es": "Paquetes actualizados",
+        "pl": "Pakiet upoważniony",
+        "uk": "Оновлені пакети",
+        "zh-cn": "最新一揽子计划"
+      }
     },
-    "protectedNative": ["username", "password"],
-    "encryptedNative": ["username", "password"],
-    "objects": [
-        {
-            "_id": "_design/hm-rpc",
-            "type": "design",
-            "language": "javascript",
-            "views": {
-                "listDevices": {
-                    "map": "function(doc) {\n  if (doc._id.match(/^hm-rpc\\.[0-9]+\\.\\*?[A-Za-z0-9_-]+(\\.[0-9]+)?$/)) {\n   emit(doc._id, {ADDRESS:(doc.native?doc.native.ADDRESS:''),VERSION:(doc.native?doc.native.VERSION:'')});\n  }\n}"
-                },
-                "paramsetDescription": {
-                    "map": "function(doc) {\n  if (doc._id.match(/^hm-rpc\\.meta/) && doc.meta.type === 'paramsetDescription') {\n   emit(doc._id, doc);\n  }\n}"
-                }
-            }
-        }
+    "authors": [
+      "hobbyquaker <hq@ccu.io>",
+      "Moritz Heusinger <moritz.heusinger@gmail.com>"
     ],
-    "instanceObjects": [
-        {
-            "_id": "updated",
-            "type": "state",
-            "common": {
-                "name": {
-                    "en": "New devices added",
-                    "de": "Neue Geräte hinzugefügt",
-                    "ru": "Новые добавленные устройства",
-                    "pt": "Novos dispositivos adicionados",
-                    "nl": "Nieuwe apparaten toegevoegd",
-                    "fr": "Nouveaux appareils ajoutés",
-                    "it": "Nuovi dispositivi aggiunti",
-                    "es": "Nuevos dispositivos añadidos",
-                    "pl": "Dodano nowe urządzenia",
-                    "uk": "Додані нові пристрої",
-                    "zh-cn": "新增设备"
-                },
-                "type": "boolean",
-                "read": true,
-                "write": true
-            }
+    "mode": "daemon",
+    "platform": "Javascript/Node.js",
+    "loglevel": "info",
+    "readme": "https://github.com/ioBroker/ioBroker.hm-rpc/blob/master/README.md",
+    "icon": "homematic.png",
+    "compact": true,
+    "extIcon": "https://raw.githubusercontent.com/ioBroker/ioBroker.hm-rpc/master/admin/homematic.png",
+    "keywords": [
+      "homematic",
+      "bidcos",
+      "eq3",
+      "ELV",
+      "CCU",
+      "CCU1",
+      "CCU2",
+      "rpc",
+      "xmlrpc",
+      "homegear",
+      "binrpc",
+      "CUxD",
+      "FS20",
+      "FHT",
+      "HMS",
+      "EnOcean"
+    ],
+    "type": "iot-systems",
+    "connectionType": "local",
+    "dataSource": "push",
+    "stopTimeout": 1000,
+    "messagebox": true,
+    "supportStopInstance": false,
+    "dependencies": [
+      {
+        "js-controller": ">=5.0.19"
+      }
+    ],
+    "globalDependencies": [
+      {
+        "admin": ">=6.0.0"
+      }
+    ],
+    "supportedMessages": {
+      "deviceManager": true
+    },
+    "plugins": {
+      "sentry": {
+        "dsn": "https://1bc0c96f48e44483b283bc5fc0ca91e2@sentry.iobroker.net/10",
+        "pathWhitelist": [],
+        "errorBlacklist": [
+          "SyntaxError"
+        ]
+      }
+    },
+    "adminUI": {
+      "config": "json"
+    },
+    "titleLang": {
+      "en": "HomeMatic RPC",
+      "de": "HomeMatic RPC",
+      "ru": "HomeMatic RPC",
+      "pt": "HomeMatic RPC",
+      "nl": "HomeMatic RPC",
+      "fr": "HomeMatic RPC",
+      "it": "HomeMatic RPC",
+      "es": "HomeMatic RPC",
+      "pl": "HomeMatic RPC",
+      "uk": "HomeMatic RPC",
+      "zh-cn": "HomeMatic RPC"
+    },
+    "tier": 2,
+    "licenseInformation": {
+      "license": "MIT",
+      "type": "free"
+    },
+    "messages": [
+      {
+        "condition": {
+          "operand": "and",
+          "rules": [
+            "oldVersion<1.17.0",
+            "newVersion>=1.17.0"
+          ]
         },
-        {
-            "_id": "info",
-            "type": "channel",
-            "common": {
-                "name": {
-                    "en": "Information",
-                    "de": "Informationen",
-                    "ru": "Информация",
-                    "pt": "Informação",
-                    "nl": "Informatie",
-                    "fr": "Informations",
-                    "it": "Informazioni",
-                    "es": "Información",
-                    "pl": "Informacje",
-                    "uk": "Інформація",
-                    "zh-cn": "资料"
-                }
-            },
-            "native": {}
+        "title": {
+          "en": "Reenter your credentials for https",
+          "de": "Geben Sie erneut Ihre Anmeldeinformationen für https ein",
+          "ru": "Восстановить свои учетные данные для https",
+          "pt": "Insira suas credenciais para https",
+          "nl": "Uw referenties voor https opnieuw invoeren",
+          "fr": "Entrez de nouveau vos identifiants pour https",
+          "it": "Reinserire le credenziali per https",
+          "es": "Ingrese sus credenciales para https",
+          "pl": "Wprowadź swoje referencje do https",
+          "uk": "Відновити свої облікові дані за посиланням",
+          "zh-cn": "重新输入您的 https 证书"
         },
-        {
-            "_id": "info.connection",
-            "type": "state",
-            "common": {
-                "name": {
-                    "en": "Connected to CCU",
-                    "de": "Verbindung mit CCU",
-                    "ru": "Подключен к CCU",
-                    "pt": "Conectado ao CCU",
-                    "nl": "Verbonden met CCU",
-                    "fr": "Connecté au CCU",
-                    "it": "Collegato a CCU",
-                    "es": "Conectado a la CCU",
-                    "pl": "Połączone z CCU",
-                    "uk": "Підключення до CCU",
-                    "zh-cn": "已连接到 CCU"
-                },
-                "type": "boolean",
-                "role": "indicator.connected",
-                "read": true,
-                "write": false,
-                "def": false
-            },
-            "native": {}
-        }
+        "text": {
+          "en": "The internal encryption method has been changed. Please enter your username and password in the instance configuration again.",
+          "de": "Die interne Verschlüsselungsmethode wurde geändert. Bitte geben Sie Ihren Benutzernamen und Ihr Passwort erneut in der Instanzkonfiguration ein.",
+          "ru": "Был изменен внутренний метод шифрования. Пожалуйста, введите ваше имя пользователя и пароль в конфигурации экземпляра снова.",
+          "pt": "O método de criptografia interna foi alterado. Digite seu nome de usuário e senha na configuração da instância novamente.",
+          "nl": "De interne coderingsmethode is gewijzigd. Voer uw gebruikersnaam en wachtwoord in de instantieconfiguratie opnieuw in.",
+          "fr": "La méthode de chiffrement interne a été modifiée. Veuillez à nouveau saisir votre nom d'utilisateur et votre mot de passe dans la configuration de l'instance.",
+          "it": "Il metodo di crittografia interna è stato modificato. Inserisci nuovamente il nome utente e la password nella configurazione dell'istanza.",
+          "es": "El método de cifrado interno ha sido cambiado. Ingrese su nombre de usuario y contraseña en la configuración de instancia de nuevo.",
+          "pl": "Wewnętrzna metoda szyfrowania została zmieniona. Proszę podać nazwę użytkownika i hasło w konfiguracji instancji ponownie.",
+          "uk": "Змінено метод внутрішнього шифрування. Будь ласка, введіть ім'я користувача та пароль в налаштуваннях екземпляра знову.",
+          "zh-cn": "内部加密方法已经改变. 请在实例配置中再次输入您的用户名和密码 ."
+        },
+        "level": "warn",
+        "buttons": [
+          "agree",
+          "cancel"
+        ]
+      }
     ]
+  },
+  "native": {
+    "homematicAddress": "192.168.0.100",
+    "adapterAddress": "0.0.0.0",
+    "homematicPort": "2001",
+    "callbackAddress": "",
+    "port": "0",
+    "type": "xml",
+    "daemon": "HMIP",
+    "checkInitInterval": 180,
+    "reconnectInterval": 30,
+    "forceReInit": false,
+    "username": "",
+    "password": "",
+    "useHttps": false,
+    "dontDelete": false
+  },
+  "protectedNative": [
+    "username",
+    "password"
+  ],
+  "encryptedNative": [
+    "username",
+    "password"
+  ],
+  "objects": [
+    {
+      "_id": "_design/hm-rpc",
+      "type": "design",
+      "language": "javascript",
+      "views": {
+        "listDevices": {
+          "map": "function(doc) {\n  if (doc._id.match(/^hm-rpc\\.[0-9]+\\.\\*?[A-Za-z0-9_-]+(\\.[0-9]+)?$/)) {\n   emit(doc._id, {ADDRESS:(doc.native?doc.native.ADDRESS:''),VERSION:(doc.native?doc.native.VERSION:'')});\n  }\n}"
+        },
+        "paramsetDescription": {
+          "map": "function(doc) {\n  if (doc._id.match(/^hm-rpc\\.meta/) && doc.meta.type === 'paramsetDescription') {\n   emit(doc._id, doc);\n  }\n}"
+        }
+      }
+    }
+  ],
+  "instanceObjects": [
+    {
+      "_id": "updated",
+      "type": "state",
+      "common": {
+        "name": {
+          "en": "New devices added",
+          "de": "Neue Geräte hinzugefügt",
+          "ru": "Новые добавленные устройства",
+          "pt": "Novos dispositivos adicionados",
+          "nl": "Nieuwe apparaten toegevoegd",
+          "fr": "Nouveaux appareils ajoutés",
+          "it": "Nuovi dispositivi aggiunti",
+          "es": "Nuevos dispositivos añadidos",
+          "pl": "Dodano nowe urządzenia",
+          "uk": "Додані нові пристрої",
+          "zh-cn": "新增设备"
+        },
+        "type": "boolean",
+        "read": true,
+        "write": true
+      }
+    },
+    {
+      "_id": "info",
+      "type": "channel",
+      "common": {
+        "name": {
+          "en": "Information",
+          "de": "Informationen",
+          "ru": "Информация",
+          "pt": "Informação",
+          "nl": "Informatie",
+          "fr": "Informations",
+          "it": "Informazioni",
+          "es": "Información",
+          "pl": "Informacje",
+          "uk": "Інформація",
+          "zh-cn": "资料"
+        }
+      },
+      "native": {}
+    },
+    {
+      "_id": "info.connection",
+      "type": "state",
+      "common": {
+        "name": {
+          "en": "Connected to CCU",
+          "de": "Verbindung mit CCU",
+          "ru": "Подключен к CCU",
+          "pt": "Conectado ao CCU",
+          "nl": "Verbonden met CCU",
+          "fr": "Connecté au CCU",
+          "it": "Collegato a CCU",
+          "es": "Conectado a la CCU",
+          "pl": "Połączone z CCU",
+          "uk": "Підключення до CCU",
+          "zh-cn": "已连接到 CCU"
+        },
+        "type": "boolean",
+        "role": "indicator.connected",
+        "read": true,
+        "write": false,
+        "def": false
+      },
+      "native": {}
+    }
+  ]
 }
