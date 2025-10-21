@@ -160,6 +160,7 @@ To update all available images execute `npm run update-images`
 -->
 ### **WORK IN PROGRESS**
 * (bluefox) Updated packages and used `@iobroker/eslint-config`
+* (bluefox) Renamed some roles for the better typing detection
 
 ### 2.0.2 (2024-08-26)
 * (bluefox) Updated packages
