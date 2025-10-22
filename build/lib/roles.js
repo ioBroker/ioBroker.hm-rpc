@@ -61,7 +61,7 @@ exports.metaRoles = {
         RSSI_PEER: 'value.rssi',
         RSSI_DEVICE: 'value.rssi',
         AES_KEY: 'state',
-        STICKY_UNREACH: 'indicator.unreach',
+        STICKY_UNREACH: 'indicator.unreach.sticky',
         ERROR: 'indicator.error',
         ERROR_OVERHEAT: 'indicator.error.overheat',
         ERROR_OVERLOAD: 'indicator.error.overload',
