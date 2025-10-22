@@ -158,6 +158,9 @@ To update all available images execute `npm run update-images`
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (bluefox) Renamed role of `STICKY_UNREACH` to `indicator.unreach.sticky` for the better typing detection
+
 ### 3.0.0 (2025-10-21)
 * (bluefox) Updated packages and used `@iobroker/eslint-config`
 * (bluefox) Renamed some roles for the better typing detection
