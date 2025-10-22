@@ -15,8 +15,21 @@
       "uk": "Підключає HomeMatic інтерфейси (BidCos-сервіси, Homegear і CUxD) через XML-RPC або BIN-RPC до ioBroker",
       "zh-cn": "通过 XML-RPC 或 BIN-RPC 将 HomeMatic 接口进程（BidCos-Services、Homegear 和 CUxD）连接到 ioBroker"
     },
-    "version": "3.0.0",
+    "version": "3.0.1",
     "news": {
+      "3.0.1": {
+        "en": "Renamed role of `STICKY_UNREACH` to `indicator.unreach.sticky` for the better typing detection",
+        "de": "Umbenannte Rolle von `STICKY_UNREACH` zu `indicator.unreach.sticky` für die bessere Typerkennung",
+        "ru": "Переименована роль «STICKY_UNREACH» в «indicator.unreach.sticky»",
+        "pt": "Papel renomeado de `STICKY_UNREACH` para `indicator.unreach.sticky` para melhor detecção de digitação",
+        "nl": "Hernoemde rol van ",
+        "fr": "Renommé le rôle de `STICKY_UNREACH` en `indicator.unreach.sticky` pour une meilleure détection de frappe",
+        "it": "Rinominare il ruolo di `STICKY_UNREACH` a `indicator.unreach.sticky` per il miglior rilevamento della digitazione",
+        "es": "Renombrado papel de \" STICKY_UNREACH \" a \" indicator.unreach.sticky \" para mejorar la detección de la detección",
+        "pl": "Zmiana nazwy 'STICKY _ UNREACH' na 'indicator.unreach.stiff' dla lepszego wykrywania pisania",
+        "uk": "Перейменована роль `STICKY_UNREACH` до `indicator.unreach.sticky` для кращого виявлення типів",
+        "zh-cn": "将`STICKY_UNREACH ' 重新命名为`indexator.unreach.sticky ' ,用于更好的打字检测"
+      },
       "3.0.0": {
         "en": "Updated packages and used `@iobroker/eslint-config`\nRenamed some roles for the better typing detection\nRemoved support of Node.js 18",
         "de": "Aktualisierte Pakete und verwendete `@iobroker/eslint-config`\nUmbenannt einige Rollen für die bessere Typerkennung\nAusgenommene Unterstützung von Node.js 18",
@@ -94,19 +107,6 @@
         "pl": "Wsparcie dla menedżera urządzenia\nStrona internetowa JSON\nport w celu adaptowania wewnętrznego zestawu czasu/setInterval",
         "uk": "Додано підтримку диспетчера пристроїв\nДодано налаштування JSON\nпорт для адаптерів внутрішніх setTimeout/setInterval методів",
         "zh-cn": "向装置管理人员增援\n增 编\nb. 港口调整内部制度/固定汇率方法"
-      },
-      "1.15.19": {
-        "en": "Updated packages",
-        "de": "Aktualisierte Pakete",
-        "ru": "Обновленные пакеты",
-        "pt": "Pacotes atualizados",
-        "nl": "Verouderde pakketten",
-        "fr": "Forfaits mis à jour",
-        "it": "Pacchetti aggiornati",
-        "es": "Paquetes actualizados",
-        "pl": "Pakiet upoważniony",
-        "uk": "Оновлені пакети",
-        "zh-cn": "最新一揽子计划"
       }
     },
     "authors": [

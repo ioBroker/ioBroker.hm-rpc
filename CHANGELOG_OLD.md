@@ -1,4 +1,7 @@
 # Older changes
+## 1.16.1 (2024-03-05)
+* (bluefox) Improved the configuration layout
+
 ## 1.16.0 (2023-12-25)
 * (JeyCee) Added support for the device manager
 * (bluefox) Added JSON config
