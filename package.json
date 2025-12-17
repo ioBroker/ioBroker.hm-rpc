@@ -55,7 +55,7 @@
     "@iobroker/eslint-config": "^2.2.0",
     "@iobroker/testing": "^5.1.1",
     "@iobroker/types": "^7.0.7",
-    "@types/node": "^24.9.1",
+    "@types/node": "^25.0.3",
     "@types/validator": "^13.15.3",
     "axios": "^1.12.2",
     "hm-simulator": "^0.1.1",
