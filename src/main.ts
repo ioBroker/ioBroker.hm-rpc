@@ -2,7 +2,7 @@ import { Adapter, type AdapterOptions } from '@iobroker/adapter-core';
 import { images } from './lib/images';
 import * as tools from './lib/tools';
 import { metaRoles } from './lib/roles';
-import { randomBytes } from 'crypto';
+import { randomBytes } from 'node:crypto';
 import type {
     ParamsetObjectWithSpecial,
     ParamsetObject,

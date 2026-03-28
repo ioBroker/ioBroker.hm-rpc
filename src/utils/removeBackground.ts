@@ -1,6 +1,6 @@
-import fs from 'fs';
-import { exec } from 'child_process';
-import { platform } from 'os';
+import fs from 'node:fs';
+import { exec } from 'node:child_process';
+import { platform } from 'node:os';
 
 const files = fs.readdirSync('admin/icons').filter(n => n.endsWith('.png'));
 const os = platform();

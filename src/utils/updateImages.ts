@@ -1,5 +1,5 @@
-import { exec } from 'child_process';
-import fs from 'fs';
+import { exec } from 'node:child_process';
+import fs from 'node:fs';
 import { buildLines } from './removeBackground';
 
 const FOLDER_URL = 'https://github.com/eq-3/occu/tree/master/WebUI/www/config/img/devices/50';
