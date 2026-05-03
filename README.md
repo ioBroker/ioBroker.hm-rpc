@@ -179,6 +179,8 @@ To update all available images execute `npm run update-images`
 ### Older entries
 [here](OLD_CHANGELOG.md)
 
+[Older changelogs can be found there](CHANGELOG_OLD.md)
+
 ## License
 
 The MIT License (MIT)
