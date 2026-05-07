@@ -158,7 +158,7 @@ To update all available images execute `npm run update-images`
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 3.0.2 (2026-05-07)
 * (bluefox) Updated packages
 * (bluefox) Migrated to TypeScript 6
 * (bluefox) Corrected device manager
@@ -177,9 +177,6 @@ To update all available images execute `npm run update-images`
 ### 2.0.0 (2024-07-18)
 * (bluefox) Updated packages
 * (bluefox) Removed support of Node.js 16
-
-### 1.17.0 (2024-03-18)
-* (klein0r) Fixed encrypted configuration
 
 ### Older entries
 [here](OLD_CHANGELOG.md)

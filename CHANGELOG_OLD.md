@@ -1,4 +1,7 @@
 # Older changes
+## 1.17.0 (2024-03-18)
+* (klein0r) Fixed encrypted configuration
+
 ## 1.16.1 (2024-03-05)
 * (bluefox) Improved the configuration layout
 

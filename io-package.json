@@ -15,8 +15,21 @@
       "uk": "Підключає HomeMatic інтерфейси (BidCos-сервіси, Homegear і CUxD) через XML-RPC або BIN-RPC до ioBroker",
       "zh-cn": "通过 XML-RPC 或 BIN-RPC 将 HomeMatic 接口进程（BidCos-Services、Homegear 和 CUxD）连接到 ioBroker"
     },
-    "version": "3.0.1",
+    "version": "3.0.2",
     "news": {
+      "3.0.2": {
+        "en": "Updated packages\nMigrated to TypeScript 6\nCorrected device manager",
+        "de": "Aktualisierte Pakete\nAusgewählt in TypeScript 6\nKorrigierter Gerätemanager",
+        "ru": "Обновленные пакеты\nИммиграция в TypeScript 6\nИсправленный менеджер устройств",
+        "pt": "Pacotes atualizados\nMigrado para TypeScript 6\nGestor de dispositivos corrigidos",
+        "nl": "Bijgewerkte pakketten\nNaar typeScript 6 migreren\nGecorrigeerde apparaatbeheerder",
+        "fr": "Paquets mis à jour\nMigré selon TypeScript 6\nGestionnaire de périphérique corrigé",
+        "it": "Pacchetti aggiornati\nMigrato a TypeScript 6\nGestione del dispositivo corretto",
+        "es": "Paquetes actualizados\nMigrado a TipoScript 6\nGestor de dispositivo corregido",
+        "pl": "Aktualizacja pakietów\nMigrant to TypeScript 6\nPoprawiony menedżer urządzeń",
+        "uk": "Оновлені пакети\nMigrated до TypeScript 6\nПравильний менеджер пристрою",
+        "zh-cn": "更新软件包\n移动到类型脚本 6\n修正的设备管理器"
+      },
       "3.0.1": {
         "en": "Renamed role of `STICKY_UNREACH` to `indicator.unreach.sticky` for the better typing detection",
         "de": "Umbenannte Rolle von `STICKY_UNREACH` zu `indicator.unreach.sticky` für die bessere Typerkennung",
@@ -94,19 +107,6 @@
         "pl": "Ulepszenie układu konfiguracji",
         "uk": "Покращення макета конфігурації",
         "zh-cn": "改进配置布局"
-      },
-      "1.16.0": {
-        "en": "Added support for the device manager\nAdded JSON config\nport to adapters internal `setTimeout/setInterval` methods",
-        "de": "Unterstützung für den Gerätemanager hinzugefügt\nJSON config\nport zu Adaptern internes SetTimeout/setInterval Methoden",
-        "ru": "Добавлена поддержка менеджера устройства\nДобавлено JSON config\nпорт для адаптеров внутренний наборTimeout/setInterval методы",
-        "pt": "Adicionado suporte para o gerenciador de dispositivos\nAdicionado JSON config\nporta para adaptadores conjunto internoTimeout/set Métodos de Interval",
-        "nl": "Advies voor de apparaatmanager\n_\nhaven tot aanpassingen in de interne setTimeout/setInterval methodes",
-        "fr": "Ajout du support pour le gestionnaire de périphérique\nAjouté JSON config\nport aux adaptateurs setTimeout/setInterval methods",
-        "it": "Aggiunto supporto per il gestore del dispositivo\nAggiunto JSON config\nporta agli adattatori set internoTempo/setModalità Intervallo",
-        "es": "Añadido soporte para el administrador del dispositivo\nConfiguración JSON\nport a adaptadores setTimeout/setMetodos de intervalor",
-        "pl": "Wsparcie dla menedżera urządzenia\nStrona internetowa JSON\nport w celu adaptowania wewnętrznego zestawu czasu/setInterval",
-        "uk": "Додано підтримку диспетчера пристроїв\nДодано налаштування JSON\nпорт для адаптерів внутрішніх setTimeout/setInterval методів",
-        "zh-cn": "向装置管理人员增援\n增 编\nb. 港口调整内部制度/固定汇率方法"
       }
     },
     "authors": [
