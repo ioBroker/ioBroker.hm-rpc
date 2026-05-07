@@ -20,20 +20,23 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
         super(adapter);
         this.language = 'en';
         this.typeDetector = new type_detector_1.default();
-        adapter.getForeignObjectAsync('system.config').then(obj => {
-            if (obj && obj.common && obj.common.language) {
+        void adapter
+            .getForeignObjectAsync('system.config')
+            .then(obj => {
+            if (obj?.common?.language) {
                 this.language = obj.common.language;
             }
-        });
+        })
+            .catch(e => adapter.log.error(e));
     }
-    async listDevices() {
+    async loadDevices(context) {
         const devices = await this.adapter.getDevicesAsync();
-        const arrDevices = [];
-        for (const i in devices) {
-            const connected = await this.adapter.getStateAsync(`${devices[i]._id}.0.UNREACH`);
-            const rssi = await this.adapter.getStateAsync(`${devices[i]._id}.0.RSSI_DEVICE`);
-            const lowBat = await this.adapter.getStateAsync(`${devices[i]._id}.0.LOWBAT`);
-            const sabotage = await this.adapter.getStateAsync(`${devices[i]._id}.0.SABOTAGE`);
+        context.setTotalDevices(devices.length);
+        for (const device of devices) {
+            const connected = await this.adapter.getStateAsync(`${device._id}.0.UNREACH`);
+            const rssi = await this.adapter.getStateAsync(`${device._id}.0.RSSI_DEVICE`);
+            const lowBat = await this.adapter.getStateAsync(`${device._id}.0.LOWBAT`);
+            const sabotage = await this.adapter.getStateAsync(`${device._id}.0.SABOTAGE`);
             const status = {
                 connection: connected ? (connected.val ? 'disconnected' : 'connected') : 'connected',
                 rssi: rssi ? parseFloat((rssi.val || '0').toString()) : undefined,
@@ -41,15 +44,15 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                 warning: sabotage?.val ? 'Sabotage' : undefined,
             };
             let hasDetails = false;
-            if (devices[i].native.AVAILABLE_FIRMWARE || devices[i].native.FIRMWARE) {
+            if (device.native.AVAILABLE_FIRMWARE || device.native.FIRMWARE) {
                 hasDetails = true;
             }
             const res = {
-                id: devices[i]._id,
-                name: devices[i].common.name,
-                icon: devices[i].common.icon ? `../../adapter/hm-rpc${devices[i].common.icon}` : undefined,
+                id: device._id,
+                name: device.common.name,
+                icon: device.common.icon ? `../../adapter/hm-rpc${device.common.icon}` : undefined,
                 manufacturer: 'EQ-3 AG',
-                model: devices[i].native.TYPE ? devices[i].native.TYPE : null,
+                model: device.native.TYPE ? device.native.TYPE : null,
                 status: status,
                 hasDetails: hasDetails,
                 actions: [
@@ -72,7 +75,58 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                         handler: this.handleRenameDevice.bind(this),
                     },
                 ],
-                controls: await this.getControls(devices[i]),
+                controls: await this.getControls(device),
+            };
+            context.addDevice(res);
+        }
+    }
+    async listDevices() {
+        const devices = await this.adapter.getDevicesAsync();
+        const arrDevices = [];
+        for (const device of devices) {
+            const connected = await this.adapter.getStateAsync(`${device._id}.0.UNREACH`);
+            const rssi = await this.adapter.getStateAsync(`${device._id}.0.RSSI_DEVICE`);
+            const lowBat = await this.adapter.getStateAsync(`${device._id}.0.LOWBAT`);
+            const sabotage = await this.adapter.getStateAsync(`${device._id}.0.SABOTAGE`);
+            const status = {
+                connection: connected ? (connected.val ? 'disconnected' : 'connected') : 'connected',
+                rssi: rssi ? parseFloat((rssi.val || '0').toString()) : undefined,
+                battery: lowBat?.val ? !lowBat.val : undefined,
+                warning: sabotage?.val ? 'Sabotage' : undefined,
+            };
+            let hasDetails = false;
+            if (device.native.AVAILABLE_FIRMWARE || device.native.FIRMWARE) {
+                hasDetails = true;
+            }
+            const res = {
+                id: device._id,
+                name: device.common.name,
+                icon: device.common.icon ? `../../adapter/hm-rpc${device.common.icon}` : undefined,
+                manufacturer: 'EQ-3 AG',
+                model: device.native.TYPE ? device.native.TYPE : null,
+                status: status,
+                hasDetails: hasDetails,
+                actions: [
+                    {
+                        id: 'rename',
+                        icon: 'fa-solid fa-pen',
+                        description: {
+                            en: 'Rename this device',
+                            de: 'Gerät umbenennen',
+                            ru: 'Переименовать это устройство',
+                            pt: 'Renomear este dispositivo',
+                            nl: 'Hernoem dit apparaat',
+                            fr: 'Renommer cet appareil',
+                            it: 'Rinomina questo dispositivo',
+                            es: 'Renombrar este dispositivo',
+                            pl: 'Zmień nazwę tego urządzenia',
+                            'zh-cn': '重命名此设备',
+                            uk: 'Перейменуйте цей пристрій',
+                        },
+                        handler: this.handleRenameDevice.bind(this),
+                    },
+                ],
+                controls: await this.getControls(device),
             };
             arrDevices.push(res);
         }
@@ -83,9 +137,12 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
         const channels = await this.adapter.getChannelsOfAsync(device._id);
         // for every channel
         const controls = [];
+        if (channels.find(a => a._id.includes('hm-rpc.0.EEQ0043360'))) {
+            console.log('aaa');
+        }
         for (let c = 0; c < channels.length; c++) {
             const channel = channels[c];
-            if (!channel || !channel._id || channel._id.endsWith('.0')) {
+            if (!channel?._id || channel._id.endsWith('.0')) {
                 // skip information channel
                 continue;
             }
@@ -106,18 +163,20 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                 id: channel._id,
             };
             const tdControls = this.typeDetector.detect(options);
-            if (tdControls) {
-                tdControls.forEach(tdControl => {
+            if (tdControls?.length) {
+                for (const tdControl of tdControls) {
                     for (let i = tdControl.states.length - 1; i >= 0; i--) {
+                        // delete empty states
                         if (!tdControl.states[i].id) {
                             tdControl.states.splice(i, 1);
                         }
                     }
                     const result = this.typedControl2DeviceManager(tdControl, objects);
-                    if (result && result.length) {
+                    if (result?.length) {
                         result.forEach(control => controls.push(control));
+                        break;
                     }
-                });
+                }
             }
         }
         controls.sort((a, b) => {
@@ -181,7 +240,7 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                             description: objects[state.id].common.desc,
                             stateId: state.id,
                             label: stateName, // objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
-                            getStateHandler: async (deviceId, actionId) => {
+                            getStateHandler: async (_deviceId, actionId) => {
                                 const currentState = await this.adapter.getForeignStateAsync(actionId);
                                 if (currentState) {
                                     return currentState;
@@ -193,7 +252,7 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                                     },
                                 };
                             },
-                            handler: async (deviceId, actionId, state) => {
+                            handler: async (_deviceId, actionId, state) => {
                                 console.log(state);
                                 await this.adapter.setForeignStateAsync(actionId, state, false);
                                 const currentState = await this.adapter.getStateAsync(actionId);
@@ -220,7 +279,7 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                             label: stateName, // objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
                             min: objects[state.id].common.min,
                             max: objects[state.id].common.max,
-                            getStateHandler: async (deviceId, actionId) => {
+                            getStateHandler: async (_deviceId, actionId) => {
                                 const currentState = await this.adapter.getForeignStateAsync(actionId);
                                 if (currentState) {
                                     return currentState;
@@ -232,7 +291,7 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                                     },
                                 };
                             },
-                            handler: async (deviceId, actionId, state) => {
+                            handler: async (_deviceId, actionId, state) => {
                                 console.log(state);
                                 await this.adapter.setForeignStateAsync(actionId, state, false);
                                 const currentState = await this.adapter.getStateAsync(actionId);
@@ -273,7 +332,7 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                                 stateId: state.id,
                                 channel,
                                 label: stateName, // objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
-                                handler: async (deviceId, actionId, state) => {
+                                handler: async (_deviceId, actionId, state) => {
                                     console.log(state);
                                     await this.adapter.setForeignStateAsync(actionId, true, false);
                                     const currentState = await this.adapter.getStateAsync(actionId);
@@ -296,7 +355,7 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                                 channel,
                                 stateId: state.id,
                                 label: stateName, // objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
-                                getStateHandler: async (deviceId, actionId) => {
+                                getStateHandler: async (_deviceId, actionId) => {
                                     const currentState = await this.adapter.getForeignStateAsync(actionId);
                                     if (currentState) {
                                         return currentState;
@@ -308,7 +367,7 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                                         },
                                     };
                                 },
-                                handler: async (deviceId, actionId, state) => {
+                                handler: async (_deviceId, actionId, state) => {
                                     console.log(state);
                                     await this.adapter.setForeignStateAsync(actionId, state, false);
                                     const currentState = await this.adapter.getStateAsync(actionId);
@@ -334,7 +393,7 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                             stateId: state.id,
                             channel,
                             label: stateName, // objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
-                            getStateHandler: async (deviceId, actionId) => {
+                            getStateHandler: async (_deviceId, actionId) => {
                                 const currentState = await this.adapter.getForeignStateAsync(actionId);
                                 if (currentState) {
                                     return currentState;
@@ -346,7 +405,7 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                                     },
                                 };
                             },
-                            handler: async (deviceId, actionId, state) => {
+                            handler: async (_deviceId, actionId, state) => {
                                 console.log(state);
                                 await this.adapter.setForeignStateAsync(actionId, state, false);
                                 const currentState = await this.adapter.getStateAsync(actionId);
@@ -373,7 +432,7 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                         channel,
                         unit: objects[state.id].common.unit,
                         label: stateName, // objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
-                        getStateHandler: async (deviceId, actionId) => {
+                        getStateHandler: async (_deviceId, actionId) => {
                             console.log(state);
                             const currentState = await this.adapter.getStateAsync(actionId);
                             if (currentState) {
@@ -474,7 +533,7 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
             },
         });
         if (result?.newName === undefined || result?.newName === '') {
-            return { refresh: false };
+            return { refresh: 'none' };
         }
         const obj = {
             common: {
@@ -484,9 +543,9 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
         const res = await this.adapter.extendObjectAsync(id, obj);
         if (res === null) {
             this.adapter.log.warn(`Can not rename device ${id}: ${JSON.stringify(res)}`);
-            return { refresh: false };
+            return { refresh: 'none' };
         }
-        return { refresh: true };
+        return { refresh: 'devices' };
     }
 }
 exports.dmHmRpc = dmHmRpc;

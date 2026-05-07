@@ -158,6 +158,11 @@ To update all available images execute `npm run update-images`
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (bluefox) Updated packages
+* (bluefox) Migrated to TypeScript 6
+* (bluefox) Corrected device manager
+
 ### 3.0.1 (2025-10-22)
 * (bluefox) Renamed role of `STICKY_UNREACH` to `indicator.unreach.sticky` for the better typing detection
 

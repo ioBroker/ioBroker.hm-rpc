@@ -7,6 +7,7 @@ import {
     type ErrorResponse,
     type DeviceInfo,
     type DeviceControl,
+    type DeviceLoadContext,
 } from '@iobroker/dm-utils';
 import type { ControlState, ChannelInfo } from '@iobroker/dm-utils/build/types/base';
 import ChannelDetector, { type DetectOptions, type PatternControl } from '@iobroker/type-detector';
@@ -31,21 +32,24 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
     constructor(adapter: HomematicRpc) {
         super(adapter);
         this.typeDetector = new ChannelDetector();
-        adapter.getForeignObjectAsync('system.config').then(obj => {
-            if (obj && obj.common && obj.common.language) {
-                this.language = obj.common.language;
-            }
-        });
+        void adapter
+            .getForeignObjectAsync('system.config')
+            .then(obj => {
+                if (obj?.common?.language) {
+                    this.language = obj.common.language;
+                }
+            })
+            .catch(e => adapter.log.error(e));
     }
 
-    protected async listDevices(): Promise<DeviceInfo[]> {
+    protected async loadDevices(context: DeviceLoadContext<string>): Promise<void> {
         const devices = await this.adapter.getDevicesAsync();
-        const arrDevices: DeviceInfo[] = [];
-        for (const i in devices) {
-            const connected = await this.adapter.getStateAsync(`${devices[i]._id}.0.UNREACH`);
-            const rssi = await this.adapter.getStateAsync(`${devices[i]._id}.0.RSSI_DEVICE`);
-            const lowBat = await this.adapter.getStateAsync(`${devices[i]._id}.0.LOWBAT`);
-            const sabotage = await this.adapter.getStateAsync(`${devices[i]._id}.0.SABOTAGE`);
+        context.setTotalDevices(devices.length);
+        for (const device of devices) {
+            const connected = await this.adapter.getStateAsync(`${device._id}.0.UNREACH`);
+            const rssi = await this.adapter.getStateAsync(`${device._id}.0.RSSI_DEVICE`);
+            const lowBat = await this.adapter.getStateAsync(`${device._id}.0.LOWBAT`);
+            const sabotage = await this.adapter.getStateAsync(`${device._id}.0.SABOTAGE`);
 
             const status: DeviceStatus = {
                 connection: connected ? (connected.val ? 'disconnected' : 'connected') : 'connected',
@@ -55,16 +59,16 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
             };
 
             let hasDetails = false;
-            if (devices[i].native.AVAILABLE_FIRMWARE || devices[i].native.FIRMWARE) {
+            if (device.native.AVAILABLE_FIRMWARE || device.native.FIRMWARE) {
                 hasDetails = true;
             }
 
-            const res: DeviceInfo = {
-                id: devices[i]._id,
-                name: devices[i].common.name,
-                icon: devices[i].common.icon ? `../../adapter/hm-rpc${devices[i].common.icon}` : undefined,
+            const res: DeviceInfo<string> = {
+                id: device._id,
+                name: device.common.name,
+                icon: device.common.icon ? `../../adapter/hm-rpc${device.common.icon}` : undefined,
                 manufacturer: 'EQ-3 AG',
-                model: devices[i].native.TYPE ? devices[i].native.TYPE : null,
+                model: device.native.TYPE ? device.native.TYPE : null,
                 status: status,
                 hasDetails: hasDetails,
                 actions: [
@@ -87,7 +91,62 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                         handler: this.handleRenameDevice.bind(this),
                     },
                 ],
-                controls: await this.getControls(devices[i]),
+                controls: await this.getControls(device),
+            };
+            context.addDevice(res);
+        }
+    }
+
+    protected async listDevices(): Promise<DeviceInfo<string>[]> {
+        const devices = await this.adapter.getDevicesAsync();
+        const arrDevices: DeviceInfo<string>[] = [];
+        for (const device of devices) {
+            const connected = await this.adapter.getStateAsync(`${device._id}.0.UNREACH`);
+            const rssi = await this.adapter.getStateAsync(`${device._id}.0.RSSI_DEVICE`);
+            const lowBat = await this.adapter.getStateAsync(`${device._id}.0.LOWBAT`);
+            const sabotage = await this.adapter.getStateAsync(`${device._id}.0.SABOTAGE`);
+
+            const status: DeviceStatus = {
+                connection: connected ? (connected.val ? 'disconnected' : 'connected') : 'connected',
+                rssi: rssi ? parseFloat((rssi.val || '0').toString()) : undefined,
+                battery: lowBat?.val ? !lowBat.val : undefined,
+                warning: sabotage?.val ? 'Sabotage' : undefined,
+            };
+
+            let hasDetails = false;
+            if (device.native.AVAILABLE_FIRMWARE || device.native.FIRMWARE) {
+                hasDetails = true;
+            }
+
+            const res: DeviceInfo<string> = {
+                id: device._id,
+                name: device.common.name,
+                icon: device.common.icon ? `../../adapter/hm-rpc${device.common.icon}` : undefined,
+                manufacturer: 'EQ-3 AG',
+                model: device.native.TYPE ? device.native.TYPE : null,
+                status: status,
+                hasDetails: hasDetails,
+                actions: [
+                    {
+                        id: 'rename',
+                        icon: 'fa-solid fa-pen',
+                        description: {
+                            en: 'Rename this device',
+                            de: 'Gerät umbenennen',
+                            ru: 'Переименовать это устройство',
+                            pt: 'Renomear este dispositivo',
+                            nl: 'Hernoem dit apparaat',
+                            fr: 'Renommer cet appareil',
+                            it: 'Rinomina questo dispositivo',
+                            es: 'Renombrar este dispositivo',
+                            pl: 'Zmień nazwę tego urządzenia',
+                            'zh-cn': '重命名此设备',
+                            uk: 'Перейменуйте цей пристрій',
+                        },
+                        handler: this.handleRenameDevice.bind(this),
+                    },
+                ],
+                controls: await this.getControls(device),
             };
 
             arrDevices.push(res);
@@ -96,14 +155,17 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
         return arrDevices;
     }
 
-    private async getControls(device: ioBroker.Object): Promise<DeviceControl[] | undefined> {
+    private async getControls(device: ioBroker.Object): Promise<DeviceControl<string>[] | undefined> {
         // analyse channels
         const channels = await this.adapter.getChannelsOfAsync(device._id);
         // for every channel
-        const controls: DeviceControl[] = [];
+        const controls: DeviceControl<string>[] = [];
+        if (channels.find(a => a._id.includes('hm-rpc.0.EEQ0043360'))) {
+            console.log('aaa');
+        }
         for (let c = 0; c < channels.length; c++) {
             const channel = channels[c];
-            if (!channel || !channel._id || channel._id.endsWith('.0')) {
+            if (!channel?._id || channel._id.endsWith('.0')) {
                 // skip information channel
                 continue;
             }
@@ -126,18 +188,20 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
             };
 
             const tdControls = this.typeDetector.detect(options);
-            if (tdControls) {
-                tdControls.forEach(tdControl => {
+            if (tdControls?.length) {
+                for (const tdControl of tdControls) {
                     for (let i = tdControl.states.length - 1; i >= 0; i--) {
+                        // delete empty states
                         if (!tdControl.states[i].id) {
                             tdControl.states.splice(i, 1);
                         }
                     }
                     const result = this.typedControl2DeviceManager(tdControl, objects);
-                    if (result && result.length) {
+                    if (result?.length) {
                         result.forEach(control => controls.push(control));
+                        break;
                     }
-                });
+                }
             }
         }
 
@@ -164,8 +228,8 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
     private typedControl2DeviceManager(
         tdControl: PatternControl,
         objects: Record<string, ioBroker.Object>,
-    ): DeviceControl[] | undefined {
-        const controls: DeviceControl[] = [];
+    ): DeviceControl<string>[] | undefined {
+        const controls: DeviceControl<string>[] = [];
 
         tdControl.states.forEach(state => {
             const parts = state.id.split('.');
@@ -217,7 +281,7 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                             stateId: state.id,
                             label: stateName, // objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
                             getStateHandler: async (
-                                deviceId: string,
+                                _deviceId: string,
                                 actionId: string,
                             ): Promise<ioBroker.State | ErrorResponse> => {
                                 const currentState = await this.adapter.getForeignStateAsync(actionId);
@@ -232,7 +296,7 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                                 };
                             },
                             handler: async (
-                                deviceId: string,
+                                _deviceId: string,
                                 actionId: string,
                                 state: ControlState,
                             ): Promise<ErrorResponse | ioBroker.State> => {
@@ -252,7 +316,7 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                             },
                         });
                     } else if (objects[state.id].common.type === 'number') {
-                        const control: DeviceControl = {
+                        const control: DeviceControl<string> = {
                             id: state.id,
                             stateId: state.id,
                             description: objects[state.id].common.desc,
@@ -263,7 +327,7 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                             min: objects[state.id].common.min,
                             max: objects[state.id].common.max,
                             getStateHandler: async (
-                                deviceId: string,
+                                _deviceId: string,
                                 actionId: string,
                             ): Promise<ioBroker.State | ErrorResponse> => {
                                 const currentState = await this.adapter.getForeignStateAsync(actionId);
@@ -278,7 +342,7 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                                 };
                             },
                             handler: async (
-                                deviceId: string,
+                                _deviceId: string,
                                 actionId: string,
                                 state: ControlState,
                             ): Promise<ErrorResponse | ioBroker.State> => {
@@ -329,7 +393,7 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                                 channel,
                                 label: stateName, // objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
                                 handler: async (
-                                    deviceId: string,
+                                    _deviceId: string,
                                     actionId: string,
                                     state: ControlState,
                                 ): Promise<ErrorResponse | ioBroker.State> => {
@@ -356,7 +420,7 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                                 stateId: state.id,
                                 label: stateName, // objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
                                 getStateHandler: async (
-                                    deviceId: string,
+                                    _deviceId: string,
                                     actionId: string,
                                 ): Promise<ioBroker.State | ErrorResponse> => {
                                     const currentState = await this.adapter.getForeignStateAsync(actionId);
@@ -371,7 +435,7 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                                     };
                                 },
                                 handler: async (
-                                    deviceId: string,
+                                    _deviceId: string,
                                     actionId: string,
                                     state: ControlState,
                                 ): Promise<ErrorResponse | ioBroker.State> => {
@@ -401,7 +465,7 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                             channel,
                             label: stateName, // objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
                             getStateHandler: async (
-                                deviceId: string,
+                                _deviceId: string,
                                 actionId: string,
                             ): Promise<ioBroker.State | ErrorResponse> => {
                                 const currentState = await this.adapter.getForeignStateAsync(actionId);
@@ -416,7 +480,7 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                                 };
                             },
                             handler: async (
-                                deviceId: string,
+                                _deviceId: string,
                                 actionId: string,
                                 state: ControlState,
                             ): Promise<ErrorResponse | ioBroker.State> => {
@@ -448,7 +512,7 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                         unit: objects[state.id].common.unit,
                         label: stateName, // objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
                         getStateHandler: async (
-                            deviceId: string,
+                            _deviceId: string,
                             actionId: string,
                         ): Promise<ErrorResponse | ioBroker.State> => {
                             console.log(state);
@@ -484,13 +548,13 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
         return controls;
     }
 
-    protected async getDeviceDetails(id: string): Promise<DeviceDetails | null | { error: string }> {
+    protected async getDeviceDetails(id: string): Promise<DeviceDetails<string> | null | { error: string }> {
         const devices = await this.adapter.getDevicesAsync();
         const device = devices.find(d => d._id === id);
         if (!device) {
             return { error: 'Device not found' };
         }
-        const data: DeviceDetails = {
+        const data: DeviceDetails<string> = {
             id: device._id,
             schema: {
                 type: 'panel',
@@ -561,7 +625,7 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
             },
         );
         if (result?.newName === undefined || result?.newName === '') {
-            return { refresh: false };
+            return { refresh: 'none' };
         }
         const obj = {
             common: {
@@ -571,9 +635,9 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
         const res = await this.adapter.extendObjectAsync(id, obj);
         if (res === null) {
             this.adapter.log.warn(`Can not rename device ${id}: ${JSON.stringify(res)}`);
-            return { refresh: false };
+            return { refresh: 'none' };
         }
 
-        return { refresh: true };
+        return { refresh: 'devices' };
     }
 }
