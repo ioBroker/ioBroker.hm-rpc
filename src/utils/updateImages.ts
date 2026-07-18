@@ -16,6 +16,7 @@
 import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
+import { maskifyAll } from './iconMask';
 
 const OCCU_RAW = 'https://raw.githubusercontent.com/eq-3/occu/master';
 const DEVDB_URL = `${OCCU_RAW}/WebUI/www/config/devdescr/DEVDB.tcl`;
@@ -140,7 +141,9 @@ async function main(): Promise<void> {
     }
     Object.assign(map, MANUAL);
 
-    // Download only missing icon files (keep existing so processed icons stay).
+    // Download missing icon files, then convert the whole set to theme-adaptive
+    // masks so every icon renders on any admin theme (idempotent — icons that are
+    // already masks are left untouched).
     await fs.promises.mkdir(ICON_DIR, { recursive: true });
     const existing = new Set(await fs.promises.readdir(ICON_DIR));
     const wanted = new Map<string, string>(); // file -> srcPath
@@ -158,13 +161,15 @@ async function main(): Promise<void> {
             const res = await axios.get<ArrayBuffer>(`${WWW_BASE}${srcPath}`, { responseType: 'arraybuffer' });
             await fs.promises.writeFile(path.join(ICON_DIR, file), Buffer.from(res.data));
             existing.add(file);
-            console.log(`  + ${file}`);
             added++;
         } catch (e: unknown) {
             console.warn(`  ! could not download ${file}: ${(e as Error).message}`);
         }
     }
     console.log(`Downloaded ${added} new icon file(s).`);
+
+    // Convert the icons to theme-adaptive masks (see iconMask.ts).
+    await maskifyAll();
 
     // Sanity: every mapped file must exist on disk, otherwise the icon is broken.
     const missingFiles = [...new Set(Object.values(map))].filter(f => !existing.has(f));

@@ -21,6 +21,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const axios_1 = __importDefault(require("axios"));
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
+const iconMask_1 = require("./iconMask");
 const OCCU_RAW = 'https://raw.githubusercontent.com/eq-3/occu/master';
 const DEVDB_URL = `${OCCU_RAW}/WebUI/www/config/devdescr/DEVDB.tcl`;
 const WWW_BASE = `${OCCU_RAW}/WebUI/www`; // DEV_PATHS stores paths relative to WebUI/www
@@ -135,7 +136,9 @@ async function main() {
         map[type] = icon.file;
     }
     Object.assign(map, MANUAL);
-    // Download only missing icon files (keep existing so processed icons stay).
+    // Download missing icon files, then convert the whole set to theme-adaptive
+    // masks so every icon renders on any admin theme (idempotent — icons that are
+    // already masks are left untouched).
     await fs_1.default.promises.mkdir(ICON_DIR, { recursive: true });
     const existing = new Set(await fs_1.default.promises.readdir(ICON_DIR));
     const wanted = new Map(); // file -> srcPath
@@ -153,7 +156,6 @@ async function main() {
             const res = await axios_1.default.get(`${WWW_BASE}${srcPath}`, { responseType: 'arraybuffer' });
             await fs_1.default.promises.writeFile(path_1.default.join(ICON_DIR, file), Buffer.from(res.data));
             existing.add(file);
-            console.log(`  + ${file}`);
             added++;
         }
         catch (e) {
@@ -161,6 +163,8 @@ async function main() {
         }
     }
     console.log(`Downloaded ${added} new icon file(s).`);
+    // Convert the icons to theme-adaptive masks (see iconMask.ts).
+    await (0, iconMask_1.maskifyAll)();
     // Sanity: every mapped file must exist on disk, otherwise the icon is broken.
     const missingFiles = [...new Set(Object.values(map))].filter(f => !existing.has(f));
     if (missingFiles.length) {
