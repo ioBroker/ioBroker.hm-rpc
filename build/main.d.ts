@@ -12,11 +12,28 @@ export declare class HomematicRpc extends Adapter {
     private homematicPath;
     private readonly COMMON_TYPE_MAPPING;
     private deviceManagement;
+    /** admin/icons sits next to build/ in the installed package */
+    private readonly iconDir;
+    /** icon file -> `common.icon` value, so each SVG is read from disk only once */
+    private readonly iconCache;
     private readonly methods;
     constructor(options?: Partial<AdapterOptions>);
     /**
      * Is called when databases are connected and adapter received configuration.
      */
+    /**
+     * Build the `common.icon` value for a device type: the icon SVG inlined as a
+     * data URI, or '' when the type has no icon.
+     *
+     * The admin renders a `data:image/svg` icon through react-inlinesvg, so the
+     * markup lands in the DOM and the SVG's `fill="currentColor"` follows the
+     * active theme. A file path would be rendered in an `<img>` instead, where the
+     * theme colour cannot reach it — which is why the icon is inlined and not
+     * linked. See src/utils/svgify.ts.
+     *
+     * @param type - the device TYPE reported by the CCU
+     */
+    private getIcon;
     /**
      * Re-apply the device icon to already-created device objects. A device object
      * is only written when the device is first added, so devices that were created

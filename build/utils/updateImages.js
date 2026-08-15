@@ -22,6 +22,7 @@ const axios_1 = __importDefault(require("axios"));
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const iconMask_1 = require("./iconMask");
+const svgify_1 = require("./svgify");
 const OCCU_RAW = 'https://raw.githubusercontent.com/eq-3/occu/master';
 const DEVDB_URL = `${OCCU_RAW}/WebUI/www/config/devdescr/DEVDB.tcl`;
 const WWW_BASE = `${OCCU_RAW}/WebUI/www`; // DEV_PATHS stores paths relative to WebUI/www
@@ -163,10 +164,17 @@ async function main() {
         }
     }
     console.log(`Downloaded ${added} new icon file(s).`);
-    // Convert the icons to theme-adaptive masks (see iconMask.ts).
+    // Convert the icons to theme-adaptive masks (see iconMask.ts), then vectorise
+    // them (see svgify.ts). The map points at the SVGs — those are what the
+    // adapter ships to the admin; the PNGs are only the tracing source.
     await (0, iconMask_1.maskifyAll)();
+    await (0, svgify_1.svgifyAll)();
+    for (const type of Object.keys(map)) {
+        map[type] = map[type].replace(/\.png$/i, '.svg');
+    }
     // Sanity: every mapped file must exist on disk, otherwise the icon is broken.
-    const missingFiles = [...new Set(Object.values(map))].filter(f => !existing.has(f));
+    const onDisk = new Set(await fs_1.default.promises.readdir(ICON_DIR));
+    const missingFiles = [...new Set(Object.values(map))].filter(f => !onDisk.has(f));
     if (missingFiles.length) {
         console.warn(`⚠ ${missingFiles.length} mapped icon file(s) missing on disk: ${missingFiles.join(', ')}`);
     }

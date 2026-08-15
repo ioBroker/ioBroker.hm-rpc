@@ -39,6 +39,8 @@ const images_1 = require("./lib/images");
 const tools = __importStar(require("./lib/tools"));
 const roles_1 = require("./lib/roles");
 const crypto_1 = require("crypto");
+const fs_1 = require("fs");
+const path_1 = require("path");
 const deviceManager_1 = require("./lib/deviceManager");
 let connected = false;
 const displays = {};
@@ -82,6 +84,10 @@ class HomematicRpc extends adapter_core_1.Adapter {
             EPAPER_TONE_INTERVAL: 'number',
             EPAPER_TONE_REPETITIONS: 'number',
         };
+        /** admin/icons sits next to build/ in the installed package */
+        this.iconDir = (0, path_1.join)(__dirname, '..', 'admin', 'icons');
+        /** icon file -> `common.icon` value, so each SVG is read from disk only once */
+        this.iconCache = new Map();
         this.methods = {
             event: (err, params) => {
                 if (err) {
@@ -133,6 +139,37 @@ class HomematicRpc extends adapter_core_1.Adapter {
      * Is called when databases are connected and adapter received configuration.
      */
     /**
+     * Build the `common.icon` value for a device type: the icon SVG inlined as a
+     * data URI, or '' when the type has no icon.
+     *
+     * The admin renders a `data:image/svg` icon through react-inlinesvg, so the
+     * markup lands in the DOM and the SVG's `fill="currentColor"` follows the
+     * active theme. A file path would be rendered in an `<img>` instead, where the
+     * theme colour cannot reach it — which is why the icon is inlined and not
+     * linked. See src/utils/svgify.ts.
+     *
+     * @param type - the device TYPE reported by the CCU
+     */
+    getIcon(type) {
+        const file = images_1.images[type];
+        if (!file) {
+            return '';
+        }
+        let icon = this.iconCache.get(file);
+        if (icon === undefined) {
+            try {
+                const svg = (0, fs_1.readFileSync)((0, path_1.join)(this.iconDir, file), 'utf8');
+                icon = `data:image/svg+xml;base64,${Buffer.from(svg).toString('base64')}`;
+            }
+            catch (e) {
+                this.log.warn(`Could not read icon "${file}": ${e.message}`);
+                icon = '';
+            }
+            this.iconCache.set(file, icon);
+        }
+        return icon;
+    }
+    /**
      * Re-apply the device icon to already-created device objects. A device object
      * is only written when the device is first added, so devices that were created
      * before their type had an icon mapping keep an empty icon even after the map
@@ -148,8 +185,8 @@ class HomematicRpc extends adapter_core_1.Adapter {
                 if (!type || !images_1.images[type]) {
                     continue;
                 }
-                const icon = `/icons/${images_1.images[type]}`;
-                if (obj.common?.icon === icon) {
+                const icon = this.getIcon(type);
+                if (!icon || obj.common?.icon === icon) {
                     continue;
                 }
                 await this.extendObjectAsync(id, { common: { icon } });
@@ -1493,7 +1530,7 @@ class HomematicRpc extends adapter_core_1.Adapter {
                 if (!images_1.images[device.TYPE]) {
                     this.log.warn(`No image for "${device.TYPE}" found.`);
                 }
-                icon = images_1.images[device.TYPE] ? `/icons/${images_1.images[device.TYPE]}` : '';
+                icon = this.getIcon(device.TYPE);
             }
             const id = device.ADDRESS.replace(':', '.').replace(tools.FORBIDDEN_CHARS, '_');
             const obj = {
