@@ -1,6 +1,6 @@
 // Root tsconfig to set the settings and power editor support for all TS files
 {
-    "extends": "@tsconfig/node20/tsconfig.json",
+    "extends": "@tsconfig/node22/tsconfig.json",
     "compileOnSave": true,
     "compilerOptions": {
         // do not compile anything; this file is just to configure type checking
@@ -16,7 +16,8 @@
         "outDir": "./build/",
         "rootDir": "src",
         "removeComments": false,
-        "module": "commonjs",
+        // module/moduleResolution come from @tsconfig/node22 (nodenext + node16).
+        // package.json has no "type": "module", so this still emits CommonJS.
         "esModuleInterop": true,
         // this is necessary for the automatic typing of the adapter config
         "resolveJsonModule": true,

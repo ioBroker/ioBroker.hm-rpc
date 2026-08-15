@@ -219,12 +219,12 @@ class HomematicRpc extends adapter_core_1.Adapter {
         await this.migrateDeviceIcons();
         if (this.config.type === 'bin') {
             // @ts-expect-error no types
-            rpc = await Promise.resolve().then(() => __importStar(require('binrpc')));
+            rpc = await import('binrpc');
             this.daemonProto = 'xmlrpc_bin://';
         }
         else {
             // @ts-expect-error no types
-            rpc = await Promise.resolve().then(() => __importStar(require('homematic-xmlrpc')));
+            rpc = await import('homematic-xmlrpc');
             this.config.type = 'xml';
             this.daemonProto = 'http://';
         }
