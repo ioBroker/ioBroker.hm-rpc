@@ -14,8 +14,21 @@
       "uk": "Підключає HomeMatic інтерфейси (BidCos-сервіси, Homegear і CUxD) через XML-RPC або BIN-RPC до ioBroker",
       "zh-cn": "通过 XML-RPC 或 BIN-RPC 将 HomeMatic 接口进程（BidCos-Services、Homegear 和 CUxD）连接到 ioBroker"
     },
-    "version": "3.0.2",
+    "version": "4.0.0",
     "news": {
+      "4.0.0": {
+        "en": "Device icons are now delivered as theme-adaptive SVGs and stay visible on the dark admin theme\nGenerated the device icon set and the device type map from the OCCU device database\nThe device icon is re-applied on start to devices that were created before their type had an icon\nRemoved support of Node.js 20",
+        "de": "Gerätesymbole werden nun als themenadaptive SVGs bereitgestellt und bleiben auch im dunklen Admin-Design sichtbar.\nGenerierte das Gerätesymbolset und die Gerätetypzuordnung aus der OCCU-Gerätedatenbank\nDas Gerätesymbol wird beim Start auf Geräte, die vor der Einführung eines Symbols für ihren jeweiligen Gerätetyp erstellt wurden, erneut angewendet.\nDie Unterstützung für Node.js 20 wurde entfernt.",
+        "ru": "Теперь значки устройств отображаются в виде адаптивных к теме SVG-изображений и остаются видимыми в темной теме административной панели.\nСозданы набор значков устройств и карта типов устройств на основе базы данных устройств OCCU.\nЗначок устройства повторно применяется при запуске к устройствам, созданным до того, как для их типа появился значок.\nУдалена поддержка Node.js 20.",
+        "pt": "Os ícones dos dispositivos agora são fornecidos como SVGs adaptáveis ao tema e permanecem visíveis no tema escuro do painel de administração.\nGerou o conjunto de ícones de dispositivos e o mapa de tipos de dispositivos a partir do banco de dados de dispositivos OCCU.\nO ícone do dispositivo é reaplicado na inicialização para dispositivos que foram criados antes de seu tipo ter um ícone.\nSuporte para Node.js 20 removido.",
+        "nl": "Apparaatpictogrammen worden nu geleverd als thema-adaptieve SVG's en blijven zichtbaar in het donkere beheerdersthema.\nDe set apparaatpictogrammen en de apparaattypekaart zijn gegenereerd op basis van de OCCU-apparaatdatabase.\nHet apparaatpictogram wordt bij het opstarten opnieuw toegepast op apparaten die zijn aangemaakt voordat hun type een pictogram had.\nOndersteuning voor Node.js 20 is verwijderd.",
+        "fr": "Les icônes des appareils sont désormais fournies sous forme de fichiers SVG adaptatifs au thème et restent visibles sur le thème sombre de l'administration.\nGénération du jeu d'icônes et de la table de correspondance des types de périphériques à partir de la base de données de périphériques OCCU\nL'icône de l'appareil est réappliquée au démarrage aux appareils créés avant que leur type ne possède une icône.\nSuppression de la prise en charge de Node.js 20",
+        "it": "Le icone dei dispositivi vengono ora fornite come SVG adattivi al tema e rimangono visibili anche con il tema scuro dell'area amministrativa.\nGenerato il set di icone del dispositivo e la mappa dei tipi di dispositivo dal database dei dispositivi OCCU.\nL'icona del dispositivo viene riapplicata all'avvio ai dispositivi creati prima che al loro tipo fosse assegnata un'icona.\nSupporto per Node.js 20 rimosso.",
+        "es": "Los iconos de los dispositivos ahora se entregan como archivos SVG que se adaptan al tema y permanecen visibles en el tema de administración oscuro.\nSe generó el conjunto de iconos del dispositivo y el mapa de tipos de dispositivo a partir de la base de datos de dispositivos de OCCU.\nEl icono del dispositivo se vuelve a aplicar al iniciar los dispositivos que se crearon antes de que su tipo tuviera un icono.\nSe eliminó la compatibilidad con Node.js 20.",
+        "pl": "Ikony urządzeń są teraz dostarczane jako pliki SVG dostosowane do motywu i pozostają widoczne w ciemnym motywie administratora\nWygenerowano zestaw ikon urządzeń i mapę typów urządzeń z bazy danych urządzeń OCCU\nIkona urządzenia jest ponownie stosowana po uruchomieniu urządzeń, które zostały utworzone przed pojawieniem się ikony dla ich typu\nUsunięto obsługę Node.js 20",
+        "uk": "Значки пристроїв тепер відображаються як адаптивні до теми SVG-файли та залишаються видимими в темній темі адміністратора.\nЗгенеровано набір піктограм пристроїв та карту типів пристроїв з бази даних пристроїв OCCU\nПіктограма пристрою повторно застосовується під час запуску до пристроїв, створених до того, як їхній тип мав піктограму.\nВилучено підтримку Node.js 20",
+        "zh-cn": "设备图标现在以主题自适应 SVG 格式提供，即使在深色管理主题下也清晰可见。\n从OCCU设备数据库生成设备图标集和设备类型映射。\n设备图标会在启动时重新应用于那些在其类型没有图标之前创建的设备。\n已移除对 Node.js 20 的支持"
+      },
       "3.0.2": {
         "en": "Updated packages\nMigrated to TypeScript 6\nCorrected device manager",
         "de": "Aktualisierte Pakete\nAusgewählt in TypeScript 6\nKorrigierter Gerätemanager",
@@ -93,19 +106,6 @@
         "pl": "Zaszyfrowana konfiguracja",
         "uk": "Фіксована зашифрована конфігурація",
         "zh-cn": "固定加密配置"
-      },
-      "1.16.1": {
-        "en": "Improved the configuration layout",
-        "de": "Verbessert das Konfigurationslayout",
-        "ru": "Улучшен макет конфигурации",
-        "pt": "Melhorou o layout de configuração",
-        "nl": "De configuratie-indeling verbeterd",
-        "fr": "Amélioration de la configuration",
-        "it": "Migliorato il layout di configurazione",
-        "es": "Mejora de la configuración",
-        "pl": "Ulepszenie układu konfiguracji",
-        "uk": "Покращення макета конфігурації",
-        "zh-cn": "改进配置布局"
       }
     },
     "authors": [

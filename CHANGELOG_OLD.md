@@ -1,4 +1,8 @@
 # Older changes
+## 2.0.0 (2024-07-18)
+* (bluefox) Updated packages
+* (bluefox) Removed support of Node.js 16
+
 ## 1.17.0 (2024-03-18)
 * (klein0r) Fixed encrypted configuration
 

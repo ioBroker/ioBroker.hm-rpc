@@ -158,7 +158,7 @@ To update all available images execute `npm run update-images`
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 4.0.0 (2026-08-15)
 * (bluefox) Device icons are now delivered as theme-adaptive SVGs and stay visible on the dark admin theme
 * (krobipd) Generated the device icon set and the device type map from the OCCU device database
 * (krobipd) The device icon is re-applied on start to devices that were created before their type had an icon
@@ -179,10 +179,6 @@ To update all available images execute `npm run update-images`
 
 ### 2.0.2 (2024-08-26)
 * (bluefox) Updated packages
-
-### 2.0.0 (2024-07-18)
-* (bluefox) Updated packages
-* (bluefox) Removed support of Node.js 16
 
 ### Older entries
 [here](OLD_CHANGELOG.md)
