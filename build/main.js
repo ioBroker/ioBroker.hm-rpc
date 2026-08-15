@@ -132,6 +132,38 @@ class HomematicRpc extends adapter_core_1.Adapter {
     /**
      * Is called when databases are connected and adapter received configuration.
      */
+    /**
+     * Re-apply the device icon to already-created device objects. A device object
+     * is only written when the device is first added, so devices that were created
+     * before their type had an icon mapping keep an empty icon even after the map
+     * is updated. This idempotent pass sets the icon from the current map on
+     * existing devices; it only writes when the icon actually differs.
+     */
+    async migrateDeviceIcons() {
+        let updated = 0;
+        try {
+            const objects = await this.getForeignObjectsAsync(`${this.namespace}.*`, 'device');
+            for (const [id, obj] of Object.entries(objects)) {
+                const type = obj?.native?.TYPE;
+                if (!type || !images_1.images[type]) {
+                    continue;
+                }
+                const icon = `/icons/${images_1.images[type]}`;
+                if (obj.common?.icon === icon) {
+                    continue;
+                }
+                await this.extendObjectAsync(id, { common: { icon } });
+                updated++;
+            }
+        }
+        catch (e) {
+            this.log.warn(`Could not update existing device icons: ${e.message}`);
+            return;
+        }
+        if (updated) {
+            this.log.info(`Updated the icon of ${updated} existing device(s).`);
+        }
+    }
     async onReady() {
         this.deviceManagement = new deviceManager_1.dmHmRpc(this);
         this.subscribeStates('*');
@@ -147,6 +179,7 @@ class HomematicRpc extends adapter_core_1.Adapter {
             this.config.checkInitInterval = 10;
         }
         await this.setState('info.connection', false, true);
+        await this.migrateDeviceIcons();
         if (this.config.type === 'bin') {
             // @ts-expect-error no types
             rpc = await Promise.resolve().then(() => __importStar(require('binrpc')));
