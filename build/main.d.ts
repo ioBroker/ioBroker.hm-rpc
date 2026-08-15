@@ -17,6 +17,14 @@ export declare class HomematicRpc extends Adapter {
     /**
      * Is called when databases are connected and adapter received configuration.
      */
+    /**
+     * Re-apply the device icon to already-created device objects. A device object
+     * is only written when the device is first added, so devices that were created
+     * before their type had an icon mapping keep an empty icon even after the map
+     * is updated. This idempotent pass sets the icon from the current map on
+     * existing devices; it only writes when the icon actually differs.
+     */
+    private migrateDeviceIcons;
     private onReady;
     /**
      * Is called when adapter shuts down - callback has to be called under any circumstances!

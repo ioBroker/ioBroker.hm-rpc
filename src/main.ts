@@ -130,6 +130,38 @@ export class HomematicRpc extends Adapter {
     /**
      * Is called when databases are connected and adapter received configuration.
      */
+    /**
+     * Re-apply the device icon to already-created device objects. A device object
+     * is only written when the device is first added, so devices that were created
+     * before their type had an icon mapping keep an empty icon even after the map
+     * is updated. This idempotent pass sets the icon from the current map on
+     * existing devices; it only writes when the icon actually differs.
+     */
+    private async migrateDeviceIcons(): Promise<void> {
+        let updated = 0;
+        try {
+            const objects = await this.getForeignObjectsAsync(`${this.namespace}.*`, 'device');
+            for (const [id, obj] of Object.entries(objects)) {
+                const type = (obj?.native as { TYPE?: string } | undefined)?.TYPE;
+                if (!type || !images[type]) {
+                    continue;
+                }
+                const icon = `/icons/${images[type]}`;
+                if (obj.common?.icon === icon) {
+                    continue;
+                }
+                await this.extendObjectAsync(id, { common: { icon } });
+                updated++;
+            }
+        } catch (e: unknown) {
+            this.log.warn(`Could not update existing device icons: ${(e as Error).message}`);
+            return;
+        }
+        if (updated) {
+            this.log.info(`Updated the icon of ${updated} existing device(s).`);
+        }
+    }
+
     private async onReady(): Promise<void> {
         this.deviceManagement = new dmHmRpc(this);
 
@@ -150,6 +182,8 @@ export class HomematicRpc extends Adapter {
         }
 
         await this.setState('info.connection', false, true);
+
+        await this.migrateDeviceIcons();
 
         if (this.config.type === 'bin') {
             // @ts-expect-error no types
