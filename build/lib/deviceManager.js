@@ -16,6 +16,22 @@ function getText(text, lang) {
     return '';
 }
 class dmHmRpc extends dm_utils_1.DeviceManagement {
+    /**
+     * The `icon` a device is listed with. `common.icon` is an inline
+     * `data:image/svg+xml` URI (see `HomematicRpc.getIcon`), which the GUI hands
+     * to `<Icon src>` unchanged, so the SVG's `currentColor` follows the theme.
+     * Devices created before that change still carry an `/icons/…` path relative
+     * to the adapter directory; keep resolving those until `migrateDeviceIcons`
+     * has rewritten them.
+     *
+     * @param icon the device object's `common.icon`
+     */
+    static deviceIcon(icon) {
+        if (!icon) {
+            return undefined;
+        }
+        return icon.startsWith('data:') ? icon : `../../adapter/hm-rpc${icon}`;
+    }
     constructor(adapter) {
         super(adapter);
         this.language = 'en';
@@ -50,7 +66,7 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
             const res = {
                 id: device._id,
                 name: device.common.name,
-                icon: device.common.icon ? `../../adapter/hm-rpc${device.common.icon}` : undefined,
+                icon: dmHmRpc.deviceIcon(device.common.icon),
                 manufacturer: 'EQ-3 AG',
                 model: device.native.TYPE ? device.native.TYPE : null,
                 status: status,
@@ -101,7 +117,7 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
             const res = {
                 id: device._id,
                 name: device.common.name,
-                icon: device.common.icon ? `../../adapter/hm-rpc${device.common.icon}` : undefined,
+                icon: dmHmRpc.deviceIcon(device.common.icon),
                 manufacturer: 'EQ-3 AG',
                 model: device.native.TYPE ? device.native.TYPE : null,
                 status: status,

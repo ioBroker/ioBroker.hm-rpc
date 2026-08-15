@@ -29,20 +29,35 @@ const IMAGES_TS = 'src/lib/images.ts';
  * Device types whose icon is intentionally NOT the current OCCU default:
  * adapter-specific additions (no OCCU entry) or curated choices. Kept verbatim
  * so regenerating never changes an existing device's icon. The commented OCCU
- * value shows what would be used otherwise — drop an entry here to adopt it.
+ * value shows the source image that would be used otherwise — drop an entry here
+ * to adopt it.
+ *
+ * These are the shipped `.svg` names, like every other value in the map. The
+ * comments name the OCCU `.png`, because that is what would be downloaded.
  */
 const MANUAL: Record<string, string> = {
-    'HmIP-PSM2': '113_hmip-psm_thumb.png', // no OCCU entry
-    'HmIP-DLD': 'HmIP-DLD.png', // OCCU: 214_hmip-dld_thumb.png
-    'HmIP-KRCK': 'HmIP-KRCK.png', // OCCU: 84_hm-rc-4-x_thumb.png
-    'HmIP-RCV-50': 'CCU3_thumb.png', // OCCU: CCU3-1-50_thumb.png
-    'HmIP-SFD': '212_hmip-sfd-1.png', // OCCU: 212_hmip-sfd_thumb.png
-    'HmIP-STE2-PCB': 'HmIP-STE2-PCB.png', // OCCU: 210_hmip-ste2-pcb_thumb.png
-    'HmIP-eTRV-E': 'HmIP-eTRV-E.png', // OCCU: 216_hmip-etrv-e_thumb.png
-    'HmIP-eTRV-E-S': 'HmIP-eTRV-E.png', // OCCU: 216_hmip-etrv-e_thumb.png
-    'HmIPW-FALMOT-C12': 'HmIPW-FALMOT-C12.png', // OCCU: 198_hmip-falmot-c12_thumb.png
-    'RPI-RF-MOD': 'RPI-RF-MOD.png', // OCCU: CCU3_thumb.png
+    'HmIP-PSM2': '113_hmip-psm_thumb.svg', // no OCCU entry
+    'HmIP-DLD': 'HmIP-DLD.svg', // OCCU: 214_hmip-dld_thumb.png
+    'HmIP-KRCK': 'HmIP-KRCK.svg', // OCCU: 84_hm-rc-4-x_thumb.png
+    'HmIP-RCV-50': 'CCU3_thumb.svg', // OCCU: CCU3-1-50_thumb.png
+    'HmIP-SFD': '212_hmip-sfd-1.svg', // OCCU: 212_hmip-sfd_thumb.png
+    'HmIP-STE2-PCB': 'HmIP-STE2-PCB.svg', // OCCU: 210_hmip-ste2-pcb_thumb.png
+    'HmIP-eTRV-E': 'HmIP-eTRV-E.svg', // OCCU: 216_hmip-etrv-e_thumb.png
+    'HmIP-eTRV-E-S': 'HmIP-eTRV-E.svg', // OCCU: 216_hmip-etrv-e_thumb.png
+    'HmIPW-FALMOT-C12': 'HmIPW-FALMOT-C12.svg', // OCCU: 198_hmip-falmot-c12_thumb.png
+    'RPI-RF-MOD': 'RPI-RF-MOD.svg', // OCCU: CCU3_thumb.png
 };
+
+/**
+ * The icon that ships for an OCCU image: `admin/icons` holds one theme-adaptive
+ * SVG per downloaded PNG (see svgify.ts), and that SVG is what the adapter puts
+ * into `common.icon`. The PNG stays on disk as the source it was built from.
+ *
+ * @param pngFile the OCCU image file name
+ */
+function shippedIcon(pngFile: string): string {
+    return pngFile.replace(/\.png$/i, '.svg');
+}
 
 /** Minimal TCL list tokenizer: top-level words and {brace groups} (nesting-aware). */
 function tclTokens(s: string): string[] {
@@ -135,10 +150,10 @@ async function main(): Promise<void> {
     const occu = parseDevPaths(tcl);
     console.log(`DEV_PATHS maps ${Object.keys(occu).length} device types.`);
 
-    // Final map: OCCU base, MANUAL overrides win.
+    // Final map: OCCU base, MANUAL overrides win. Values are the shipped SVGs.
     const map: Record<string, string> = {};
     for (const [type, icon] of Object.entries(occu)) {
-        map[type] = icon.file;
+        map[type] = shippedIcon(icon.file);
     }
     Object.assign(map, MANUAL);
 
@@ -169,14 +184,10 @@ async function main(): Promise<void> {
     }
     console.log(`Downloaded ${added} new icon file(s).`);
 
-    // Convert the icons to theme-adaptive masks (see iconMask.ts), then vectorise
-    // them (see svgify.ts). The map points at the SVGs — those are what the
-    // adapter ships to the admin; the PNGs are only the tracing source.
+    // Normalise the downloaded images into masks (see iconMask.ts) and wrap each
+    // one into the theme-adaptive SVG the adapter actually ships (see svgify.ts).
     await maskifyAll();
     await svgifyAll();
-    for (const type of Object.keys(map)) {
-        map[type] = map[type].replace(/\.png$/i, '.svg');
-    }
 
     // Sanity: every mapped file must exist on disk, otherwise the icon is broken.
     const onDisk = new Set(await fs.promises.readdir(ICON_DIR));

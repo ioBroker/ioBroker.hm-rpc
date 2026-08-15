@@ -29,6 +29,23 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
     private typeDetector: ChannelDetector;
     private language: ioBroker.Languages = 'en';
 
+    /**
+     * The `icon` a device is listed with. `common.icon` is an inline
+     * `data:image/svg+xml` URI (see `HomematicRpc.getIcon`), which the GUI hands
+     * to `<Icon src>` unchanged, so the SVG's `currentColor` follows the theme.
+     * Devices created before that change still carry an `/icons/…` path relative
+     * to the adapter directory; keep resolving those until `migrateDeviceIcons`
+     * has rewritten them.
+     *
+     * @param icon the device object's `common.icon`
+     */
+    private static deviceIcon(icon: string | undefined): string | undefined {
+        if (!icon) {
+            return undefined;
+        }
+        return icon.startsWith('data:') ? icon : `../../adapter/hm-rpc${icon}`;
+    }
+
     constructor(adapter: HomematicRpc) {
         super(adapter);
         this.typeDetector = new ChannelDetector();
@@ -66,7 +83,7 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
             const res: DeviceInfo<string> = {
                 id: device._id,
                 name: device.common.name,
-                icon: device.common.icon ? `../../adapter/hm-rpc${device.common.icon}` : undefined,
+                icon: dmHmRpc.deviceIcon(device.common.icon),
                 manufacturer: 'EQ-3 AG',
                 model: device.native.TYPE ? device.native.TYPE : null,
                 status: status,
@@ -121,7 +138,7 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
             const res: DeviceInfo<string> = {
                 id: device._id,
                 name: device.common.name,
-                icon: device.common.icon ? `../../adapter/hm-rpc${device.common.icon}` : undefined,
+                icon: dmHmRpc.deviceIcon(device.common.icon),
                 manufacturer: 'EQ-3 AG',
                 model: device.native.TYPE ? device.native.TYPE : null,
                 status: status,
