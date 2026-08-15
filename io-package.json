@@ -1,7 +1,6 @@
 {
   "common": {
     "name": "hm-rpc",
-    "title": "HomeMatic RPC",
     "desc": {
       "en": "Connects HomeMatic Interface-Processes (BidCos-Services, Homegear and CUxD) via XML-RPC or BIN-RPC to ioBroker",
       "de": "Verbindet HomeMatic Interface-Prozesse (BidCos-Services, Homegear und CUxD) via XML-RPC oder BIN-RPC mit ioBroker",
