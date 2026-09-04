@@ -45,7 +45,7 @@
     "@iobroker/dm-utils": "^3.0.19",
     "@iobroker/type-detector": "^5.0.13",
     "binrpc": "^3.3.1",
-    "homematic-xmlrpc": "^1.0.2"
+    "homematic-xmlrpc": "^2.0.0"
   },
   "devDependencies": {
     "@alcalzone/release-script": "^5.2.0",
