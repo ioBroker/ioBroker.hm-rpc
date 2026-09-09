@@ -44,7 +44,7 @@
     "@iobroker/adapter-core": "^3.3.2",
     "@iobroker/dm-utils": "^3.0.19",
     "@iobroker/type-detector": "^5.0.13",
-    "binrpc": "^3.3.1",
+    "binrpc": "^4.2.0",
     "homematic-xmlrpc": "^1.0.2"
   },
   "devDependencies": {
