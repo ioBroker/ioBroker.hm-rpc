@@ -1,8 +1,5 @@
 {
   "common": {
-    "docs": {
-      "en": "README.md"
-    },
     "name": "hm-rpc",
     "desc": {
       "en": "Connects HomeMatic Interface-Processes (BidCos-Services, Homegear and CUxD) via XML-RPC or BIN-RPC to ioBroker",
