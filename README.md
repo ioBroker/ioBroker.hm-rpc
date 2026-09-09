@@ -1,110 +1,242 @@
 ![Logo](admin/homematic.png)
+
 # ioBroker HomeMatic RPC Adapter
 
 ![Build Status](https://github.com/ioBroker/ioBroker.hm-rpc/workflows/Test%20and%20Release/badge.svg)
-![Number of Installations](http://iobroker.live/badges/hm-rpc-installed.svg) 
-![Number of Installations](http://iobroker.live/badges/hm-rpc-stable.svg) 
+![Number of Installations](http://iobroker.live/badges/hm-rpc-installed.svg)
+![Number of Installations](http://iobroker.live/badges/hm-rpc-stable.svg)
 [![NPM version](http://img.shields.io/npm/v/iobroker.hm-rpc.svg)](https://www.npmjs.com/package/iobroker.hm-rpc)
 [![Downloads](https://img.shields.io/npm/dm/iobroker.hm-rpc.svg)](https://www.npmjs.com/package/iobroker.hm-rpc)
 
 [![NPM](https://nodei.co/npm/iobroker.hm-rpc.png?downloads=true)](https://nodei.co/npm/iobroker.hm-rpc/)
 
-Connects HomeMatic Interface-Processes (BidCos-Services, Homegear and CUxD) via XML-RPC or BIN-RPC to ioBroker
+This adapter connects HomeMatic interface processes (BidCos services, Homegear and CUxD) to ioBroker.
+The communication uses XML-RPC or BIN-RPC.
 
-**This adapter uses the service [Sentry.io](https://sentry.io) to automatically report exceptions and code errors and new device schemas to me as the developer.** More details see below!
+**This adapter uses the service [Sentry.io](https://sentry.io). It reports exceptions, code errors and new device schemas automatically to the developer.**
+You find more information in the chapter [What is Sentry.io](#what-is-sentryio).
 
-## What is Sentry.io and what is reported to the servers of that company?
-Sentry.io is a service for developers to get an overview about errors from their applications. Exactly this is implemented in this adapter.
+## What is Homematic?
 
-When the adapter crashes or another Code error happens, this error message that also appears in the ioBroker log is submitted to Sentry. 
-When you have allowed ioBroker GmbH to collect diagnostic data, then also your installation ID (this is just a unique ID **without** any additional infos about you, email, name or such) is included. This allows Sentry to group errors and show how many unique users are affected by such an error. All of these helps me to provide error-free adapters that basically never crash.
+> Homematic is the smart home system of eQ-3. It allows the comprehensive control of many different functions in a house or in a flat. These functions can be combined in simple scenarios and in complex scenarios.
+
+> The product range contains devices for light control, roller shutter control and heating control, hazard detectors, safety sensors and devices for weather measurement. The radio communication makes it easy to add devices to an existing building. In new buildings, wired bus components can be used.
+
+Source: [Homepage of the manufacturer eQ-3](https://www.eq-3.de/produkte/homematic.html)
+
+## Homematic components in ioBroker
+
+Two adapters are required to manage and to control Homematic components with ioBroker:
+
+### 1. Homematic ReGaHss
+
+This adapter connects to the Homematic logic layer "ReGaHSS" (**Re**sidential **Ga**teway).
+It synchronizes the device names, the system variables, the rooms, the functions and the programs between Homematic and ioBroker.
+
+### 2. Homematic RPC
+
+RPC means **R**emote **P**rocedure **C**all. It is a technique for the communication between processes.
+This adapter connects to the communication modules of a Homematic central unit (CCU, CCU2, CCU3 and newer).
+The following modules are supported:
+
+- `rfd` for radio devices,
+- `HMIP-rfd` for Homematic IP devices,
+- `hs485d` for wired devices,
+- `CUxD` for external components, like EnOcean or FS20 (CUxD is an additional software for the CCU),
+- `Homegear` as a replacement for a CCU.
+
+This diagram shows the structure and the communication interfaces:
+
+![Structure of a Homematic installation](img/homematic-structure.png)
+
+Source: [wikimatic.de](http://www.wikimatic.de/wiki/Datei:Homematic_Aufbau.png)
+
+## How the adapter works
+
+One instance of the adapter is responsible for exactly one communication module (`rfd`, `hs485d` and so on).
+If you want to use several modules at the same time, you must create a separate instance for every module.
+
+The adapter communicates with the module either via BIN-RPC or via XML-RPC.
+The communication uses an event interface, so the correct addresses are important.
+The CCU sends the events to the adapter automatically, and a cyclic polling is not necessary.
+
+Additionally, the adapter checks the connection to the CCU in a fixed interval.
+
+If you teach in new devices on the CCU, you must enable the option "Synchronize objects (once)" and restart the adapter.
+Only then the information about the new Homematic devices is transferred to the adapter.
 
 ## Configuration
 
-### HomeMatic Address
-*Homematic Address* is the IP of the HomeMatic CCU respectively the Host that is running the BidCos-Service(s).
-CCU IP address.
+### Main settings
 
-### HomeMatic Port
-CCU Port.
+#### HomeMatic Address
 
-Usually:
-- 2001 for wireless devices (https: 42001),
-- 2000 for wired devices (https: 42000),
-- 8701 for CUxD daemon,
-- 2010 for Homematic IP devices (https: 42010)
-- 9292 for Virtual Devices (https: 49292)
+The IP address of the CCU, or of the host on which the BidCos service runs.
 
-### Daemon
-CCU/Homematic can support different types of devices (wired, wireless, HM-IP, CUxD), and for every type you should create the instance of adapter separately.
+#### HomeMatic Port
 
-### Protocol
-There are two protocols for communication XML-RPC and BIN-RPC. BIN-RPC is faster, but it can be, that the end device does not support it or supports it incorrect.
-In this case, switch the protocol to XML.
+The port depends on the selected communication module.
+The adapter enters the port automatically as soon as you select the daemon.
+Change the port only if your ports differ from the standard ports.
 
-*Notice:* CUxD can only communicate with BIN-RPC and HM-IP and RFD only via XML-RPC protocol.
+The following ports are used by default:
 
-### Synchronize objects (once)
-After very first start the instance read *all* devices from CCU/Homematic.
-If you changed the configuration (renamed devices, added or removed devices), you can synchronise the configuration in ioBroker by enabling this option.
+| Daemon          | Communication module   | Standard port             | HTTPS port    |
+|-----------------|------------------------|---------------------------|---------------|
+| HomeMatic IP    | HMIP-rfd               | 2010                      | 42010         |
+| rfd             | rfd (radio devices)    | 2001                      | 42001         |
+| Virtual Devices | virtual devices        | 9292                      | 49292         |
+| hs485d          | hs485d (wired devices) | 2000                      | 42000         |
+| CUxD            | CUxD                   | 8701                      | not supported |
+| Homegear        | Homegear               | as configured in Homegear | not supported |
 
-The instance will be restarted immediately, synchronize all devices anew and deactivate this option itself.
+The HTTPS ports work only with the XML-RPC protocol.
 
-### Adapter Address
-This address has to be the IP under which the host that is running the adapter itself is reachable.
-This address is used by the CCU to connect to the adapter.
-This address cannot be `0.0.0.0`, because CCU/Homematic cannot reach ioBroker under "0.0.0.0" IP address.
+#### Adapter Address
 
-### Adapter port
-The port number on which the ioBroker will run. Let it 0 for automatic selection.
+The IP address of the host on which the adapter runs.
+The CCU uses this address to connect to the adapter, so the CCU must be able to reach this address.
+The entries "0.0.0.0 Listen on all IPs" and "127.0.0.1" are only for special cases, because the CCU cannot reach ioBroker at these addresses.
 
-### Adapter Callback Address
-Sometimes the ioBroker server runs behind the router, to solve this problem (that inbound and outbound addresses are different), this option can be used.
-Here you can define the IP address of the router, and the router will route the traffic to ioBroker according to the port.
+#### Adapter Port
 
-In case of a docker instance, you can write here directly the IP address of the host of the docker.
-It is also important to route the adapter port (next to adapter address) into the docker container. You can choose there an arbitrary port (e.g., 12001, 12010).
+The port on which the adapter waits for the connection of the CCU.
+Keep the value "0", so that ioBroker selects a free port automatically.
+Change this value only in special cases.
 
-Used if ioBroker runs in Docker.
+#### Daemon
 
-### Check communication interval(sec)
-Send pings to CCU/Homematic with such intervall.
+A CCU supports different device types (radio, wired, Homematic IP, CUxD).
+You must create a separate instance of the adapter for every type.
 
-### Reconnect interval (sec)
-So many seconds will be waited before connect attempts.
+#### Protocol
 
-### Don't delete devices on adapter start
-If this flag is not activated, the ioBroker will remove devices from configuration if a device is not found at adapter start in CCU/Homematic.
-Activate this flag to do *not* delete such a devices. This is to avoid a bug on CCU side, where HM-IP devices are not correctly transmitted to
-ioBroker and thus will be deleted on the adapter start and be recreated when transmitted, some milliseconds later. The flag is automatically checked
-when you select HM-IP as daemon. However, when you delete devices while the adapter is running, the adapter will be notified by CCU and will remove devices 
-which are removed on CCU.
+Two protocols are available for the communication: XML-RPC and BIN-RPC.
+BIN-RPC is faster, but some devices do not support it, or they support it incorrectly.
+In this case select the XML-RPC protocol.
 
-### Use https
-If this flag is activated, the connection will be established via https instead of http.
-This only works with XML-RPC protocol.
+**Note:** CUxD works only with BIN-RPC. Homematic IP and `rfd` work only with XML-RPC.
 
-### Username and password
-If 'use https' is activated, you can fill in the username and password of a CCU user.
-In case the CCU needs authentication on the API, you have to provide the credentials here.
+#### Synchronize objects (once)
+
+At the first start, the instance reads *all* devices from the CCU.
+If you change the configuration later (rename devices, add devices or remove devices), enable this option to synchronize the configuration in ioBroker again.
+
+The instance restarts immediately, reads all devices again and disables this option itself.
+
+### Additional settings
+
+#### Adapter Callback Address
+
+Sometimes ioBroker runs behind a router. In this case the inbound address and the outbound address are different.
+Enter the IP address of the router here. The router forwards the traffic to ioBroker by the port number.
+
+If ioBroker runs in a Docker container, enter the IP address of the Docker host here.
+You must also forward the adapter port (see "Adapter Port") into the container.
+You can select any free port for this, for example, 12001 or 12010.
+
+#### Check communication interval (in seconds)
+
+The adapter sends a ping to the CCU in this interval.
+
+#### Reconnect interval (in seconds)
+
+The adapter waits this time before it starts the next connection attempt.
+
+#### Don't delete devices on adapter start
+
+By default, the adapter removes a device from the object tree if it does not find this device on the CCU at the adapter start.
+Enable this option to keep such devices, for example if you removed a device from the CCU only temporarily.
+
+This option also avoids a problem on the CCU side:
+Homematic IP devices are sometimes not transferred correctly to ioBroker.
+In this case they are deleted at the adapter start, and they are created again some milliseconds later.
+For this reason the option is enabled automatically as soon as you select Homematic IP as daemon.
+
+If you delete a device while the adapter is running, the CCU informs the adapter, and the adapter removes this device in any case.
+
+#### Use https
+
+If this option is enabled, the adapter uses HTTPS instead of HTTP.
+This works only with the XML-RPC protocol.
+
+#### Username and Password
+
+If the option "Use https" is enabled, enter the user name and the password of a CCU user here.
+Enter these credentials also if the API of the CCU requires an authentication.
+
+### Device manager
+
+The tab "Device manager" shows all devices of this instance.
+You can rename a device, you can control a device directly, and you can read the installed firmware version and the available firmware version of a device.
+
+## Instances
+
+![Instances of the adapter](img/instances.png)
+
+The installed instances of the adapter are listed in the area *Instances* of ioBroker.
+The colored circle on the left side shows whether the instance is enabled and whether it is connected to the CCU.
+
+If you move the mouse pointer over a symbol, you get detailed information.
+
+## Objects of the adapter
+
+The area *Objects* shows all values and all information that the CCU sends to the adapter. The values are shown in a tree structure.
+
+Which objects and which values are shown depends on the devices (function and channels) and on the structure inside the CCU.
+
+The central unit uses the ID `BidCoS-RF`, and all virtual buttons are listed under this ID.
+Devices are created under their serial number, and groups get the name `INT000000x`.
+
+### Channel 0 (all devices)
+
+This channel is created for every device. It contains the following function data:
+
+| Data point                       | Meaning                                                            |
+|----------------------------------|--------------------------------------------------------------------|
+| AES_Key                          | Encryption enabled or disabled                                     |
+| Config (Pending / Pending Alarm) | Pending configuration                                              |
+| Dutycycle / Dutycycle Alarm      | Transmission time of the Homematic devices                         |
+| RSSI (Device / Peer)             | Signal strength between the device and the central unit            |
+| Low Bat / Low Bat Alarm          | Low battery charge                                                 |
+| Sticky unreach / unreach alarm   | System message about a communication error (error occurred before) |
+| Unreach / unreach alarm          | System message about a communication error (current state)         |
+
+### Channels 1 to 6
+
+These channels contain measured values, control data and status data.
+The shown data depends on the function of the device. The following table shows some examples:
+
+| Function                        | Channel | Possible values                                                                  |
+|---------------------------------|---------|----------------------------------------------------------------------------------|
+| Sensors                         | 1       | Temperature, humidity, fill level, open or closed state and so on                |
+| Heating thermostats             | 4       | Operating mode, set temperature, actual temperature, valve position and so on    |
+| Actuators                       | 1       | Level (roller shutter, dimmer), direction of movement (roller shutter) and so on |
+| Devices with measuring function | 3       | Status                                                                           |
+|                                 | 6       | Consumption meter, voltage, power and so on                                      |
 
 ## Custom commands
-It is possible to send custom commands, e.g., to read and control the master area of a device which allows the user 
-to configure heating week programs and more.
 
-This is done by sending a message to the adapter, which contains the method as first parameter, followed by an object which 
-has to contain the `ID` of the target device as well as optional the `paramType`, which specifies e.g. the MASTER area.
-Additional parameters have to be sent in the `params` object.
+You can send custom commands to the adapter, for example, to read and to control the MASTER area of a device.
+The MASTER area allows you to configure the weekly heating programs and more.
+
+Send a message to the adapter for this purpose.
+The message contains the method as the first parameter, followed by an object.
+This object must contain the `ID` of the target device. Optionally it contains the `paramType`, which selects, for example, the MASTER area.
+Send additional parameters in the `params` object.
 
 **Examples:**
 
-Log all values of the MASTER area of a device:
+Write all values of the MASTER area of a device to the log:
+
 ```javascript
 sendTo('hm-rpc.0', 'getParamset', {ID: 'OEQ1861203', paramType: 'MASTER'}, res => {
     log(JSON.stringify(res));
 });
 ```
+
 Set an attribute of the MASTER area to a specific value:
+
 ```javascript
 sendTo('hm-rpc.0', 'putParamset', {ID: 'OEQ1861203', paramType: 'MASTER', params: {'ENDTIME_FRIDAY_1': 700}}, res => {
     log(JSON.stringify(res));
@@ -112,27 +244,31 @@ sendTo('hm-rpc.0', 'putParamset', {ID: 'OEQ1861203', paramType: 'MASTER', params
 ```
 
 List all devices:
+
 ```javascript
 sendTo('hm-rpc.0', 'listDevices', {}, res => {
     log(JSON.stringify(res));
 });
 ```
 
-Set a value, like the adapter does on `stateChange`:
+Set a value, like the adapter does it on `stateChange`:
+
 ```javascript
 sendTo('hm-rpc.1', 'setValue', {ID: '000453D77B9EDF:1', paramType: 'SET_POINT_TEMPERATURE', params: 15}, res => {
     log(JSON.stringify(res));
 });
 ```
 
-Get the `paramsetDescription` of a device's channel:
+Read the `paramsetDescription` of a channel of a device:
+
 ```javascript
 sendTo('hm-rpc.1', 'getParamsetDescription', {ID: '000453D77B9EDF:1', paramType: 'VALUES'}, res => {
     log(JSON.stringify(res));
 });
 ```
 
-Get firmware information of a device (in this case, we are logging the FW status):
+Read the firmware information of a device. In this example the firmware status is written to the log:
+
 ```javascript
 sendTo('hm-rpc.1', 'getDeviceDescription', {ID: '0000S8179E3DBE', paramType: 'FIRMWARE'}, res => {
     if (!res.error) {
@@ -144,14 +280,33 @@ sendTo('hm-rpc.1', 'getDeviceDescription', {ID: '0000S8179E3DBE', paramType: 'FI
 ```
 
 ## Additional information
-If you use HomeMatic switches or remotes, their button states will only be acknowledged by CCU and thus 
-by ioBroker when you have a running 'dummy' program on the CCU which depends on the related switch or remote.
 
-You can use a single dummy program for multiple buttons, by just adding all button states in the if-clause connected 
-via or/and operator. The then-clause of the program can remain empty. Now your state should be updated on a button press.
+If you use HomeMatic switches or HomeMatic remote controls, the CCU confirms the button states only if a "dummy" program runs on the CCU.
+This program must use the state of the related switch or of the related remote control.
+Without such a program, ioBroker does not get the button states.
+
+You can use one single dummy program for several buttons.
+Add all button states to the if-clause and combine them with the operator "or" or with the operator "and".
+The then clause of the program can stay empty.
+After that, the state in ioBroker is updated on every button press.
+
+## What is Sentry.io?
+
+Sentry.io is a service for developers. It gives an overview about the errors of their applications. Exactly this is implemented in this adapter.
+
+If the adapter crashes, or if another code error happens, the error message is sent to Sentry. The same message also appears in the ioBroker log.
+If you allowed the ioBroker GmbH to collect diagnostic data, your installation ID is sent too.
+This installation ID is only a unique ID **without** any additional information about you, like your email address or your name.
+It allows Sentry to group the errors and to show how many users are affected by an error.
+All of this helps the developer to provide adapters that are free of errors and that basically never crash.
 
 ## Development
-To update all available images execute `npm run update-images`
+
+To update all device images, execute the following command:
+
+```bash
+npm run update-images
+```
 
 ## Changelog
 <!--

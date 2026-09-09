@@ -1,8 +1,7 @@
 {
   "common": {
     "docs": {
-      "en": "docs/en/README.md",
-      "de": "docs/de/README.md"
+      "en": "README.md"
     },
     "name": "hm-rpc",
     "desc": {
