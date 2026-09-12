@@ -21,6 +21,15 @@
  * The mask image is an 8-bit grayscale PNG whose luminance *is* the former alpha
  * channel, which is a quarter of the RGBA data and compresses well because the
  * ink is a constant.
+ *
+ * Inlining also means the object browser's CSS reaches into the markup: the ID
+ * cell applies `width: initial` to every descendant (`ObjectBrowser/styles.ts`,
+ * `cellId: { '& *': { width: 'initial' } }`), and for `rect` and `image` —
+ * whose width is a CSS geometry property — `initial` resolves to 0. Without a
+ * counter-measure the rect is drawn 0px wide and the icon is invisible
+ * (measured on a live admin, all four themes: not a single pixel). The two
+ * sized elements therefore carry their size as an inline style as well, which
+ * outranks the class rule.
  */
 import fs from 'fs';
 import path from 'path';
@@ -86,10 +95,13 @@ function maskId(name: string): string {
 export function toThemeSvg(buffer: Buffer, name: string): string {
     const { png, width, height } = alphaToGrayPng(PNG.sync.read(buffer));
     const id = maskId(name);
+    // Both the attributes and an inline style: the attributes are the SVG size,
+    // the style keeps it when a stylesheet rule sets `width` on the element.
+    const size = `width="${width}" height="${height}" style="width:${width}px;height:${height}px"`;
     return (
         `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}">` +
-        `<mask id="${id}"><image width="${width}" height="${height}" href="data:image/png;base64,${png.toString('base64')}"/></mask>` +
-        `<rect width="${width}" height="${height}" fill="currentColor" mask="url(#${id})"/>` +
+        `<mask id="${id}"><image ${size} href="data:image/png;base64,${png.toString('base64')}"/></mask>` +
+        `<rect ${size} fill="currentColor" mask="url(#${id})"/>` +
         `</svg>\n`
     );
 }

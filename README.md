@@ -313,6 +313,9 @@ npm run update-images
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (krobipd) The device icons were invisible in the object browser: its ID cell sets `width: initial` on every element of an inlined SVG, which collapses the icon's `rect` to 0px. The size is now carried as an inline style as well.
+
 ### 4.0.0 (2026-08-15)
 * (bluefox) Device icons are now delivered as theme-adaptive SVGs and stay visible on the dark admin theme
 * (krobipd) Generated the device icon set and the device type map from the OCCU device database
