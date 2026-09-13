@@ -14,7 +14,7 @@
     "Homematic RPC adapter settings": "Configuración del adaptador Homematic RPC",
     "Listen on all IPs": "Escuchar en todas las direcciones IP",
     "Ok": "Ok",
-    "Password": "Contraseña",
+    "Password": "Clave",
     "Please specify callback address": "Por favor, especifique la dirección de devolución de llamada.",
     "Protocol": "Protocolo",
     "Reconnect interval": "Intervalo de reconexión",
