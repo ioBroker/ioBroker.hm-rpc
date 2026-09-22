@@ -19,6 +19,8 @@ import type { Line } from './lib/tools';
 
 let connected = false;
 const displays: Record<string, { timer: ioBroker.Timeout | undefined; withTone: boolean } | null> = {};
+/** Channels which wait to send HUE and SATURATION together, see `sendColor` */
+const colorChannels: Record<string, ioBroker.Timeout | undefined> = {};
 
 let clientId: string;
 
@@ -447,6 +449,23 @@ export class HomematicRpc extends Adapter {
         }
 
         const type = this.dpTypes[id].TYPE;
+
+        const channelId = `${tmp[0]}.${tmp[1]}.${tmp[2]}.${tmp[3]}`;
+
+        // #1108: HMIP devices like HmIP-RGBW answer a single setValue of HUE or SATURATION with
+        // MISSING_NON_OPTIONAL_PARAMETER, they want both values in one putParamset
+        if (
+            (tmp[4] === 'HUE' || tmp[4] === 'SATURATION') &&
+            this.dpTypes[`${channelId}.HUE`] &&
+            this.dpTypes[`${channelId}.SATURATION`]
+        ) {
+            if (colorChannels[channelId]) {
+                this.clearTimeout(colorChannels[channelId]);
+            }
+            // collect both values, if they are written shortly after each other
+            colorChannels[channelId] = this.setTimeout(() => this.sendColor(channelId), 300);
+            return;
+        }
 
         if (type === 'EPAPER_TONE_REPETITIONS') {
             // repeats have to be between 0 and 15 -> 0 is unlimited
@@ -1364,6 +1383,53 @@ export class HomematicRpc extends Adapter {
                 return this.rpcMethodCallAsyncHelper(method, params);
             }
             throw e;
+        }
+    }
+
+    /**
+     * Sends HUE and SATURATION of a channel in one putParamset, because HMIP devices like HmIP-RGBW answer a
+     * single setValue with MISSING_NON_OPTIONAL_PARAMETER (#1108)
+     *
+     * @param channelId - full ID of the channel, e.g. "hm-rpc.0.0001D8A99B0815.1"
+     */
+    private async sendColor(channelId: string): Promise<void> {
+        delete colorChannels[channelId];
+
+        const parts = channelId.split('.');
+        const address = `${parts[2]}:${parts[3]}`;
+        const params: Record<string, number | { explicitDouble: number }> = {};
+
+        for (const key of ['HUE', 'SATURATION']) {
+            const dpId = `${channelId}.${key}`;
+            const dpType = this.dpTypes[dpId];
+            let value: number;
+
+            try {
+                const state = await this.getForeignStateAsync(dpId);
+                value = typeof state?.val === 'number' ? state.val : Number(dpType.MIN) || 0;
+            } catch (e: unknown) {
+                this.log.error(`Cannot read state ${dpId}: ${(e as Error).message}`);
+                value = Number(dpType.MIN) || 0;
+            }
+
+            if (dpType.UNIT === '100%') {
+                value = Math.round((value / 100) * 1_000) / 1_000;
+            }
+
+            params[key] = dpType.TYPE === 'FLOAT' ? { explicitDouble: value } : value;
+        }
+
+        this.log.debug(`${this.config.type}rpc -> putParamset ${JSON.stringify([address, 'VALUES', params])}`);
+
+        try {
+            if (rpcClient && connected) {
+                await this.rpcMethodCallAsync('putParamset', [address, 'VALUES', params]);
+            } else {
+                this.log.warn(`Cannot set the color of "${channelId}", because not connected.`);
+            }
+        } catch (e: unknown) {
+            this.log.error(`${this.config.type}rpc -> putParamset ${JSON.stringify([address, 'VALUES', params])}`);
+            this.log.error(`Cannot call putParamset: ${(e as Error).message}`);
         }
     }
 

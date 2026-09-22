@@ -119,6 +119,13 @@ export declare class HomematicRpc extends Adapter {
      */
     private rpcMethodCallAsync;
     /**
+     * Sends HUE and SATURATION of a channel in one putParamset, because HMIP devices like HmIP-RGBW answer a
+     * single setValue with MISSING_NON_OPTIONAL_PARAMETER (#1108)
+     *
+     * @param channelId - full ID of the channel, e.g. "hm-rpc.0.0001D8A99B0815.1"
+     */
+    private sendColor;
+    /**
      * Control the EPAPER display
      */
     private controlEPaper;
