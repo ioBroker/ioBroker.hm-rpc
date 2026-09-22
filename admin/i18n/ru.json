@@ -14,7 +14,7 @@
     "Homematic RPC adapter settings": "Настройки Homematic RPC драйвера",
     "Listen on all IPs": "Слушать на всех IP адресах",
     "Ok": "Ok",
-    "Password": "пароль",
+    "Password": "Пароль",
     "Please specify callback address": "Введите IP адрес для callback.",
     "Protocol": "Протокол",
     "Reconnect interval": "Интервал повтора соединения",
