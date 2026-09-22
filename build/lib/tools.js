@@ -240,6 +240,13 @@ function fixParamset(params) {
     if (paramObj.CONTROL === 'HEATING_CONTROL_HMIP.LEVEL') {
         paramObj.UNIT = '100%';
     }
+    // #181: HMIP heating modes are declared as INTEGER without VALUE_LIST (https://github.com/eq-3/occu/issues/97),
+    // use the names of the BidCos CONTROL_MODE. 3 is not documented
+    if ((paramObj.CONTROL === 'HEATING_CONTROL_HMIP.CONTROL_MODE' ||
+        paramObj.CONTROL === 'HEATING_CONTROL_HMIP.SETPOINT_MODE') &&
+        !paramObj.VALUE_LIST) {
+        paramObj.STATES = { 0: 'AUTO-MODE', 1: 'MANU-MODE', 2: 'PARTY-MODE' };
+    }
 }
 /**
  * Fix different bugs in CCU which needs to be fixed on event level

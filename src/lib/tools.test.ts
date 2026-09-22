@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
-import { combineEPaperCommand } from './tools';
+import { combineEPaperCommand, fixParamset } from './tools';
+import type { ParamsetObject } from './_types';
 
 /** returns the repetition and interval codes of an EPAPER command */
 function timing(command: string): { repeats: string; interval: string } {
@@ -51,5 +52,41 @@ describe('combineEPaperCommand', () => {
         expect(timing(combineEPaperCommand(lines, '0xF0', '0xC0', 11, 10)).repeats).to.equal('0xDA');
         expect(timing(combineEPaperCommand(lines, '0xF0', '0xC0', 15, 10)).repeats).to.equal('0xDE');
         expect(timing(combineEPaperCommand(lines, '0xF0', '0xC0', 20, 10)).repeats).to.equal('0xDE');
+    });
+});
+
+describe('fixParamset', () => {
+    const hmipMode = (control: string, extra: Partial<ParamsetObject> = {}): ParamsetObject =>
+        ({
+            ID: control.split('.')[1],
+            CONTROL: control,
+            TYPE: 'INTEGER',
+            MIN: 0,
+            MAX: 3,
+            DEFAULT: 0,
+            FLAGS: 1,
+            OPERATIONS: 7,
+            TAB_ORDER: 0,
+            ...extra,
+        }) as ParamsetObject;
+
+    it('adds the mode names to the HMIP CONTROL_MODE and SET_POINT_MODE (#181)', () => {
+        for (const control of ['HEATING_CONTROL_HMIP.CONTROL_MODE', 'HEATING_CONTROL_HMIP.SETPOINT_MODE']) {
+            const paramObj = hmipMode(control);
+            fixParamset({ paramObj, daemon: 'HMIP' });
+            expect(paramObj.STATES).to.deep.equal({ 0: 'AUTO-MODE', 1: 'MANU-MODE', 2: 'PARTY-MODE' });
+        }
+    });
+
+    it('keeps a VALUE_LIST delivered by the CCU', () => {
+        const paramObj = hmipMode('HEATING_CONTROL_HMIP.CONTROL_MODE', { TYPE: 'ENUM', VALUE_LIST: ['A', 'B'] });
+        fixParamset({ paramObj, daemon: 'HMIP' });
+        expect(paramObj.STATES).to.equal(undefined);
+    });
+
+    it('does not touch other datapoints', () => {
+        const paramObj = hmipMode('HEATING_CONTROL_HMIP.ACTIVE_PROFILE');
+        fixParamset({ paramObj, daemon: 'HMIP' });
+        expect(paramObj.STATES).to.equal(undefined);
     });
 });
