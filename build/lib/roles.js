@@ -16,6 +16,8 @@ exports.metaRoles = {
         'LOCK.STATE': 'switch.lock',
         'DOOR_SENSOR.STATE': 'value.window',
         'DANGER.STATE': 'sensor.alarm.fire',
+        // #694: color temperature in kelvin of the lighting gateway (Philips Hue, Osram Lightify)
+        'COLORTEMP.WHITE': 'level.color.temperature',
     },
     chTYPE_dpNAME: {
         'DIMMER.LEVEL': 'level.dimmer',

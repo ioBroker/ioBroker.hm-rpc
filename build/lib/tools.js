@@ -267,6 +267,16 @@ function fixParamset(params) {
     if (paramObj.CONTROL === 'HEATING_CONTROL_HMIP.LEVEL') {
         paramObj.UNIT = '100%';
     }
+    // #694: the lighting gateway of the CCU (Philips Hue, Osram Lightify) delivers the color temperature WHITE in kelvin
+    // (e.g. 2700), but some firmware versions declare it as 100%, so 2700 was scaled to 270000.
+    // Use the description of the other firmware versions
+    if (paramObj.ID === 'WHITE' && paramObj.UNIT === '100%' && daemon === 'virtual-devices') {
+        paramObj.UNIT = 'K';
+        paramObj.MIN = 2_000;
+        paramObj.MAX = 6_500;
+        paramObj.DEFAULT = 2_000;
+        paramObj.CONTROL = paramObj.CONTROL || 'COLORTEMP.WHITE';
+    }
     // #181: HMIP heating modes are declared as INTEGER without VALUE_LIST (https://github.com/eq-3/occu/issues/97),
     // use the names of the BidCos CONTROL_MODE. 3 is not documented
     if ((paramObj.CONTROL === 'HEATING_CONTROL_HMIP.CONTROL_MODE' ||

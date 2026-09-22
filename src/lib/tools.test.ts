@@ -96,6 +96,32 @@ describe('fixParamset', () => {
         expect(paramObj.MIN).to.equal(4.5);
         expect(paramObj.MAX).to.equal(30.5);
     });
+
+    it('uses kelvin for WHITE of the lighting gateway declared as 100% (#694)', () => {
+        const paramObj = {
+            ...hmipMode('', { TYPE: 'FLOAT', MIN: 0, MAX: 1, DEFAULT: 0, UNIT: '100%' }),
+            ID: 'WHITE',
+            CONTROL: undefined,
+        } as ParamsetObject;
+        fixParamset({ paramObj, daemon: 'virtual-devices' });
+        expect(paramObj).to.include({ UNIT: 'K', MIN: 2000, MAX: 6500, DEFAULT: 2000, CONTROL: 'COLORTEMP.WHITE' });
+    });
+
+    it('keeps WHITE if it is declared correctly or not from the virtual devices', () => {
+        const correct = {
+            ...hmipMode('COLORTEMP.WHITE', { TYPE: 'FLOAT', MIN: 2000, MAX: 6500, DEFAULT: 2000, UNIT: 'K' }),
+            ID: 'WHITE',
+        };
+        fixParamset({ paramObj: correct, daemon: 'virtual-devices' });
+        expect(correct).to.include({ UNIT: 'K', MIN: 2000, MAX: 6500 });
+
+        const otherDaemon = {
+            ...hmipMode('', { TYPE: 'FLOAT', MIN: 0, MAX: 1, UNIT: '100%' }),
+            ID: 'WHITE',
+        };
+        fixParamset({ paramObj: otherDaemon, daemon: 'CUxD' });
+        expect(otherDaemon).to.include({ UNIT: '100%', MIN: 0, MAX: 1 });
+    });
 });
 
 describe('readOnlyRole', () => {
