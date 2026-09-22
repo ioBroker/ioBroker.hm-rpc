@@ -34,13 +34,13 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HomematicRpc = void 0;
+const node_crypto_1 = require("node:crypto");
+const node_fs_1 = require("node:fs");
+const node_path_1 = require("node:path");
 const adapter_core_1 = require("@iobroker/adapter-core");
 const images_1 = require("./lib/images");
 const tools = __importStar(require("./lib/tools"));
 const roles_1 = require("./lib/roles");
-const node_crypto_1 = require("node:crypto");
-const node_fs_1 = require("node:fs");
-const node_path_1 = require("node:path");
 const deviceManager_1 = require("./lib/deviceManager");
 let connected = false;
 const displays = {};
@@ -123,7 +123,7 @@ class HomematicRpc extends adapter_core_1.Adapter {
                 }
                 val = tools.fixEvent({ val, dpType: this.dpTypes[name] });
                 this.log.debug(`${name} ==> UNIT: "${this.dpTypes[name] ? this.dpTypes[name].UNIT : 'none'}" (min: ${this.dpTypes[name] ? this.dpTypes[name].MIN : 'none'}, max: ${this.dpTypes[name] ? this.dpTypes[name].MAX : 'none'}) From "${params[3]}" => "${val}"`);
-                this.setState(`${channel}.${params[2]}`, { val: val, ack: true });
+                this.setStateAsync(`${channel}.${params[2]}`, { val: val, ack: true }).catch(e => this.log.error(`Cannot set state ${name}: ${e.message}`));
                 // unfortunately, this is necessary
                 return '';
             },
@@ -617,7 +617,7 @@ class HomematicRpc extends adapter_core_1.Adapter {
             this.eventInterval = undefined;
         }
         if (isFirst) {
-            this.sendInit();
+            this.sendInit().catch(e => this.log.error(`Cannot sendInit: ${e.message}`));
         }
         // Periodically try to reconnect
         if (!this.connInterval) {
@@ -640,7 +640,7 @@ class HomematicRpc extends adapter_core_1.Adapter {
                 if (connected) {
                     this.log.info('Disconnected');
                     connected = false;
-                    this.setState('info.connection', false, true);
+                    this.setStateAsync('info.connection', false, true).catch(e => this.log.error(`Cannot set state info.connection: ${e.message}`));
                     this.connect(false);
                 }
             }
@@ -650,7 +650,7 @@ class HomematicRpc extends adapter_core_1.Adapter {
             if (connected) {
                 this.log.info('Disconnected');
                 connected = false;
-                this.setState('info.connection', false, true);
+                this.setStateAsync('info.connection', false, true).catch(e => this.log.error(`Cannot set state info.connection: ${e.message}`));
                 this.connect(false);
             }
         }
@@ -671,7 +671,7 @@ class HomematicRpc extends adapter_core_1.Adapter {
             this.connect(false);
         }
         else {
-            this.sendPing();
+            this.sendPing().catch(e => this.log.error(`Cannot sendPing: ${e.message}`));
         }
     }
     /**
@@ -1670,7 +1670,7 @@ class HomematicRpc extends adapter_core_1.Adapter {
         if (!connected) {
             this.log.info('Connected');
             connected = true;
-            this.setState('info.connection', true, true);
+            this.setStateAsync('info.connection', true, true).catch(e => this.log.error(`Cannot set info.connection to true: ${e.message}`));
         }
         if (this.connInterval) {
             this.log.debug('clear connecting interval');

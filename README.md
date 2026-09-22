@@ -313,7 +313,7 @@ npm run update-images
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 4.1.0 (2026-09-22)
 * (krobipd) The device icons were invisible in the object browser: its ID cell sets `width: initial` on every element of an inlined SVG, which collapses the icon's `rect` to 0px. The size is now carried as an inline style as well.
 * (bluefox) Updated `binrpc` to 4.x and `homematic-xmlrpc` to 2.x (no dependency on a GitHub tarball anymore)
 * (bluefox) If the RPC server cannot listen (e.g. the configured IP address is not available), the error is logged and the adapter restarts after 30 seconds instead of crashing
@@ -344,9 +344,6 @@ npm run update-images
 * (bluefox) Updated packages and used `@iobroker/eslint-config`
 * (bluefox) Renamed some roles for the better typing detection
 * (bluefox) Removed support of Node.js 18
-
-### 2.0.2 (2024-08-26)
-* (bluefox) Updated packages
 
 ### Older changelog
 [here](OLD_CHANGELOG.md)

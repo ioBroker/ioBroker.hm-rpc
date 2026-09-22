@@ -1,4 +1,7 @@
 # Older changes
+## 2.0.2 (2024-08-26)
+* (bluefox) Updated packages
+
 ## 2.0.0 (2024-07-18)
 * (bluefox) Updated packages
 * (bluefox) Removed support of Node.js 16
