@@ -1,10 +1,11 @@
+import { randomBytes } from 'node:crypto';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { Adapter, type AdapterOptions } from '@iobroker/adapter-core';
 import { images } from './lib/images';
 import * as tools from './lib/tools';
 import { metaRoles } from './lib/roles';
-import { randomBytes } from 'node:crypto';
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+
 import type {
     ParamsetObjectWithSpecial,
     ParamsetObject,
@@ -111,7 +112,9 @@ export class HomematicRpc extends Adapter {
                 }, max: ${this.dpTypes[name] ? this.dpTypes[name].MAX : 'none'}) From "${params[3]}" => "${val}"`,
             );
 
-            this.setState(`${channel}.${params[2]}`, { val: val, ack: true });
+            this.setStateAsync(`${channel}.${params[2]}`, { val: val, ack: true }).catch(e =>
+                this.log.error(`Cannot set state ${name}: ${e.message}`),
+            );
             // unfortunately, this is necessary
             return '';
         },
@@ -662,7 +665,7 @@ export class HomematicRpc extends Adapter {
         }
 
         if (isFirst) {
-            this.sendInit();
+            this.sendInit().catch(e => this.log.error(`Cannot sendInit: ${e.message}`));
         }
 
         // Periodically try to reconnect
@@ -686,7 +689,9 @@ export class HomematicRpc extends Adapter {
                 if (connected) {
                     this.log.info('Disconnected');
                     connected = false;
-                    this.setState('info.connection', false, true);
+                    this.setStateAsync('info.connection', false, true).catch(e =>
+                        this.log.error(`Cannot set state info.connection: ${e.message}`),
+                    );
                     this.connect(false);
                 }
             }
@@ -695,7 +700,9 @@ export class HomematicRpc extends Adapter {
             if (connected) {
                 this.log.info('Disconnected');
                 connected = false;
-                this.setState('info.connection', false, true);
+                this.setStateAsync('info.connection', false, true).catch(e =>
+                    this.log.error(`Cannot set state info.connection: ${e.message}`),
+                );
                 this.connect(false);
             }
         }
@@ -718,7 +725,7 @@ export class HomematicRpc extends Adapter {
             this.log.debug('[KEEPALIVE] Connection timed out, initializing new connection');
             this.connect(false);
         } else {
-            this.sendPing();
+            this.sendPing().catch(e => this.log.error(`Cannot sendPing: ${e.message}`));
         }
     }
 
@@ -1907,7 +1914,9 @@ export class HomematicRpc extends Adapter {
         if (!connected) {
             this.log.info('Connected');
             connected = true;
-            this.setState('info.connection', true, true);
+            this.setStateAsync('info.connection', true, true).catch(e =>
+                this.log.error(`Cannot set info.connection to true: ${(e as Error).message}`),
+            );
         }
 
         if (this.connInterval) {

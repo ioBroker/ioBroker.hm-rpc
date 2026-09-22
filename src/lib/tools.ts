@@ -82,13 +82,14 @@ export interface Line {
 }
 
 /**
- * Creates an combined EPAPER command which can be sent to the CCU
+ * Creates a combined EPAPER command which can be sent to the CCU
  *
- * @param lines
+ * @param lines array of lines to be displayed on the EPAPER display
  * @param signal 0xF0 AUS; 0xF1 Rotes Blitzen ;0xF2 Grünes Blitzen; 0xF3 Orangenes Blitzen
- * @param ton
- * @param repeats
- * @param offset
+ * @param ton 0xC0 AUS; 0xC1 LANG LANG; 0xC2 LANG KURZ; 0xC3 LANG KURZ KURZ; 0xC4 KURZ; 0xC5 KURZ KURZ; 0xC6 LANG
+ * @param repeats 0xD0 - 0xDE: 1 - 15 repetitions, 0xDF: unlimited (repeats 0 or not set)
+ * @param offset 0xE0 - 0xEF: interval of 10 - 160 seconds. Without a valid offset (e.g. only the lines were written) use 10 seconds, otherwise an invalid "0xE-1" is sent and the CCU rejects the whole command (#1450, #1454, #1461)
+ * @returns the combined EPAPER command as string
  */
 export function combineEPaperCommand(
     lines: Line[],

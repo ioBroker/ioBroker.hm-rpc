@@ -8,8 +8,9 @@ import {
     type DeviceInfo,
     type DeviceControl,
     type DeviceLoadContext,
+    type ControlState,
+    type ChannelInfo,
 } from '@iobroker/dm-utils';
-import type { ControlState, ChannelInfo } from '@iobroker/dm-utils/build/types/base';
 import ChannelDetector, { type DetectOptions, type PatternControl } from '@iobroker/type-detector';
 
 import type { HomematicRpc } from '../main';
