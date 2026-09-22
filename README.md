@@ -316,7 +316,7 @@ npm run update-images
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 4.1.1 (2026-09-22)
 * (bluefox) `CONTROL_MODE` and `SET_POINT_MODE` of HmIP thermostats show the mode names (auto, manual, party)
 * (bluefox) `SET_TEMPERATURE` of BidCos heating groups accepts 4.5 (OFF) and 30.5 (ON)
 * (bluefox) CUxD always uses BIN-RPC, Homematic IP and Virtual Devices always use XML-RPC
@@ -352,11 +352,6 @@ npm run update-images
 
 ### 3.0.1 (2025-10-22)
 * (bluefox) Renamed role of `STICKY_UNREACH` to `indicator.unreach.sticky` for the better typing detection
-
-### 3.0.0 (2025-10-21)
-* (bluefox) Updated packages and used `@iobroker/eslint-config`
-* (bluefox) Renamed some roles for the better typing detection
-* (bluefox) Removed support of Node.js 18
 
 ### Older changelog
 [here](OLD_CHANGELOG.md)

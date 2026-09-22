@@ -1,4 +1,9 @@
 # Older changes
+## 3.0.0 (2025-10-21)
+* (bluefox) Updated packages and used `@iobroker/eslint-config`
+* (bluefox) Renamed some roles for the better typing detection
+* (bluefox) Removed support of Node.js 18
+
 ## 2.0.2 (2024-08-26)
 * (bluefox) Updated packages
 
