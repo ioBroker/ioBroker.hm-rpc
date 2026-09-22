@@ -316,7 +316,7 @@ npm run update-images
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 4.1.2 (2026-09-22)
 * (bluefox) Philips Hue and Osram Lightify lamps of the CCU lighting gateway: the color temperature `WHITE` is handled in kelvin (2000 - 6500 K), also if the CCU declares it as percent (#694)
 * (bluefox) `HUE` and `SATURATION` are sent together in one `putParamset`, HMIP devices like HmIP-RGBW rejected a single value with `MISSING_NON_OPTIONAL_PARAMETER` (#1108)
 * (bluefox) Values which the CCU delivers as text for a number are converted (the name of an ENUM to its index, e.g. `STATE_NOT_AVAILABLE` of a `VALVE_STATE`), invalid values become `null` instead of a wrong type (#1342, #1358)
@@ -355,9 +355,6 @@ npm run update-images
 * (bluefox) Updated packages
 * (bluefox) Migrated to TypeScript 6
 * (bluefox) Corrected device manager
-
-### 3.0.1 (2025-10-22)
-* (bluefox) Renamed role of `STICKY_UNREACH` to `indicator.unreach.sticky` for the better typing detection
 
 ### Older changelog
 [here](OLD_CHANGELOG.md)
