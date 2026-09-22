@@ -39,4 +39,4 @@ export declare function fixParamset(params: FixParamsetParams): void;
  *
  * @param params relevant parameters
  */
-export declare function fixEvent(params: FixEventParams): null | string | number;
+export declare function fixEvent(params: FixEventParams): null | string | number | boolean;

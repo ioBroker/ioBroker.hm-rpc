@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
-import { combineEPaperCommand, fixParamset, readOnlyRole } from './tools';
+import { combineEPaperCommand, fixEvent, fixParamset, readOnlyRole } from './tools';
 import type { ParamsetObject } from './_types';
 
 /** returns the repetition and interval codes of an EPAPER command */
@@ -121,6 +121,41 @@ describe('fixParamset', () => {
         };
         fixParamset({ paramObj: otherDaemon, daemon: 'CUxD' });
         expect(otherDaemon).to.include({ UNIT: '100%', MIN: 0, MAX: 1 });
+    });
+});
+
+describe('fixEvent', () => {
+    const valveList = ['STATE_NOT_AVAILABLE', 'RUN_TO_START', 'WAIT_FOR_ADAPTION', 'ADAPTION_DONE'];
+
+    it('keeps values which match the type', () => {
+        expect(fixEvent({ val: 21.5, dpType: { TYPE: 'FLOAT' } })).to.equal(21.5);
+        expect(fixEvent({ val: 4, dpType: { TYPE: 'ENUM', VALUE_LIST: valveList } })).to.equal(4);
+        expect(fixEvent({ val: true, dpType: { TYPE: 'BOOL' } })).to.equal(true);
+        expect(fixEvent({ val: 'Wohnzimmer', dpType: { TYPE: 'STRING' } })).to.equal('Wohnzimmer');
+        expect(fixEvent({ val: null, dpType: { TYPE: 'FLOAT' } })).to.equal(null);
+    });
+
+    it('converts numbers delivered as string (#1342)', () => {
+        expect(fixEvent({ val: '12.5', dpType: { TYPE: 'FLOAT' } })).to.equal(12.5);
+        expect(fixEvent({ val: '3', dpType: { TYPE: 'INTEGER' } })).to.equal(3);
+    });
+
+    it('maps the name of an ENUM to its index (#1358)', () => {
+        expect(fixEvent({ val: 'STATE_NOT_AVAILABLE', dpType: { TYPE: 'ENUM', VALUE_LIST: valveList } })).to.equal(0);
+        expect(fixEvent({ val: 'ADAPTION_DONE', dpType: { TYPE: 'ENUM', VALUE_LIST: valveList } })).to.equal(3);
+    });
+
+    it('returns null for strings which are no number (#872, #1342)', () => {
+        expect(fixEvent({ val: '', dpType: { TYPE: 'INTEGER' } })).to.equal(null);
+        expect(fixEvent({ val: '', dpType: { TYPE: 'FLOAT' } })).to.equal(null);
+        expect(fixEvent({ val: 'INVALID', dpType: { TYPE: 'FLOAT' } })).to.equal(null);
+        expect(fixEvent({ val: 'UNKNOWN', dpType: { TYPE: 'ENUM', VALUE_LIST: valveList } })).to.equal(null);
+        expect(fixEvent({ val: NaN, dpType: { TYPE: 'FLOAT' } })).to.equal(null);
+    });
+
+    it('does not touch strings of string datapoints', () => {
+        expect(fixEvent({ val: '', dpType: { TYPE: 'STRING' } })).to.equal('');
+        expect(fixEvent({ val: '0x02', dpType: { TYPE: 'EPAPER_LINE' } })).to.equal('0x02');
     });
 });
 

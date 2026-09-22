@@ -319,13 +319,27 @@ export function fixParamset(params: FixParamsetParams): void {
  *
  * @param params relevant parameters
  */
-export function fixEvent(params: FixEventParams): null | string | number {
+export function fixEvent(params: FixEventParams): null | string | number | boolean {
     const { dpType } = params;
-    let { val } = params;
+    const { val } = params;
+    const isNumber = dpType.TYPE === 'INTEGER' || dpType.TYPE === 'FLOAT' || dpType.TYPE === 'ENUM';
 
-    // #872: since CCU FW 3.69.6, CCU sometimes delivers empty string for SECTION, which is a number
-    if (val === '' && dpType.TYPE === 'INTEGER') {
-        val = null;
+    // e.g. the scaling of a 100% value of a non-numeric value
+    if (typeof val === 'number' && !Number.isFinite(val)) {
+        return null;
+    }
+
+    // #872, #1342: the CCU sometimes delivers a string for a number, e.g. an empty SECTION since CCU FW 3.69.6
+    // or the invalid ILLUMINATION of a HmIP-SWO-PL, which has no light sensor
+    if (typeof val === 'string' && isNumber) {
+        // #1358: an ENUM is stored as index of its VALUE_LIST, but the CCU can deliver the name
+        const index = dpType.VALUE_LIST ? dpType.VALUE_LIST.indexOf(val) : -1;
+        if (index !== -1) {
+            return index;
+        }
+
+        const num = val.trim() ? Number(val) : NaN;
+        return Number.isFinite(num) ? num : null;
     }
 
     return val;

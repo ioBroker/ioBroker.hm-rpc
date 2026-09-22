@@ -3,6 +3,8 @@ export interface DatapointTypeObject {
     TYPE: string;
     MIN?: ParamsetMinMax;
     MAX?: ParamsetMinMax;
+    /** values of an ENUM, the value of the state is the index */
+    VALUE_LIST?: string[];
 }
 
 export interface ParamsetObjectWithSpecial extends ParamsetObject {

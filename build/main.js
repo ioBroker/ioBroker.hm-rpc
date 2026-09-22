@@ -283,6 +283,9 @@ class HomematicRpc extends adapter_core_1.Adapter {
                             UNIT: obj.native.UNIT,
                             TYPE: obj.native.TYPE,
                         };
+                        if (Array.isArray(obj.native.VALUE_LIST)) {
+                            this.dpTypes[row.id].VALUE_LIST = obj.native.VALUE_LIST;
+                        }
                         if (typeof obj.native.MIN === 'number') {
                             this.dpTypes[row.id].MIN = obj.native.MIN;
                             this.dpTypes[row.id].MAX = obj.native.MAX;
@@ -362,6 +365,14 @@ class HomematicRpc extends adapter_core_1.Adapter {
         const obj = await this.getObjectAsync(id);
         if (obj?.type === 'device' || obj?.type === 'channel') {
             await this.delObjectAsync(id, { recursive: true });
+            // #1419: without this, events of the deleted device would still be written and warn about the
+            // missing objects until the adapter is restarted
+            const prefix = `${this.namespace}.${id}.`;
+            for (const dpId of Object.keys(this.dpTypes)) {
+                if (dpId.startsWith(prefix)) {
+                    delete this.dpTypes[dpId];
+                }
+            }
         }
     }
     /**
@@ -1181,6 +1192,9 @@ class HomematicRpc extends adapter_core_1.Adapter {
                 UNIT: paramObj.UNIT,
                 TYPE: paramObj.TYPE,
             };
+            if (paramObj.VALUE_LIST) {
+                this.dpTypes[dpID].VALUE_LIST = paramObj.VALUE_LIST;
+            }
             if (typeof paramObj.MIN === 'number') {
                 this.dpTypes[dpID].MIN = paramObj.MIN;
                 this.dpTypes[dpID].MAX = paramObj.MAX;
