@@ -13,8 +13,8 @@
 This adapter connects HomeMatic interface processes (BidCos services, Homegear and CUxD) to ioBroker.
 The communication uses XML-RPC or BIN-RPC.
 
-**This adapter uses the service [Sentry.io](https://sentry.io). It reports exceptions, code errors and new device schemas automatically to the developer.**
-You find more information in the chapter [What is Sentry.io](#what-is-sentryio).
+**This adapter uses Sentry libraries to automatically report exceptions and code errors to the developers.** It also reports new device schemas.
+For more details and for information how to disable the error reporting see [Sentry-Plugin Documentation](https://github.com/ioBroker/plugin-sentry#plugin-sentry) and the chapter [What is Sentry.io](#what-is-sentryio).
 
 ## What is Homematic?
 
@@ -319,6 +319,12 @@ npm run update-images
 * (bluefox) If the RPC server cannot listen (e.g. the configured IP address is not available), the error is logged and the adapter restarts after 30 seconds instead of crashing
 * (bluefox) On stop, the RPC server and client are closed properly, also for XML-RPC and if the CCU is not reachable
 * (bluefox) Updated packages
+* (bluefox) Fixed writing of the lines and icons of HM-Dis-EP-WM55: an invalid tone interval (`0xE-1`) was sent if no interval was set
+* (bluefox) The device manager does not crash anymore on devices without `native` and does not report the same control twice
+* (bluefox) Added icon for HmIP-RFUSB
+* (bluefox) PONG events and requests without method are logged only in debug mode
+* (bluefox) Replaced the deprecated `deleteDevice` and `deleteChannel` calls
+* (bluefox) Fixed issues reported by the repository checker (responsive design of the settings, lint and type check in CI)
 
 ### 4.0.0 (2026-08-15)
 * (bluefox) Device icons are now delivered as theme-adaptive SVGs and stay visible on the dark admin theme
@@ -342,7 +348,7 @@ npm run update-images
 ### 2.0.2 (2024-08-26)
 * (bluefox) Updated packages
 
-### Older entries
+### Older changelog
 [here](OLD_CHANGELOG.md)
 
 [Older changelogs can be found there](CHANGELOG_OLD.md)
@@ -351,9 +357,8 @@ npm run update-images
 
 The MIT License (MIT)
 
-Copyright (c) 2014-2026 bluefox <dogafox@gmail.com>
-
-Copyright (c) 2014 hobbyquaker
+Copyright (c) 2014-2026 bluefox <dogafox@gmail.com>  
+Copyright (c) 2014 hobbyquaker <hq@ccu.io>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

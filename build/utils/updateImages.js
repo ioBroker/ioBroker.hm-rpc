@@ -43,6 +43,7 @@ const MANUAL = {
     'HmIP-DLD': 'HmIP-DLD.svg', // OCCU: 214_hmip-dld_thumb.png
     'HmIP-KRCK': 'HmIP-KRCK.svg', // OCCU: 84_hm-rc-4-x_thumb.png
     'HmIP-RCV-50': 'CCU3_thumb.svg', // OCCU: CCU3-1-50_thumb.png
+    'HmIP-RFUSB': 'CCU3_thumb.svg', // no OCCU entry, radio module like RPI-RF-MOD
     'HmIP-SFD': '212_hmip-sfd-1.svg', // OCCU: 212_hmip-sfd_thumb.png
     'HmIP-STE2-PCB': 'HmIP-STE2-PCB.svg', // OCCU: 210_hmip-ste2-pcb_thumb.png
     'HmIP-eTRV-E': 'HmIP-eTRV-E.svg', // OCCU: 216_hmip-etrv-e_thumb.png
@@ -198,6 +199,6 @@ async function main() {
 }
 main().catch((e) => {
     console.error(e.message);
-    process.exit(1);
+    process.exitCode = 1;
 });
 //# sourceMappingURL=updateImages.js.map

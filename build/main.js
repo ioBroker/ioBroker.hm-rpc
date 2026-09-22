@@ -38,9 +38,9 @@ const adapter_core_1 = require("@iobroker/adapter-core");
 const images_1 = require("./lib/images");
 const tools = __importStar(require("./lib/tools"));
 const roles_1 = require("./lib/roles");
-const crypto_1 = require("crypto");
-const fs_1 = require("fs");
-const path_1 = require("path");
+const node_crypto_1 = require("node:crypto");
+const node_fs_1 = require("node:fs");
+const node_path_1 = require("node:path");
 const deviceManager_1 = require("./lib/deviceManager");
 let connected = false;
 const displays = {};
@@ -53,18 +53,11 @@ class HomematicRpc extends adapter_core_1.Adapter {
         super({
             ...options,
             name: 'hm-rpc',
-            error: (e) => {
-                if (e.code === 'EADDRNOTAVAIL') {
-                    this.log.error(`Address ${this.config.adapterAddress} not available, maybe your HOST IP has changed due to migration`);
-                    // doesn't work in that case, so let it correctly be handled by controller at least we can log
-                    // return true;
-                }
-                // don't know how to handle, so let it burn ;-)
-                return false;
-            },
         });
         /** On failed rpc call retry in X ms */
         this.RETRY_DELAY_MS = 150;
+        /** On RPC server error (e.g. address not available) restart the adapter after X ms */
+        this.SERVER_RESTART_DELAY_MS = 30_000;
         this.metaValues = {};
         this.dpTypes = {};
         this.lastEvent = 0;
@@ -85,7 +78,7 @@ class HomematicRpc extends adapter_core_1.Adapter {
             EPAPER_TONE_REPETITIONS: 'number',
         };
         /** admin/icons sits next to build/ in the installed package */
-        this.iconDir = (0, path_1.join)(__dirname, '..', 'admin', 'icons');
+        this.iconDir = (0, node_path_1.join)(__dirname, '..', 'admin', 'icons');
         /** icon file -> `common.icon` value, so each SVG is read from disk only once */
         this.iconCache = new Map();
         this.methods = {
@@ -118,8 +111,13 @@ class HomematicRpc extends adapter_core_1.Adapter {
                         val = params[3];
                     }
                 }
+                else if (params[2] === 'PONG') {
+                    // answer to our ping, it does not belong to a device (#964)
+                    this.log.debug(`${this.config.type}rpc <- PONG received`);
+                    return '';
+                }
                 else {
-                    // for every device we know (listDevices), there will be a dpType, so this way we filter out stuff like PONG event and https://github.com/ioBroker/ioBroker.hm-rpc/issues/298
+                    // for every device we know (listDevices), there will be a dpType, so this way we filter out stuff like https://github.com/ioBroker/ioBroker.hm-rpc/issues/298
                     this.log.debug(`${this.config.type}rpc <- event: ${name}:${params[3]} discarded, no matching device`);
                     return '';
                 }
@@ -158,7 +156,7 @@ class HomematicRpc extends adapter_core_1.Adapter {
         let icon = this.iconCache.get(file);
         if (icon === undefined) {
             try {
-                const svg = (0, fs_1.readFileSync)((0, path_1.join)(this.iconDir, file), 'utf8');
+                const svg = (0, node_fs_1.readFileSync)((0, node_path_1.join)(this.iconDir, file), 'utf8');
                 icon = `data:image/svg+xml;base64,${Buffer.from(svg).toString('base64')}`;
             }
             catch (e) {
@@ -218,7 +216,6 @@ class HomematicRpc extends adapter_core_1.Adapter {
         await this.setState('info.connection', false, true);
         await this.migrateDeviceIcons();
         if (this.config.type === 'bin') {
-            // @ts-expect-error no types
             rpc = await import('binrpc');
             this.daemonProto = 'xmlrpc_bin://';
         }
@@ -320,51 +317,17 @@ class HomematicRpc extends adapter_core_1.Adapter {
                 try {
                     // tell CCU that we are no longer the client under this URL - legacy idk if necessary
                     await this.rpcMethodCallAsync('init', [this.daemonURL, '']);
-                    if (connected) {
-                        this.log.info('Disconnected');
-                        connected = false;
-                        await this.setState('info.connection', false, true);
-                    }
-                    if (rpcServer && rpcServer.server) {
-                        try {
-                            rpcServer.server.close(() => {
-                                console.log('server closed.');
-                                rpcServer.server.unref();
-                            });
-                        }
-                        catch {
-                            // ignore
-                        }
-                    }
-                    if (rpcClient?.socket) {
-                        try {
-                            rpcClient.socket.destroy();
-                        }
-                        catch {
-                            // ignore
-                        }
-                    }
-                    if (typeof callback === 'function') {
-                        callback();
-                    }
                 }
                 catch (e) {
-                    if (connected) {
-                        this.log.info('Disconnected');
-                        connected = false;
-                        this.setState('info.connection', false, true);
-                    }
                     this.log.error(`Cannot call init: [${this.daemonURL}, ""] ${e.message}`);
-                    if (typeof callback === 'function') {
-                        callback();
-                    }
+                }
+                if (connected) {
+                    this.log.info('Disconnected');
+                    connected = false;
+                    await this.setState('info.connection', false, true);
                 }
             }
-            else {
-                if (typeof callback === 'function') {
-                    callback();
-                }
-            }
+            await this.closeRpc();
         }
         catch (e) {
             if (this.log) {
@@ -373,8 +336,42 @@ class HomematicRpc extends adapter_core_1.Adapter {
             else {
                 console.log(`Unload error: ${e.message}`);
             }
-            if (typeof callback === 'function') {
-                callback();
+        }
+        if (typeof callback === 'function') {
+            callback();
+        }
+    }
+    /**
+     * Deletes a device or channel object with all its children (replaces the deprecated deleteDevice/deleteChannel)
+     *
+     * @param id - device or channel ID relative to the namespace
+     */
+    async deleteObjectTree(id) {
+        const obj = await this.getObjectAsync(id);
+        if (obj?.type === 'device' || obj?.type === 'channel') {
+            await this.delObjectAsync(id, { recursive: true });
+        }
+    }
+    /**
+     * Closes the RPC client and the RPC server
+     */
+    async closeRpc() {
+        // bin-rpc: destroys the socket and stops reconnecting, xml-rpc client has nothing to close
+        if (typeof rpcClient?.close === 'function') {
+            try {
+                rpcClient.close();
+            }
+            catch {
+                // ignore
+            }
+        }
+        if (typeof rpcServer?.close === 'function') {
+            try {
+                // closes open connections too, so it resolves without waiting for the CCU
+                await rpcServer.close();
+            }
+            catch {
+                // ignore, e.g. server was never listening
             }
         }
     }
@@ -715,7 +712,7 @@ class HomematicRpc extends adapter_core_1.Adapter {
         const adapterPort = await this.getPortAsync(desiredAapterPort);
         this.daemonURL = `${this.daemonProto + callbackAddress}:${adapterPort}`;
         try {
-            // somehow we cannot catch EADDRNOTAVAIL, also not with a cb here
+            // listen errors like EADDRNOTAVAIL are not thrown here, they are emitted as 'error' event
             rpcServer = rpc.createServer({
                 host: this.config.adapterAddress,
                 port: adapterPort,
@@ -725,6 +722,18 @@ class HomematicRpc extends adapter_core_1.Adapter {
             this.log.error(`Could not create RPC Server: ${e.message}`);
             return void this.restart();
         }
+        // register before the next await, the server starts listening on next tick and emits listen errors as 'error'
+        rpcServer.on('error', (e) => {
+            this.log.error(`RPC Server error on ${this.config.adapterAddress}:${adapterPort}: ${e.message}. Without the server no events can be received, restarting in ${this.SERVER_RESTART_DELAY_MS / 1_000} seconds`);
+            if (e.code === 'EADDRNOTAVAIL') {
+                // the address is not (yet) assigned to this host
+                this.log.error(`Address ${this.config.adapterAddress} not available, maybe your HOST IP has changed due to migration`);
+            }
+            // restart delayed, so a permanent error does not end in a restart loop
+            if (!this.serverRestartTimer) {
+                this.serverRestartTimer = this.setTimeout(() => this.restart(), this.SERVER_RESTART_DELAY_MS);
+            }
+        });
         // build up unique client id
         clientId = this.namespace;
         try {
@@ -734,12 +743,17 @@ class HomematicRpc extends adapter_core_1.Adapter {
         catch (e) {
             this.log.warn(`Could not get hostname, using default id "${clientId}" to register: ${e.message}`);
         }
-        clientId += `:${(0, crypto_1.randomBytes)(16).toString('hex')}`;
+        clientId += `:${(0, node_crypto_1.randomBytes)(16).toString('hex')}`;
         this.log.info(`${this.config.type}rpc server is trying to listen on ${this.config.adapterAddress}:${adapterPort}`);
         this.log.info(`${this.config.type}rpc client is trying to connect to ${this.config.homematicAddress}:${this.config.homematicPort}${this.homematicPath} with ${JSON.stringify([this.daemonURL, clientId])}`);
         this.connect(true);
         // Not found has special structure and no callback
         rpcServer.on('NotFound', (method, params) => {
+            if (!method) {
+                // the request could not be parsed as RPC call, e.g. an HTTP request of another client (#1151)
+                this.log.debug(`${this.config.type}rpc <- invalid request without method ignored`);
+                return;
+            }
             this.log.warn(`${this.config.type}rpc <- undefined method ${method} with parameters ${typeof params === 'object' ? JSON.stringify(params).slice(0, 80) : params}`);
         });
         rpcServer.on('readdedDevice', (error, params, callback) => {
@@ -755,7 +769,7 @@ class HomematicRpc extends adapter_core_1.Adapter {
             const newDeviceName = params[2];
             this.log.info(`Device "${oldDeviceName}" has been replaced by "${newDeviceName}"`);
             // remove the old device
-            await this.deleteDeviceAsync(oldDeviceName);
+            await this.deleteObjectTree(oldDeviceName.replace(tools.FORBIDDEN_CHARS, '_'));
             this.log.info(`Replaced device "${oldDeviceName}" deleted`);
             // add the new device
             this.log.info(`${this.config.type}rpc -> getDeviceDescription ${JSON.stringify([newDeviceName])}`);
@@ -767,10 +781,6 @@ class HomematicRpc extends adapter_core_1.Adapter {
                 this.log.error(`Error while creating replacement device "${newDeviceName}": ${e.message}`);
             }
             callback(null, '');
-        });
-        rpcServer.on('error', (e) => {
-            // not sure if this can really be triggered
-            this.log.error(`RPC Server error: ${e.message}`);
         });
         rpcServer.on('system.multicall', (err, params, callback) => {
             this.updateConnection();
@@ -869,7 +879,7 @@ class HomematicRpc extends adapter_core_1.Adapter {
                                     const address = val.ADDRESS.replace(':', '.').replace(tools.FORBIDDEN_CHARS, '_');
                                     const parts = address.split('.');
                                     try {
-                                        await this.deleteChannelAsync(parts[parts.length - 2], parts[parts.length - 1]);
+                                        await this.deleteObjectTree(`${parts[parts.length - 2]}.${parts[parts.length - 1]}`);
                                         this.log.info(`obsolete channel ${address} ${JSON.stringify(address)} deleted`);
                                     }
                                     catch (e) {
@@ -878,7 +888,7 @@ class HomematicRpc extends adapter_core_1.Adapter {
                                 }
                                 else {
                                     try {
-                                        await this.deleteDeviceAsync(val.ADDRESS);
+                                        await this.deleteObjectTree(val.ADDRESS.replace(tools.FORBIDDEN_CHARS, '_'));
                                         this.log.info(`obsolete device ${val.ADDRESS} deleted`);
                                     }
                                     catch (e) {
@@ -957,11 +967,11 @@ class HomematicRpc extends adapter_core_1.Adapter {
                     deviceName = deviceName.replace(':', '.').replace(tools.FORBIDDEN_CHARS, '_');
                     this.log.info(`channel ${deviceName} ${JSON.stringify(deviceName)} deleted`);
                     const parts = deviceName.split('.');
-                    this.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
+                    this.deleteObjectTree(`${parts[parts.length - 2]}.${parts[parts.length - 1]}`).catch(e => this.log.error(`Could not delete channel ${deviceName}: ${e.message}`));
                 }
                 else {
                     this.log.info(`device ${deviceName} deleted`);
-                    this.deleteDevice(deviceName);
+                    this.deleteObjectTree(deviceName.replace(tools.FORBIDDEN_CHARS, '_')).catch(e => this.log.error(`Could not delete device ${deviceName}: ${e.message}`));
                 }
             }
             try {
@@ -1624,11 +1634,11 @@ class HomematicRpc extends adapter_core_1.Adapter {
                                     if (val.ADDRESS.includes(':')) {
                                         const address = val.ADDRESS.replace(':', '.').replace(tools.FORBIDDEN_CHARS, '_');
                                         const parts = address.split('.');
-                                        this.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
+                                        this.deleteObjectTree(`${parts[parts.length - 2]}.${parts[parts.length - 1]}`).catch(e => this.log.error(`Could not delete obsolete channel ${address}: ${e.message}`));
                                         this.log.info(`obsolete channel ${address} ${JSON.stringify(address)} deleted`);
                                     }
                                     else {
-                                        this.deleteDevice(val.ADDRESS);
+                                        this.deleteObjectTree(val.ADDRESS.replace(tools.FORBIDDEN_CHARS, '_')).catch(e => this.log.error(`Could not delete obsolete device ${val.ADDRESS}: ${e.message}`));
                                         this.log.info(`obsolete device ${val.ADDRESS} deleted`);
                                     }
                                 }

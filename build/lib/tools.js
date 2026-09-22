@@ -200,48 +200,15 @@ function combineEPaperCommand(lines, signal, ton, repeats, offset) {
         command = `${command},0x0A`;
     }
     command = `${command},0x14,${ton},0x1C,`;
-    if (!repeats || repeats < 1) {
-        command = `${command}0xDF,0x1D,`;
-    }
-    else if (repeats < 11) {
-        command = `${command}0xD${repeats - 1},0x1D,`;
-    }
-    else if (repeats === 11) {
-        command = `${command}0xDA,0x1D,`;
-    }
-    else if (repeats === 12) {
-        command = `${command}0xDB,0x1D,`;
-    }
-    else if (repeats === 13) {
-        command = `${command}0xDC,0x1D,`;
-    }
-    else if (repeats === 14) {
-        command = `${command}0xDD,0x1D,`;
-    }
-    else {
-        command = `${command}0xDE,0x1D,`;
-    }
-    if (!offset || offset <= 100) {
-        command = `${command}0xE${(offset || 0) / 10 - 1},0x16,`;
-    }
-    else if (offset <= 110) {
-        command = `${command}0xEA,0x16,`;
-    }
-    else if (offset <= 120) {
-        command = `${command}0xEB,0x16,`;
-    }
-    else if (offset <= 130) {
-        command = `${command}0xEC,0x16,`;
-    }
-    else if (offset <= 140) {
-        command = `${command}0xED,0x16,`;
-    }
-    else if (offset <= 150) {
-        command = `${command}0xEE,0x16,`;
-    }
-    else {
-        command = `${command}0xEF,0x16,`;
-    }
+    // 0xD0 - 0xDE: 1 - 15 repetitions, 0xDF: unlimited (repeats 0 or not set)
+    const repeatCount = Math.round(Number(repeats));
+    const repeatCode = repeatCount >= 1 ? Math.min(repeatCount, 15) - 1 : 15;
+    command = `${command}0xD${repeatCode.toString(16).toUpperCase()},0x1D,`;
+    // 0xE0 - 0xEF: interval of 10 - 160 seconds. Without a valid offset (e.g. only the lines were written) use 10 seconds,
+    // otherwise an invalid "0xE-1" is sent and the CCU rejects the whole command (#1450, #1454, #1461)
+    const intervalSteps = Math.ceil(Number(offset) / 10);
+    const intervalCode = Number.isFinite(intervalSteps) ? Math.min(Math.max(intervalSteps, 1), 16) - 1 : 0;
+    command = `${command}0xE${intervalCode.toString(16).toUpperCase()},0x16,`;
     command = `${command + signal},0x03`;
     return command;
 }

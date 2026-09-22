@@ -21,5 +21,6 @@
     "This IP is unreachable from %s": "Этот IP не доступен для %s",
     "Use https": "использовать https",
     "Username": "имя пользователя",
-    "in seconds": "в секундах"
+    "in seconds": "в секундах",
+    "Main settings": "Основные настройки"
 }

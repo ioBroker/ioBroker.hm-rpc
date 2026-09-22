@@ -2,9 +2,9 @@ import { Adapter, type AdapterOptions } from '@iobroker/adapter-core';
 import { images } from './lib/images';
 import * as tools from './lib/tools';
 import { metaRoles } from './lib/roles';
-import { randomBytes } from 'crypto';
-import { readFileSync } from 'fs';
-import { join } from 'path';
+import { randomBytes } from 'node:crypto';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import type {
     ParamsetObjectWithSpecial,
     ParamsetObject,
@@ -93,8 +93,12 @@ export class HomematicRpc extends Adapter {
                 } else {
                     val = params[3];
                 }
+            } else if (params[2] === 'PONG') {
+                // answer to our ping, it does not belong to a device (#964)
+                this.log.debug(`${this.config.type}rpc <- PONG received`);
+                return '';
             } else {
-                // for every device we know (listDevices), there will be a dpType, so this way we filter out stuff like PONG event and https://github.com/ioBroker/ioBroker.hm-rpc/issues/298
+                // for every device we know (listDevices), there will be a dpType, so this way we filter out stuff like https://github.com/ioBroker/ioBroker.hm-rpc/issues/298
                 this.log.debug(`${this.config.type}rpc <- event: ${name}:${params[3]} discarded, no matching device`);
                 return '';
             }
@@ -351,6 +355,18 @@ export class HomematicRpc extends Adapter {
 
         if (typeof callback === 'function') {
             callback();
+        }
+    }
+
+    /**
+     * Deletes a device or channel object with all its children (replaces the deprecated deleteDevice/deleteChannel)
+     *
+     * @param id - device or channel ID relative to the namespace
+     */
+    private async deleteObjectTree(id: string): Promise<void> {
+        const obj = await this.getObjectAsync(id);
+        if (obj?.type === 'device' || obj?.type === 'channel') {
+            await this.delObjectAsync(id, { recursive: true });
         }
     }
 
@@ -802,7 +818,12 @@ export class HomematicRpc extends Adapter {
         this.connect(true);
 
         // Not found has special structure and no callback
-        rpcServer.on('NotFound', (method: string, params: any) => {
+        rpcServer.on('NotFound', (method: string | undefined, params: any) => {
+            if (!method) {
+                // the request could not be parsed as RPC call, e.g. an HTTP request of another client (#1151)
+                this.log.debug(`${this.config.type}rpc <- invalid request without method ignored`);
+                return;
+            }
             this.log.warn(
                 `${this.config.type}rpc <- undefined method ${method} with parameters ${
                     typeof params === 'object' ? JSON.stringify(params).slice(0, 80) : params
@@ -828,7 +849,7 @@ export class HomematicRpc extends Adapter {
             this.log.info(`Device "${oldDeviceName}" has been replaced by "${newDeviceName}"`);
 
             // remove the old device
-            await this.deleteDeviceAsync(oldDeviceName);
+            await this.deleteObjectTree(oldDeviceName.replace(tools.FORBIDDEN_CHARS, '_'));
             this.log.info(`Replaced device "${oldDeviceName}" deleted`);
 
             // add the new device
@@ -952,7 +973,9 @@ export class HomematicRpc extends Adapter {
                                     const address = val.ADDRESS.replace(':', '.').replace(tools.FORBIDDEN_CHARS, '_');
                                     const parts = address.split('.');
                                     try {
-                                        await this.deleteChannelAsync(parts[parts.length - 2], parts[parts.length - 1]);
+                                        await this.deleteObjectTree(
+                                            `${parts[parts.length - 2]}.${parts[parts.length - 1]}`,
+                                        );
                                         this.log.info(`obsolete channel ${address} ${JSON.stringify(address)} deleted`);
                                     } catch (e: unknown) {
                                         this.log.error(
@@ -963,7 +986,7 @@ export class HomematicRpc extends Adapter {
                                     }
                                 } else {
                                     try {
-                                        await this.deleteDeviceAsync(val.ADDRESS);
+                                        await this.deleteObjectTree(val.ADDRESS.replace(tools.FORBIDDEN_CHARS, '_'));
                                         this.log.info(`obsolete device ${val.ADDRESS} deleted`);
                                     } catch (e: unknown) {
                                         this.log.error(
@@ -1047,10 +1070,14 @@ export class HomematicRpc extends Adapter {
                     deviceName = deviceName.replace(':', '.').replace(tools.FORBIDDEN_CHARS, '_');
                     this.log.info(`channel ${deviceName} ${JSON.stringify(deviceName)} deleted`);
                     const parts = deviceName.split('.');
-                    this.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
+                    this.deleteObjectTree(`${parts[parts.length - 2]}.${parts[parts.length - 1]}`).catch(e =>
+                        this.log.error(`Could not delete channel ${deviceName}: ${(e as Error).message}`),
+                    );
                 } else {
                     this.log.info(`device ${deviceName} deleted`);
-                    this.deleteDevice(deviceName);
+                    this.deleteObjectTree(deviceName.replace(tools.FORBIDDEN_CHARS, '_')).catch(e =>
+                        this.log.error(`Could not delete device ${deviceName}: ${(e as Error).message}`),
+                    );
                 }
             }
             try {
@@ -1835,10 +1862,21 @@ export class HomematicRpc extends Adapter {
                                             '_',
                                         );
                                         const parts = address.split('.');
-                                        this.deleteChannel(parts[parts.length - 2], parts[parts.length - 1]);
+                                        this.deleteObjectTree(
+                                            `${parts[parts.length - 2]}.${parts[parts.length - 1]}`,
+                                        ).catch(e =>
+                                            this.log.error(
+                                                `Could not delete obsolete channel ${address}: ${(e as Error).message}`,
+                                            ),
+                                        );
                                         this.log.info(`obsolete channel ${address} ${JSON.stringify(address)} deleted`);
                                     } else {
-                                        this.deleteDevice(val.ADDRESS);
+                                        this.deleteObjectTree(val.ADDRESS.replace(tools.FORBIDDEN_CHARS, '_')).catch(
+                                            e =>
+                                                this.log.error(
+                                                    `Could not delete obsolete device ${val.ADDRESS}: ${(e as Error).message}`,
+                                                ),
+                                        );
                                         this.log.info(`obsolete device ${val.ADDRESS} deleted`);
                                     }
                                 }

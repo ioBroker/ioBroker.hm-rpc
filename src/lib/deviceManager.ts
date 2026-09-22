@@ -76,7 +76,7 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
             };
 
             let hasDetails = false;
-            if (device.native.AVAILABLE_FIRMWARE || device.native.FIRMWARE) {
+            if (device.native?.AVAILABLE_FIRMWARE || device.native?.FIRMWARE) {
                 hasDetails = true;
             }
 
@@ -85,7 +85,7 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                 name: device.common.name,
                 icon: dmHmRpc.deviceIcon(device.common.icon),
                 manufacturer: 'EQ-3 AG',
-                model: device.native.TYPE ? device.native.TYPE : null,
+                model: device.native?.TYPE ? device.native?.TYPE : null,
                 status: status,
                 hasDetails: hasDetails,
                 actions: [
@@ -131,7 +131,7 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
             };
 
             let hasDetails = false;
-            if (device.native.AVAILABLE_FIRMWARE || device.native.FIRMWARE) {
+            if (device.native?.AVAILABLE_FIRMWARE || device.native?.FIRMWARE) {
                 hasDetails = true;
             }
 
@@ -140,7 +140,7 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                 name: device.common.name,
                 icon: dmHmRpc.deviceIcon(device.common.icon),
                 manufacturer: 'EQ-3 AG',
-                model: device.native.TYPE ? device.native.TYPE : null,
+                model: device.native?.TYPE ? device.native?.TYPE : null,
                 status: status,
                 hasDetails: hasDetails,
                 actions: [
@@ -177,9 +177,7 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
         const channels = await this.adapter.getChannelsOfAsync(device._id);
         // for every channel
         const controls: DeviceControl<string>[] = [];
-        if (channels.find(a => a._id.includes('hm-rpc.0.EEQ0043360'))) {
-            console.log('aaa');
-        }
+        const controlIds = new Set<string>();
         for (let c = 0; c < channels.length; c++) {
             const channel = channels[c];
             if (!channel?._id || channel._id.endsWith('.0')) {
@@ -215,7 +213,13 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                     }
                     const result = this.typedControl2DeviceManager(tdControl, objects);
                     if (result?.length) {
-                        result.forEach(control => controls.push(control));
+                        result.forEach(control => {
+                            // the same state can be detected twice, but the device manager needs unique IDs (#1471)
+                            if (!controlIds.has(control.id)) {
+                                controlIds.add(control.id);
+                                controls.push(control);
+                            }
+                        });
                         break;
                     }
                 }
@@ -252,7 +256,7 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
             const parts = state.id.split('.');
             const stateName: string = (
                 parts.pop() ||
-                objects[state.id].native.CONTROL ||
+                objects[state.id]?.native?.CONTROL ||
                 state.id.split('.').pop() ||
                 state.name ||
                 ''
@@ -260,8 +264,8 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
 
             const channelId = parts.join('.');
             const channel: ChannelInfo = {
-                name: objects[channelId].common.name || objects[channelId].native.TYPE || parts[parts.length - 1],
-                description: objects[channelId].native.TYPE,
+                name: objects[channelId]?.common?.name || objects[channelId]?.native?.TYPE || parts[parts.length - 1],
+                description: objects[channelId]?.native?.TYPE,
                 order: parseInt(parts[parts.length - 1], 10),
             };
 
@@ -317,8 +321,6 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                                 actionId: string,
                                 state: ControlState,
                             ): Promise<ErrorResponse | ioBroker.State> => {
-                                console.log(state);
-
                                 await this.adapter.setForeignStateAsync(actionId, state, false);
                                 const currentState = await this.adapter.getStateAsync(actionId);
                                 if (currentState) {
@@ -363,8 +365,6 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                                 actionId: string,
                                 state: ControlState,
                             ): Promise<ErrorResponse | ioBroker.State> => {
-                                console.log(state);
-
                                 await this.adapter.setForeignStateAsync(actionId, state, false);
                                 const currentState = await this.adapter.getStateAsync(actionId);
                                 if (currentState) {
@@ -412,10 +412,8 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                                 handler: async (
                                     _deviceId: string,
                                     actionId: string,
-                                    state: ControlState,
+                                    _state: ControlState,
                                 ): Promise<ErrorResponse | ioBroker.State> => {
-                                    console.log(state);
-
                                     await this.adapter.setForeignStateAsync(actionId, true, false);
                                     const currentState = await this.adapter.getStateAsync(actionId);
                                     if (currentState) {
@@ -456,8 +454,6 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                                     actionId: string,
                                     state: ControlState,
                                 ): Promise<ErrorResponse | ioBroker.State> => {
-                                    console.log(state);
-
                                     await this.adapter.setForeignStateAsync(actionId, state, false);
                                     const currentState = await this.adapter.getStateAsync(actionId);
                                     if (currentState) {
@@ -501,8 +497,6 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                                 actionId: string,
                                 state: ControlState,
                             ): Promise<ErrorResponse | ioBroker.State> => {
-                                console.log(state);
-
                                 await this.adapter.setForeignStateAsync(actionId, state, false);
                                 const currentState = await this.adapter.getStateAsync(actionId);
                                 if (currentState) {
@@ -532,8 +526,6 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
                             _deviceId: string,
                             actionId: string,
                         ): Promise<ErrorResponse | ioBroker.State> => {
-                            console.log(state);
-
                             const currentState = await this.adapter.getStateAsync(actionId);
                             if (currentState) {
                                 if (states) {
@@ -579,7 +571,7 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
             },
         };
 
-        if (device.native.FIRMWARE) {
+        if (device.native?.FIRMWARE) {
             data.schema.items.firmwareLabel = {
                 type: 'staticText',
                 text: `Installed firmware:`,
@@ -588,12 +580,12 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
             };
             data.schema.items.firmware = {
                 type: 'staticText',
-                text: `${device.native.FIRMWARE}`,
+                text: `${device.native?.FIRMWARE}`,
                 newLine: false,
             };
         }
 
-        if (device.native.AVAILABLE_FIRMWARE) {
+        if (device.native?.AVAILABLE_FIRMWARE) {
             data.schema.items.labelAvailableFirmware = {
                 type: 'staticText',
                 text: `Available firmware:`,
@@ -602,7 +594,7 @@ export class dmHmRpc extends DeviceManagement<HomematicRpc> {
             };
             data.schema.items.availableFirmware = {
                 type: 'staticText',
-                text: `${device.native.AVAILABLE_FIRMWARE}`,
+                text: `${device.native?.AVAILABLE_FIRMWARE}`,
                 newLine: false,
             };
         }

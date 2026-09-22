@@ -363,6 +363,7 @@ export const images: Record<string, string> = {
     'HmIP-RC8': '119_hmip-rc8_thumb.svg',
     'HmIP-RCB1': '187_hmip-rcb1_thumb.svg',
     'HmIP-RCV-50': 'CCU3_thumb.svg',
+    'HmIP-RFUSB': 'CCU3_thumb.svg',
     'HmIP-RGBW': '225_hmip-rgbw_thumb.svg',
     'HmIP-SAM': '149_hmip-sam_thumb.svg',
     'HmIP-SCI': '190_hmip-sci_thumb.svg',

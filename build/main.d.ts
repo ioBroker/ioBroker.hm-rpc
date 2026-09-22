@@ -2,6 +2,9 @@ import { Adapter, type AdapterOptions } from '@iobroker/adapter-core';
 export declare class HomematicRpc extends Adapter {
     /** On failed rpc call retry in X ms */
     private readonly RETRY_DELAY_MS;
+    /** On RPC server error (e.g. address not available) restart the adapter after X ms */
+    private readonly SERVER_RESTART_DELAY_MS;
+    private serverRestartTimer?;
     private readonly metaValues;
     private readonly dpTypes;
     private lastEvent;
@@ -49,6 +52,16 @@ export declare class HomematicRpc extends Adapter {
      * @param callback call this in any case, it is necessary to clean up the adapter correctly
      */
     private onUnload;
+    /**
+     * Deletes a device or channel object with all its children (replaces the deprecated deleteDevice/deleteChannel)
+     *
+     * @param id - device or channel ID relative to the namespace
+     */
+    private deleteObjectTree;
+    /**
+     * Closes the RPC client and the RPC server
+     */
+    private closeRpc;
     /**
      * Is called if a subscribed state changes
      *

@@ -21,5 +21,6 @@
     "This IP is unreachable from %s": "此IP无法从％s访问 %s",
     "Use https": "使用https",
     "Username": "用户名",
-    "in seconds": "很快"
+    "in seconds": "很快",
+    "Main settings": "主要设置"
 }

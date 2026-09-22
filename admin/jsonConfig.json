@@ -12,7 +12,8 @@
                     "xs": 12,
                     "sm": 10,
                     "md": 6,
-                    "lg": 4
+                    "lg": 4,
+                    "xl": 4
                 },
                 "homematicPort": {
                     "type": "port",
@@ -21,6 +22,7 @@
                     "sm": 2,
                     "md": 2,
                     "lg": 2,
+                    "xl": 2,
                     "onChange": {
                         "alsoDependsOn": ["useHttps", "daemon", "type"],
                         "calculateFunc": "data.daemon === 'rfd' ? (data.useHttps && data.type !== 'bin' ? 42001 : 2001) : (data.daemon === 'virtual-devices' ? (data.useHttps && data.type !== 'bin' ? 49292 : 9292) : (data.daemon === 'hs485d' ? (data.useHttps && data.type !== 'bin' ? 42000 : 2000) : (data.daemon === 'CUxD' ? 8701 : (data.daemon === 'HMIP' ? (data.useHttps && data.type !== 'bin' ? 42010 : 2010) : data.homematicPort))))",
@@ -34,7 +36,8 @@
                     "xs": 12,
                     "sm": 10,
                     "md": 6,
-                    "lg": 4
+                    "lg": 4,
+                    "xl": 4
                 },
                 "port": {
                     "type": "number",
@@ -44,7 +47,8 @@
                     "xs": 12,
                     "sm": 2,
                     "md": 2,
-                    "lg": 2
+                    "lg": 2,
+                    "xl": 2
                 },
                 "daemon": {
                     "newLine": true,
@@ -79,7 +83,8 @@
                     "xs": 12,
                     "sm": 10,
                     "md": 6,
-                    "lg": 4
+                    "lg": 4,
+                    "xl": 4
                 },
                 "type": {
                     "type": "select",
@@ -97,7 +102,8 @@
                     "xs": 12,
                     "sm": 12,
                     "md": 4,
-                    "lg": 2
+                    "lg": 2,
+                    "xl": 2
                 },
                 "forceReInit": {
                     "newLine": true,
@@ -106,7 +112,8 @@
                     "xs": 12,
                     "sm": 10,
                     "md": 6,
-                    "lg": 4
+                    "lg": 4,
+                    "xl": 4
                 }
             }
         },
@@ -120,7 +127,8 @@
                     "xs": 12,
                     "sm": 10,
                     "md": 6,
-                    "lg": 4
+                    "lg": 4,
+                    "xl": 4
                 },
                 "checkInitInterval": {
                     "newLine": true,
@@ -130,7 +138,8 @@
                     "help": "in seconds",
                     "sm": 10,
                     "md": 4,
-                    "lg": 2
+                    "lg": 2,
+                    "xl": 2
                 },
                 "reconnectInterval": {
                     "type": "number",
@@ -139,7 +148,8 @@
                     "xs": 12,
                     "sm": 10,
                     "md": 4,
-                    "lg": 2
+                    "lg": 2,
+                    "xl": 2
                 },
                 "dontDelete": {
                     "newLine": true,
@@ -148,7 +158,8 @@
                     "xs": 12,
                     "sm": 10,
                     "md": 6,
-                    "lg": 4
+                    "lg": 4,
+                    "xl": 4
                 },
                 "useHttps": {
                     "newLine": true,
@@ -158,6 +169,7 @@
                     "sm": 10,
                     "md": 6,
                     "lg": 4,
+                    "xl": 4,
                     "disabled": "data.type === 'bin'",
                     "onChange": {
                         "alsoDependsOn": ["type"],
@@ -172,6 +184,7 @@
                     "sm": 12,
                     "md": 4,
                     "lg": 4,
+                    "xl": 4,
                     "hidden": "data.type === 'bin'"
                 },
                 "password": {
@@ -182,7 +195,8 @@
                     "xs": 12,
                     "sm": 6,
                     "md": 4,
-                    "lg": 4
+                    "lg": 4,
+                    "xl": 4
                 }
             }
         },

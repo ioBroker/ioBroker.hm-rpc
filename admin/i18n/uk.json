@@ -21,5 +21,6 @@
     "This IP is unreachable from %s": "Ця IP недоступна з %s",
     "Use https": "Використовуйте https",
     "Username": "Ім'я користувача",
-    "in seconds": "за секунди"
+    "in seconds": "за секунди",
+    "Main settings": "Основні налаштування"
 }

@@ -21,5 +21,6 @@
     "This IP is unreachable from %s": "Este IP es inalcanzable desde %s",
     "Use https": "usar https",
     "Username": "Nombre de usuario",
-    "in seconds": "en segundos"
+    "in seconds": "en segundos",
+    "Main settings": "Configuración principal"
 }

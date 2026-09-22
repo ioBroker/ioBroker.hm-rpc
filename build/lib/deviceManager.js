@@ -60,7 +60,7 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                 warning: sabotage?.val ? 'Sabotage' : undefined,
             };
             let hasDetails = false;
-            if (device.native.AVAILABLE_FIRMWARE || device.native.FIRMWARE) {
+            if (device.native?.AVAILABLE_FIRMWARE || device.native?.FIRMWARE) {
                 hasDetails = true;
             }
             const res = {
@@ -68,7 +68,7 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                 name: device.common.name,
                 icon: dmHmRpc.deviceIcon(device.common.icon),
                 manufacturer: 'EQ-3 AG',
-                model: device.native.TYPE ? device.native.TYPE : null,
+                model: device.native?.TYPE ? device.native?.TYPE : null,
                 status: status,
                 hasDetails: hasDetails,
                 actions: [
@@ -111,7 +111,7 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                 warning: sabotage?.val ? 'Sabotage' : undefined,
             };
             let hasDetails = false;
-            if (device.native.AVAILABLE_FIRMWARE || device.native.FIRMWARE) {
+            if (device.native?.AVAILABLE_FIRMWARE || device.native?.FIRMWARE) {
                 hasDetails = true;
             }
             const res = {
@@ -119,7 +119,7 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                 name: device.common.name,
                 icon: dmHmRpc.deviceIcon(device.common.icon),
                 manufacturer: 'EQ-3 AG',
-                model: device.native.TYPE ? device.native.TYPE : null,
+                model: device.native?.TYPE ? device.native?.TYPE : null,
                 status: status,
                 hasDetails: hasDetails,
                 actions: [
@@ -153,9 +153,7 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
         const channels = await this.adapter.getChannelsOfAsync(device._id);
         // for every channel
         const controls = [];
-        if (channels.find(a => a._id.includes('hm-rpc.0.EEQ0043360'))) {
-            console.log('aaa');
-        }
+        const controlIds = new Set();
         for (let c = 0; c < channels.length; c++) {
             const channel = channels[c];
             if (!channel?._id || channel._id.endsWith('.0')) {
@@ -189,7 +187,13 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                     }
                     const result = this.typedControl2DeviceManager(tdControl, objects);
                     if (result?.length) {
-                        result.forEach(control => controls.push(control));
+                        result.forEach(control => {
+                            // the same state can be detected twice, but the device manager needs unique IDs (#1471)
+                            if (!controlIds.has(control.id)) {
+                                controlIds.add(control.id);
+                                controls.push(control);
+                            }
+                        });
                         break;
                     }
                 }
@@ -216,14 +220,14 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
         tdControl.states.forEach(state => {
             const parts = state.id.split('.');
             const stateName = (parts.pop() ||
-                objects[state.id].native.CONTROL ||
+                objects[state.id]?.native?.CONTROL ||
                 state.id.split('.').pop() ||
                 state.name ||
                 '').replaceAll('_', ' ');
             const channelId = parts.join('.');
             const channel = {
-                name: objects[channelId].common.name || objects[channelId].native.TYPE || parts[parts.length - 1],
-                description: objects[channelId].native.TYPE,
+                name: objects[channelId]?.common?.name || objects[channelId]?.native?.TYPE || parts[parts.length - 1],
+                description: objects[channelId]?.native?.TYPE,
                 order: parseInt(parts[parts.length - 1], 10),
             };
             if (objects[state.id] && objects[state.id].common) {
@@ -269,7 +273,6 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                                 };
                             },
                             handler: async (_deviceId, actionId, state) => {
-                                console.log(state);
                                 await this.adapter.setForeignStateAsync(actionId, state, false);
                                 const currentState = await this.adapter.getStateAsync(actionId);
                                 if (currentState) {
@@ -308,7 +311,6 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                                 };
                             },
                             handler: async (_deviceId, actionId, state) => {
-                                console.log(state);
                                 await this.adapter.setForeignStateAsync(actionId, state, false);
                                 const currentState = await this.adapter.getStateAsync(actionId);
                                 if (currentState) {
@@ -348,8 +350,7 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                                 stateId: state.id,
                                 channel,
                                 label: stateName, // objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
-                                handler: async (_deviceId, actionId, state) => {
-                                    console.log(state);
+                                handler: async (_deviceId, actionId, _state) => {
                                     await this.adapter.setForeignStateAsync(actionId, true, false);
                                     const currentState = await this.adapter.getStateAsync(actionId);
                                     if (currentState) {
@@ -384,7 +385,6 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                                     };
                                 },
                                 handler: async (_deviceId, actionId, state) => {
-                                    console.log(state);
                                     await this.adapter.setForeignStateAsync(actionId, state, false);
                                     const currentState = await this.adapter.getStateAsync(actionId);
                                     if (currentState) {
@@ -422,7 +422,6 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                                 };
                             },
                             handler: async (_deviceId, actionId, state) => {
-                                console.log(state);
                                 await this.adapter.setForeignStateAsync(actionId, state, false);
                                 const currentState = await this.adapter.getStateAsync(actionId);
                                 if (currentState) {
@@ -449,7 +448,6 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                         unit: objects[state.id].common.unit,
                         label: stateName, // objects[state.id].native.CONTROL || state.id.split('.').pop() || state.name,
                         getStateHandler: async (_deviceId, actionId) => {
-                            console.log(state);
                             const currentState = await this.adapter.getStateAsync(actionId);
                             if (currentState) {
                                 if (states) {
@@ -492,7 +490,7 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
                 items: {},
             },
         };
-        if (device.native.FIRMWARE) {
+        if (device.native?.FIRMWARE) {
             data.schema.items.firmwareLabel = {
                 type: 'staticText',
                 text: `Installed firmware:`,
@@ -501,11 +499,11 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
             };
             data.schema.items.firmware = {
                 type: 'staticText',
-                text: `${device.native.FIRMWARE}`,
+                text: `${device.native?.FIRMWARE}`,
                 newLine: false,
             };
         }
-        if (device.native.AVAILABLE_FIRMWARE) {
+        if (device.native?.AVAILABLE_FIRMWARE) {
             data.schema.items.labelAvailableFirmware = {
                 type: 'staticText',
                 text: `Available firmware:`,
@@ -514,7 +512,7 @@ class dmHmRpc extends dm_utils_1.DeviceManagement {
             };
             data.schema.items.availableFirmware = {
                 type: 'staticText',
-                text: `${device.native.AVAILABLE_FIRMWARE}`,
+                text: `${device.native?.AVAILABLE_FIRMWARE}`,
                 newLine: false,
             };
         }
