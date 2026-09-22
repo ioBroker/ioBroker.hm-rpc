@@ -315,6 +315,10 @@ npm run update-images
 -->
 ### **WORK IN PROGRESS**
 * (krobipd) The device icons were invisible in the object browser: its ID cell sets `width: initial` on every element of an inlined SVG, which collapses the icon's `rect` to 0px. The size is now carried as an inline style as well.
+* (bluefox) Updated `binrpc` to 4.x and `homematic-xmlrpc` to 2.x (no dependency on a GitHub tarball anymore)
+* (bluefox) If the RPC server cannot listen (e.g. the configured IP address is not available), the error is logged and the adapter restarts after 30 seconds instead of crashing
+* (bluefox) On stop, the RPC server and client are closed properly, also for XML-RPC and if the CCU is not reachable
+* (bluefox) Updated packages
 
 ### 4.0.0 (2026-08-15)
 * (bluefox) Device icons are now delivered as theme-adaptive SVGs and stay visible on the dark admin theme

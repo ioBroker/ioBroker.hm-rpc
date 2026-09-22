@@ -29,6 +29,9 @@ let rpcServer: any;
 export class HomematicRpc extends Adapter {
     /** On failed rpc call retry in X ms */
     private readonly RETRY_DELAY_MS = 150;
+    /** On RPC server error (e.g. address not available) restart the adapter after X ms */
+    private readonly SERVER_RESTART_DELAY_MS = 30_000;
+    private serverRestartTimer?: ioBroker.Timeout;
     private readonly metaValues: Record<string, ParamsetObject> = {};
     private readonly dpTypes: Record<string, DatapointTypeObject> = {};
     private lastEvent = 0;
@@ -114,18 +117,6 @@ export class HomematicRpc extends Adapter {
         super({
             ...options,
             name: 'hm-rpc',
-            error: (e: any) => {
-                if (e.code === 'EADDRNOTAVAIL') {
-                    this.log.error(
-                        `Address ${this.config.adapterAddress} not available, maybe your HOST IP has changed due to migration`,
-                    );
-                    // doesn't work in that case, so let it correctly be handled by controller at least we can log
-                    // return true;
-                }
-
-                // don't know how to handle, so let it burn ;-)
-                return false;
-            },
         });
 
         this.on('ready', this.onReady.bind(this));
@@ -224,7 +215,6 @@ export class HomematicRpc extends Adapter {
         await this.migrateDeviceIcons();
 
         if (this.config.type === 'bin') {
-            // @ts-expect-error no types
             rpc = await import('binrpc');
             this.daemonProto = 'xmlrpc_bin://';
         } else {
@@ -339,58 +329,50 @@ export class HomematicRpc extends Adapter {
                 try {
                     // tell CCU that we are no longer the client under this URL - legacy idk if necessary
                     await this.rpcMethodCallAsync('init', [this.daemonURL, '']);
-                    if (connected) {
-                        this.log.info('Disconnected');
-                        connected = false;
-                        await this.setState('info.connection', false, true);
-                    }
-
-                    if (rpcServer && rpcServer.server) {
-                        try {
-                            rpcServer.server.close(() => {
-                                console.log('server closed.');
-                                rpcServer.server.unref();
-                            });
-                        } catch {
-                            // ignore
-                        }
-                    }
-
-                    if (rpcClient?.socket) {
-                        try {
-                            rpcClient.socket.destroy();
-                        } catch {
-                            // ignore
-                        }
-                    }
-
-                    if (typeof callback === 'function') {
-                        callback();
-                    }
                 } catch (e: unknown) {
-                    if (connected) {
-                        this.log.info('Disconnected');
-                        connected = false;
-                        this.setState('info.connection', false, true);
-                    }
                     this.log.error(`Cannot call init: [${this.daemonURL}, ""] ${(e as Error).message}`);
-                    if (typeof callback === 'function') {
-                        callback();
-                    }
                 }
-            } else {
-                if (typeof callback === 'function') {
-                    callback();
+
+                if (connected) {
+                    this.log.info('Disconnected');
+                    connected = false;
+                    await this.setState('info.connection', false, true);
                 }
             }
+
+            await this.closeRpc();
         } catch (e: unknown) {
             if (this.log) {
                 this.log.error(`Unload error: ${(e as Error).message}`);
             } else {
                 console.log(`Unload error: ${(e as Error).message}`);
             }
-            if (typeof callback === 'function') {
-                callback();
+        }
+
+        if (typeof callback === 'function') {
+            callback();
+        }
+    }
+
+    /**
+     * Closes the RPC client and the RPC server
+     */
+    private async closeRpc(): Promise<void> {
+        // bin-rpc: destroys the socket and stops reconnecting, xml-rpc client has nothing to close
+        if (typeof rpcClient?.close === 'function') {
+            try {
+                rpcClient.close();
+            } catch {
+                // ignore
+            }
+        }
+
+        if (typeof rpcServer?.close === 'function') {
+            try {
+                // closes open connections too, so it resolves without waiting for the CCU
+                await rpcServer.close();
+            } catch {
+                // ignore, e.g. server was never listening
             }
         }
     }
@@ -766,7 +748,7 @@ export class HomematicRpc extends Adapter {
         this.daemonURL = `${this.daemonProto + callbackAddress}:${adapterPort}`;
 
         try {
-            // somehow we cannot catch EADDRNOTAVAIL, also not with a cb here
+            // listen errors like EADDRNOTAVAIL are not thrown here, they are emitted as 'error' event
             rpcServer = rpc.createServer({
                 host: this.config.adapterAddress,
                 port: adapterPort,
@@ -775,6 +757,24 @@ export class HomematicRpc extends Adapter {
             this.log.error(`Could not create RPC Server: ${(e as Error).message}`);
             return void this.restart();
         }
+
+        // register before the next await, the server starts listening on next tick and emits listen errors as 'error'
+        rpcServer.on('error', (e: NodeJS.ErrnoException) => {
+            this.log.error(
+                `RPC Server error on ${this.config.adapterAddress}:${adapterPort}: ${e.message}. Without the server no events can be received, restarting in ${this.SERVER_RESTART_DELAY_MS / 1_000} seconds`,
+            );
+            if (e.code === 'EADDRNOTAVAIL') {
+                // the address is not (yet) assigned to this host
+                this.log.error(
+                    `Address ${this.config.adapterAddress} not available, maybe your HOST IP has changed due to migration`,
+                );
+            }
+
+            // restart delayed, so a permanent error does not end in a restart loop
+            if (!this.serverRestartTimer) {
+                this.serverRestartTimer = this.setTimeout(() => this.restart(), this.SERVER_RESTART_DELAY_MS);
+            }
+        });
 
         // build up unique client id
         clientId = this.namespace;
@@ -841,11 +841,6 @@ export class HomematicRpc extends Adapter {
             }
 
             callback(null, '');
-        });
-
-        rpcServer.on('error', (e: any) => {
-            // not sure if this can really be triggered
-            this.log.error(`RPC Server error: ${(e as Error).message}`);
         });
 
         rpcServer.on('system.multicall', (err: any, params: any, callback: RPCCallback) => {
