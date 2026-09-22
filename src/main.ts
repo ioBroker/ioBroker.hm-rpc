@@ -221,6 +221,20 @@ export class HomematicRpc extends Adapter {
 
         await this.migrateDeviceIcons();
 
+        // #1349: CUxD supports only BIN-RPC, HomeMatic IP and Virtual Devices only XML-RPC
+        const requiredType =
+            this.config.daemon === 'CUxD'
+                ? 'bin'
+                : this.config.daemon === 'HMIP' || this.config.daemon === 'virtual-devices'
+                  ? 'xml'
+                  : undefined;
+        if (requiredType && this.config.type !== requiredType) {
+            this.log.warn(
+                `${this.config.daemon} supports only ${requiredType === 'bin' ? 'BIN-RPC' : 'XML-RPC'}, the configured protocol is ignored`,
+            );
+            this.config.type = requiredType;
+        }
+
         if (this.config.type === 'bin') {
             rpc = await import('binrpc');
             this.daemonProto = 'xmlrpc_bin://';
@@ -629,6 +643,11 @@ export class HomematicRpc extends Adapter {
                     port: this.config.homematicPort,
                     path: this.homematicPath,
                     reconnectTimeout: this.config.reconnectInterval * 1000,
+                    // #1228: the CCU can require authentication for XML-RPC without HTTPS too
+                    basic_auth:
+                        this.config.type === 'xml' && this.config.username
+                            ? { user: this.config.username, pass: this.config.password }
+                            : undefined,
                 });
             } catch (e: unknown) {
                 this.log.error(`Could not create non-secure ${this.config.type}-rpc client: ${(e as Error).message}`);
@@ -754,6 +773,13 @@ export class HomematicRpc extends Adapter {
             }
         } catch (e: unknown) {
             this.log.error(`Init not possible, going to stop: ${(e as Error).message}`);
+            const message = (e as Error).message || '';
+            if (message.includes('Unknown XML-RPC tag') || message.includes('Invalid XML-RPC message')) {
+                // #1057, #1228: the web server of the CCU answered with an error page, e.g. "401 Unauthorized"
+                this.log.error(
+                    'The CCU did not answer with XML-RPC, but e.g. with an HTML page. Check the port, if the CCU requires authentication (username and password) and if the CCU accepts the HomeMatic address (e.g. use the IP address instead of a host name)',
+                );
+            }
             this.setTimeout(() => this.stop && this.stop(), 30_000);
         }
     }
@@ -1072,7 +1098,14 @@ export class HomematicRpc extends Adapter {
                 this.log.warn(`Error on deleteDevices: ${err.message}`);
             }
             this.log.info(`${this.config.type}rpc <- deleteDevices ${params[1].length}`);
-            for (let deviceName of params[1]) {
+            // #1243, #895: the HMIP server reports devices as deleted e.g. during a firmware update, although they still exist
+            const deviceNames: string[] = this.config.dontDelete ? [] : params[1];
+            if (this.config.dontDelete) {
+                this.log.info(
+                    `Devices not deleted, because "Don't delete devices" is enabled: ${JSON.stringify(params[1])}`,
+                );
+            }
+            for (let deviceName of deviceNames) {
                 if (deviceName.includes(':')) {
                     deviceName = deviceName.replace(':', '.').replace(tools.FORBIDDEN_CHARS, '_');
                     this.log.info(`channel ${deviceName} ${JSON.stringify(deviceName)} deleted`);
@@ -1201,6 +1234,15 @@ export class HomematicRpc extends Adapter {
 
             if (obj.common.role.includes('button') && !obj.common.write) {
                 obj.common.write = true;
+            }
+
+            // #1343: VALVE_STATE is the valve opening in % for BidCos, but the adaption state (ENUM) for HMIP
+            if (key === 'VALVE_STATE' && paramObj.TYPE === 'ENUM') {
+                obj.common.role = 'value';
+            }
+
+            if (!obj.common.write) {
+                obj.common.role = tools.readOnlyRole(obj.common.role);
             }
 
             // sometimes min/max/def is string on hmip meta in combination with value_list

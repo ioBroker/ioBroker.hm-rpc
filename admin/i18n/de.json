@@ -7,7 +7,7 @@
     "Check communication interval": "Verbindungs-Test Intervall",
     "Daemon": "Dämon",
     "Device manager": "Geräte-Manager",
-    "Don't delete devices": "Geräte bei Adapterstart nicht löschen",
+    "Don't delete devices": "Geräte nicht löschen, weder beim Adapterstart noch wenn die CCU sie als gelöscht meldet",
     "Force objects re-init": "Geräte neu einlesen (einmalig)",
     "HomeMatic Address": "HomeMatic Adresse",
     "HomeMatic Port": "HomeMatic Port",

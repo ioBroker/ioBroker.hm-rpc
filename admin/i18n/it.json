@@ -7,7 +7,7 @@
     "Check communication interval": "Controllare l'intervallo di comunicazione",
     "Daemon": "Demone",
     "Device manager": "Gestore dispositivi",
-    "Don't delete devices": "Non eliminare i dispositivi all'avvio dell'adattatore",
+    "Don't delete devices": "Non eliminare i dispositivi né all'avvio dell'adattatore né quando la CCU li segnala come eliminati",
     "Force objects re-init": "Sincronizza oggetti (una volta)",
     "HomeMatic Address": "Indirizzo HomeMatic",
     "HomeMatic Port": "HomeMatic Port",

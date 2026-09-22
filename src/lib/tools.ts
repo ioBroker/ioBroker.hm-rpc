@@ -231,6 +231,33 @@ export function combineEPaperCommand(
     return command;
 }
 
+/** read-only counterparts of the level roles, other level roles become "value" */
+const READ_ONLY_LEVEL_ROLES: Record<string, string> = {
+    level: 'value',
+    'level.blind': 'value.blind',
+    'level.dimmer': 'value.dimmer',
+    'level.mode.thermostat': 'value.mode.thermostat',
+    'level.temperature': 'value.temperature',
+    'level.valve': 'value.valve',
+};
+
+/**
+ * Returns the role for a read-only datapoint. level.* and switch.* are writable by definition,
+ * so other adapters (e.g. matter) try to control them (#1343, #1344, #1354)
+ *
+ * @param role role of the datapoint
+ * @returns the role to use, if the datapoint is not writable
+ */
+export function readOnlyRole(role: string): string {
+    if (role === 'level' || role.startsWith('level.')) {
+        return READ_ONLY_LEVEL_ROLES[role] || 'value';
+    }
+    if (role === 'switch' || role.startsWith('switch.')) {
+        return 'indicator';
+    }
+    return role;
+}
+
 /**
  * Fix different bugs in the CCU metadata
  *
@@ -249,9 +276,10 @@ export function fixParamset(params: FixParamsetParams): void {
         paramObj.MAX = 9_999;
     }
 
-    // # 539: while HMIP heating groups correctly have min 4.5 this is not the case for rfd somehow
+    // # 539, #930: while HMIP heating groups correctly have 4.5 - 30.5 (OFF - ON) this is not the case for rfd somehow
     if (paramObj.CONTROL === 'HEATING_CONTROL.SETPOINT' && daemon === 'virtual-devices') {
         paramObj.MIN = 4.5;
+        paramObj.MAX = 30.5;
     }
 
     // #764: HMIP heating groups active profile is declared with a max of 3 but 6 is the real max

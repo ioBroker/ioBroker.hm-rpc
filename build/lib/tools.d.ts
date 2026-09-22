@@ -21,6 +21,14 @@ export interface Line {
  */
 export declare function combineEPaperCommand(lines: Line[], signal: string | number, ton: number | string, repeats: number | undefined, offset: number | undefined): string;
 /**
+ * Returns the role for a read-only datapoint. level.* and switch.* are writable by definition,
+ * so other adapters (e.g. matter) try to control them (#1343, #1344, #1354)
+ *
+ * @param role role of the datapoint
+ * @returns the role to use, if the datapoint is not writable
+ */
+export declare function readOnlyRole(role: string): string;
+/**
  * Fix different bugs in the CCU metadata
  *
  * @param params relevant parameters

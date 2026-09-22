@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
-import { combineEPaperCommand, fixParamset } from './tools';
+import { combineEPaperCommand, fixParamset, readOnlyRole } from './tools';
 import type { ParamsetObject } from './_types';
 
 /** returns the repetition and interval codes of an EPAPER command */
@@ -88,5 +88,34 @@ describe('fixParamset', () => {
         const paramObj = hmipMode('HEATING_CONTROL_HMIP.ACTIVE_PROFILE');
         fixParamset({ paramObj, daemon: 'HMIP' });
         expect(paramObj.STATES).to.equal(undefined);
+    });
+
+    it('allows 4.5 (OFF) and 30.5 (ON) for the SET_TEMPERATURE of BidCos heating groups (#930)', () => {
+        const paramObj = hmipMode('HEATING_CONTROL.SETPOINT', { TYPE: 'FLOAT', MIN: '5.0', MAX: '30.0' });
+        fixParamset({ paramObj, daemon: 'virtual-devices' });
+        expect(paramObj.MIN).to.equal(4.5);
+        expect(paramObj.MAX).to.equal(30.5);
+    });
+});
+
+describe('readOnlyRole', () => {
+    it('replaces the writable level roles (#1343, #1354)', () => {
+        expect(readOnlyRole('level')).to.equal('value');
+        expect(readOnlyRole('level.blind')).to.equal('value.blind');
+        expect(readOnlyRole('level.valve')).to.equal('value.valve');
+        expect(readOnlyRole('level.temperature')).to.equal('value.temperature');
+        // there is no value.boost
+        expect(readOnlyRole('level.boost')).to.equal('value');
+    });
+
+    it('replaces the writable switch roles (#1344)', () => {
+        expect(readOnlyRole('switch.mode.party')).to.equal('indicator');
+        expect(readOnlyRole('switch')).to.equal('indicator');
+    });
+
+    it('keeps other roles', () => {
+        for (const role of ['value.temperature', 'indicator.lowbat', 'state', 'button', 'levelling', '']) {
+            expect(readOnlyRole(role)).to.equal(role);
+        }
     });
 });

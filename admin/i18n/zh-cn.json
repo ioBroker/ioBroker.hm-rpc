@@ -7,7 +7,7 @@
     "Check communication interval": "检查通信间隔",
     "Daemon": "守护进程",
     "Device manager": "装置经理",
-    "Don't delete devices": "不要在适配器启动时删除设备",
+    "Don't delete devices": "不删除设备（无论是适配器启动时还是 CCU 报告设备已删除时）",
     "Force objects re-init": "同步对象（一次）",
     "HomeMatic Address": "HomeMatic地址",
     "HomeMatic Port": "HomeMatic港口",

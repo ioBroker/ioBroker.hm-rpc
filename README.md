@@ -115,7 +115,8 @@ Two protocols are available for the communication: XML-RPC and BIN-RPC.
 BIN-RPC is faster, but some devices do not support it, or they support it incorrectly.
 In this case select the XML-RPC protocol.
 
-**Note:** CUxD works only with BIN-RPC. Homematic IP and `rfd` work only with XML-RPC.
+**Note:** CUxD works only with BIN-RPC. Homematic IP and Virtual Devices work only with XML-RPC.
+For these daemons the adapter uses the right protocol automatically.
 
 #### Synchronize objects (once)
 
@@ -143,17 +144,18 @@ The adapter sends a ping to the CCU in this interval.
 
 The adapter waits this time before it starts the next connection attempt.
 
-#### Don't delete devices on adapter start
+#### Don't delete devices
 
-By default, the adapter removes a device from the object tree if it does not find this device on the CCU at the adapter start.
+By default, the adapter removes a device from the object tree if it does not find this device on the CCU at the adapter start,
+or if the CCU reports the device as deleted while the adapter is running.
 Enable this option to keep such devices, for example if you removed a device from the CCU only temporarily.
 
 This option also avoids a problem on the CCU side:
-Homematic IP devices are sometimes not transferred correctly to ioBroker.
-In this case they are deleted at the adapter start, and they are created again some milliseconds later.
+Homematic IP devices are sometimes not transferred correctly to ioBroker, and the CCU reports them as deleted, e.g. during a firmware update, although they still exist.
+Without this option their objects are deleted, and they are created again only after a restart of the adapter.
 For this reason the option is enabled automatically as soon as you select Homematic IP as daemon.
 
-If you delete a device while the adapter is running, the CCU informs the adapter, and the adapter removes this device in any case.
+With this option enabled, delete the objects of a device that you removed from the CCU manually in the object tree.
 
 #### Use https
 
@@ -163,7 +165,8 @@ This works only with the XML-RPC protocol.
 #### Username and Password
 
 If the option "Use https" is enabled, enter the user name and the password of a CCU user here.
-Enter these credentials also if the API of the CCU requires an authentication.
+Enter these credentials also if the API of the CCU requires an authentication, the adapter sends them with XML-RPC with and without HTTPS.
+BIN-RPC does not support an authentication.
 
 ### Device manager
 
@@ -315,6 +318,13 @@ npm run update-images
 -->
 ### **WORK IN PROGRESS**
 * (bluefox) `CONTROL_MODE` and `SET_POINT_MODE` of HmIP thermostats show the mode names (auto, manual, party)
+* (bluefox) `SET_TEMPERATURE` of BidCos heating groups accepts 4.5 (OFF) and 30.5 (ON)
+* (bluefox) CUxD always uses BIN-RPC, Homematic IP and Virtual Devices always use XML-RPC
+* (bluefox) Username and password are sent with XML-RPC also without HTTPS
+* (bluefox) Better error message if the CCU answers with an HTML page instead of XML-RPC
+* (bluefox) Read-only datapoints do not get the writable roles `level.*` and `switch.*` anymore
+* (bluefox) HmIP shutters and blinds: the control channels get `level.blind`/`level.tilt`, the status channel `value.blind`/`value.tilt`; `LEVEL` and `VALVE_STATE` of HmIP thermostats got better roles
+* (bluefox) The option "Don't delete devices" also ignores devices that the CCU reports as deleted while the adapter is running (e.g. HmIP during firmware updates)
 
 ### 4.1.0 (2026-09-22)
 * (krobipd) The device icons were invisible in the object browser: its ID cell sets `width: initial` on every element of an inlined SVG, which collapses the icon's `rect` to 0px. The size is now carried as an inline style as well.

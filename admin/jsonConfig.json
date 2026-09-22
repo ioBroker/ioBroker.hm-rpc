@@ -99,6 +99,12 @@
                             "value": "bin"
                         }
                     ],
+                    "onChange": {
+                        "alsoDependsOn": ["daemon"],
+                        "calculateFunc": "data.daemon === 'CUxD' ? 'bin' : (data.daemon === 'HMIP' || data.daemon === 'virtual-devices' ? 'xml' : data.type)",
+                        "ignoreOwnChanges": true
+                    },
+                    "disabled": "data.daemon === 'CUxD' || data.daemon === 'HMIP' || data.daemon === 'virtual-devices'",
                     "xs": 12,
                     "sm": 12,
                     "md": 4,

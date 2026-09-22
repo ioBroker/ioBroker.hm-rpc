@@ -21,6 +21,14 @@ export const metaRoles: Record<string, Record<string, string>> = {
         'VIRTUAL_DIMMER.LEVEL': 'level.dimmer',
         'VIRTUAL_DIMMER.OLD_LEVEL': 'value.dimmer',
         'VIRTUAL_DIMMER.LEVEL_REAL': 'value.dimmer',
+        // #1343: valve opening of HMIP thermostats
+        'HEATING_CLIMATECONTROL_TRANSCEIVER.LEVEL': 'level.valve',
+        // #1354: HMIP shutters and blinds are controlled via the virtual receiver channels, the transmitter channel only reports
+        'SHUTTER_VIRTUAL_RECEIVER.LEVEL': 'level.blind',
+        'BLIND_VIRTUAL_RECEIVER.LEVEL': 'level.blind',
+        'BLIND_VIRTUAL_RECEIVER.LEVEL_2': 'level.tilt',
+        'BLIND_TRANSMITTER.LEVEL': 'value.blind',
+        'BLIND_TRANSMITTER.LEVEL_2': 'value.tilt',
     },
     dpNAME: {
         BATTERY_STATE: 'value.voltage',

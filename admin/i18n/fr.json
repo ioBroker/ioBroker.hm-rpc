@@ -7,7 +7,7 @@
     "Check communication interval": "Vérifier l'intervalle de communication",
     "Daemon": "Démon",
     "Device manager": "Gestionnaire de périphériques",
-    "Don't delete devices": "Ne supprimez pas les périphériques au démarrage de l'adaptateur",
+    "Don't delete devices": "Ne pas supprimer les appareils, ni au démarrage de l'adaptateur ni lorsque la CCU les signale comme supprimés",
     "Force objects re-init": "Synchroniser des objets (une fois)",
     "HomeMatic Address": "Adresse de HomeMatic",
     "HomeMatic Port": "AccueilMatic Port",

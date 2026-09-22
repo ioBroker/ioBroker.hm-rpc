@@ -7,7 +7,7 @@
     "Check communication interval": "Интервал проверки соединения",
     "Daemon": "Служба",
     "Device manager": "Диспетчер устройств",
-    "Don't delete devices": "Не удаляйте устройства при старте адаптера",
+    "Don't delete devices": "Не удалять устройства ни при запуске адаптера, ни когда CCU сообщает об их удалении",
     "Force objects re-init": "Синхронизировать объекты (один раз)",
     "HomeMatic Address": "Адрес HomeMatic",
     "HomeMatic Port": "Порт HomeMatic",

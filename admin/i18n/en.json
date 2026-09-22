@@ -7,7 +7,7 @@
   "Check communication interval": "Check communication interval",
   "Daemon": "Daemon",
   "Device manager": "Device manager",
-  "Don't delete devices": "Don't delete devices on adapter start",
+  "Don't delete devices": "Don't delete devices on adapter start or when the CCU reports them as deleted",
   "Force objects re-init": "Synchronize objects (once)",
   "HomeMatic Address": "HomeMatic Address",
   "HomeMatic Port": "HomeMatic Port",
