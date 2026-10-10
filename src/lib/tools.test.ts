@@ -153,6 +153,11 @@ describe('fixEvent', () => {
         expect(fixEvent({ val: NaN, dpType: { TYPE: 'FLOAT' } })).to.equal(null);
     });
 
+    it('returns null for the invalid temperature of a not connected sensor', () => {
+        expect(fixEvent({ val: 3276.8, dpType: { TYPE: 'FLOAT', UNIT: '°C', MAX: 3276.7 } })).to.equal(null);
+        expect(fixEvent({ val: 3276.7, dpType: { TYPE: 'FLOAT', UNIT: '°C', MAX: 3276.7 } })).to.equal(3276.7);
+    });
+
     it('does not touch strings of string datapoints', () => {
         expect(fixEvent({ val: '', dpType: { TYPE: 'STRING' } })).to.equal('');
         expect(fixEvent({ val: '0x02', dpType: { TYPE: 'EPAPER_LINE' } })).to.equal('0x02');
