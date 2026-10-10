@@ -316,6 +316,9 @@ npm run update-images
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (jhoos70) The invalid temperature 3276.8 of a not connected sensor (e.g. the external probe of a HmIP-STE2-PCB) is delivered as `null` instead of a value above the maximum
+
 ### 4.1.2 (2026-09-22)
 * (bluefox) Philips Hue and Osram Lightify lamps of the CCU lighting gateway: the color temperature `WHITE` is handled in kelvin (2000 - 6500 K), also if the CCU declares it as percent (#694)
 * (bluefox) `HUE` and `SATURATION` are sent together in one `putParamset`, HMIP devices like HmIP-RGBW rejected a single value with `MISSING_NON_OPTIONAL_PARAMETER` (#1108)

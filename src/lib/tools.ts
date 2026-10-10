@@ -329,6 +329,12 @@ export function fixEvent(params: FixEventParams): null | string | number | boole
         return null;
     }
 
+    // the temperature of a not connected sensor, e.g. the external probe of a HmIP-STE2-PCB, is 3276.8, which is
+    // the invalid value 0x8000 of a signed 16 bit integer in 0.1 steps and 0.1 above the MAX of the datapoint
+    if (typeof val === 'number' && dpType.TYPE === 'FLOAT' && val === 3_276.8) {
+        return null;
+    }
+
     // #872, #1342: the CCU sometimes delivers a string for a number, e.g. an empty SECTION since CCU FW 3.69.6
     // or the invalid ILLUMINATION of a HmIP-SWO-PL, which has no light sensor
     if (typeof val === 'string' && isNumber) {
