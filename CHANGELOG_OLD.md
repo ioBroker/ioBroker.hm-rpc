@@ -1,4 +1,9 @@
 # Older changes
+## 3.0.2 (2026-05-07)
+* (bluefox) Updated packages
+* (bluefox) Migrated to TypeScript 6
+* (bluefox) Corrected device manager
+
 ## 3.0.1 (2025-10-22)
 * (bluefox) Renamed role of `STICKY_UNREACH` to `indicator.unreach.sticky` for the better typing detection
 

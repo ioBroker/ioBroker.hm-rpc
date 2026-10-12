@@ -316,7 +316,7 @@ npm run update-images
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 4.1.3 (2026-10-12)
 * (jhoos70) The invalid temperature 3276.8 of a not connected sensor (e.g. the external probe of a HmIP-STE2-PCB) is delivered as `null` instead of a value above the maximum
 * (@GermanBluefox) The adapter reports the port of its RPC callback server to js-controller 8, which keeps a per-host registry of the occupied ports (`system.host.<name>.usedResources`). Reported is the port the server really got - the configuration only holds a wish for it (`0` means "pick one", and a configured port is moved on when it is taken), so this is the only place where the callback port can be seen. The port of the CCU is not reported, it belongs to another machine. Before the server is created, the log names an instance that has already declared the port. An older js-controller is unaffected
 
@@ -354,11 +354,6 @@ npm run update-images
 * (krobipd) Generated the device icon set and the device type map from the OCCU device database
 * (krobipd) The device icon is re-applied on start to devices that were created before their type had an icon
 * (bluefox) Removed support of Node.js 20
-
-### 3.0.2 (2026-05-07)
-* (bluefox) Updated packages
-* (bluefox) Migrated to TypeScript 6
-* (bluefox) Corrected device manager
 
 ### Older changelog
 [here](OLD_CHANGELOG.md)
