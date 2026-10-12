@@ -329,9 +329,10 @@ export function fixEvent(params: FixEventParams): null | string | number | boole
         return null;
     }
 
-    // the temperature of a not connected sensor, e.g. the external probe of a HmIP-STE2-PCB, is 3276.8, which is
-    // the invalid value 0x8000 of a signed 16 bit integer in 0.1 steps and 0.1 above the MAX of the datapoint
-    if (typeof val === 'number' && dpType.TYPE === 'FLOAT' && val === 3_276.8) {
+    // #1532: the temperature of a not connected sensor, e.g. the external probe of a HmIP-STE2-PCB, is 3276.8,
+    // which is 0x8000 in 0.1 steps and 0.1 above the MAX 3276.7 of the datapoint. Only datapoints with this MAX are
+    // checked, a counter like ENERGY_COUNTER can really have the value 3276.8. MAX can be a string on HmIP
+    if (typeof val === 'number' && val === 3_276.8 && Number(dpType.MAX) === 3_276.7) {
         return null;
     }
 

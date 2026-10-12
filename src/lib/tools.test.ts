@@ -156,6 +156,12 @@ describe('fixEvent', () => {
     it('returns null for the invalid temperature of a not connected sensor', () => {
         expect(fixEvent({ val: 3276.8, dpType: { TYPE: 'FLOAT', UNIT: '°C', MAX: 3276.7 } })).to.equal(null);
         expect(fixEvent({ val: 3276.7, dpType: { TYPE: 'FLOAT', UNIT: '°C', MAX: 3276.7 } })).to.equal(3276.7);
+        expect(fixEvent({ val: 3276.8, dpType: { TYPE: 'FLOAT', UNIT: '°C', MAX: '3276.7' } })).to.equal(null);
+    });
+
+    it('keeps 3276.8 of a datapoint with another range, e.g. an energy counter', () => {
+        expect(fixEvent({ val: 3276.8, dpType: { TYPE: 'FLOAT', UNIT: 'Wh', MAX: 167772.15 } })).to.equal(3276.8);
+        expect(fixEvent({ val: 3276.8, dpType: { TYPE: 'FLOAT' } })).to.equal(3276.8);
     });
 
     it('does not touch strings of string datapoints', () => {
