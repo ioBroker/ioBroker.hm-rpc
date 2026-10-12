@@ -318,22 +318,23 @@ npm run update-images
 -->
 ### **WORK IN PROGRESS**
 * (jhoos70) The invalid temperature 3276.8 of a not connected sensor (e.g. the external probe of a HmIP-STE2-PCB) is delivered as `null` instead of a value above the maximum
+* (@GermanBluefox) The adapter reports the port of its RPC callback server to js-controller 8, which keeps a per-host registry of the occupied ports (`system.host.<name>.usedResources`). Reported is the port the server really got - the configuration only holds a wish for it (`0` means "pick one", and a configured port is moved on when it is taken), so this is the only place where the callback port can be seen. The port of the CCU is not reported, it belongs to another machine. Before the server is created, the log names an instance that has already declared the port. An older js-controller is unaffected
 
 ### 4.1.2 (2026-09-22)
-* (bluefox) Philips Hue and Osram Lightify lamps of the CCU lighting gateway: the color temperature `WHITE` is handled in kelvin (2000 - 6500 K), also if the CCU declares it as percent (#694)
-* (bluefox) `HUE` and `SATURATION` are sent together in one `putParamset`, HMIP devices like HmIP-RGBW rejected a single value with `MISSING_NON_OPTIONAL_PARAMETER` (#1108)
-* (bluefox) Values which the CCU delivers as text for a number are converted (the name of an ENUM to its index, e.g. `STATE_NOT_AVAILABLE` of a `VALVE_STATE`), invalid values become `null` instead of a wrong type (#1342, #1358)
-* (bluefox) Events of deleted devices do not warn about missing objects until the next start of the adapter anymore (#1419)
+* (@GermanBluefox) Philips Hue and Osram Lightify lamps of the CCU lighting gateway: the color temperature `WHITE` is handled in kelvin (2000 - 6500 K), also if the CCU declares it as percent (#694)
+* (@GermanBluefox) `HUE` and `SATURATION` are sent together in one `putParamset`, HMIP devices like HmIP-RGBW rejected a single value with `MISSING_NON_OPTIONAL_PARAMETER` (#1108)
+* (@GermanBluefox) Values which the CCU delivers as text for a number are converted (the name of an ENUM to its index, e.g. `STATE_NOT_AVAILABLE` of a `VALVE_STATE`), invalid values become `null` instead of a wrong type (#1342, #1358)
+* (@GermanBluefox) Events of deleted devices do not warn about missing objects until the next start of the adapter anymore (#1419)
 
 ### 4.1.1 (2026-09-22)
-* (bluefox) `CONTROL_MODE` and `SET_POINT_MODE` of HmIP thermostats show the mode names (auto, manual, party)
-* (bluefox) `SET_TEMPERATURE` of BidCos heating groups accepts 4.5 (OFF) and 30.5 (ON)
-* (bluefox) CUxD always uses BIN-RPC, Homematic IP and Virtual Devices always use XML-RPC
-* (bluefox) Username and password are sent with XML-RPC also without HTTPS
-* (bluefox) Better error message if the CCU answers with an HTML page instead of XML-RPC
-* (bluefox) Read-only datapoints do not get the writable roles `level.*` and `switch.*` anymore
-* (bluefox) HmIP shutters and blinds: the control channels get `level.blind`/`level.tilt`, the status channel `value.blind`/`value.tilt`; `LEVEL` and `VALVE_STATE` of HmIP thermostats got better roles
-* (bluefox) The option "Don't delete devices" also ignores devices that the CCU reports as deleted while the adapter is running (e.g. HmIP during firmware updates)
+* (@GermanBluefox) `CONTROL_MODE` and `SET_POINT_MODE` of HmIP thermostats show the mode names (auto, manual, party)
+* (@GermanBluefox) `SET_TEMPERATURE` of BidCos heating groups accepts 4.5 (OFF) and 30.5 (ON)
+* (@GermanBluefox) CUxD always uses BIN-RPC, Homematic IP and Virtual Devices always use XML-RPC
+* (@GermanBluefox) Username and password are sent with XML-RPC also without HTTPS
+* (@GermanBluefox) Better error message if the CCU answers with an HTML page instead of XML-RPC
+* (@GermanBluefox) Read-only datapoints do not get the writable roles `level.*` and `switch.*` anymore
+* (@GermanBluefox) HmIP shutters and blinds: the control channels get `level.blind`/`level.tilt`, the status channel `value.blind`/`value.tilt`; `LEVEL` and `VALVE_STATE` of HmIP thermostats got better roles
+* (@GermanBluefox) The option "Don't delete devices" also ignores devices that the CCU reports as deleted while the adapter is running (e.g. HmIP during firmware updates)
 
 ### 4.1.0 (2026-09-22)
 * (krobipd) The device icons were invisible in the object browser: its ID cell sets `width: initial` on every element of an inlined SVG, which collapses the icon's `rect` to 0px. The size is now carried as an inline style as well.

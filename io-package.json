@@ -118,6 +118,7 @@
     "readme": "https://github.com/ioBroker/ioBroker.hm-rpc/blob/master/README.md",
     "icon": "homematic.png",
     "compact": true,
+    "declareUsedResources": true,
     "extIcon": "https://raw.githubusercontent.com/ioBroker/ioBroker.hm-rpc/master/admin/homematic.png",
     "keywords": [
       "homematic",

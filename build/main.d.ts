@@ -13,6 +13,8 @@ export declare class HomematicRpc extends Adapter {
     private daemonURL;
     private daemonProto;
     private homematicPath;
+    /** The callback port reported to the host while the RPC server holds it */
+    private usedCallbackPort;
     private readonly COMMON_TYPE_MAPPING;
     private deviceManagement;
     /** admin/icons sits next to build/ in the installed package */
@@ -62,6 +64,14 @@ export declare class HomematicRpc extends Adapter {
      * Closes the RPC client and the RPC server
      */
     private closeRpc;
+    /**
+     * Take the reported callback port back.
+     *
+     * Needed whenever the RPC server gives the port up while the adapter keeps running - on a
+     * restart of the server, or when it never got it. On shutdown this is not required, the host
+     * releases the entries of a stopped instance by itself.
+     */
+    private freeCallbackPort;
     /**
      * Is called if a subscribed state changes
      *

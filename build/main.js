@@ -42,6 +42,7 @@ const images_1 = require("./lib/images");
 const tools = __importStar(require("./lib/tools"));
 const roles_1 = require("./lib/roles");
 const deviceManager_1 = require("./lib/deviceManager");
+const usedResources_1 = require("./lib/usedResources");
 let connected = false;
 const displays = {};
 /** Channels which wait to send HUE and SATURATION together, see `sendColor` */
@@ -397,6 +398,24 @@ class HomematicRpc extends adapter_core_1.Adapter {
                 // ignore, e.g. server was never listening
             }
         }
+        await this.freeCallbackPort();
+    }
+    /**
+     * Take the reported callback port back.
+     *
+     * Needed whenever the RPC server gives the port up while the adapter keeps running - on a
+     * restart of the server, or when it never got it. On shutdown this is not required, the host
+     * releases the entries of a stopped instance by itself.
+     */
+    async freeCallbackPort() {
+        if (!this.usedCallbackPort) {
+            return;
+        }
+        const { port, bind } = this.usedCallbackPort;
+        this.usedCallbackPort = undefined;
+        // Filtered by port and address only: the family was derived from the address, and a filter
+        // naming a field the entry does not have matches nothing.
+        await (0, usedResources_1.freeUsedPort)(this, { port, bind });
     }
     /**
      * Is called if a subscribed state changes
@@ -756,6 +775,16 @@ class HomematicRpc extends adapter_core_1.Adapter {
         const callbackAddress = this.config.callbackAddress || this.config.adapterAddress;
         const adapterPort = await this.getPortAsync(desiredAapterPort);
         this.daemonURL = `${this.daemonProto + callbackAddress}:${adapterPort}`;
+        // The port the CCU will call back on. A bind address that stands for every interface is
+        // reported without one, because the port is then occupied in both address families.
+        this.usedCallbackPort = { port: adapterPort };
+        if (this.config.adapterAddress && !usedResources_1.WILDCARD_ADDRESSES.includes(this.config.adapterAddress)) {
+            this.usedCallbackPort.bind = this.config.adapterAddress;
+            this.usedCallbackPort.family = this.config.adapterAddress.includes(':') ? 6 : 4;
+        }
+        // Who else declared this port? Asked before the server is created, because a listen error
+        // arrives as an `error` event that does not name the instance that was there first
+        await (0, usedResources_1.reportPortConflict)(this, this.usedCallbackPort, `the ${this.config.type}rpc callback server`);
         try {
             // listen errors like EADDRNOTAVAIL are not thrown here, they are emitted as 'error' event
             rpcServer = rpc.createServer({
@@ -764,11 +793,18 @@ class HomematicRpc extends adapter_core_1.Adapter {
             });
         }
         catch (e) {
+            this.usedCallbackPort = undefined;
             this.log.error(`Could not create RPC Server: ${e.message}`);
             return void this.restart();
         }
+        // The RPC libraries hide their server, so there is no `listening` event to wait for: it binds
+        // on the next tick, and a failure to do so lands in the `error` handler below, which frees
+        // the port again
+        void (0, usedResources_1.registerUsedPort)(this, this.usedCallbackPort);
         // register before the next await, the server starts listening on next tick and emits listen errors as 'error'
         rpcServer.on('error', (e) => {
+            // the server never got the port, or lost it - it is not occupied by this instance
+            void this.freeCallbackPort();
             this.log.error(`RPC Server error on ${this.config.adapterAddress}:${adapterPort}: ${e.message}. Without the server no events can be received, restarting in ${this.SERVER_RESTART_DELAY_MS / 1_000} seconds`);
             if (e.code === 'EADDRNOTAVAIL') {
                 // the address is not (yet) assigned to this host

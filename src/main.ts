@@ -16,6 +16,13 @@ import type {
 
 import { dmHmRpc } from './lib/deviceManager';
 import type { Line } from './lib/tools';
+import {
+    freeUsedPort,
+    registerUsedPort,
+    reportPortConflict,
+    WILDCARD_ADDRESSES,
+    type UsedTcpPort,
+} from './lib/usedResources';
 
 let connected = false;
 const displays: Record<string, { timer: ioBroker.Timeout | undefined; withTone: boolean } | null> = {};
@@ -43,6 +50,8 @@ export class HomematicRpc extends Adapter {
     private daemonURL = '';
     private daemonProto = '';
     private homematicPath: string | undefined;
+    /** The callback port reported to the host while the RPC server holds it */
+    private usedCallbackPort: UsedTcpPort | undefined;
     private readonly COMMON_TYPE_MAPPING = {
         ACTION: 'boolean',
         BOOL: 'boolean',
@@ -423,6 +432,26 @@ export class HomematicRpc extends Adapter {
                 // ignore, e.g. server was never listening
             }
         }
+
+        await this.freeCallbackPort();
+    }
+
+    /**
+     * Take the reported callback port back.
+     *
+     * Needed whenever the RPC server gives the port up while the adapter keeps running - on a
+     * restart of the server, or when it never got it. On shutdown this is not required, the host
+     * releases the entries of a stopped instance by itself.
+     */
+    private async freeCallbackPort(): Promise<void> {
+        if (!this.usedCallbackPort) {
+            return;
+        }
+        const { port, bind } = this.usedCallbackPort;
+        this.usedCallbackPort = undefined;
+        // Filtered by port and address only: the family was derived from the address, and a filter
+        // naming a field the entry does not have matches nothing.
+        await freeUsedPort(this, { port, bind });
     }
 
     /**
@@ -828,6 +857,18 @@ export class HomematicRpc extends Adapter {
         const adapterPort = await this.getPortAsync(desiredAapterPort);
         this.daemonURL = `${this.daemonProto + callbackAddress}:${adapterPort}`;
 
+        // The port the CCU will call back on. A bind address that stands for every interface is
+        // reported without one, because the port is then occupied in both address families.
+        this.usedCallbackPort = { port: adapterPort };
+        if (this.config.adapterAddress && !WILDCARD_ADDRESSES.includes(this.config.adapterAddress)) {
+            this.usedCallbackPort.bind = this.config.adapterAddress;
+            this.usedCallbackPort.family = this.config.adapterAddress.includes(':') ? 6 : 4;
+        }
+
+        // Who else declared this port? Asked before the server is created, because a listen error
+        // arrives as an `error` event that does not name the instance that was there first
+        await reportPortConflict(this, this.usedCallbackPort, `the ${this.config.type}rpc callback server`);
+
         try {
             // listen errors like EADDRNOTAVAIL are not thrown here, they are emitted as 'error' event
             rpcServer = rpc.createServer({
@@ -835,12 +876,20 @@ export class HomematicRpc extends Adapter {
                 port: adapterPort,
             });
         } catch (e: unknown) {
+            this.usedCallbackPort = undefined;
             this.log.error(`Could not create RPC Server: ${(e as Error).message}`);
             return void this.restart();
         }
 
+        // The RPC libraries hide their server, so there is no `listening` event to wait for: it binds
+        // on the next tick, and a failure to do so lands in the `error` handler below, which frees
+        // the port again
+        void registerUsedPort(this, this.usedCallbackPort);
+
         // register before the next await, the server starts listening on next tick and emits listen errors as 'error'
         rpcServer.on('error', (e: NodeJS.ErrnoException) => {
+            // the server never got the port, or lost it - it is not occupied by this instance
+            void this.freeCallbackPort();
             this.log.error(
                 `RPC Server error on ${this.config.adapterAddress}:${adapterPort}: ${e.message}. Without the server no events can be received, restarting in ${this.SERVER_RESTART_DELAY_MS / 1_000} seconds`,
             );
