@@ -468,7 +468,7 @@ export class HomematicRpc extends Adapter {
         const tmp = id.split('.');
         let val;
 
-        if (id === `${this.namespace}.updated` || /_ALARM$/.test(id)) {
+        if (id === `${this.namespace}.updated` || /_ALARM$/.test(id) || id.endsWith('.0.FIRMWARE_UPDATE_STATE')) {
             return;
         }
 
@@ -952,9 +952,18 @@ export class HomematicRpc extends Adapter {
             callback(null, '');
         });
 
-        rpcServer.on('firmwareUpdateStatusChanged', (error: any, params: any, callback: RPCCallback) => {
+        rpcServer.on('firmwareUpdateStatusChanged', async (error: any, params: any, callback: RPCCallback) => {
             this.log.info(`Firmware update status of ${params[1]} changed to ${params[2]}`);
             callback(null, '');
+
+            // the status is a number, the device description delivers it as text (#1137)
+            const address = String(params[1]).split(':')[0];
+            try {
+                const description = await this.rpcMethodCallAsync('getDeviceDescription', [address]);
+                await this.updateFirmwareStates([description]);
+            } catch (e: unknown) {
+                this.log.warn(`Cannot read the firmware update status of ${address}: ${(e as Error).message}`);
+            }
         });
 
         rpcServer.on('replaceDevice', async (error: any, params: [string, string, string], callback: RPCCallback) => {
@@ -1046,6 +1055,7 @@ export class HomematicRpc extends Adapter {
                 this.config.forceReInit === false &&
                 (this.config.daemon === 'HMIP' || this.config.daemon === 'virtual-devices')
             ) {
+                const knownDevices: any[] = [];
                 let doc;
                 try {
                     doc = await this.getObjectViewAsync('hm-rpc', 'listDevices', {
@@ -1112,6 +1122,7 @@ export class HomematicRpc extends Adapter {
                         } else {
                             // we can remove the item at index because it is already registered
                             // to ioBroker
+                            knownDevices.push(newDevices[index]);
                             newDevices.splice(index, 1);
                         }
                     }
@@ -1119,6 +1130,8 @@ export class HomematicRpc extends Adapter {
 
                 this.log.info(`new ${this.config.daemon} devices/channels after filter: ${newDevices.length}`);
                 await this.createDevices(newDevices);
+                // the firmware update state of the known devices may have changed meanwhile
+                await this.updateFirmwareStates(knownDevices);
             } else {
                 await this.createDevices(newDevices);
             }
@@ -1981,6 +1994,53 @@ export class HomematicRpc extends Adapter {
         }
 
         await this.getValueParamsets(queueValueParamsets);
+        await this.updateFirmwareStates(deviceArr);
+    }
+
+    /**
+     * Writes the firmware update state of the devices to `<device>.0.FIRMWARE_UPDATE_STATE` and updates the firmware
+     * in the native part of the device object (#1137)
+     *
+     * @param descriptions device descriptions of the CCU, channels and devices without FIRMWARE_UPDATE_STATE are skipped
+     */
+    private async updateFirmwareStates(descriptions: any[]): Promise<void> {
+        for (const description of descriptions) {
+            if (
+                description?.PARENT ||
+                typeof description?.ADDRESS !== 'string' ||
+                typeof description.FIRMWARE_UPDATE_STATE !== 'string'
+            ) {
+                continue;
+            }
+            const deviceId = description.ADDRESS.replace(tools.FORBIDDEN_CHARS, '_');
+            const stateId = `${deviceId}.0.FIRMWARE_UPDATE_STATE`;
+            try {
+                const device = await this.getObjectAsync(deviceId);
+                // the HMIP server deletes the device e.g. during the update, it gets the state when it is created again
+                if (!device || !(await this.getObjectAsync(`${deviceId}.0`))) {
+                    continue;
+                }
+                const changed = tools.changedFirmwareAttributes(description, device.native);
+                if (Object.keys(changed).length) {
+                    await this.extendObjectAsync(deviceId, { native: changed });
+                }
+                await this.setObjectNotExistsAsync(stateId, {
+                    type: 'state',
+                    common: {
+                        name: 'FIRMWARE_UPDATE_STATE',
+                        role: 'info.status',
+                        type: 'string',
+                        read: true,
+                        write: false,
+                        states: tools.FIRMWARE_UPDATE_STATES,
+                    },
+                    native: {},
+                });
+                await this.setStateChangedAsync(stateId, description.FIRMWARE_UPDATE_STATE, true);
+            } catch (e: unknown) {
+                this.log.error(`Cannot update the firmware update state of ${deviceId}: ${(e as Error).message}`);
+            }
+        }
     }
 
     /**

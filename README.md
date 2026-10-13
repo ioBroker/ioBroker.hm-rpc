@@ -300,6 +300,20 @@ sendTo('hm-rpc.1', 'getDeviceDescription', {ID: '0000S8179E3DBE', paramType: 'FI
 
 ## Additional information
 
+### Firmware update state
+
+For devices whose description contains the firmware update state (Homematic IP), the adapter creates the state `<device>.0.FIRMWARE_UPDATE_STATE`.
+It is updated whenever the CCU reports a change of the firmware update status, and on every start of the adapter.
+Possible values are e.g. `UP_TO_DATE`, `NEW_FIRMWARE_AVAILABLE`, `DELIVER_FIRMWARE_IMAGE` (the firmware is being transferred), `READY_FOR_UPDATE` (the transfer is finished, the update can be started), `DO_UPDATE_PENDING` (the update must be started on the device) and `PERFORMING_UPDATE`.
+
+```javascript
+on({id: /^hm-rpc\.1\..*\.0\.FIRMWARE_UPDATE_STATE$/, val: 'READY_FOR_UPDATE'}, obj => {
+    log(`Firmware of ${obj.id.split('.')[2]} is transferred`);
+});
+```
+
+### Dummy program for the button states
+
 If you use HomeMatic switches or HomeMatic remote controls, the CCU confirms the button states only if a "dummy" program runs on the CCU.
 This program must use the state of the related switch or of the related remote control.
 Without such a program, ioBroker does not get the button states.
@@ -332,6 +346,9 @@ npm run update-images
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (@GermanBluefox) The firmware update state of Homematic IP devices is available in the new state `<device>.0.FIRMWARE_UPDATE_STATE`, e.g. `READY_FOR_UPDATE` when the firmware is transferred. The firmware information of the device object is updated, too (#1137)
+
 ### 4.1.3 (2026-10-12)
 * (jhoos70) The invalid temperature 3276.8 of a not connected sensor (e.g. the external probe of a HmIP-STE2-PCB) is delivered as `null` instead of a value above the maximum
 * (@GermanBluefox) The adapter reports the port of its RPC callback server to js-controller 8, which keeps a per-host registry of the occupied ports (`system.host.<name>.usedResources`). Reported is the port the server really got - the configuration only holds a wish for it (`0` means "pick one", and a configured port is moved on when it is taken), so this is the only place where the callback port can be seen. The port of the CCU is not reported, it belongs to another machine. Before the server is created, the log names an instance that has already declared the port. An older js-controller is unaffected

@@ -162,6 +162,13 @@ export declare class HomematicRpc extends Adapter {
      */
     private createDevices;
     /**
+     * Writes the firmware update state of the devices to `<device>.0.FIRMWARE_UPDATE_STATE` and updates the firmware
+     * in the native part of the device object (#1137)
+     *
+     * @param descriptions device descriptions of the CCU, channels and devices without FIRMWARE_UPDATE_STATE are skipped
+     */
+    private updateFirmwareStates;
+    /**
      * Get all CuxD devices
      */
     private getCuxDevices;

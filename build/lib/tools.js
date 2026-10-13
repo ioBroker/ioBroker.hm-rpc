@@ -1,10 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.FORBIDDEN_CHARS = void 0;
+exports.FIRMWARE_UPDATE_STATES = exports.FORBIDDEN_CHARS = void 0;
 exports.replaceSpecialChars = replaceSpecialChars;
 exports.number2hex = number2hex;
 exports.combineEPaperCommand = combineEPaperCommand;
 exports.readOnlyRole = readOnlyRole;
+exports.changedFirmwareAttributes = changedFirmwareAttributes;
 exports.fixParamset = fixParamset;
 exports.fixEvent = fixEvent;
 exports.FORBIDDEN_CHARS = /[\][*,;'"`<>\\\s?]/g;
@@ -238,6 +239,37 @@ function readOnlyRole(role) {
         return 'indicator';
     }
     return role;
+}
+/** Values of FIRMWARE_UPDATE_STATE in the device description of the CCU (#1137) */
+exports.FIRMWARE_UPDATE_STATES = {
+    UP_TO_DATE: 'up to date',
+    LIVE_UP_TO_DATE: 'up to date (live update)',
+    NEW_FIRMWARE_AVAILABLE: 'new firmware available',
+    LIVE_NEW_FIRMWARE_AVAILABLE: 'new firmware available (live update)',
+    DELIVER_FIRMWARE_IMAGE: 'transferring firmware',
+    LIVE_DELIVER_FIRMWARE_IMAGE: 'transferring firmware (live update)',
+    READY_FOR_UPDATE: 'ready for update',
+    DO_UPDATE_PENDING: 'start the update on the device',
+    PERFORMING_UPDATE: 'performing update',
+    BACKGROUND_UPDATE_NOT_SUPPORTED: 'background update not supported',
+};
+/** Attributes of the device description, which change with a firmware update */
+const FIRMWARE_ATTRIBUTES = ['FIRMWARE', 'AVAILABLE_FIRMWARE', 'FIRMWARE_UPDATE_STATE'];
+/**
+ * Returns the firmware attributes of a device description, which differ from the native part of the device object
+ *
+ * @param description device description of the CCU
+ * @param native native part of the device object
+ * @returns the changed attributes, empty if nothing changed
+ */
+function changedFirmwareAttributes(description, native) {
+    const changed = {};
+    for (const attr of FIRMWARE_ATTRIBUTES) {
+        if (description[attr] !== undefined && description[attr] !== native[attr]) {
+            changed[attr] = description[attr];
+        }
+    }
+    return changed;
 }
 /**
  * Fix different bugs in the CCU metadata

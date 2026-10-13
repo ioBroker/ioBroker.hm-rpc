@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
-import { combineEPaperCommand, fixEvent, fixParamset, readOnlyRole } from './tools';
+import { changedFirmwareAttributes, combineEPaperCommand, fixEvent, fixParamset, readOnlyRole } from './tools';
 import type { ParamsetObject } from './_types';
 
 /** returns the repetition and interval codes of an EPAPER command */
@@ -189,5 +189,28 @@ describe('readOnlyRole', () => {
         for (const role of ['value.temperature', 'indicator.lowbat', 'state', 'button', 'levelling', '']) {
             expect(readOnlyRole(role)).to.equal(role);
         }
+    });
+});
+
+describe('changedFirmwareAttributes', () => {
+    const native = {
+        ADDRESS: '0000S8179E3DBE',
+        FIRMWARE: '1.4.8',
+        AVAILABLE_FIRMWARE: '1.6.2',
+        FIRMWARE_UPDATE_STATE: 'NEW_FIRMWARE_AVAILABLE',
+    };
+
+    it('returns the changed firmware attributes (#1137)', () => {
+        expect(
+            changedFirmwareAttributes({ ...native, FIRMWARE_UPDATE_STATE: 'READY_FOR_UPDATE', RF_ADDRESS: 1 }, native),
+        ).to.deep.equal({ FIRMWARE_UPDATE_STATE: 'READY_FOR_UPDATE' });
+        expect(
+            changedFirmwareAttributes({ ...native, FIRMWARE: '1.6.2', FIRMWARE_UPDATE_STATE: 'UP_TO_DATE' }, native),
+        ).to.deep.equal({ FIRMWARE: '1.6.2', FIRMWARE_UPDATE_STATE: 'UP_TO_DATE' });
+    });
+
+    it('returns nothing if the firmware did not change or is not described', () => {
+        expect(changedFirmwareAttributes({ ...native }, native)).to.deep.equal({});
+        expect(changedFirmwareAttributes({ ADDRESS: '0000S8179E3DBE' }, native)).to.deep.equal({});
     });
 });

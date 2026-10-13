@@ -28,6 +28,16 @@ export declare function combineEPaperCommand(lines: Line[], signal: string | num
  * @returns the role to use, if the datapoint is not writable
  */
 export declare function readOnlyRole(role: string): string;
+/** Values of FIRMWARE_UPDATE_STATE in the device description of the CCU (#1137) */
+export declare const FIRMWARE_UPDATE_STATES: Record<string, string>;
+/**
+ * Returns the firmware attributes of a device description, which differ from the native part of the device object
+ *
+ * @param description device description of the CCU
+ * @param native native part of the device object
+ * @returns the changed attributes, empty if nothing changed
+ */
+export declare function changedFirmwareAttributes(description: Record<string, any>, native: Record<string, any>): Record<string, any>;
 /**
  * Fix different bugs in the CCU metadata
  *
