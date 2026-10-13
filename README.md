@@ -262,6 +262,22 @@ sendTo('hm-rpc.1', 'setValue', {ID: '000453D77B9EDF:1', paramType: 'SET_POINT_TE
 });
 ```
 
+Read the current value of a datapoint from the interface process of the CCU (the same as `.State()` in a HomeMatic script):
+
+```javascript
+sendTo('hm-rpc.1', 'getValue', {ID: '000453D77B9EDF:1', paramType: 'ACTUAL_TEMPERATURE'}, res => {
+    if (!res.error) {
+        log(`Temperature: ${res.result}`);
+    } else {
+        log(res.error);
+    }
+});
+```
+
+The interface process returns its cached value, it does not request a new value from the device.
+The adapter already gets every change of this value as an event, so normally the state in ioBroker has the same value.
+How often a device reports a value (e.g. the power of a switch actuator with power metering) is set in the MASTER area of its channel.
+
 Read the `paramsetDescription` of a channel of a device:
 
 ```javascript
