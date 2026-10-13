@@ -22,8 +22,8 @@ exports.maskifyAll = maskifyAll;
  * Pure JS (pngjs), cross-platform. Replaces the previous background-removal, which
  * only stripped the background and left the (non-adaptive) colours in place.
  */
-const fs_1 = __importDefault(require("fs"));
-const path_1 = __importDefault(require("path"));
+const node_fs_1 = __importDefault(require("node:fs"));
+const node_path_1 = __importDefault(require("node:path"));
 const pngjs_1 = require("pngjs");
 const ICON_DIR = 'admin/icons';
 /** Returns the icon as a theme mask, or null if it already is one. */
@@ -48,20 +48,20 @@ function toThemeMask(buffer) {
 }
 /** Convert every PNG in admin/icons to a theme mask in place. Idempotent. */
 async function maskifyAll() {
-    const files = (await fs_1.default.promises.readdir(ICON_DIR)).filter(name => name.toLowerCase().endsWith('.png'));
+    const files = (await node_fs_1.default.promises.readdir(ICON_DIR)).filter(name => name.toLowerCase().endsWith('.png'));
     let masked = 0;
     for (const name of files) {
-        const file = path_1.default.join(ICON_DIR, name);
+        const file = node_path_1.default.join(ICON_DIR, name);
         let result;
         try {
-            result = toThemeMask(await fs_1.default.promises.readFile(file));
+            result = toThemeMask(await node_fs_1.default.promises.readFile(file));
         }
         catch (e) {
             console.warn(`  ! skip ${name}: ${e.message}`);
             continue;
         }
         if (result) {
-            await fs_1.default.promises.writeFile(file, result);
+            await node_fs_1.default.promises.writeFile(file, result);
             masked++;
         }
     }

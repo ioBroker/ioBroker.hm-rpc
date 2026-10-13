@@ -38,8 +38,8 @@ exports.svgifyAll = svgifyAll;
  * sized elements therefore carry their size as an inline style as well, which
  * outranks the class rule.
  */
-const fs_1 = __importDefault(require("fs"));
-const path_1 = __importDefault(require("path"));
+const node_fs_1 = __importDefault(require("node:fs"));
+const node_path_1 = __importDefault(require("node:path"));
 const pngjs_1 = require("pngjs");
 const ICON_DIR = 'admin/icons';
 /**
@@ -106,13 +106,13 @@ function toThemeSvg(buffer, name) {
 }
 /** Write an SVG next to every PNG in admin/icons. Deterministic — safe to re-run. */
 async function svgifyAll() {
-    const files = (await fs_1.default.promises.readdir(ICON_DIR)).filter(name => name.toLowerCase().endsWith('.png'));
+    const files = (await node_fs_1.default.promises.readdir(ICON_DIR)).filter(name => name.toLowerCase().endsWith('.png'));
     let written = 0;
     for (const name of files) {
-        const target = path_1.default.join(ICON_DIR, name.replace(/\.png$/i, '.svg'));
+        const target = node_path_1.default.join(ICON_DIR, name.replace(/\.png$/i, '.svg'));
         try {
-            const svg = toThemeSvg(await fs_1.default.promises.readFile(path_1.default.join(ICON_DIR, name)), name);
-            await fs_1.default.promises.writeFile(target, svg);
+            const svg = toThemeSvg(await node_fs_1.default.promises.readFile(node_path_1.default.join(ICON_DIR, name)), name);
+            await node_fs_1.default.promises.writeFile(target, svg);
             written++;
         }
         catch (e) {
