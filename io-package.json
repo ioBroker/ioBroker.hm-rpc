@@ -16,19 +16,6 @@
     },
     "version": "4.2.1",
     "news": {
-      "4.2.1": {
-        "en": "Homebrew devices (AskSin++) of the add-ons from jp112sdl (JP-HB-Devices-addon) and TomMajor (HB-TM-Devices-AddOn) get the same icon as in the CCU WebUI (#903)",
-        "de": "Homebrew-Geräte (asksIN++) der Add-ons jp112sdl (JP-HB-Devices-Addon) und TomMajor (HB-TM-Devices-Addon) haben dasselbe Symbol wie in der CCU-WebUI (#903)",
-        "ru": "Домашние устройства (ASKsIn++) дополнений от jp112sdl (дополнение JP-HB-Devices-Addon) и TomMajor (дополнение HB-TM-Devices-addon) получают тот же значок, что и в веб-интерфейсе CCU (#903)",
-        "pt": "Os dispositivos Homebrew (AskSin++) dos complementos jp112sdl e TomMajor (HB-TM-Devices-Addon) recebem o mesmo ícone da CCU WebUI (#903)",
-        "nl": "Homebrew-apparaten (AskSin++) of de add-ons van jp112sdl (JP-HB-Devices-Addon) en TomMajor (HB-TM-Devices-Addon) krijgen hetzelfde pictogram als in de CCU WebUI (#903)",
-        "fr": "Les appareils Homebrew (AskSin++) des modules de jp112sdl (JP-HB-Devices-Addon) et TomMajor (HB-TM-Devices-Addon) ont la même icône que dans la CCU WebUI (#903)",
-        "it": "I dispositivi Homebrew (AskSin++) degli add-on di jp112sdl (JP-HB-Devices-Addon) e TomMajor (HB-TM-Devices-Addon) hanno la stessa icona della CCU WebUI (#903)",
-        "es": "Los dispositivos homebrew (AskSin++) de los complementos de jp112sdl (JP-HB-Devices-Addon) y TomMajor (HB-TM-Devices-Addon) tienen el mismo icono que en la interfaz web de la CCU (#903)",
-        "pl": "Urządzenia Homebrew (AskSin++) dodatków z jp112sdl (JP-HB-Devices-Addon) i TomMajor (HB-TM-Devices-Addon) otrzymują tę samą ikonę co w CCU WebUI (#903)",
-        "uk": "Пристрої Homebrew (AskSin++) доповнень з jp112sdl (JP-HB-пристрої-аддон) та TomMajor (HB-TM-пристрої-аддон) отримують ту саму піктограму, що і в CCU WebUI (#903)",
-        "zh-cn": "来自 jp112sdl（JP-HB-Devices-Addon）和 TomMajor（HB-TM-Devices-Addon）的插件的自制设备（Asksin++）的图标与 CCU WebUI 中的图标相同 (#903)"
-      },
       "4.2.0": {
         "en": "The firmware update state of Homematic IP devices is available in the new state `<device>.0.FIRMWARE_UPDATE_STATE`, e.g. `READY_FOR_UPDATE` when the firmware is transferred. The firmware information of the device object is updated, too (#1137)",
         "de": "Homematic IP-Geräte haben den Status <device>`.0.FIRMWARE_UPDATE_STATE`, z. B. `READY_FOR_UPDATE`, wenn die Firmware übertragen wird. Die Firmware-Daten des Geräteobjekts sind auch aktualisiert (#1137)",
