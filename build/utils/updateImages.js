@@ -11,6 +11,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * `fetcher` CLI and the hand-maintained map, so new devices are picked up
  * automatically from the same source all CCU projects use.
  *
+ * Homebrew devices (AskSin++) are not in the OCCU database: their CCU add-ons
+ * patch `DEV_PATHS` at install time. Their icons are taken from the same add-on
+ * sources — jp112sdl/JP-HB-Devices-addon (`devdb.csv`) and the TomMajor
+ * HB-TM-Devices-AddOn — so they show the same icon as in the CCU WebUI.
+ *
  * Run: `npm run update-images`
  *
  * Only *missing* icon files are downloaded; existing files are left untouched so
@@ -28,6 +33,26 @@ const DEVDB_URL = `${OCCU_RAW}/WebUI/www/config/devdescr/DEVDB.tcl`;
 const WWW_BASE = `${OCCU_RAW}/WebUI/www`; // DEV_PATHS stores paths relative to WebUI/www
 const ICON_DIR = 'admin/icons';
 const IMAGES_TS = 'src/lib/images.ts';
+/** jp112sdl's add-on lists its devices as `TYPE;image` in devdb.csv. */
+const JP_HB_RAW = 'https://raw.githubusercontent.com/jp112sdl/JP-HB-Devices-addon/master/src/addon';
+const JP_HB_DEVDB_URL = `${JP_HB_RAW}/devdb.csv`;
+/**
+ * TomMajor's add-on has no device list, only one install script per device, so
+ * its devices are listed here (TYPE -> image, as in the `install_*` scripts).
+ */
+const TM_HB_RAW = 'https://raw.githubusercontent.com/TomMajor/SmartHome/master/HB-TM-Devices-AddOn/CCU_RM/src/addon';
+const TM_HB_DEVICES = {
+    'HB-Sec-WDS-2': 'hb-sec-wds-2',
+    'HB-SEN-LJet': 'hb-sen-ljet',
+    'HB-UNI-Sensor-Blitz': 'hb-uni-sensor-blitz',
+    'HB-UNI-Sensor-Heizung': 'hb-uni-sensor-heizung',
+    'HB-UNI-Sensor1': 'hb-uni-sensor1',
+    'HB-UNI-Sensor2': 'hb-uni-sensor2',
+    'HB-UNI-Sensor3': 'hb-uni-sensor3',
+    'HB-UNI-Sensor4': 'hb-uni-sensor4',
+    'HB-UNI-Sensor5': 'hb-uni-sensor5',
+    'HB-UNI-Sensor6': 'hb-uni-sensor6',
+};
 /**
  * Device types whose icon is intentionally NOT the current OCCU default:
  * adapter-specific additions (no OCCU entry) or curated choices. Kept verbatim
@@ -100,7 +125,7 @@ function tclTokens(s) {
     }
     return out;
 }
-/** Parse the `DEV_PATHS` array into { deviceType: {file, srcPath} } using the 50px image. */
+/** Parse the `DEV_PATHS` array into { deviceType: {file, url} } using the 50px image. */
 function parseDevPaths(tcl) {
     const marker = tcl.match(/array set DEV_PATHS\s*\{/);
     if (!marker) {
@@ -131,9 +156,38 @@ function parseDevPaths(tcl) {
             }
             if (entry.slice(0, sp) === '50') {
                 const p = entry.slice(sp + 1).trim();
-                map[type] = { file: path_1.default.basename(p), srcPath: p };
+                map[type] = { file: path_1.default.basename(p), url: `${WWW_BASE}${p}` };
             }
         }
+    }
+    return map;
+}
+/**
+ * Homebrew add-on devices, as their add-ons register them in `DEV_PATHS`: the
+ * 50px image is `/config/img/devices/50/<image>_thumb.png`. Some reuse an
+ * OCCU image (e.g. `4_hm-lc-sw1-fm`), which then comes from OCCU, not the add-on.
+ */
+async function homebrewIcons() {
+    const thumb = (raw, image) => {
+        const file = `${image}_thumb.png`;
+        return { file, url: `${raw}/www/config/img/devices/50/${file}` };
+    };
+    const map = {};
+    try {
+        const csv = (await axios_1.default.get(JP_HB_DEVDB_URL, { responseType: 'text' })).data;
+        for (const line of csv.split(/\r?\n/)) {
+            const [type, image] = line.split(';').map(part => part?.trim());
+            // the add-on's own installer only registers HB-* types
+            if (type?.startsWith('HB-') && image) {
+                map[type] = thumb(JP_HB_RAW, image);
+            }
+        }
+    }
+    catch (e) {
+        console.warn(`  ! could not read ${JP_HB_DEVDB_URL}: ${e.message}`);
+    }
+    for (const [type, image] of Object.entries(TM_HB_DEVICES)) {
+        map[type] = thumb(TM_HB_RAW, image);
     }
     return map;
 }
@@ -146,9 +200,13 @@ async function main() {
     const tcl = (await axios_1.default.get(DEVDB_URL, { responseType: 'text' })).data;
     const occu = parseDevPaths(tcl);
     console.log(`DEV_PATHS maps ${Object.keys(occu).length} device types.`);
-    // Final map: OCCU base, MANUAL overrides win. Values are the shipped SVGs.
+    const homebrew = await homebrewIcons();
+    console.log(`Homebrew add-ons map ${Object.keys(homebrew).length} device types.`);
+    // Final map: OCCU base, homebrew devices OCCU does not know, MANUAL overrides
+    // win. Values are the shipped SVGs.
+    const sources = { ...homebrew, ...occu };
     const map = {};
-    for (const [type, icon] of Object.entries(occu)) {
+    for (const [type, icon] of Object.entries(sources)) {
         map[type] = shippedIcon(icon.file);
     }
     Object.assign(map, MANUAL);
@@ -157,19 +215,21 @@ async function main() {
     // already masks are left untouched).
     await fs_1.default.promises.mkdir(ICON_DIR, { recursive: true });
     const existing = new Set(await fs_1.default.promises.readdir(ICON_DIR));
-    const wanted = new Map(); // file -> srcPath
-    for (const icon of Object.values(occu)) {
+    // file -> url; OCCU first, so a homebrew device that reuses an OCCU image
+    // gets it from OCCU
+    const wanted = new Map();
+    for (const icon of [...Object.values(occu), ...Object.values(homebrew)]) {
         if (!wanted.has(icon.file)) {
-            wanted.set(icon.file, icon.srcPath);
+            wanted.set(icon.file, icon.url);
         }
     }
     let added = 0;
-    for (const [file, srcPath] of wanted) {
+    for (const [file, url] of wanted) {
         if (existing.has(file)) {
             continue;
         }
         try {
-            const res = await axios_1.default.get(`${WWW_BASE}${srcPath}`, { responseType: 'arraybuffer' });
+            const res = await axios_1.default.get(url, { responseType: 'arraybuffer' });
             await fs_1.default.promises.writeFile(path_1.default.join(ICON_DIR, file), Buffer.from(res.data));
             existing.add(file);
             added++;
@@ -192,7 +252,8 @@ async function main() {
     // Write src/lib/images.ts (sorted, matching the previous file's style).
     const keys = Object.keys(map).sort();
     const body = keys.map(k => `    ${tsKey(k)}: '${map[k]}',`).join('\n');
-    const header = '// AUTO-GENERATED by `npm run update-images` from eq-3/occu DEVDB.tcl (DEV_PATHS).\n' +
+    const header = '// AUTO-GENERATED by `npm run update-images` from eq-3/occu DEVDB.tcl (DEV_PATHS)\n' +
+        '// and the homebrew add-ons (jp112sdl/JP-HB-Devices-addon, TomMajor/SmartHome).\n' +
         '// Do not edit by hand — change the MANUAL overrides in src/utils/updateImages.ts instead.\n';
     await fs_1.default.promises.writeFile(IMAGES_TS, `${header}export const images: Record<string, string> = {\n${body}\n};\n`);
     console.log(`Wrote ${IMAGES_TS} with ${keys.length} entries.`);
