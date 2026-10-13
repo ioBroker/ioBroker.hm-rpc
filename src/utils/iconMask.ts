@@ -15,8 +15,8 @@
  * Pure JS (pngjs), cross-platform. Replaces the previous background-removal, which
  * only stripped the background and left the (non-adaptive) colours in place.
  */
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import { PNG } from 'pngjs';
 
 const ICON_DIR = 'admin/icons';

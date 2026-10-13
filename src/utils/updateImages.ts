@@ -19,8 +19,8 @@
  * regeneration never silently changes an already-shipped device's icon.
  */
 import axios from 'axios';
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import { maskifyAll } from './iconMask';
 import { svgifyAll } from './svgify';
 

@@ -31,8 +31,8 @@
  * sized elements therefore carry their size as an inline style as well, which
  * outranks the class rule.
  */
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import { PNG } from 'pngjs';
 
 const ICON_DIR = 'admin/icons';
