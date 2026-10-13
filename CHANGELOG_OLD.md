@@ -1,4 +1,17 @@
 # Older changes
+## 4.1.0 (2026-09-22)
+* (krobipd) The device icons were invisible in the object browser: its ID cell sets `width: initial` on every element of an inlined SVG, which collapses the icon's `rect` to 0px. The size is now carried as an inline style as well.
+* (bluefox) Updated `binrpc` to 4.x and `homematic-xmlrpc` to 2.x (no dependency on a GitHub tarball anymore)
+* (bluefox) If the RPC server cannot listen (e.g. the configured IP address is not available), the error is logged and the adapter restarts after 30 seconds instead of crashing
+* (bluefox) On stop, the RPC server and client are closed properly, also for XML-RPC and if the CCU is not reachable
+* (bluefox) Updated packages
+* (bluefox) Fixed writing of the lines and icons of HM-Dis-EP-WM55: an invalid tone interval (`0xE-1`) was sent if no interval was set
+* (bluefox) The device manager does not crash anymore on devices without `native` and does not report the same control twice
+* (bluefox) Added icon for HmIP-RFUSB
+* (bluefox) PONG events and requests without method are logged only in debug mode
+* (bluefox) Replaced the deprecated `deleteDevice` and `deleteChannel` calls
+* (bluefox) Fixed issues reported by the repository checker (responsive design of the settings, lint and type check in CI)
+
 ## 4.0.0 (2026-08-15)
 * (bluefox) Device icons are now delivered as theme-adaptive SVGs and stay visible on the dark admin theme
 * (krobipd) Generated the device icon set and the device type map from the OCCU device database

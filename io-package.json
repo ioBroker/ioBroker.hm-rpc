@@ -14,8 +14,21 @@
       "uk": "Підключає HomeMatic інтерфейси (BidCos-сервіси, Homegear і CUxD) через XML-RPC або BIN-RPC до ioBroker",
       "zh-cn": "通过 XML-RPC 或 BIN-RPC 将 HomeMatic 接口进程（BidCos-Services、Homegear 和 CUxD）连接到 ioBroker"
     },
-    "version": "4.2.0",
+    "version": "4.2.1",
     "news": {
+      "4.2.1": {
+        "en": "Homebrew devices (AskSin++) of the add-ons from jp112sdl (JP-HB-Devices-addon) and TomMajor (HB-TM-Devices-AddOn) get the same icon as in the CCU WebUI (#903)",
+        "de": "Homebrew-Geräte (asksIN++) der Add-ons jp112sdl (JP-HB-Devices-Addon) und TomMajor (HB-TM-Devices-Addon) haben dasselbe Symbol wie in der CCU-WebUI (#903)",
+        "ru": "Домашние устройства (ASKsIn++) дополнений от jp112sdl (дополнение JP-HB-Devices-Addon) и TomMajor (дополнение HB-TM-Devices-addon) получают тот же значок, что и в веб-интерфейсе CCU (#903)",
+        "pt": "Os dispositivos Homebrew (AskSin++) dos complementos jp112sdl e TomMajor (HB-TM-Devices-Addon) recebem o mesmo ícone da CCU WebUI (#903)",
+        "nl": "Homebrew-apparaten (AskSin++) of de add-ons van jp112sdl (JP-HB-Devices-Addon) en TomMajor (HB-TM-Devices-Addon) krijgen hetzelfde pictogram als in de CCU WebUI (#903)",
+        "fr": "Les appareils Homebrew (AskSin++) des modules de jp112sdl (JP-HB-Devices-Addon) et TomMajor (HB-TM-Devices-Addon) ont la même icône que dans la CCU WebUI (#903)",
+        "it": "I dispositivi Homebrew (AskSin++) degli add-on di jp112sdl (JP-HB-Devices-Addon) e TomMajor (HB-TM-Devices-Addon) hanno la stessa icona della CCU WebUI (#903)",
+        "es": "Los dispositivos homebrew (AskSin++) de los complementos de jp112sdl (JP-HB-Devices-Addon) y TomMajor (HB-TM-Devices-Addon) tienen el mismo icono que en la interfaz web de la CCU (#903)",
+        "pl": "Urządzenia Homebrew (AskSin++) dodatków z jp112sdl (JP-HB-Devices-Addon) i TomMajor (HB-TM-Devices-Addon) otrzymują tę samą ikonę co w CCU WebUI (#903)",
+        "uk": "Пристрої Homebrew (AskSin++) доповнень з jp112sdl (JP-HB-пристрої-аддон) та TomMajor (HB-TM-пристрої-аддон) отримують ту саму піктограму, що і в CCU WebUI (#903)",
+        "zh-cn": "来自 jp112sdl（JP-HB-Devices-Addon）和 TomMajor（HB-TM-Devices-Addon）的插件的自制设备（Asksin++）的图标与 CCU WebUI 中的图标相同 (#903)"
+      },
       "4.2.0": {
         "en": "The firmware update state of Homematic IP devices is available in the new state `<device>.0.FIRMWARE_UPDATE_STATE`, e.g. `READY_FOR_UPDATE` when the firmware is transferred. The firmware information of the device object is updated, too (#1137)",
         "de": "Homematic IP-Geräte haben den Status <device>`.0.FIRMWARE_UPDATE_STATE`, z. B. `READY_FOR_UPDATE`, wenn die Firmware übertragen wird. Die Firmware-Daten des Geräteobjekts sind auch aktualisiert (#1137)",
@@ -93,19 +106,6 @@
         "pl": "Ikony urządzeń są teraz dostarczane jako pliki SVG dostosowane do motywu i pozostają widoczne w ciemnym motywie administratora\nWygenerowano zestaw ikon urządzeń i mapę typów urządzeń z bazy danych urządzeń OCCU\nIkona urządzenia jest ponownie stosowana po uruchomieniu urządzeń, które zostały utworzone przed pojawieniem się ikony dla ich typu\nUsunięto obsługę Node.js 20",
         "uk": "Значки пристроїв тепер відображаються як адаптивні до теми SVG-файли та залишаються видимими в темній темі адміністратора.\nЗгенеровано набір піктограм пристроїв та карту типів пристроїв з бази даних пристроїв OCCU\nПіктограма пристрою повторно застосовується під час запуску до пристроїв, створених до того, як їхній тип мав піктограму.\nВилучено підтримку Node.js 20",
         "zh-cn": "设备图标现在以主题自适应 SVG 格式提供，即使在深色管理主题下也清晰可见。\n从OCCU设备数据库生成设备图标集和设备类型映射。\n设备图标会在启动时重新应用于那些在其类型没有图标之前创建的设备。\n已移除对 Node.js 20 的支持"
-      },
-      "3.0.2": {
-        "en": "Updated packages\nMigrated to TypeScript 6\nCorrected device manager",
-        "de": "Aktualisierte Pakete\nAusgewählt in TypeScript 6\nKorrigierter Gerätemanager",
-        "ru": "Обновленные пакеты\nИммиграция в TypeScript 6\nИсправленный менеджер устройств",
-        "pt": "Pacotes atualizados\nMigrado para TypeScript 6\nGestor de dispositivos corrigidos",
-        "nl": "Bijgewerkte pakketten\nNaar typeScript 6 migreren\nGecorrigeerde apparaatbeheerder",
-        "fr": "Paquets mis à jour\nMigré selon TypeScript 6\nGestionnaire de périphérique corrigé",
-        "it": "Pacchetti aggiornati\nMigrato a TypeScript 6\nGestione del dispositivo corretto",
-        "es": "Paquetes actualizados\nMigrado a TipoScript 6\nGestor de dispositivo corregido",
-        "pl": "Aktualizacja pakietów\nMigrant to TypeScript 6\nPoprawiony menedżer urządzeń",
-        "uk": "Оновлені пакети\nMigrated до TypeScript 6\nПравильний менеджер пристрою",
-        "zh-cn": "更新软件包\n移动到类型脚本 6\n修正的设备管理器"
       }
     },
     "authors": [

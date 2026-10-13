@@ -346,7 +346,7 @@ npm run update-images
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 4.2.1 (2026-10-13)
 * (@GermanBluefox) Homebrew devices (AskSin++) of the add-ons from jp112sdl (JP-HB-Devices-addon) and TomMajor (HB-TM-Devices-AddOn) get the same icon as in the CCU WebUI (#903)
 
 ### 4.2.0 (2026-10-13)
@@ -371,19 +371,6 @@ npm run update-images
 * (@GermanBluefox) Read-only datapoints do not get the writable roles `level.*` and `switch.*` anymore
 * (@GermanBluefox) HmIP shutters and blinds: the control channels get `level.blind`/`level.tilt`, the status channel `value.blind`/`value.tilt`; `LEVEL` and `VALVE_STATE` of HmIP thermostats got better roles
 * (@GermanBluefox) The option "Don't delete devices" also ignores devices that the CCU reports as deleted while the adapter is running (e.g. HmIP during firmware updates)
-
-### 4.1.0 (2026-09-22)
-* (krobipd) The device icons were invisible in the object browser: its ID cell sets `width: initial` on every element of an inlined SVG, which collapses the icon's `rect` to 0px. The size is now carried as an inline style as well.
-* (bluefox) Updated `binrpc` to 4.x and `homematic-xmlrpc` to 2.x (no dependency on a GitHub tarball anymore)
-* (bluefox) If the RPC server cannot listen (e.g. the configured IP address is not available), the error is logged and the adapter restarts after 30 seconds instead of crashing
-* (bluefox) On stop, the RPC server and client are closed properly, also for XML-RPC and if the CCU is not reachable
-* (bluefox) Updated packages
-* (bluefox) Fixed writing of the lines and icons of HM-Dis-EP-WM55: an invalid tone interval (`0xE-1`) was sent if no interval was set
-* (bluefox) The device manager does not crash anymore on devices without `native` and does not report the same control twice
-* (bluefox) Added icon for HmIP-RFUSB
-* (bluefox) PONG events and requests without method are logged only in debug mode
-* (bluefox) Replaced the deprecated `deleteDevice` and `deleteChannel` calls
-* (bluefox) Fixed issues reported by the repository checker (responsive design of the settings, lint and type check in CI)
 
 ### Older changelog
 [here](OLD_CHANGELOG.md)
