@@ -346,7 +346,7 @@ npm run update-images
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 4.2.0 (2026-10-13)
 * (@GermanBluefox) The firmware update state of Homematic IP devices is available in the new state `<device>.0.FIRMWARE_UPDATE_STATE`, e.g. `READY_FOR_UPDATE` when the firmware is transferred. The firmware information of the device object is updated, too (#1137)
 
 ### 4.1.3 (2026-10-12)
@@ -381,12 +381,6 @@ npm run update-images
 * (bluefox) PONG events and requests without method are logged only in debug mode
 * (bluefox) Replaced the deprecated `deleteDevice` and `deleteChannel` calls
 * (bluefox) Fixed issues reported by the repository checker (responsive design of the settings, lint and type check in CI)
-
-### 4.0.0 (2026-08-15)
-* (bluefox) Device icons are now delivered as theme-adaptive SVGs and stay visible on the dark admin theme
-* (krobipd) Generated the device icon set and the device type map from the OCCU device database
-* (krobipd) The device icon is re-applied on start to devices that were created before their type had an icon
-* (bluefox) Removed support of Node.js 20
 
 ### Older changelog
 [here](OLD_CHANGELOG.md)

@@ -14,8 +14,21 @@
       "uk": "Підключає HomeMatic інтерфейси (BidCos-сервіси, Homegear і CUxD) через XML-RPC або BIN-RPC до ioBroker",
       "zh-cn": "通过 XML-RPC 或 BIN-RPC 将 HomeMatic 接口进程（BidCos-Services、Homegear 和 CUxD）连接到 ioBroker"
     },
-    "version": "4.1.3",
+    "version": "4.2.0",
     "news": {
+      "4.2.0": {
+        "en": "The firmware update state of Homematic IP devices is available in the new state `<device>.0.FIRMWARE_UPDATE_STATE`, e.g. `READY_FOR_UPDATE` when the firmware is transferred. The firmware information of the device object is updated, too (#1137)",
+        "de": "Homematic IP-Geräte haben den Status <device>`.0.FIRMWARE_UPDATE_STATE`, z. B. `READY_FOR_UPDATE`, wenn die Firmware übertragen wird. Die Firmware-Daten des Geräteobjekts sind auch aktualisiert (#1137)",
+        "ru": "Состояние обновления микропрограммного обеспечения устройств Homematic IP доступно в новом состоянии `<device>.0.FIRMWARE_UPDATE_STATE`, например `READY_FOR_UPDATE` при передаче прошивки. Информация о прошивке объекта устройства также обновлена (#1137)",
+        "pt": "O estado de atualização do firmware dos dispositivos IP Homematic está disponível no novo estado `<device>.0.FIRMWARE_UPDATE_STATE` quando o firmware é transferido. O firmware do objeto do dispositivo também é atualizado (#1137)",
+        "nl": "De firmware-updatestatus van Homematic IP-apparaten is beschikbaar in de nieuwe status `<device>.0.FIRMWARE_UPDATE_STATE`, bijvoorbeeld `READY_FOR_UPDATE` wanneer de firmware wordt overgedragen. De firmware-informatie van het apparaatobject is ook bijgewerkt (#1137)",
+        "fr": "La mise à jour du firmware des appareils Homematic IP est disponible dans le nouvel état « <device>.0.FIRMWARE_UPDATE_STATE », par exemple « READY_FOR_UPDATE` lors du transfert du firmware. Les informations du firmware de l'appareil sont également mises à jour (#1137)",
+        "it": "Il nuovo stato dei dispositivi IP Homematic è disponibile nel nuovo stato <device>`.0.FIRMWARE_UPDATE_STATE`, ad esempio `READY_FOR_UPDATE` al trasferimento del firmware. Anche il firmware del dispositivo è aggiornato (#1137)",
+        "es": "El estado de actualización del firmware de los dispositivos IP de Homematic está disponible en el nuevo estado `<device>.0.FIRMWARE_UPDATE`, por ejemplo, «READY_FOR_UPDATE» al transferir el firmware. La información del firmware del objeto del dispositivo también (#1137)",
+        "pl": "Stan aktualizacji oprogramowania układowego urządzeń IP firmy Homematic jest dostępny w nowym <device>stanie `.0.FIRMWARE_UPDATE_STATE`, np. `READY_FOR_UPDATE` po przeniesieniu oprogramowania układowego. Aktualizowane są również informacje o oprogramowaniu sprzętowym obiektu urządzenia (#1137)",
+        "uk": "Стан оновлення мікропрограми Homematic IP пристроїв доступний у новому стані `<device>.0.FIRMWARE_UPDATE_STATE`, наприклад `READY_FOR_UPDATE` під час перенесення мікропрограми. Інформація про прошивку об'єкта пристрою також оновлюється (#1137)",
+        "zh-cn": "Homematic IP 设备的固件更新状态在新状态 “<device>.0.FIRMWARE_UPDATE_STATE” 下可用，例如，固件传输时的 “READY_FOR_UPDATE”。设备对象的固件信息也已更新 (#1137)"
+      },
       "4.1.3": {
         "en": "The invalid temperature 3276.8 of a not connected sensor (e.g. the external probe of a HmIP-STE2-PCB) is delivered as `null` instead of a value above the maximum\nThe adapter reports the port of its RPC callback server to js-controller 8, which keeps a per-host registry of the occupied ports (`system.host.<name>.usedResources`). Reported is the port the server really got - the configuration only holds a wish for it (`0` means \"pick one\", and a configured port is moved on when it is taken), so this is the only place where the callback port can be seen. The port of the CCU is not reported, it belongs to another machine. Before the server is created, the log names an instance that has already declared the port. An older js-controller is unaffected",
         "de": "Die ungültige Temperatur 3276,8 eines nicht angeschlossenen Sensors (z. B. der HmIP-STE2-PCB) wird als `Null` statt als Wert über dem Maximum angegeben\nDer Adapter meldet den Port seines RPC-Callback-Servers an js-controller 8, der pro Host die belegten Ports registriert (`system.host. <name>.usedResources`). Gemeldet ist der Port, den der Server wirklich hat - die Konfiguration enthält nur einen Wunsch (`0` heißt „Wählen Sie einen“, und ein konfigurierter Port wird verschoben), also nur hier ist der Callback-Port zu sehen. Der CCU-Port ist unbekannt, er gehört zu einem anderen. Bevor der Server erstellt wird, nennt das Log eine Instanz, die den Port deklariert hat. Ein älterer JS-Controller ist nicht betroffen",
@@ -93,19 +106,6 @@
         "pl": "Aktualizacja pakietów\nMigrant to TypeScript 6\nPoprawiony menedżer urządzeń",
         "uk": "Оновлені пакети\nMigrated до TypeScript 6\nПравильний менеджер пристрою",
         "zh-cn": "更新软件包\n移动到类型脚本 6\n修正的设备管理器"
-      },
-      "3.0.1": {
-        "en": "Renamed role of `STICKY_UNREACH` to `indicator.unreach.sticky` for the better typing detection",
-        "de": "Umbenannte Rolle von `STICKY_UNREACH` zu `indicator.unreach.sticky` für die bessere Typerkennung",
-        "ru": "Переименована роль «STICKY_UNREACH» в «indicator.unreach.sticky»",
-        "pt": "Papel renomeado de `STICKY_UNREACH` para `indicator.unreach.sticky` para melhor detecção de digitação",
-        "nl": "Hernoemde rol van ",
-        "fr": "Renommé le rôle de `STICKY_UNREACH` en `indicator.unreach.sticky` pour une meilleure détection de frappe",
-        "it": "Rinominare il ruolo di `STICKY_UNREACH` a `indicator.unreach.sticky` per il miglior rilevamento della digitazione",
-        "es": "Renombrado papel de \" STICKY_UNREACH \" a \" indicator.unreach.sticky \" para mejorar la detección de la detección",
-        "pl": "Zmiana nazwy 'STICKY _ UNREACH' na 'indicator.unreach.stiff' dla lepszego wykrywania pisania",
-        "uk": "Перейменована роль `STICKY_UNREACH` до `indicator.unreach.sticky` для кращого виявлення типів",
-        "zh-cn": "将`STICKY_UNREACH ' 重新命名为`indexator.unreach.sticky ' ,用于更好的打字检测"
       }
     },
     "authors": [

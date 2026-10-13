@@ -1,4 +1,10 @@
 # Older changes
+## 4.0.0 (2026-08-15)
+* (bluefox) Device icons are now delivered as theme-adaptive SVGs and stay visible on the dark admin theme
+* (krobipd) Generated the device icon set and the device type map from the OCCU device database
+* (krobipd) The device icon is re-applied on start to devices that were created before their type had an icon
+* (bluefox) Removed support of Node.js 20
+
 ## 3.0.2 (2026-05-07)
 * (bluefox) Updated packages
 * (bluefox) Migrated to TypeScript 6
