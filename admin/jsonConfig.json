@@ -25,7 +25,7 @@
                     "xl": 2,
                     "onChange": {
                         "alsoDependsOn": ["useHttps", "daemon", "type"],
-                        "calculateFunc": "data.daemon === 'rfd' ? (data.useHttps && data.type !== 'bin' ? 42001 : 2001) : (data.daemon === 'virtual-devices' ? (data.useHttps && data.type !== 'bin' ? 49292 : 9292) : (data.daemon === 'hs485d' ? (data.useHttps && data.type !== 'bin' ? 42000 : 2000) : (data.daemon === 'CUxD' ? 8701 : (data.daemon === 'HMIP' ? (data.useHttps && data.type !== 'bin' ? 42010 : 2010) : data.homematicPort))))",
+                        "calculateFunc": "data.daemon === 'rfd' ? (data.useHttps && data.type !== 'bin' ? 42001 : 2001) : (data.daemon === 'virtual-devices' ? (data.useHttps && data.type !== 'bin' ? 49292 : 9292) : (data.daemon === 'hs485d' ? (data.useHttps && data.type !== 'bin' ? 42000 : 2000) : (data.daemon === 'CUxD' ? 8701 : (data.daemon === 'HMIP' ? (data.useHttps && data.type !== 'bin' ? 42010 : 2010) : (data.daemon === 'CCU-Jack' ? (data.useHttps ? 2122 : 2121) : data.homematicPort)))))",
                         "ignoreOwnChanges": true
                     }
                 },
@@ -78,6 +78,10 @@
                         {
                             "label": "Homegear",
                             "value": "Homegear"
+                        },
+                        {
+                            "label": "CCU-Jack",
+                            "value": "CCU-Jack"
                         }
                     ],
                     "xs": 12,
@@ -101,10 +105,10 @@
                     ],
                     "onChange": {
                         "alsoDependsOn": ["daemon"],
-                        "calculateFunc": "data.daemon === 'CUxD' ? 'bin' : (data.daemon === 'HMIP' || data.daemon === 'virtual-devices' ? 'xml' : data.type)",
+                        "calculateFunc": "data.daemon === 'CUxD' ? 'bin' : (data.daemon === 'HMIP' || data.daemon === 'virtual-devices' || data.daemon === 'CCU-Jack' ? 'xml' : data.type)",
                         "ignoreOwnChanges": true
                     },
-                    "disabled": "data.daemon === 'CUxD' || data.daemon === 'HMIP' || data.daemon === 'virtual-devices'",
+                    "disabled": "data.daemon === 'CUxD' || data.daemon === 'HMIP' || data.daemon === 'virtual-devices' || data.daemon === 'CCU-Jack'",
                     "xs": 12,
                     "sm": 12,
                     "md": 4,

@@ -214,7 +214,9 @@ export class HomematicRpc extends Adapter {
 
         this.subscribeStates('*');
 
-        this.homematicPath = this.config.daemon === 'virtual-devices' ? '/groups/' : '/';
+        // #1003: CCU-Jack serves its virtual devices on /RPC3 (/RPC2 is taken by the callbacks of the CCU)
+        this.homematicPath =
+            this.config.daemon === 'virtual-devices' ? '/groups/' : this.config.daemon === 'CCU-Jack' ? '/RPC3' : '/';
 
         this.config.reconnectInterval = this.config.reconnectInterval || 30;
         if (this.config.reconnectInterval < 10) {
@@ -232,11 +234,13 @@ export class HomematicRpc extends Adapter {
 
         await this.migrateDeviceIcons();
 
-        // #1349: CUxD supports only BIN-RPC, HomeMatic IP and Virtual Devices only XML-RPC
+        // #1349: CUxD supports only BIN-RPC, HomeMatic IP, Virtual Devices and CCU-Jack only XML-RPC
         const requiredType =
             this.config.daemon === 'CUxD'
                 ? 'bin'
-                : this.config.daemon === 'HMIP' || this.config.daemon === 'virtual-devices'
+                : this.config.daemon === 'HMIP' ||
+                    this.config.daemon === 'virtual-devices' ||
+                    this.config.daemon === 'CCU-Jack'
                   ? 'xml'
                   : undefined;
         if (requiredType && this.config.type !== requiredType) {
@@ -357,16 +361,18 @@ export class HomematicRpc extends Adapter {
             }
 
             if (this.config && rpcClient) {
+                // tell CCU that we are no longer the client under this URL. CCU-Jack takes an empty interface ID
+                // as a new registration and unregisters only on an init without it (#1003)
+                const deinitParams = this.config.daemon === 'CCU-Jack' ? [this.daemonURL] : [this.daemonURL, ''];
                 this.log.info(
                     `${this.config.type}rpc -> ${this.config.homematicAddress}:${this.config.homematicPort}${
                         this.homematicPath
-                    } init ${JSON.stringify([this.daemonURL, ''])}`,
+                    } init ${JSON.stringify(deinitParams)}`,
                 );
                 try {
-                    // tell CCU that we are no longer the client under this URL - legacy idk if necessary
-                    await this.rpcMethodCallAsync('init', [this.daemonURL, '']);
+                    await this.rpcMethodCallAsync('init', deinitParams);
                 } catch (e: unknown) {
-                    this.log.error(`Cannot call init: [${this.daemonURL}, ""] ${(e as Error).message}`);
+                    this.log.error(`Cannot call init: ${JSON.stringify(deinitParams)} ${(e as Error).message}`);
                 }
 
                 if (connected) {

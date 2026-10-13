@@ -113,7 +113,7 @@ export interface ListDevicesEntry {
     VERSION?: string;
 }
 
-export type Daemon = 'CUxD' | 'virtual-devices' | 'rfd' | 'hs485d' | 'HMIP';
+export type Daemon = 'CUxD' | 'virtual-devices' | 'rfd' | 'hs485d' | 'HMIP' | 'CCU-Jack';
 
 export interface FixParamsetParams {
     /** the paramset, which will be fixed */

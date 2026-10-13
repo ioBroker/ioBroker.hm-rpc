@@ -43,6 +43,7 @@ The following modules are supported:
 - `HMIP-rfd` for Homematic IP devices,
 - `hs485d` for wired devices,
 - `CUxD` for external components, like EnOcean or FS20 (CUxD is an additional software for the CCU),
+- `CCU-Jack` for the virtual devices of [CCU-Jack](https://github.com/mdzio/ccu-jack) (an add-on for the CCU),
 - `Homegear` as a replacement for a CCU.
 
 This diagram shows the structure and the communication interfaces:
@@ -89,6 +90,7 @@ The following ports are used by default:
 | hs485d          | hs485d (wired devices) | 2000                      | 42000         |
 | CUxD            | CUxD                   | 8701                      | not supported |
 | Homegear        | Homegear               | as configured in Homegear | not supported |
+| CCU-Jack        | CCU-Jack               | 2121                      | 2122          |
 
 The HTTPS ports work only with the XML-RPC protocol.
 
@@ -106,7 +108,7 @@ Change this value only in special cases.
 
 #### Daemon
 
-A CCU supports different device types (radio, wired, Homematic IP, CUxD).
+A CCU supports different device types (radio, wired, Homematic IP, CUxD, CCU-Jack).
 You must create a separate instance of the adapter for every type.
 
 #### Protocol
@@ -115,7 +117,7 @@ Two protocols are available for the communication: XML-RPC and BIN-RPC.
 BIN-RPC is faster, but some devices do not support it, or they support it incorrectly.
 In this case select the XML-RPC protocol.
 
-**Note:** CUxD works only with BIN-RPC. Homematic IP and Virtual Devices work only with XML-RPC.
+**Note:** CUxD works only with BIN-RPC. Homematic IP, Virtual Devices and CCU-Jack work only with XML-RPC.
 For these daemons the adapter uses the right protocol automatically.
 
 #### Synchronize objects (once)
@@ -346,6 +348,9 @@ npm run update-images
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (@GermanBluefox) The virtual devices of CCU-Jack can be connected with the new daemon `CCU-Jack` (port 2121, HTTPS 2122, XML-RPC only) (#1003)
+
 ### 4.2.1 (2026-10-13)
 * (@GermanBluefox) Homebrew devices (AskSin++) of the add-ons from jp112sdl (JP-HB-Devices-addon) and TomMajor (HB-TM-Devices-AddOn) get the same icon as in the CCU WebUI (#903)
 
