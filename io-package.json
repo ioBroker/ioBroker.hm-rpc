@@ -166,6 +166,7 @@
         ]
       }
     },
+    "nogit": true,
     "adminUI": {
       "config": "json"
     },
