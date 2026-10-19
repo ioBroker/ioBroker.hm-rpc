@@ -5,6 +5,11 @@ export declare class HomematicRpc extends Adapter {
     /** On RPC server error (e.g. address not available) restart the adapter after X ms */
     private readonly SERVER_RESTART_DELAY_MS;
     private serverRestartTimer?;
+    /** Register again at most every X ms, if events with an outdated interface id of this instance arrive */
+    private readonly STALE_ID_REINIT_DELAY_MS;
+    private lastStaleIdReinit;
+    /** `<host>:<namespace>:`, every interface id of this instance starts with it */
+    private clientIdPrefix;
     private readonly metaValues;
     private readonly dpTypes;
     private lastEvent;
@@ -103,6 +108,18 @@ export declare class HomematicRpc extends Adapter {
      * Sends init to RPC server
      */
     private sendInit;
+    /**
+     * Parameters of the init call, which removes the registration of our callback URL. CCU-Jack takes an empty
+     * interface ID as a new registration and unregisters only on an init without it (#1003)
+     */
+    private getDeinitParams;
+    /**
+     * Called on an event with an interface id of this instance, which is not the current one. The CCU still has an
+     * outdated registration, e.g. after an unclean stop, so register again (#1542)
+     *
+     * @param staleId the interface id of the event
+     */
+    private onStaleClientId;
     /**
      * Inits the RPC server
      */

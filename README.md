@@ -348,6 +348,9 @@ npm run update-images
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (@GermanBluefox) After an unclean stop, the CCU kept sending the events with the old interface ID and they were discarded silently. The adapter now removes an old registration before it registers, and registers again with a warning if events with an old ID of this instance arrive (#1542)
+
 ### 4.2.2 (2026-10-13)
 * (@GermanBluefox) The virtual devices of CCU-Jack can be connected with the new daemon `CCU-Jack` (port 2121, HTTPS 2122, XML-RPC only) (#1003)
 * (@GermanBluefox) The state `updated` (new devices for hm-rega) is no longer marked as writable, as expected for the role `indicator`

@@ -42,6 +42,11 @@ export class HomematicRpc extends Adapter {
     /** On RPC server error (e.g. address not available) restart the adapter after X ms */
     private readonly SERVER_RESTART_DELAY_MS = 30_000;
     private serverRestartTimer?: ioBroker.Timeout;
+    /** Register again at most every X ms, if events with an outdated interface id of this instance arrive */
+    private readonly STALE_ID_REINIT_DELAY_MS = 5 * 60_000;
+    private lastStaleIdReinit = 0;
+    /** `<host>:<namespace>:`, every interface id of this instance starts with it */
+    private clientIdPrefix = '';
     private readonly metaValues: Record<string, ParamsetObject> = {};
     private readonly dpTypes: Record<string, DatapointTypeObject> = {};
     private lastEvent = 0;
@@ -96,6 +101,10 @@ export class HomematicRpc extends Adapter {
             if (params[0] === clientId) {
                 // convert back our clientId to our namespace
                 params[0] = this.namespace;
+            } else if (this.clientIdPrefix && params[0].startsWith(this.clientIdPrefix)) {
+                // id of an outdated registration of this instance, left over after an unclean stop (#1542)
+                this.onStaleClientId(params[0]);
+                return '';
             }
             const name = `${params[0]}.${channel}.${params[2]}`;
 
@@ -361,9 +370,8 @@ export class HomematicRpc extends Adapter {
             }
 
             if (this.config && rpcClient) {
-                // tell CCU that we are no longer the client under this URL. CCU-Jack takes an empty interface ID
-                // as a new registration and unregisters only on an init without it (#1003)
-                const deinitParams = this.config.daemon === 'CCU-Jack' ? [this.daemonURL] : [this.daemonURL, ''];
+                // tell CCU that we are no longer the client under this URL
+                const deinitParams = this.getDeinitParams();
                 this.log.info(
                     `${this.config.type}rpc -> ${this.config.homematicAddress}:${this.config.homematicPort}${
                         this.homematicPath
@@ -821,6 +829,17 @@ export class HomematicRpc extends Adapter {
     private async sendInit(): Promise<void> {
         try {
             if (rpcClient && (rpcClient.connected === undefined || rpcClient.connected)) {
+                // drop a registration of our callback URL with an outdated interface id, which is left over after
+                // an unclean stop, otherwise the CCU keeps sending the events with the old id (#1542)
+                const deinitParams = this.getDeinitParams();
+                try {
+                    await this.rpcMethodCallAsync('init', deinitParams);
+                } catch (e: unknown) {
+                    this.log.debug(
+                        `Deinit ${JSON.stringify(deinitParams)} before init failed: ${(e as Error).message}`,
+                    );
+                }
+
                 this.log.debug(
                     `${this.config.type}rpc -> ${this.config.homematicAddress}:${this.config.homematicPort}${
                         this.homematicPath
@@ -849,6 +868,33 @@ export class HomematicRpc extends Adapter {
             }
             this.setTimeout(() => this.stop && this.stop(), 30_000);
         }
+    }
+
+    /**
+     * Parameters of the init call, which removes the registration of our callback URL. CCU-Jack takes an empty
+     * interface ID as a new registration and unregisters only on an init without it (#1003)
+     */
+    private getDeinitParams(): string[] {
+        return this.config.daemon === 'CCU-Jack' ? [this.daemonURL] : [this.daemonURL, ''];
+    }
+
+    /**
+     * Called on an event with an interface id of this instance, which is not the current one. The CCU still has an
+     * outdated registration, e.g. after an unclean stop, so register again (#1542)
+     *
+     * @param staleId the interface id of the event
+     */
+    private onStaleClientId(staleId: string): void {
+        const now = Date.now();
+        if (now - this.lastStaleIdReinit < this.STALE_ID_REINIT_DELAY_MS) {
+            this.log.debug(`${this.config.type}rpc <- event with outdated interface id "${staleId}" discarded`);
+            return;
+        }
+        this.lastStaleIdReinit = now;
+        this.log.warn(
+            `${this.config.type}rpc <- event with outdated interface id "${staleId}" received (current: "${clientId}"), probably left over after an unclean stop. Registering again`,
+        );
+        this.sendInit().catch(e => this.log.error(`Cannot sendInit: ${e.message}`));
     }
 
     /**
@@ -924,6 +970,7 @@ export class HomematicRpc extends Adapter {
             );
         }
 
+        this.clientIdPrefix = `${clientId}:`;
         clientId += `:${randomBytes(16).toString('hex')}`;
 
         this.log.info(
