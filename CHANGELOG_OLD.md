@@ -1,4 +1,14 @@
 # Older changes
+## 4.1.1 (2026-09-22)
+* (@GermanBluefox) `CONTROL_MODE` and `SET_POINT_MODE` of HmIP thermostats show the mode names (auto, manual, party)
+* (@GermanBluefox) `SET_TEMPERATURE` of BidCos heating groups accepts 4.5 (OFF) and 30.5 (ON)
+* (@GermanBluefox) CUxD always uses BIN-RPC, Homematic IP and Virtual Devices always use XML-RPC
+* (@GermanBluefox) Username and password are sent with XML-RPC also without HTTPS
+* (@GermanBluefox) Better error message if the CCU answers with an HTML page instead of XML-RPC
+* (@GermanBluefox) Read-only datapoints do not get the writable roles `level.*` and `switch.*` anymore
+* (@GermanBluefox) HmIP shutters and blinds: the control channels get `level.blind`/`level.tilt`, the status channel `value.blind`/`value.tilt`; `LEVEL` and `VALVE_STATE` of HmIP thermostats got better roles
+* (@GermanBluefox) The option "Don't delete devices" also ignores devices that the CCU reports as deleted while the adapter is running (e.g. HmIP during firmware updates)
+
 ## 4.1.0 (2026-09-22)
 * (krobipd) The device icons were invisible in the object browser: its ID cell sets `width: initial` on every element of an inlined SVG, which collapses the icon's `rect` to 0px. The size is now carried as an inline style as well.
 * (bluefox) Updated `binrpc` to 4.x and `homematic-xmlrpc` to 2.x (no dependency on a GitHub tarball anymore)
