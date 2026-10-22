@@ -8,6 +8,10 @@ export declare class HomematicRpc extends Adapter {
     /** Register again at most every X ms, if events with an outdated interface id of this instance arrive */
     private readonly STALE_ID_REINIT_DELAY_MS;
     private lastStaleIdReinit;
+    /** Outdated interface ids, which already caused a registration. Never cleared, else the re-init loop starts again */
+    private readonly staleClientIds;
+    /** Outdated interface ids, which still arrive after the registration and were reported on info level */
+    private readonly reportedStaleClientIds;
     /** `<host>:<namespace>:`, every interface id of this instance starts with it */
     private clientIdPrefix;
     private readonly metaValues;
@@ -115,7 +119,7 @@ export declare class HomematicRpc extends Adapter {
     private getDeinitParams;
     /**
      * Called on an event with an interface id of this instance, which is not the current one. The CCU still has an
-     * outdated registration, e.g. after an unclean stop, so register again (#1542)
+     * outdated registration, e.g. after an unclean stop, so register again once per outdated id (#1542)
      *
      * @param staleId the interface id of the event
      */
