@@ -45,6 +45,10 @@ export class HomematicRpc extends Adapter {
     /** Register again at most every X ms, if events with an outdated interface id of this instance arrive */
     private readonly STALE_ID_REINIT_DELAY_MS = 5 * 60_000;
     private lastStaleIdReinit = 0;
+    /** Outdated interface ids, which already caused a registration. Never cleared, else the re-init loop starts again */
+    private readonly staleClientIds = new Set<string>();
+    /** Outdated interface ids, which still arrive after the registration and were reported on info level */
+    private readonly reportedStaleClientIds = new Set<string>();
     /** `<host>:<namespace>:`, every interface id of this instance starts with it */
     private clientIdPrefix = '';
     private readonly metaValues: Record<string, ParamsetObject> = {};
@@ -880,13 +884,27 @@ export class HomematicRpc extends Adapter {
 
     /**
      * Called on an event with an interface id of this instance, which is not the current one. The CCU still has an
-     * outdated registration, e.g. after an unclean stop, so register again (#1542)
+     * outdated registration, e.g. after an unclean stop, so register again once per outdated id (#1542)
      *
      * @param staleId the interface id of the event
      */
     private onStaleClientId(staleId: string): void {
+        if (this.staleClientIds.has(staleId)) {
+            // registering again did not remove it, so it belongs to a registration we cannot remove
+            if (!this.reportedStaleClientIds.has(staleId)) {
+                this.reportedStaleClientIds.add(staleId);
+                this.log.info(
+                    `${this.config.type}rpc <- CCU still sends events to the outdated registration "${staleId}". It probably belongs to another callback URL and cannot be removed from here. A restart of the CCU removes it`,
+                );
+            } else {
+                this.log.debug(`${this.config.type}rpc <- event with outdated interface id "${staleId}" discarded`);
+            }
+            return;
+        }
+        this.staleClientIds.add(staleId);
         const now = Date.now();
         if (now - this.lastStaleIdReinit < this.STALE_ID_REINIT_DELAY_MS) {
+            // registered again just now, which covers this id too
             this.log.debug(`${this.config.type}rpc <- event with outdated interface id "${staleId}" discarded`);
             return;
         }
