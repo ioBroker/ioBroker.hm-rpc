@@ -348,7 +348,7 @@ npm run update-images
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 4.2.4 (2026-10-22)
 * (@GermanBluefox) Do not re-register every 5 minutes if events with an outdated interface id keep arriving (#1542)
 
 ### 4.2.3 (2026-10-19)
@@ -365,12 +365,6 @@ npm run update-images
 ### 4.1.3 (2026-10-12)
 * (jhoos70) The invalid temperature 3276.8 of a not connected sensor (e.g. the external probe of a HmIP-STE2-PCB) is delivered as `null` instead of a value above the maximum
 * (@GermanBluefox) The adapter reports the port of its RPC callback server to js-controller 8, which keeps a per-host registry of the occupied ports (`system.host.<name>.usedResources`). Reported is the port the server really got - the configuration only holds a wish for it (`0` means "pick one", and a configured port is moved on when it is taken), so this is the only place where the callback port can be seen. The port of the CCU is not reported, it belongs to another machine. Before the server is created, the log names an instance that has already declared the port. An older js-controller is unaffected
-
-### 4.1.2 (2026-09-22)
-* (@GermanBluefox) Philips Hue and Osram Lightify lamps of the CCU lighting gateway: the color temperature `WHITE` is handled in kelvin (2000 - 6500 K), also if the CCU declares it as percent (#694)
-* (@GermanBluefox) `HUE` and `SATURATION` are sent together in one `putParamset`, HMIP devices like HmIP-RGBW rejected a single value with `MISSING_NON_OPTIONAL_PARAMETER` (#1108)
-* (@GermanBluefox) Values which the CCU delivers as text for a number are converted (the name of an ENUM to its index, e.g. `STATE_NOT_AVAILABLE` of a `VALVE_STATE`), invalid values become `null` instead of a wrong type (#1342, #1358)
-* (@GermanBluefox) Events of deleted devices do not warn about missing objects until the next start of the adapter anymore (#1419)
 
 ### Older changelog
 [here](OLD_CHANGELOG.md)
