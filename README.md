@@ -159,6 +159,20 @@ For this reason the option is enabled automatically as soon as you select Homema
 
 With this option enabled, delete the objects of a device that you removed from the CCU manually in the object tree.
 
+#### Suppress interim levels of moving channels
+
+A dimmer or a blind acknowledges a command immediately, before its ramp or movement is finished. The CCU forwards this
+acknowledgement as events with the level at that moment together with `WORKING = true` (Homematic) or
+`PROCESS = NOT_STABLE` (Homematic IP). The final level follows a few seconds later with the next status message
+(for BidCos dimmers after `STATUSINFO_MINDELAY` + `STATUSINFO_RANDOM`, by default 2-3 s). Therefore the state jumps, e.g.
+`0 → 100` (command, `ack: false`) `→ 0.5` (acknowledgement) `→ 100` (final value).
+
+If this option is enabled, a `LEVEL` / `LEVEL_2` of a channel which has a `WORKING` or `PROCESS` data point is held back
+until the flag of the same status message arrives (the CCU sends it a few milliseconds after the level, at most 300 ms
+are waited). The level is dropped if the channel is still moving, otherwise it is written. The state therefore keeps the
+commanded value until the final level arrives. `WORKING`, `PROCESS` and `DIRECTION` are always written, so the movement
+itself can still be detected. Channels without such a flag are not affected.
+
 #### Use https
 
 If this option is enabled, the adapter uses HTTPS instead of HTTP.
@@ -348,6 +362,8 @@ npm run update-images
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (@gcaruso73) New option "Suppress interim levels of moving channels": the LEVEL of the acknowledgement of a dimmer or blind (`WORKING = true` / `PROCESS = NOT_STABLE`) is not written, so the state no longer jumps to the start value of the ramp before the final value arrives
 ### 4.2.4 (2026-10-22)
 * (@GermanBluefox) Do not re-register every 5 minutes if events with an outdated interface id keep arriving (#1542)
 

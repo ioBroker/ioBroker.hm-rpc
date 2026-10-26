@@ -22,5 +22,7 @@
     "Use https": "gebruik https",
     "Username": "Gebruikersnaam",
     "in seconds": "in seconden",
-    "Main settings": "Hoofdinstellingen"
+    "Main settings": "Hoofdinstellingen",
+    "Suppress interim levels of moving channels": "Suppress interim levels of moving channels",
+    "LEVEL values reported with WORKING=true or PROCESS=NOT_STABLE are not written, only the final level": "LEVEL values reported with WORKING=true or PROCESS=NOT_STABLE are not written, only the final level"
 }
