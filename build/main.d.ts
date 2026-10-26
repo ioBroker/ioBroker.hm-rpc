@@ -16,6 +16,8 @@ export declare class HomematicRpc extends Adapter {
     private clientIdPrefix;
     private readonly metaValues;
     private readonly dpTypes;
+    /** holds back interim LEVEL values of moving channels, if `suppressTransitionalLevel` is enabled */
+    private transitionFilter;
     private lastEvent;
     private eventInterval?;
     private connInterval?;
