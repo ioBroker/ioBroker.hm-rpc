@@ -1,13 +1,7 @@
 import { expect } from 'chai';
 import { afterEach, describe, it } from 'mocha';
 import type { FakeBox } from 'occulite-client/testing';
-import {
-    LiteConnection,
-    listLiteInterfaces,
-    loadOcculite,
-    tierAwareTransport,
-    type LiteModules,
-} from './liteConnection';
+import { LiteConnection, listLiteInterfaces, loadOcculite, type LiteModules } from './liteConnection';
 import { DEVICE, IFACE, startFakeBox, TOKEN, waitFor } from './liteTestUtil';
 
 type Call = { method: string; params: unknown[] };
@@ -70,6 +64,14 @@ describe('LiteConnection', function () {
         });
         return { calls, statuses };
     }
+
+    it('follows the devices with a token that holds a higher rpc tier alone', async () => {
+        box = await startFakeBox({ scopes: ['meta:read', 'rpc:configure'] });
+        const { calls, statuses } = await connect();
+        expect(statuses).to.deep.equal(['connecting', 'ready']);
+        expect(calls.some(c => c.method === 'newDevices')).to.equal(true);
+        expect(conn!.values!.get(`${IFACE}.${DEVICE}:1.STATE`)!.value).to.equal(true);
+    });
 
     it('connects, delivers the device snapshot as newDevices and follows the status', async () => {
         box = await startFakeBox();
@@ -288,54 +290,5 @@ describe('listLiteInterfaces', () => {
             code = (e as { code?: string }).code;
         }
         expect(code).to.equal('unauthenticated');
-    });
-});
-
-describe('tierAwareTransport', () => {
-    const answers = (status: number, body: string): { calls: string[]; tx: ReturnType<typeof tierAwareTransport> } => {
-        const calls: string[] = [];
-        const inner = {
-            request: (method: string, url: string) => {
-                calls.push(`${method} ${url}`);
-                return Promise.resolve({ status, headers: {}, body });
-            },
-            stream: (url: string) => {
-                calls.push(`stream ${url}`);
-                return Promise.resolve({ status: 200, chunks: (async function* () {})() });
-            },
-        };
-        return { calls, tx: tierAwareTransport(inner) };
-    };
-    const STATE = 'https://box/api/auth/v1/state';
-
-    it('spells rpc:read out where a higher tier implies it', async () => {
-        const { tx } = answers(200, JSON.stringify({ authenticated: true, scopes: ['meta:read', 'rpc:configure'] }));
-        const r = await tx.request('GET', STATE, {});
-        expect(JSON.parse(r.body)).to.deep.equal({
-            authenticated: true,
-            scopes: ['meta:read', 'rpc:configure', 'rpc:read'],
-        });
-    });
-
-    it('leaves every other answer alone', async () => {
-        for (const [status, body, url] of [
-            [200, JSON.stringify({ scopes: ['rpc:read', 'rpc:admin'] }), STATE],
-            [200, JSON.stringify({ scopes: ['meta:read'] }), STATE],
-            [200, JSON.stringify({ scopes: ['*'] }), STATE],
-            [200, JSON.stringify({}), STATE],
-            [200, 'not json', STATE],
-            [401, JSON.stringify({ scopes: ['rpc:admin'] }), STATE],
-            [200, JSON.stringify({ scopes: ['rpc:admin'] }), 'https://box/api/auth/v1/tokens'],
-        ] as [number, string, string][]) {
-            const { tx } = answers(status, body);
-            const r = await tx.request('GET', url, {});
-            expect(r.body, `${status} ${url} ${body}`).to.equal(body);
-        }
-    });
-
-    it('passes the stream through', async () => {
-        const { tx, calls } = answers(200, '');
-        await tx.stream('https://box/api/rpc/v1/events', {}, new AbortController().signal);
-        expect(calls).to.deep.equal(['stream https://box/api/rpc/v1/events']);
     });
 });

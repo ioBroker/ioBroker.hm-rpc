@@ -9,43 +9,9 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LiteConnection = void 0;
-exports.tierAwareTransport = tierAwareTransport;
 exports.loadOcculite = loadOcculite;
 exports.listLiteInterfaces = listLiteInterfaces;
 const lite_1 = require("./lite");
-/** The rpc tiers of the system above `rpc:read`; each covers the ones below it */
-const RPC_TIERS = ['rpc:operate', 'rpc:configure', 'rpc:admin'];
-/**
- * occulite-client (0.3.0) decides "names only" from the literal `rpc:read` in `GET /api/auth/v1/state`, but a token
- * paired with a higher tier (`rpc:configure`, what this adapter asks for) carries that tier alone - the system
- * includes the lower ones. This spells `rpc:read` out in the auth state where a tier implies it, so the client
- * follows the devices and the stream. Goes once the package knows the tiers.
- *
- * @param transport the transport of occulite-client
- */
-function tierAwareTransport(transport) {
-    return {
-        request: async (method, url, headers, body, signal) => {
-            const response = await transport.request(method, url, headers, body, signal);
-            if (response.status !== 200 || !/\/api\/auth\/v1\/state(\?|$)/.test(url)) {
-                return response;
-            }
-            let parsed;
-            try {
-                parsed = JSON.parse(response.body);
-            }
-            catch {
-                return response;
-            }
-            const scopes = Array.isArray(parsed?.scopes) ? parsed.scopes : [];
-            if (scopes.includes('rpc:read') || !scopes.some(scope => RPC_TIERS.includes(scope))) {
-                return response;
-            }
-            return { ...response, body: JSON.stringify({ ...parsed, scopes: [...scopes, 'rpc:read'] }) };
-        },
-        stream: (url, headers, signal) => transport.stream(url, headers, signal),
-    };
-}
 let loaded;
 /**
  * occulite-client, loaded once (an ES module, so by a dynamic import)
@@ -94,7 +60,7 @@ class LiteConnection {
         const box = new modules.OccuLite({
             url: this.opts.url,
             auth: { token: this.opts.token },
-            transport: tierAwareTransport(modules.nodeTransport(trust)),
+            transport: modules.nodeTransport(trust),
             interfaces: [this.opts.iface],
             timeout: this.opts.timeout,
             log: {
@@ -172,7 +138,7 @@ async function listLiteInterfaces(opts) {
     const box = new modules.OccuLite({
         url: opts.url,
         auth: { token: opts.token },
-        transport: tierAwareTransport(modules.nodeTransport(opts.fingerprint ? { fingerprint256: opts.fingerprint } : {})),
+        transport: modules.nodeTransport(opts.fingerprint ? { fingerprint256: opts.fingerprint } : {}),
         timeout: 10_000,
     });
     try {

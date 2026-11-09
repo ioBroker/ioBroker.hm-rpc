@@ -6,18 +6,9 @@
  *
  * occulite-client is an ES module; it is loaded here by a dynamic import, so the CCU path never loads it.
  */
-import type { OccuLite, Status, Transport } from 'occulite-client';
+import type { OccuLite, Status } from 'occulite-client';
 import type { callbackEvents, CallbackServer } from 'occulite-client/callbacks';
 import type { nodeTransport, pair, probe } from 'occulite-client/node';
-/**
- * occulite-client (0.3.0) decides "names only" from the literal `rpc:read` in `GET /api/auth/v1/state`, but a token
- * paired with a higher tier (`rpc:configure`, what this adapter asks for) carries that tier alone - the system
- * includes the lower ones. This spells `rpc:read` out in the auth state where a tier implies it, so the client
- * follows the devices and the stream. Goes once the package knows the tiers.
- *
- * @param transport the transport of occulite-client
- */
-export declare function tierAwareTransport(transport: Transport): Transport;
 /** The parts of occulite-client the lite mode uses, loaded once */
 export interface LiteModules {
     OccuLite: typeof OccuLite;

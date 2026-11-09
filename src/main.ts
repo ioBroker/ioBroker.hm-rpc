@@ -438,8 +438,9 @@ export class HomematicRpc extends Adapter {
 
         if (this.config.liteNames !== false && this.lite.meta) {
             this.liteNames = new LiteNames(this, this.lite.meta, this.config.liteInterface, this.liteLanguage);
-            // every change of the names, rooms and functions on the system: a pass over the objects, debounced
-            this.lite.on('meta', () => this.liteNames?.schedule());
+            // every change of the names, rooms and functions on the system, once the client's copy is in step again
+            // (right after a change applied in place, or once the snapshot is read again): a pass, debounced
+            this.lite.on('metaSettled', () => this.liteNames?.schedule());
             this.liteNames.schedule();
         }
         this.seedLiteValues();

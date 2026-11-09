@@ -245,6 +245,8 @@ describe('hm-rpc in the openccu-lite mode', function () {
         it('answers the custom commands of scripts through lite-rpc', async () => {
             box = await startFakeBox();
             await start(liteConfig());
+            // the adapter's own description reads first, so the last call is the script's
+            await created();
             const response = await send(adapter!, onMessage, 'getParamsetDescription', {
                 ID: `${DEVICE}:1`,
                 paramType: 'VALUES',
@@ -281,6 +283,25 @@ describe('hm-rpc in the openccu-lite mode', function () {
             expect(Object.values(db.getObject('enum.rooms.og_bad')!.common.members)).to.deep.equal([CH1]);
             expect(db.getObject('enum.rooms.og_bad')!.common.name).to.equal('Bad');
             expect(db.getObject('enum.functions.licht')).to.be.undefined;
+        });
+
+        it('follows a new room once the snapshot is read again', async () => {
+            box = await startFakeBox();
+            await start(liteConfig());
+            await named();
+            const meta = box.opts.meta!;
+            const rooms = meta.enums.room as { tree: { children: { id: string; name: string }[] }[] };
+            rooms.tree[1].children.push({ id: 'kind', name: 'Kinderzimmer' });
+            meta.objects[`${IFACE}.${DEVICE}:1`] = {
+                name: 'Stehlampe Schalter',
+                enums: ['room/og/kind', 'function/licht'],
+            };
+            meta.revision++;
+            // a created node is no change the copy applies in place: the client reads the snapshot again
+            box.metaEvent({ revision: meta.revision, kind: 'node.created', enum: 'room', path: 'og/kind' });
+            await waitFor(() => db.getObject('enum.rooms.og_kind') !== undefined, 5000, 'the new room');
+            expect(Object.values(db.getObject('enum.rooms.og_kind')!.common.members)).to.deep.equal([CH1]);
+            expect(db.getObject('enum.rooms.og_kind')!.common.name).to.equal('Kinderzimmer');
         });
 
         it('removes stale objects with the snapshot, unless "Don\'t delete devices" is set', async () => {
