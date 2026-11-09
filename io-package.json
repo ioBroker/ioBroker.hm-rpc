@@ -2,8 +2,8 @@
   "common": {
     "name": "hm-rpc",
     "desc": {
-      "en": "Connects HomeMatic Interface-Processes (BidCos-Services, Homegear and CUxD) via XML-RPC or BIN-RPC to ioBroker",
-      "de": "Verbindet HomeMatic Interface-Prozesse (BidCos-Services, Homegear und CUxD) via XML-RPC oder BIN-RPC mit ioBroker",
+      "en": "Connects HomeMatic Interface-Processes (BidCos-Services, Homegear and CUxD) via XML-RPC or BIN-RPC, and openccu-lite systems via lite-rpc, to ioBroker",
+      "de": "Verbindet HomeMatic Interface-Prozesse (BidCos-Services, Homegear und CUxD) via XML-RPC oder BIN-RPC sowie openccu-lite-Systeme via lite-rpc mit ioBroker",
       "ru": "Подключает HomeMatic интерфейсы (BidCos-сервисы, Homegear и CUxD) через XML-RPC или BIN-RPC к ioBroker",
       "pt": "Conecta HomeMatic Interface-Processes (BidCos-Services, Homegear e CUxD) via XML-RPC ou BIN-RPC para ioBroker",
       "nl": "Verbindt HomeMatic Interface-processen (BidCos-Services, Homegear en CUxD) via XML-RPC of BIN-RPC met ioBroker",
@@ -136,7 +136,8 @@
       "FS20",
       "FHT",
       "HMS",
-      "EnOcean"
+      "EnOcean",
+      "openccu-lite"
     ],
     "type": "iot-systems",
     "connectionType": "local",
@@ -245,15 +246,21 @@
     "username": "",
     "password": "",
     "useHttps": false,
-    "dontDelete": false
+    "dontDelete": false,
+    "liteInterface": "HmIP-RF",
+    "liteToken": "",
+    "liteFingerprint": "",
+    "liteNames": true
   },
   "protectedNative": [
     "username",
-    "password"
+    "password",
+    "liteToken"
   ],
   "encryptedNative": [
     "username",
-    "password"
+    "password",
+    "liteToken"
   ],
   "objects": [
     {
