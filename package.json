@@ -46,7 +46,7 @@
     "@iobroker/type-detector": "^6.0.1",
     "binrpc": "^4.3.0",
     "homematic-xmlrpc": "^2.0.0",
-    "occulite-client": "^0.3.0"
+    "occulite-client": "^0.4.0"
   },
   "devDependencies": {
     "@alcalzone/release-script": "^5.2.1",
