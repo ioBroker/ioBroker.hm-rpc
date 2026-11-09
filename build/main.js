@@ -42,6 +42,10 @@ const images_1 = require("./lib/images");
 const tools = __importStar(require("./lib/tools"));
 const roles_1 = require("./lib/roles");
 const deviceManager_1 = require("./lib/deviceManager");
+const lite_1 = require("./lib/lite");
+const liteConnection_1 = require("./lib/liteConnection");
+const liteNames_1 = require("./lib/liteNames");
+const litePairing_1 = require("./lib/litePairing");
 const usedResources_1 = require("./lib/usedResources");
 let connected = false;
 const displays = {};
@@ -89,6 +93,8 @@ class HomematicRpc extends adapter_core_1.Adapter {
             EPAPER_TONE_INTERVAL: 'number',
             EPAPER_TONE_REPETITIONS: 'number',
         };
+        /** The language of ioBroker, for the names of rooms and functions and the pairing texts */
+        this.liteLanguage = 'en';
         /** admin/icons sits next to build/ in the installed package */
         this.iconDir = (0, node_path_1.join)(__dirname, '..', 'admin', 'icons');
         /** icon file -> `common.icon` value, so each SVG is read from disk only once */
@@ -234,6 +240,18 @@ class HomematicRpc extends adapter_core_1.Adapter {
         }
         await this.setState('info.connection', false, true);
         await this.migrateDeviceIcons();
+        const lite = this.config.daemon === 'openccu-lite';
+        if (lite) {
+            // the interface decides the daemon from here on: its paramset fixes and the device filter of newDevices
+            // apply as on a CCU
+            this.config.daemon = (0, lite_1.interfaceDaemon)(this.config.liteInterface);
+            this.config.type = 'xml';
+            await this.ensurePairing();
+            if (!this.config.homematicAddress || !this.config.liteToken) {
+                this.log.info('Not paired with an openccu-lite system yet: pair the instance in its settings');
+                return;
+            }
+        }
         // #1349: CUxD supports only BIN-RPC, HomeMatic IP, Virtual Devices and CCU-Jack only XML-RPC
         const requiredType = this.config.daemon === 'CUxD'
             ? 'bin'
@@ -246,7 +264,10 @@ class HomematicRpc extends adapter_core_1.Adapter {
             this.log.warn(`${this.config.daemon} supports only ${requiredType === 'bin' ? 'BIN-RPC' : 'XML-RPC'}, the configured protocol is ignored`);
             this.config.type = requiredType;
         }
-        if (this.config.type === 'bin') {
+        if (lite) {
+            // lite-rpc: no RPC library, occulite-client is loaded by the connection
+        }
+        else if (this.config.type === 'bin') {
             rpc = await import('binrpc');
             this.daemonProto = 'xmlrpc_bin://';
         }
@@ -256,7 +277,7 @@ class HomematicRpc extends adapter_core_1.Adapter {
             this.config.type = 'xml';
             this.daemonProto = 'http://';
         }
-        if (rpc.default) {
+        if (rpc?.default) {
             rpc = rpc.default;
         }
         // Clean up objects if still hm-rpc.meta exist
@@ -329,7 +350,224 @@ class HomematicRpc extends adapter_core_1.Adapter {
             this.log.error(`Could not get state view on start: ${e.message}`);
         }
         // Start Adapter
-        await this.initRpcServer();
+        if (lite) {
+            await this.startLite();
+        }
+        else {
+            await this.initRpcServer();
+        }
+    }
+    /**
+     * Connects to the openccu-lite system: the requests through lite-rpc, the events from its stream, no callback
+     * server and no `init`. The device snapshot of the stream arrives as `newDevices`, which creates the new devices
+     * and removes the stale ones; the state of the connection follows the client's status instead of a PING.
+     */
+    async startLite() {
+        clientId = this.namespace;
+        this.clientIdPrefix = '';
+        const url = (0, lite_1.liteUrlOf)(this.config);
+        this.lite = new liteConnection_1.LiteConnection({
+            url,
+            token: this.config.liteToken,
+            fingerprint: this.config.liteFingerprint,
+            iface: this.config.liteInterface,
+            initId: this.namespace,
+            log: this.log,
+            onStatus: state => this.onLiteStatus(state),
+            onResync: () => this.seedLiteValues(),
+        });
+        rpcClient = this.lite.client;
+        this.log.info(`lite-rpc client is connecting to ${url} for the interface ${this.config.liteInterface}`);
+        try {
+            await this.lite.start(server => this.registerCallbackHandlers(server));
+        }
+        catch (e) {
+            const code = e.code;
+            if (code === 'unauthenticated' || code === 'forbidden' || code === 'certificate') {
+                // does not get better by trying again: the token was revoked, or the system has a new certificate
+                this.log.error(`Cannot connect to ${url}: ${e.message}. Pair the instance again in its settings`);
+                this.lite.close();
+                this.lite = undefined;
+                rpcClient = undefined;
+                return;
+            }
+            this.log.error(`Cannot connect to ${url}: ${e.message}. Restarting in ${this.SERVER_RESTART_DELAY_MS / 1_000} seconds`);
+            this.serverRestartTimer ??= this.setTimeout(() => this.restart(), this.SERVER_RESTART_DELAY_MS);
+            return;
+        }
+        if (this.config.liteNames !== false && this.lite.meta) {
+            this.liteNames = new liteNames_1.LiteNames(this, this.lite.meta, this.config.liteInterface, this.liteLanguage);
+            // every change of the names, rooms and functions on the system: a pass over the objects, debounced
+            this.lite.on('meta', () => this.liteNames?.schedule());
+            this.liteNames.schedule();
+        }
+        this.seedLiteValues();
+    }
+    /**
+     * The state of the lite-rpc connection: `ready` is connected, everything else (connecting, the stream lost,
+     * the credential refused, closed) is not
+     *
+     * @param state the client's status
+     */
+    onLiteStatus(state) {
+        if (state === 'ready') {
+            this.updateConnection();
+        }
+        else if (connected) {
+            this.log.info(`Disconnected (${state})`);
+            connected = false;
+            this.setStateAsync('info.connection', false, true).catch(e => this.log.error(`Cannot set state info.connection: ${e.message}`));
+        }
+    }
+    /**
+     * Writes the values the system's state store holds into the states, through the event path: at connect, for
+     * the devices just created and after a resync, so a restart of ioBroker shows the current values before the
+     * first event comes. Only values a device has confirmed since the system started; datapoints without an object
+     * are discarded as any event of an unknown device
+     *
+     * @param devices only the datapoints of these devices (addresses), else every known one
+     */
+    seedLiteValues(devices) {
+        const values = this.lite?.values;
+        if (!values) {
+            return;
+        }
+        const prefix = `${this.config.liteInterface}.`;
+        let seeded = 0;
+        for (const [ref, value] of values) {
+            if (!ref.startsWith(prefix) || !value.confirmed) {
+                continue;
+            }
+            const datapoint = ref.slice(prefix.length);
+            const dot = datapoint.lastIndexOf('.');
+            const address = datapoint.slice(0, dot);
+            const key = datapoint.slice(dot + 1);
+            if (devices && !devices.includes(address.split(':')[0])) {
+                continue;
+            }
+            const id = `${this.namespace}.${address.replace(':', '.').replace(tools.FORBIDDEN_CHARS, '_')}.${key}`;
+            if (this.dpTypes[id]) {
+                this.methods.event(null, [this.namespace, address, key, value.value]);
+                seeded++;
+            }
+        }
+        this.log.debug(`lite-rpc <- ${seeded} values of the state store written`);
+    }
+    /**
+     * The state `info.pairing` (what the admin shows while a pairing runs) and the pairing runner, created once:
+     * at start in lite mode, or with the first pairing request of the admin (the user may pair before saving the
+     * connection type)
+     */
+    async ensurePairing() {
+        if (this.litePairing) {
+            return;
+        }
+        try {
+            const systemConfig = await this.getForeignObjectAsync('system.config');
+            if (systemConfig?.common?.language) {
+                this.liteLanguage = systemConfig.common.language;
+            }
+        }
+        catch (e) {
+            this.log.debug(`Cannot read the system language: ${e.message}`);
+        }
+        await this.setObjectNotExistsAsync('info.pairing', {
+            type: 'state',
+            common: {
+                name: {
+                    en: 'Pairing with the openccu-lite system',
+                    de: 'Kopplung mit dem openccu-lite-System',
+                },
+                type: 'string',
+                role: 'html',
+                read: true,
+                write: false,
+                def: '',
+            },
+            native: {},
+        });
+        await this.setStateAsync('info.pairing', '', true);
+        this.litePairing = new litePairing_1.LitePairing({
+            app: 'ioBroker.hm-rpc',
+            appVersion: this.version ?? '',
+            instance: `${this.namespace} on ${this.host}`,
+            log: this.log,
+            onState: (state) => this.setStateAsync('info.pairing', (0, lite_1.pairingHtml)(state, this.liteLanguage), true).catch(e => this.log.error(`Cannot set state info.pairing: ${e.message}`)),
+        });
+    }
+    /**
+     * The messages of the instance settings for the openccu-lite mode
+     *
+     * @param obj the message
+     */
+    async onLiteMessage(obj) {
+        const message = typeof obj.message === 'object' && obj.message ? obj.message : {};
+        const answer = (response) => {
+            if (obj.callback) {
+                this.sendTo(obj.from, obj.command, response, obj.callback);
+            }
+        };
+        switch (obj.command) {
+            case 'lite:pair': {
+                // the admin shows the code from info.pairing while this waits for the approval on the system
+                await this.ensurePairing();
+                try {
+                    const paired = await this.litePairing.pair((0, lite_1.liteUrlOf)({
+                        homematicAddress: String(message.address ?? ''),
+                        homematicPort: String(message.port ?? ''),
+                        useHttps: message.https !== false && message.https !== 'false',
+                    }));
+                    // the system's URL as it answered, in the fields of the form
+                    answer({
+                        native: {
+                            daemon: 'openccu-lite',
+                            type: 'xml',
+                            ...(0, lite_1.liteUrlParts)(paired.url),
+                            liteToken: paired.token,
+                            liteFingerprint: paired.fingerprint,
+                        },
+                        saveConfig: true,
+                    });
+                }
+                catch (e) {
+                    answer({ error: e instanceof litePairing_1.PairingError ? e.code : 'failed' });
+                }
+                return;
+            }
+            case 'lite:interfaces': {
+                // the interfaces the system runs, for the select; the ones lite-rpc carries while there is no token
+                const fallback = lite_1.LITE_INTERFACES.map(name => ({ value: name, label: name }));
+                const url = (0, lite_1.liteUrlOf)({
+                    homematicAddress: String(message.address ?? ''),
+                    homematicPort: String(message.port ?? ''),
+                    useHttps: message.https !== false && message.https !== 'false',
+                });
+                if (!url || !message.token) {
+                    answer(fallback);
+                    return;
+                }
+                try {
+                    const list = await (0, liteConnection_1.listLiteInterfaces)({
+                        url,
+                        token: message.token,
+                        fingerprint: message.fingerprint || undefined,
+                    });
+                    answer(list.map(i => ({
+                        value: i.name,
+                        label: i.name,
+                        description: i.running ? 'running' : 'not running',
+                    })));
+                }
+                catch (e) {
+                    this.log.warn(`Cannot read the interfaces of ${url}: ${e.message}`);
+                    answer(fallback);
+                }
+                return;
+            }
+            default:
+                this.log.warn(`Received unknown command "${obj.command}" from ${obj.from}`);
+                answer({ error: 'Unknown command' });
+        }
     }
     /**
      * Is called when adapter shuts down - callback has to be called under any circumstances!
@@ -346,7 +584,9 @@ class HomematicRpc extends adapter_core_1.Adapter {
                 this.clearInterval(this.connInterval);
                 this.connInterval = undefined;
             }
-            if (this.config && rpcClient) {
+            this.liteNames?.stop();
+            // on openccu-lite nothing was registered, so nothing is de-registered: the stream is just closed
+            if (this.config && rpcClient && !this.lite) {
                 // tell CCU that we are no longer the client under this URL
                 const deinitParams = this.getDeinitParams();
                 this.log.info(`${this.config.type}rpc -> ${this.config.homematicAddress}:${this.config.homematicPort}${this.homematicPath} init ${JSON.stringify(deinitParams)}`);
@@ -356,11 +596,11 @@ class HomematicRpc extends adapter_core_1.Adapter {
                 catch (e) {
                     this.log.error(`Cannot call init: ${JSON.stringify(deinitParams)} ${e.message}`);
                 }
-                if (connected) {
-                    this.log.info('Disconnected');
-                    connected = false;
-                    await this.setState('info.connection', false, true);
-                }
+            }
+            if (connected) {
+                this.log.info('Disconnected');
+                connected = false;
+                await this.setState('info.connection', false, true);
             }
             await this.closeRpc();
         }
@@ -579,6 +819,9 @@ class HomematicRpc extends adapter_core_1.Adapter {
         this.log.debug(`[MSSG] Received: ${JSON.stringify(obj)}`);
         if (obj.command.startsWith('dm:')) {
             return;
+        }
+        if (obj.command.startsWith('lite:')) {
+            return this.onLiteMessage(obj);
         }
         if (obj.command === undefined ||
             obj.command === null ||
@@ -893,8 +1136,19 @@ class HomematicRpc extends adapter_core_1.Adapter {
         this.log.info(`${this.config.type}rpc server is trying to listen on ${this.config.adapterAddress}:${adapterPort}`);
         this.log.info(`${this.config.type}rpc client is trying to connect to ${this.config.homematicAddress}:${this.config.homematicPort}${this.homematicPath} with ${JSON.stringify([this.daemonURL, clientId])}`);
         this.connect(true);
+        this.registerCallbackHandlers(rpcServer);
+    }
+    /**
+     * Registers the handlers of the methods the CCU calls on the adapter. `server` is the RPC callback server on a
+     * CCU, or occulite-client's callback emitter on openccu-lite, which emits the same methods with the same
+     * argument lists from the event stream (`listDevices`, `system.listMethods` and `setReadyConfig` are never
+     * emitted there - the system does not ask a client for its device list)
+     *
+     * @param server what emits the method calls
+     */
+    registerCallbackHandlers(server) {
         // Not found has special structure and no callback
-        rpcServer.on('NotFound', (method, params) => {
+        server.on('NotFound', (method, params) => {
             if (!method) {
                 // the request could not be parsed as RPC call, e.g. an HTTP request of another client (#1151)
                 this.log.debug(`${this.config.type}rpc <- invalid request without method ignored`);
@@ -902,11 +1156,11 @@ class HomematicRpc extends adapter_core_1.Adapter {
             }
             this.log.warn(`${this.config.type}rpc <- undefined method ${method} with parameters ${typeof params === 'object' ? JSON.stringify(params).slice(0, 80) : params}`);
         });
-        rpcServer.on('readdedDevice', (error, params, callback) => {
+        server.on('readdedDevice', (error, params, callback) => {
             this.log.info(`Readded device ${JSON.stringify(params)}`);
             callback(null, '');
         });
-        rpcServer.on('firmwareUpdateStatusChanged', async (error, params, callback) => {
+        server.on('firmwareUpdateStatusChanged', async (error, params, callback) => {
             this.log.info(`Firmware update status of ${params[1]} changed to ${params[2]}`);
             callback(null, '');
             // the status is a number, the device description delivers it as text (#1137)
@@ -919,7 +1173,7 @@ class HomematicRpc extends adapter_core_1.Adapter {
                 this.log.warn(`Cannot read the firmware update status of ${address}: ${e.message}`);
             }
         });
-        rpcServer.on('replaceDevice', async (error, params, callback) => {
+        server.on('replaceDevice', async (error, params, callback) => {
             const oldDeviceName = params[1];
             const newDeviceName = params[2];
             this.log.info(`Device "${oldDeviceName}" has been replaced by "${newDeviceName}"`);
@@ -937,7 +1191,7 @@ class HomematicRpc extends adapter_core_1.Adapter {
             }
             callback(null, '');
         });
-        rpcServer.on('system.multicall', (err, params, callback) => {
+        server.on('system.multicall', (err, params, callback) => {
             this.updateConnection();
             const response = [];
             const events = params[0];
@@ -953,7 +1207,7 @@ class HomematicRpc extends adapter_core_1.Adapter {
             }
             callback(null, response);
         });
-        rpcServer.on('system.listMethods', (err, params, callback) => {
+        server.on('system.listMethods', (err, params, callback) => {
             if (err) {
                 this.log.warn(`Error on system.listMethods: ${err}`);
             }
@@ -971,7 +1225,7 @@ class HomematicRpc extends adapter_core_1.Adapter {
                 'setReadyConfig',
             ]);
         });
-        rpcServer.on('event', (err, params, callback) => {
+        server.on('event', (err, params, callback) => {
             if (err) {
                 this.log.warn(`Error on event: ${err}`);
             }
@@ -983,7 +1237,7 @@ class HomematicRpc extends adapter_core_1.Adapter {
                 this.log.error(`Cannot send response to event: ${e.message}`);
             }
         });
-        rpcServer.on('newDevices', async (err, params, callback) => {
+        server.on('newDevices', async (err, params, callback) => {
             if (err) {
                 this.log.warn(`Error on newDevices: ${err}`);
             }
@@ -994,9 +1248,13 @@ class HomematicRpc extends adapter_core_1.Adapter {
             }
             this.log.info(`${this.config.type}rpc <- newDevices ${newDevices.length}`);
             // for a HmIP-adapter (and virtual-devices) we have to filter out the devices that
-            // are already present if forceReinit is not set
-            if (this.config.forceReInit === false &&
-                (this.config.daemon === 'HMIP' || this.config.daemon === 'virtual-devices')) {
+            // are already present if forceReinit is not set. The same for every interface of an openccu-lite
+            // system, whose stream sends the whole device list at every connect
+            const filterKnown = this.lite
+                ? !this.config.forceReInit
+                : this.config.forceReInit === false &&
+                    (this.config.daemon === 'HMIP' || this.config.daemon === 'virtual-devices');
+            if (filterKnown) {
                 const knownDevices = [];
                 let doc;
                 try {
@@ -1072,7 +1330,7 @@ class HomematicRpc extends adapter_core_1.Adapter {
             // call it otherwise HMIP won't work
             callback(null, '');
         });
-        rpcServer.on('listDevices', async (err, params, callback) => {
+        server.on('listDevices', async (err, params, callback) => {
             if (err) {
                 this.log.warn(`Error on listDevices: ${err}`);
             }
@@ -1116,7 +1374,7 @@ class HomematicRpc extends adapter_core_1.Adapter {
                 this.log.error(JSON.stringify(response));
             }
         });
-        rpcServer.on('deleteDevices', (err, params, callback) => {
+        server.on('deleteDevices', (err, params, callback) => {
             if (err) {
                 this.log.warn(`Error on deleteDevices: ${err.message}`);
             }
@@ -1145,7 +1403,7 @@ class HomematicRpc extends adapter_core_1.Adapter {
                 this.log.error(`Cannot response on deleteDevices: ${e.message}`);
             }
         });
-        rpcServer.on('setReadyConfig', (err, params, callback) => {
+        server.on('setReadyConfig', (err, params, callback) => {
             if (err) {
                 this.log.warn(`Error on setReadyConfig: ${err.message}`);
             }
@@ -1800,6 +2058,12 @@ class HomematicRpc extends adapter_core_1.Adapter {
         }
         await this.getValueParamsets(queueValueParamsets);
         await this.updateFirmwareStates(deviceArr);
+        if (this.lite) {
+            // the objects were created with the address as name: the names of the system follow, and the values
+            // the state store holds for them
+            this.liteNames?.schedule();
+            this.seedLiteValues(deviceArr.map(device => String(device.ADDRESS).split(':')[0]));
+        }
     }
     /**
      * Writes the firmware update state of the devices to `<device>.0.FIRMWARE_UPDATE_STATE` and updates the firmware
@@ -1938,8 +2202,9 @@ class HomematicRpc extends adapter_core_1.Adapter {
             this.clearInterval(this.connInterval);
             this.connInterval = undefined;
         }
-        // Virtual Devices API does now also support PING (tested with 3.55.5.20201226 - see #308)
-        if (!this.eventInterval) {
+        // Virtual Devices API does now also support PING (tested with 3.55.5.20201226 - see #308).
+        // On openccu-lite the stream's state replaces the PING
+        if (!this.eventInterval && !this.lite) {
             this.log.debug('start ping interval');
             this.eventInterval = this.setInterval(() => this.keepAlive(), (this.config.checkInitInterval * 1000) / 2);
         }
