@@ -91,6 +91,7 @@ The following ports are used by default:
 | CUxD            | CUxD                   | 8701                      | not supported |
 | Homegear        | Homegear               | as configured in Homegear | not supported |
 | CCU-Jack        | CCU-Jack               | 2121                      | 2122          |
+| openccu-lite    | lite-rpc of the system | 80 (see [openccu-lite](#openccu-lite)) | 443 |
 
 The HTTPS ports work only with the XML-RPC protocol.
 
@@ -110,6 +111,7 @@ Change this value only in special cases.
 
 A CCU supports different device types (radio, wired, Homematic IP, CUxD, CCU-Jack).
 You must create a separate instance of the adapter for every type.
+The daemon `openccu-lite` connects an interface of an openccu-lite system, see [openccu-lite](#openccu-lite).
 
 #### Protocol
 
@@ -169,6 +171,41 @@ This works only with the XML-RPC protocol.
 If the option "Use https" is enabled, enter the user name and the password of a CCU user here.
 Enter these credentials also if the API of the CCU requires an authentication, the adapter sends them with XML-RPC with and without HTTPS.
 BIN-RPC does not support an authentication.
+
+### openccu-lite
+
+[openccu-lite](https://github.com/hobbyquaker/openccu-lite) is a CCU firmware without ReGaHSS. Its interface processes
+are reached through *lite-rpc*: the requests go over the web port of the system with a token, and the events come as a
+stream the adapter opens - no callback server, no callback address, no `init`, so the adapter can run behind a router or
+in a Docker container without any port forwarding.
+
+Select the daemon **openccu-lite** and enter the address of the system in "HomeMatic Address" (the port follows the
+"Use https" option: 443 or 80). Then:
+
+- **Interface**: the interface of the system this instance connects (`HmIP-RF`, `BidCos-RF`, `BidCos-Wired`,
+  `VirtualDevices`). As with a CCU, one instance connects one interface; once the instance is paired, the list shows the
+  interfaces the system runs.
+- **Pair**: the instance must be running. Press the button: a six-digit code appears below it, together with a link to
+  the Status page of the system. Approve the request there (as one of the system's administrators, with a password or a
+  passkey) - the code on the Status page must match. The token and the fingerprint of the system's certificate are then
+  stored in the instance configuration by themselves; save the configuration and the instance restarts with them. A
+  rejected or expired request, a wrong address and a system without pairing are reported in the dialog.
+  Each instance pairs for a token of its own (a system allows a few event streams per token).
+- **Token** and **Certificate fingerprint** are filled by the pairing. An API token created on the system can be entered
+  by hand as well; the fingerprint pins the certificate of the system (leave it empty if the certificate is trusted by
+  Node.js, or the system is reached over HTTP).
+- **Take names, rooms and functions from the system** (default on): the devices, channels and states are named as on
+  the system (`<channel name>.<DATAPOINT>` for the states, as hm-rega names them), and the rooms and functions of the
+  system fill `enum.rooms` and `enum.functions` - live, whenever a name or a room changes on the system. A room tree is
+  flattened: every node becomes an enum of its own, named by its path (`eg/wohnzimmer` → `enum.rooms.eg_wohnzimmer`),
+  and a channel is a member of its innermost room only. The adapter manages only the members of its own instance in an
+  enum, so devices of other adapters stay. Without this option the objects keep the address as name, as with a CCU.
+
+The devices are synchronized at every start of the instance (the system sends its device list with the stream), so
+"Synchronize objects (once)" is not needed on openccu-lite. "Don't delete devices" works as with a CCU. The values the
+system holds are written into the states when the instance connects, so the states are current before the first event.
+The settings "Adapter Address", "Adapter Port", "Protocol", "Adapter Callback Address", "Check communication interval",
+"Reconnect interval", "Username" and "Password" do not apply and are hidden.
 
 ### Device manager
 
@@ -347,6 +384,7 @@ npm run update-images
 
 ### **WORK IN PROGRESS**
 - (copilot) Adapter requires node.js >= 22.19.0 now
+- (@hobbyquaker) New daemon `openccu-lite`: connects an interface of an [openccu-lite](https://github.com/hobbyquaker/openccu-lite) system through its lite-rpc (requests with a token, events as a stream - no callback server). The pairing runs from the instance settings: press "Pair", approve the six-digit code on the Status page of the system, the token and the certificate fingerprint are stored by themselves. The names of the devices, channels and states, the rooms and functions come from the system's metadata and follow its changes live
 <!--
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
