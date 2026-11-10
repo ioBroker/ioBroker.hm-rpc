@@ -22,5 +22,7 @@
     "Use https": "HTTPS verwenden",
     "Username": "Benutzername",
     "in seconds": "in Sekunden",
-    "Main settings": "Haupteinstellungen"
+    "Main settings": "Haupteinstellungen",
+    "Suppress interim levels of moving channels": "Zwischenwerte fahrender/dimmender Kanäle unterdrücken",
+    "LEVEL values reported with WORKING=true or PROCESS=NOT_STABLE are not written, only the final level": "LEVEL-Werte mit WORKING=true oder PROCESS=NOT_STABLE werden nicht geschrieben, nur der Endwert"
 }

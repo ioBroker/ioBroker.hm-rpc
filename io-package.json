@@ -245,7 +245,8 @@
     "username": "",
     "password": "",
     "useHttps": false,
-    "dontDelete": false
+    "dontDelete": false,
+    "suppressTransitionalLevel": false
   },
   "protectedNative": [
     "username",

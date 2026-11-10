@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.FIRMWARE_UPDATE_STATES = exports.FORBIDDEN_CHARS = void 0;
+exports.TRANSITION_FLAGS = exports.TRANSITIONAL_DATAPOINTS = exports.FIRMWARE_UPDATE_STATES = exports.FORBIDDEN_CHARS = void 0;
 exports.replaceSpecialChars = replaceSpecialChars;
 exports.number2hex = number2hex;
 exports.combineEPaperCommand = combineEPaperCommand;
@@ -8,6 +8,7 @@ exports.readOnlyRole = readOnlyRole;
 exports.changedFirmwareAttributes = changedFirmwareAttributes;
 exports.fixParamset = fixParamset;
 exports.fixEvent = fixEvent;
+exports.isTransitionFlag = isTransitionFlag;
 exports.FORBIDDEN_CHARS = /[\][*,;'"`<>\\\s?]/g;
 /**
  * replaces special chars by DIN_66003
@@ -348,5 +349,25 @@ function fixEvent(params) {
         return Number.isFinite(num) ? num : null;
     }
     return val;
+}
+/** Data points of a channel which are only interim values while the channel is still moving or dimming */
+exports.TRANSITIONAL_DATAPOINTS = ['LEVEL', 'LEVEL_2'];
+/** Data points which tell whether a channel is moving: `WORKING` (Homematic) and `PROCESS` (Homematic IP) */
+exports.TRANSITION_FLAGS = ['WORKING', 'PROCESS'];
+/**
+ * True if the value of `datapoint` tells that the channel is in a transition, i.e. the reported LEVEL is not final:
+ * `WORKING = true` of BidCos dimmers and blinds, `PROCESS = 1` (NOT_STABLE) of Homematic IP actors
+ *
+ * @param datapoint name of the data point, e.g. `WORKING`
+ * @param value value of the data point as delivered by the CCU
+ */
+function isTransitionFlag(datapoint, value) {
+    if (datapoint === 'WORKING') {
+        return value === true || value === 1 || value === '1' || value === 'true';
+    }
+    if (datapoint === 'PROCESS') {
+        return value === 1 || value === '1' || value === 'NOT_STABLE';
+    }
+    return false;
 }
 //# sourceMappingURL=tools.js.map

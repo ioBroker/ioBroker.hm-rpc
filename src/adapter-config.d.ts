@@ -20,6 +20,7 @@ declare global {
             password: string;
             useHttps: boolean;
             dontDelete: boolean;
+            suppressTransitionalLevel: boolean;
         }
     }
 }

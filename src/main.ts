@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { Adapter, type AdapterOptions } from '@iobroker/adapter-core';
 import { images } from './lib/images';
 import * as tools from './lib/tools';
+import { TransitionFilter } from './lib/transitionFilter';
 import { metaRoles } from './lib/roles';
 
 import type {
@@ -53,6 +54,8 @@ export class HomematicRpc extends Adapter {
     private clientIdPrefix = '';
     private readonly metaValues: Record<string, ParamsetObject> = {};
     private readonly dpTypes: Record<string, DatapointTypeObject> = {};
+    /** holds back interim LEVEL values of moving channels, if `suppressTransitionalLevel` is enabled */
+    private transitionFilter: TransitionFilter | null = null;
     private lastEvent = 0;
     private eventInterval?: ioBroker.Interval;
     private connInterval?: ioBroker.Interval;
@@ -135,6 +138,11 @@ export class HomematicRpc extends Adapter {
                     this.dpTypes[name] ? this.dpTypes[name].MIN : 'none'
                 }, max: ${this.dpTypes[name] ? this.dpTypes[name].MAX : 'none'}) From "${params[3]}" => "${val}"`,
             );
+
+            if (this.transitionFilter?.handle(channel, params[2], val)) {
+                // held back or dropped: interim LEVEL of a moving channel
+                return '';
+            }
 
             this.setStateAsync(`${channel}.${params[2]}`, { val: val, ack: true }).catch(e =>
                 this.log.error(`Cannot set state ${name}: ${e.message}`),
@@ -224,6 +232,22 @@ export class HomematicRpc extends Adapter {
 
     private async onReady(): Promise<void> {
         this.deviceManagement = new dmHmRpc(this);
+
+        if (this.config.suppressTransitionalLevel) {
+            this.transitionFilter = new TransitionFilter({
+                write: (id, val) =>
+                    this.setStateAsync(id, { val, ack: true }).catch(e =>
+                        this.log.error(`Cannot set state ${id}: ${e.message}`),
+                    ),
+                hasFlag: channelId =>
+                    !!this.dpTypes[`${this.namespace}.${channelId}.WORKING`] ||
+                    !!this.dpTypes[`${this.namespace}.${channelId}.PROCESS`],
+                setTimeout: (cb, ms) => this.setTimeout(cb, ms),
+                clearTimeout: timer => this.clearTimeout(timer as ioBroker.Timeout),
+                log: msg => this.log.debug(msg),
+            });
+            this.log.info('Interim LEVEL values of moving channels are suppressed');
+        }
 
         this.subscribeStates('*');
 
@@ -363,6 +387,8 @@ export class HomematicRpc extends Adapter {
      */
     private async onUnload(callback: () => void): Promise<void> {
         try {
+            this.transitionFilter?.clear();
+
             if (this.eventInterval) {
                 this.clearInterval(this.eventInterval);
                 this.eventInterval = undefined;
