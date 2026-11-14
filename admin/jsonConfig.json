@@ -24,8 +24,12 @@
                     "lg": 2,
                     "xl": 2,
                     "onChange": {
-                        "alsoDependsOn": ["useHttps", "daemon", "type"],
-                        "calculateFunc": "data.daemon === 'rfd' ? (data.useHttps && data.type !== 'bin' ? 42001 : 2001) : (data.daemon === 'virtual-devices' ? (data.useHttps && data.type !== 'bin' ? 49292 : 9292) : (data.daemon === 'hs485d' ? (data.useHttps && data.type !== 'bin' ? 42000 : 2000) : (data.daemon === 'CUxD' ? 8701 : (data.daemon === 'HMIP' ? (data.useHttps && data.type !== 'bin' ? 42010 : 2010) : (data.daemon === 'CCU-Jack' ? (data.useHttps ? 2122 : 2121) : data.homematicPort)))))",
+                        "alsoDependsOn": [
+                            "useHttps",
+                            "daemon",
+                            "type"
+                        ],
+                        "calculateFunc": "data.daemon === 'openccu-lite' ? (data.useHttps ? 443 : 80) : (data.daemon === 'rfd' ? (data.useHttps && data.type !== 'bin' ? 42001 : 2001) : (data.daemon === 'virtual-devices' ? (data.useHttps && data.type !== 'bin' ? 49292 : 9292) : (data.daemon === 'hs485d' ? (data.useHttps && data.type !== 'bin' ? 42000 : 2000) : (data.daemon === 'CUxD' ? 8701 : (data.daemon === 'HMIP' ? (data.useHttps && data.type !== 'bin' ? 42010 : 2010) : (data.daemon === 'CCU-Jack' ? (data.useHttps ? 2122 : 2121) : data.homematicPort))))))",
                         "ignoreOwnChanges": true
                     }
                 },
@@ -37,7 +41,8 @@
                     "sm": 10,
                     "md": 6,
                     "lg": 4,
-                    "xl": 4
+                    "xl": 4,
+                    "hidden": "data.daemon === 'openccu-lite'"
                 },
                 "port": {
                     "type": "number",
@@ -48,7 +53,8 @@
                     "sm": 2,
                     "md": 2,
                     "lg": 2,
-                    "xl": 2
+                    "xl": 2,
+                    "hidden": "data.daemon === 'openccu-lite'"
                 },
                 "daemon": {
                     "newLine": true,
@@ -82,6 +88,10 @@
                         {
                             "label": "CCU-Jack",
                             "value": "CCU-Jack"
+                        },
+                        {
+                            "label": "openccu-lite",
+                            "value": "openccu-lite"
                         }
                     ],
                     "xs": 12,
@@ -104,16 +114,19 @@
                         }
                     ],
                     "onChange": {
-                        "alsoDependsOn": ["daemon"],
-                        "calculateFunc": "data.daemon === 'CUxD' ? 'bin' : (data.daemon === 'HMIP' || data.daemon === 'virtual-devices' || data.daemon === 'CCU-Jack' ? 'xml' : data.type)",
+                        "alsoDependsOn": [
+                            "daemon"
+                        ],
+                        "calculateFunc": "data.daemon === 'CUxD' ? 'bin' : (data.daemon === 'HMIP' || data.daemon === 'virtual-devices' || data.daemon === 'CCU-Jack' || data.daemon === 'openccu-lite' ? 'xml' : data.type)",
                         "ignoreOwnChanges": true
                     },
-                    "disabled": "data.daemon === 'CUxD' || data.daemon === 'HMIP' || data.daemon === 'virtual-devices' || data.daemon === 'CCU-Jack'",
+                    "disabled": "data.daemon === 'CUxD' || data.daemon === 'HMIP' || data.daemon === 'virtual-devices' || data.daemon === 'CCU-Jack' || data.daemon === 'openccu-lite'",
                     "xs": 12,
                     "sm": 12,
                     "md": 4,
                     "lg": 2,
-                    "xl": 2
+                    "xl": 2,
+                    "hidden": "data.daemon === 'openccu-lite'"
                 },
                 "forceReInit": {
                     "newLine": true,
@@ -121,6 +134,152 @@
                     "label": "Force objects re-init",
                     "xs": 12,
                     "sm": 10,
+                    "md": 6,
+                    "lg": 4,
+                    "xl": 4
+                },
+                "liteInterface": {
+                    "newLine": true,
+                    "type": "selectSendTo",
+                    "label": "Interface",
+                    "command": "lite:interfaces",
+                    "jsonData": "{\"address\": \"${data.homematicAddress}\", \"port\": \"${data.homematicPort}\", \"https\": \"${data.useHttps}\", \"token\": \"${data.liteToken}\", \"fingerprint\": \"${data.liteFingerprint}\"}",
+                    "alsoDependsOn": [
+                        "liteToken",
+                        "homematicAddress"
+                    ],
+                    "manual": true,
+                    "noTranslation": true,
+                    "help": "The interface of the system this instance connects: one instance per interface",
+                    "hidden": "data.daemon !== 'openccu-lite'",
+                    "xs": 12,
+                    "sm": 10,
+                    "md": 6,
+                    "lg": 4,
+                    "xl": 4
+                },
+                "liteNames": {
+                    "type": "checkbox",
+                    "label": "Take names, rooms and functions from the system",
+                    "help": "The devices, channels and states are named as on the system, its rooms and functions fill the enums",
+                    "hidden": "data.daemon !== 'openccu-lite'",
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 6,
+                    "lg": 4,
+                    "xl": 4
+                },
+                "_litePairingHeader": {
+                    "newLine": true,
+                    "type": "header",
+                    "text": "Pairing with the system",
+                    "size": 3,
+                    "hidden": "data.daemon !== 'openccu-lite'"
+                },
+                "_litePairingHelp": {
+                    "type": "staticText",
+                    "text": "Enter the address of the system above and press \"Pair\": a six-digit code appears below. Approve the request on the Status page of the system (as one of its administrators) - the code there must match. The token and the certificate of the system are stored in this configuration by themselves; save it afterwards. The instance must be running.",
+                    "hidden": "data.daemon !== 'openccu-lite'",
+                    "xs": 12
+                },
+                "_liteAlive": {
+                    "newLine": true,
+                    "type": "alive",
+                    "hidden": "data.daemon !== 'openccu-lite'",
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 6,
+                    "lg": 4,
+                    "xl": 4
+                },
+                "_litePair": {
+                    "type": "sendTo",
+                    "label": "Pair",
+                    "command": "lite:pair",
+                    "jsonData": "{\"address\": \"${data.homematicAddress}\", \"port\": \"${data.homematicPort}\", \"https\": \"${data.useHttps}\"}",
+                    "useNative": true,
+                    "showProcess": true,
+                    "timeout": 330000,
+                    "variant": "contained",
+                    "icon": "auth",
+                    "disabled": "!data.homematicAddress",
+                    "error": {
+                        "no-url": {
+                            "en": "Enter the address of the system first",
+                            "de": "Zuerst die Adresse des Systems eingeben"
+                        },
+                        "unreachable": {
+                            "en": "The system is not reachable at this address",
+                            "de": "Das System ist unter dieser Adresse nicht erreichbar"
+                        },
+                        "not-openccu-lite": {
+                            "en": "This address does not answer as an openccu-lite system (a CCU?)",
+                            "de": "Diese Adresse antwortet nicht als openccu-lite-System (eine CCU?)"
+                        },
+                        "no-pairing": {
+                            "en": "The system offers no pairing (too old, or pairing is switched off)",
+                            "de": "Das System bietet kein Pairing an (zu alt, oder das Pairing ist ausgeschaltet)"
+                        },
+                        "rejected": {
+                            "en": "The administrator rejected the request",
+                            "de": "Der Administrator hat die Anfrage abgelehnt"
+                        },
+                        "expired": {
+                            "en": "Nobody approved the request within five minutes",
+                            "de": "Niemand hat die Anfrage innerhalb von fünf Minuten bestätigt"
+                        },
+                        "timeout": {
+                            "en": "The pairing timed out",
+                            "de": "Das Pairing hat zu lange gedauert"
+                        },
+                        "busy": {
+                            "en": "A pairing is already running",
+                            "de": "Es läuft bereits ein Pairing"
+                        },
+                        "certificate": {
+                            "en": "The certificate of the system was not accepted",
+                            "de": "Das Zertifikat des Systems wurde nicht akzeptiert"
+                        },
+                        "failed": {
+                            "en": "The pairing failed, see the log of the instance",
+                            "de": "Das Pairing ist fehlgeschlagen, siehe das Log der Instanz"
+                        }
+                    },
+                    "hidden": "data.daemon !== 'openccu-lite'",
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 6,
+                    "lg": 4,
+                    "xl": 4
+                },
+                "_litePairingState": {
+                    "newLine": true,
+                    "type": "state",
+                    "oid": "info.pairing",
+                    "control": "html",
+                    "narrow": true,
+                    "hidden": "data.daemon !== 'openccu-lite'",
+                    "xs": 12
+                },
+                "liteToken": {
+                    "newLine": true,
+                    "type": "password",
+                    "label": "Token",
+                    "help": "Set by the pairing. An API token created on the system can be entered here as well",
+                    "hidden": "data.daemon !== 'openccu-lite'",
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 6,
+                    "lg": 4,
+                    "xl": 4
+                },
+                "liteFingerprint": {
+                    "type": "text",
+                    "label": "Certificate fingerprint",
+                    "help": "Pinned by the pairing (SHA-256). Empty: the certificate of the system must be trusted by Node.js, or the system is reached over HTTP",
+                    "hidden": "data.daemon !== 'openccu-lite'",
+                    "xs": 12,
+                    "sm": 12,
                     "md": 6,
                     "lg": 4,
                     "xl": 4
@@ -138,7 +297,8 @@
                     "sm": 10,
                     "md": 6,
                     "lg": 4,
-                    "xl": 4
+                    "xl": 4,
+                    "hidden": "data.daemon === 'openccu-lite'"
                 },
                 "checkInitInterval": {
                     "newLine": true,
@@ -149,7 +309,8 @@
                     "sm": 10,
                     "md": 4,
                     "lg": 2,
-                    "xl": 2
+                    "xl": 2,
+                    "hidden": "data.daemon === 'openccu-lite'"
                 },
                 "reconnectInterval": {
                     "type": "number",
@@ -159,7 +320,8 @@
                     "sm": 10,
                     "md": 4,
                     "lg": 2,
-                    "xl": 2
+                    "xl": 2,
+                    "hidden": "data.daemon === 'openccu-lite'"
                 },
                 "dontDelete": {
                     "newLine": true,
@@ -182,7 +344,9 @@
                     "xl": 4,
                     "disabled": "data.type === 'bin'",
                     "onChange": {
-                        "alsoDependsOn": ["type"],
+                        "alsoDependsOn": [
+                            "type"
+                        ],
                         "calculateFunc": "data.type === 'bin' ? false : data.useHttps"
                     }
                 },
@@ -195,13 +359,13 @@
                     "md": 4,
                     "lg": 4,
                     "xl": 4,
-                    "hidden": "data.type === 'bin'"
+                    "hidden": "data.type === 'bin' || data.daemon === 'openccu-lite'"
                 },
                 "password": {
                     "repeat": true,
                     "type": "password",
                     "label": "Password",
-                    "hidden": "data.type === 'bin'",
+                    "hidden": "data.type === 'bin' || data.daemon === 'openccu-lite'",
                     "xs": 12,
                     "sm": 6,
                     "md": 4,

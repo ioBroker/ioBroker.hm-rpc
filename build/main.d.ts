@@ -26,6 +26,14 @@ export declare class HomematicRpc extends Adapter {
     private usedCallbackPort;
     private readonly COMMON_TYPE_MAPPING;
     private deviceManagement;
+    /** The connection to an openccu-lite system (connection type `openccu-lite`), else undefined */
+    private lite;
+    /** Names and rooms from the openccu-lite system, when switched on */
+    private liteNames;
+    /** The pairing with an openccu-lite system, created with the first request of the admin */
+    private litePairing;
+    /** The language of ioBroker, for the names of rooms and functions and the pairing texts */
+    private liteLanguage;
     /** admin/icons sits next to build/ in the installed package */
     private readonly iconDir;
     /** icon file -> `common.icon` value, so each SVG is read from disk only once */
@@ -57,6 +65,40 @@ export declare class HomematicRpc extends Adapter {
      */
     private migrateDeviceIcons;
     private onReady;
+    /**
+     * Connects to the openccu-lite system: the requests through lite-rpc, the events from its stream, no callback
+     * server and no `init`. The device snapshot of the stream arrives as `newDevices`, which creates the new devices
+     * and removes the stale ones; the state of the connection follows the client's status instead of a PING.
+     */
+    private startLite;
+    /**
+     * The state of the lite-rpc connection: `ready` is connected, everything else (connecting, the stream lost,
+     * the credential refused, closed) is not
+     *
+     * @param state the client's status
+     */
+    private onLiteStatus;
+    /**
+     * Writes the values the system's state store holds into the states, through the event path: at connect, for
+     * the devices just created and after a resync, so a restart of ioBroker shows the current values before the
+     * first event comes. Only values a device has confirmed since the system started; datapoints without an object
+     * are discarded as any event of an unknown device
+     *
+     * @param devices only the datapoints of these devices (addresses), else every known one
+     */
+    private seedLiteValues;
+    /**
+     * The state `info.pairing` (what the admin shows while a pairing runs) and the pairing runner, created once:
+     * at start in lite mode, or with the first pairing request of the admin (the user may pair before saving the
+     * connection type)
+     */
+    private ensurePairing;
+    /**
+     * The messages of the instance settings for the openccu-lite mode
+     *
+     * @param obj the message
+     */
+    private onLiteMessage;
     /**
      * Is called when adapter shuts down - callback has to be called under any circumstances!
      *
@@ -128,6 +170,15 @@ export declare class HomematicRpc extends Adapter {
      * Inits the RPC server
      */
     private initRpcServer;
+    /**
+     * Registers the handlers of the methods the CCU calls on the adapter. `server` is the RPC callback server on a
+     * CCU, or occulite-client's callback emitter on openccu-lite, which emits the same methods with the same
+     * argument lists from the event stream (`listDevices`, `system.listMethods` and `setReadyConfig` are never
+     * emitted there - the system does not ask a client for its device list)
+     *
+     * @param server what emits the method calls
+     */
+    private registerCallbackHandlers;
     /**
      * Adds the paramset objects of the given paramset to the given channel
      *

@@ -12,6 +12,7 @@ declare global {
             callbackAddress: string;
             port: string;
             type: string;
+            /** the interface process; `openccu-lite` is lite-rpc of an openccu-lite system at homematicAddress:homematicPort */
             daemon: Daemon;
             checkInitInterval: number;
             reconnectInterval: number;
@@ -20,6 +21,14 @@ declare global {
             password: string;
             useHttps: boolean;
             dontDelete: boolean;
+            /** openccu-lite: the token the pairing gave */
+            liteToken: string;
+            /** openccu-lite: the certificate pinned at pairing (SHA-256), '' over plain HTTP */
+            liteFingerprint: string;
+            /** openccu-lite: the interface of this instance, e.g. `HmIP-RF` */
+            liteInterface: string;
+            /** openccu-lite: name the objects and fill the rooms and functions from the system's metadata */
+            liteNames: boolean;
         }
     }
 }
