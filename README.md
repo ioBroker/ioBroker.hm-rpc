@@ -174,7 +174,7 @@ BIN-RPC does not support an authentication.
 
 ### openccu-lite
 
-[openccu-lite](https://github.com/hobbyquaker/openccu-lite) is a CCU firmware without ReGaHSS. Its interface processes
+[openccu-lite](https://github.com/openccu-lite/openccu-lite) is a CCU firmware without ReGaHSS. Its interface processes
 are reached through *lite-rpc*: the requests go over the web port of the system with a token, and the events come as a
 stream the adapter opens - no callback server, no callback address, no `init`, so the adapter can run behind a router or
 in a Docker container without any port forwarding.
@@ -384,7 +384,7 @@ npm run update-images
 
 ### **WORK IN PROGRESS**
 - (copilot) Adapter requires node.js >= 22.19.0 now
-- (@hobbyquaker) New daemon `openccu-lite`: connects an interface of an [openccu-lite](https://github.com/hobbyquaker/openccu-lite) system through its lite-rpc (requests with a token, events as a stream - no callback server). The pairing runs from the instance settings: press "Pair", approve the six-digit code on the Status page of the system, the token and the certificate fingerprint are stored by themselves. The names of the devices, channels and states, the rooms and functions come from the system's metadata and follow its changes live
+- (@hobbyquaker) New daemon `openccu-lite`: connects an interface of an [openccu-lite](https://github.com/openccu-lite/openccu-lite) system through its lite-rpc (requests with a token, events as a stream - no callback server). The pairing runs from the instance settings: press "Pair", approve the six-digit code on the Status page of the system, the token and the certificate fingerprint are stored by themselves. The names of the devices, channels and states, the rooms and functions come from the system's metadata and follow its changes live
 <!--
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
