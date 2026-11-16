@@ -12,6 +12,8 @@ export interface NamesAdapter {
     extendForeignObjectAsync(id: string, part: ioBroker.PartialObject): Promise<unknown>;
     setForeignObjectAsync(id: string, obj: ioBroker.SettableObject): Promise<unknown>;
     delForeignObjectAsync(id: string): Promise<void>;
+    setTimeout(cb: () => void, timeout: number): ioBroker.Timeout | undefined;
+    clearTimeout(timer: ioBroker.Timeout | undefined): void;
 }
 /** The slice of occulite-client's metadata copy the names read */
 export interface MetaReader {

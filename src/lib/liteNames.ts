@@ -14,6 +14,8 @@ export interface NamesAdapter {
     extendForeignObjectAsync(id: string, part: ioBroker.PartialObject): Promise<unknown>;
     setForeignObjectAsync(id: string, obj: ioBroker.SettableObject): Promise<unknown>;
     delForeignObjectAsync(id: string): Promise<void>;
+    setTimeout(cb: () => void, timeout: number): ioBroker.Timeout | undefined;
+    clearTimeout(timer: ioBroker.Timeout | undefined): void;
 }
 
 /** The slice of occulite-client's metadata copy the names read */
@@ -34,7 +36,7 @@ interface EnumNative {
  * Keeps the objects of one instance named as the system names them
  */
 export class LiteNames {
-    private timer: NodeJS.Timeout | undefined;
+    private timer: ioBroker.Timeout | undefined;
     private running: Promise<void> | undefined;
     private again = false;
 
@@ -58,9 +60,9 @@ export class LiteNames {
      */
     schedule(delay = 300): void {
         if (this.timer) {
-            clearTimeout(this.timer);
+            this.adapter.clearTimeout(this.timer);
         }
-        this.timer = setTimeout(() => {
+        this.timer = this.adapter.setTimeout(() => {
             this.timer = undefined;
             void this.apply();
         }, delay);
@@ -69,7 +71,7 @@ export class LiteNames {
     /** Stops a scheduled pass */
     stop(): void {
         if (this.timer) {
-            clearTimeout(this.timer);
+            this.adapter.clearTimeout(this.timer);
             this.timer = undefined;
         }
     }

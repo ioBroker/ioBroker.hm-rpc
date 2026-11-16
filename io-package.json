@@ -4,15 +4,15 @@
     "desc": {
       "en": "Connects HomeMatic Interface-Processes (BidCos-Services, Homegear and CUxD) via XML-RPC or BIN-RPC, and openccu-lite systems via lite-rpc, to ioBroker",
       "de": "Verbindet HomeMatic Interface-Prozesse (BidCos-Services, Homegear und CUxD) via XML-RPC oder BIN-RPC sowie openccu-lite-Systeme via lite-rpc mit ioBroker",
-      "ru": "Подключает HomeMatic интерфейсы (BidCos-сервисы, Homegear и CUxD) через XML-RPC или BIN-RPC к ioBroker",
-      "pt": "Conecta HomeMatic Interface-Processes (BidCos-Services, Homegear e CUxD) via XML-RPC ou BIN-RPC para ioBroker",
-      "nl": "Verbindt HomeMatic Interface-processen (BidCos-Services, Homegear en CUxD) via XML-RPC of BIN-RPC met ioBroker",
-      "fr": "Connecte les processus d'interface HomeMatic (BidCos-Services, Homegear et CUxD) via XML-RPC ou BIN-RPC à ioBroker",
-      "it": "Collega l'interfaccia HomeMatic: i processi (BidCos-Services, Homegear e CUxD) tramite XML-RPC o BIN-RPC su ioBroker",
-      "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC a ioBroker",
-      "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC z ioBroker",
-      "uk": "Підключає HomeMatic інтерфейси (BidCos-сервіси, Homegear і CUxD) через XML-RPC або BIN-RPC до ioBroker",
-      "zh-cn": "通过 XML-RPC 或 BIN-RPC 将 HomeMatic 接口进程（BidCos-Services、Homegear 和 CUxD）连接到 ioBroker"
+      "ru": "Подключает HomeMatic интерфейсы (BidCos-сервисы, Homegear и CUxD) через XML-RPC или BIN-RPC, а также системы openccu-lite через lite-rpc, к ioBroker",
+      "pt": "Conecta HomeMatic Interface-Processes (BidCos-Services, Homegear e CUxD) via XML-RPC ou BIN-RPC, e sistemas openccu-lite via lite-rpc, ao ioBroker",
+      "nl": "Verbindt HomeMatic Interface-processen (BidCos-Services, Homegear en CUxD) via XML-RPC of BIN-RPC, en openccu-lite-systemen via lite-rpc, met ioBroker",
+      "fr": "Connecte les processus d'interface HomeMatic (BidCos-Services, Homegear et CUxD) via XML-RPC ou BIN-RPC, et les systèmes openccu-lite via lite-rpc, à ioBroker",
+      "it": "Collega i processi di interfaccia HomeMatic (BidCos-Services, Homegear e CUxD) tramite XML-RPC o BIN-RPC, e i sistemi openccu-lite tramite lite-rpc, a ioBroker",
+      "es": "Conecta los Procesos de Interfaz HomeMatic (BidCos-Services, Homegear y CUxD) a través de XML-RPC o BIN-RPC, y los sistemas openccu-lite a través de lite-rpc, a ioBroker",
+      "pl": "Łączy procesy HomeMatic-Interface (BidCos-Services, Homegear i CUxD) za pośrednictwem XML-RPC lub BIN-RPC oraz systemy openccu-lite za pośrednictwem lite-rpc z ioBroker",
+      "uk": "Підключає HomeMatic інтерфейси (BidCos-сервіси, Homegear і CUxD) через XML-RPC або BIN-RPC, а також системи openccu-lite через lite-rpc, до ioBroker",
+      "zh-cn": "通过 XML-RPC 或 BIN-RPC 将 HomeMatic 接口进程（BidCos-Services、Homegear 和 CUxD），以及通过 lite-rpc 将 openccu-lite 系统连接到 ioBroker"
     },
     "version": "4.2.4",
     "news": {

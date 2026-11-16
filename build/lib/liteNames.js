@@ -31,9 +31,9 @@ class LiteNames {
      */
     schedule(delay = 300) {
         if (this.timer) {
-            clearTimeout(this.timer);
+            this.adapter.clearTimeout(this.timer);
         }
-        this.timer = setTimeout(() => {
+        this.timer = this.adapter.setTimeout(() => {
             this.timer = undefined;
             void this.apply();
         }, delay);
@@ -41,7 +41,7 @@ class LiteNames {
     /** Stops a scheduled pass */
     stop() {
         if (this.timer) {
-            clearTimeout(this.timer);
+            this.adapter.clearTimeout(this.timer);
             this.timer = undefined;
         }
     }
