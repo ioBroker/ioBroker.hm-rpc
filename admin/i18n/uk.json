@@ -22,5 +22,7 @@
     "Use https": "Використовуйте https",
     "Username": "Ім'я користувача",
     "in seconds": "за секунди",
-    "Main settings": "Основні налаштування"
+    "Main settings": "Основні налаштування",
+    "Suppress interim levels of moving channels": "Suppress interim levels of moving channels",
+    "LEVEL values reported with WORKING=true or PROCESS=NOT_STABLE are not written, only the final level": "LEVEL values reported with WORKING=true or PROCESS=NOT_STABLE are not written, only the final level"
 }

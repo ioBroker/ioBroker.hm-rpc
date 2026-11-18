@@ -171,6 +171,17 @@
                     "lg": 4,
                     "xl": 4
                 },
+                "suppressTransitionalLevel": {
+                    "newLine": true,
+                    "type": "checkbox",
+                    "label": "Suppress interim levels of moving channels",
+                    "help": "LEVEL values reported with WORKING=true or PROCESS=NOT_STABLE are not written, only the final level",
+                    "xs": 12,
+                    "sm": 10,
+                    "md": 6,
+                    "lg": 4,
+                    "xl": 4
+                },
                 "useHttps": {
                     "newLine": true,
                     "type": "checkbox",

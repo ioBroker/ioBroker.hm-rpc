@@ -22,5 +22,7 @@
     "Use https": "使用https",
     "Username": "用户名",
     "in seconds": "很快",
-    "Main settings": "主要设置"
+    "Main settings": "主要设置",
+    "Suppress interim levels of moving channels": "Suppress interim levels of moving channels",
+    "LEVEL values reported with WORKING=true or PROCESS=NOT_STABLE are not written, only the final level": "LEVEL values reported with WORKING=true or PROCESS=NOT_STABLE are not written, only the final level"
 }

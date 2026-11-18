@@ -22,5 +22,7 @@
     "Use https": "utiliser https",
     "Username": "Nom d'utilisateur",
     "in seconds": "en secondes",
-    "Main settings": "Paramètres principaux"
+    "Main settings": "Paramètres principaux",
+    "Suppress interim levels of moving channels": "Suppress interim levels of moving channels",
+    "LEVEL values reported with WORKING=true or PROCESS=NOT_STABLE are not written, only the final level": "LEVEL values reported with WORKING=true or PROCESS=NOT_STABLE are not written, only the final level"
 }

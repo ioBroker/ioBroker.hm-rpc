@@ -50,3 +50,15 @@ export declare function fixParamset(params: FixParamsetParams): void;
  * @param params relevant parameters
  */
 export declare function fixEvent(params: FixEventParams): null | string | number | boolean;
+/** Data points of a channel which are only interim values while the channel is still moving or dimming */
+export declare const TRANSITIONAL_DATAPOINTS: string[];
+/** Data points which tell whether a channel is moving: `WORKING` (Homematic) and `PROCESS` (Homematic IP) */
+export declare const TRANSITION_FLAGS: string[];
+/**
+ * True if the value of `datapoint` tells that the channel is in a transition, i.e. the reported LEVEL is not final:
+ * `WORKING = true` of BidCos dimmers and blinds, `PROCESS = 1` (NOT_STABLE) of Homematic IP actors
+ *
+ * @param datapoint name of the data point, e.g. `WORKING`
+ * @param value value of the data point as delivered by the CCU
+ */
+export declare function isTransitionFlag(datapoint: string, value: unknown): boolean;

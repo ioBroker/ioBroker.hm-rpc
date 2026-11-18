@@ -40,6 +40,7 @@ const node_path_1 = require("node:path");
 const adapter_core_1 = require("@iobroker/adapter-core");
 const images_1 = require("./lib/images");
 const tools = __importStar(require("./lib/tools"));
+const transitionFilter_1 = require("./lib/transitionFilter");
 const roles_1 = require("./lib/roles");
 const deviceManager_1 = require("./lib/deviceManager");
 const usedResources_1 = require("./lib/usedResources");
@@ -72,6 +73,8 @@ class HomematicRpc extends adapter_core_1.Adapter {
         this.clientIdPrefix = '';
         this.metaValues = {};
         this.dpTypes = {};
+        /** holds back interim LEVEL values of moving channels, if `suppressTransitionalLevel` is enabled */
+        this.transitionFilter = null;
         this.lastEvent = 0;
         this.daemonURL = '';
         this.daemonProto = '';
@@ -140,6 +143,10 @@ class HomematicRpc extends adapter_core_1.Adapter {
                 }
                 val = tools.fixEvent({ val, dpType: this.dpTypes[name] });
                 this.log.debug(`${name} ==> UNIT: "${this.dpTypes[name] ? this.dpTypes[name].UNIT : 'none'}" (min: ${this.dpTypes[name] ? this.dpTypes[name].MIN : 'none'}, max: ${this.dpTypes[name] ? this.dpTypes[name].MAX : 'none'}) From "${params[3]}" => "${val}"`);
+                if (this.transitionFilter?.handle(channel, params[2], val)) {
+                    // held back or dropped: interim LEVEL of a moving channel
+                    return '';
+                }
                 this.setStateAsync(`${channel}.${params[2]}`, { val: val, ack: true }).catch(e => this.log.error(`Cannot set state ${name}: ${e.message}`));
                 // unfortunately, this is necessary
                 return '';
@@ -218,6 +225,17 @@ class HomematicRpc extends adapter_core_1.Adapter {
     }
     async onReady() {
         this.deviceManagement = new deviceManager_1.dmHmRpc(this);
+        if (this.config.suppressTransitionalLevel) {
+            this.transitionFilter = new transitionFilter_1.TransitionFilter({
+                write: (id, val) => this.setStateAsync(id, { val, ack: true }).catch(e => this.log.error(`Cannot set state ${id}: ${e.message}`)),
+                hasFlag: channelId => !!this.dpTypes[`${this.namespace}.${channelId}.WORKING`] ||
+                    !!this.dpTypes[`${this.namespace}.${channelId}.PROCESS`],
+                setTimeout: (cb, ms) => this.setTimeout(cb, ms),
+                clearTimeout: timer => this.clearTimeout(timer),
+                log: msg => this.log.debug(msg),
+            });
+            this.log.info('Interim LEVEL values of moving channels are suppressed');
+        }
         this.subscribeStates('*');
         // #1003: CCU-Jack serves its virtual devices on /RPC3 (/RPC2 is taken by the callbacks of the CCU)
         this.homematicPath =
@@ -338,6 +356,7 @@ class HomematicRpc extends adapter_core_1.Adapter {
      */
     async onUnload(callback) {
         try {
+            this.transitionFilter?.clear();
             if (this.eventInterval) {
                 this.clearInterval(this.eventInterval);
                 this.eventInterval = undefined;
