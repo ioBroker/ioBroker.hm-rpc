@@ -11,5 +11,5 @@
         "src/**/*.ts",
         "src/**/*.js" // js too now
     ],
-    "exclude": ["src/**/*.test.ts"]
+    "exclude": ["src/**/*.test.ts", "src/**/*TestUtil.ts"]
 }
