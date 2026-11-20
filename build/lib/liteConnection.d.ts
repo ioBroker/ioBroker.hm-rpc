@@ -72,6 +72,13 @@ export declare class LiteConnection {
     get meta(): OccuLite['meta'] | undefined;
     /** The last value of every datapoint the system's state store keeps, keyed `<iface>.<address>.<KEY>` */
     get values(): OccuLite['values'] | undefined;
+    /** The device and channel descriptions the system holds now, keyed `<iface>.<address>`: the live picture */
+    get devices(): OccuLite['devices'] | undefined;
+    /** The interfaces followed, with their state */
+    get interfaces(): {
+        name: string;
+        running: boolean;
+    }[];
     /** Subscribes to the client's events (`meta`, `value`, ...); the answer unsubscribes */
     on(event: string, fn: (arg: any) => void): () => void;
     /**

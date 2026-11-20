@@ -343,6 +343,20 @@ describe('hm-rpc in the openccu-lite mode', function () {
             expect(db.getObject(`${NS}.OLD0000001`)).not.to.be.undefined;
         });
 
+        it('keeps the objects of an interface that is not running', async () => {
+            box = await startFakeBox({ interfaces: [{ name: IFACE, running: false }] });
+            db.publishObject({
+                _id: `${NS}.OLD0000001`,
+                type: 'device',
+                common: { name: 'old' },
+                native: { ADDRESS: 'OLD0000001', VERSION: 1 },
+            });
+            await start(liteConfig());
+            await waitFor(() => db.getState(`${NS}.info.connection`)?.val === true, 5000, 'connected');
+            await new Promise(res => setTimeout(res, 300));
+            expect(db.getObject(`${NS}.OLD0000001`)).not.to.be.undefined;
+        });
+
         it('keeps the known devices and their names across a reconnect', async () => {
             box = await startFakeBox();
             await start(liteConfig());
@@ -396,6 +410,8 @@ describe('hm-rpc in the openccu-lite mode', function () {
             box.push('newDevices', { interface: IFACE, addresses: ['NEW000000001', 'NEW000000001:1'] });
             await waitFor(() => db.getObject(`${NS}.NEW000000001.1.STATE`) !== undefined, 5000, 'the new device');
             expect(db.getObject(`${NS}.NEW000000001`)?.type).to.equal('device');
+            await new Promise(res => setTimeout(res, 300));
+            expect(db.getObject(DEV), 'the known device stays').not.to.be.undefined;
         });
 
         it('replaces a device', async () => {

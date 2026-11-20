@@ -69,8 +69,9 @@ export declare class HomematicRpc extends Adapter {
     private onReady;
     /**
      * Connects to the openccu-lite system: the requests through lite-rpc, the events from its stream, no callback
-     * server and no `init`. The device snapshot of the stream arrives as `newDevices`, which creates the new devices
-     * and removes the stale ones; the state of the connection follows the client's status instead of a PING.
+     * server and no `init`. The device snapshot of the stream arrives as `newDevices`, which creates the new devices;
+     * the stale ones are removed once the client is ready. The state of the connection follows the client's status
+     * instead of a PING.
      */
     private startLite;
     /**
@@ -80,6 +81,13 @@ export declare class HomematicRpc extends Adapter {
      * @param state the client's status
      */
     private onLiteStatus;
+    /**
+     * Removes the device and channel objects the system does not know any more (unless "Don't delete devices" is
+     * set): once the client is ready, at the start and after every reconnect, against the client's live picture of
+     * the devices. A `newDevices` is no ground for it on openccu-lite: the snapshot at connect carries the whole list,
+     * but a device paired later comes alone.
+     */
+    private removeStaleLiteObjects;
     /**
      * Writes the values the system's state store holds into the states, through the event path: at connect, for
      * the devices just created and after a resync, so a restart of ioBroker shows the current values before the

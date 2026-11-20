@@ -143,6 +143,16 @@ export class LiteConnection {
         return this.box?.values;
     }
 
+    /** The device and channel descriptions the system holds now, keyed `<iface>.<address>`: the live picture */
+    get devices(): OccuLite['devices'] | undefined {
+        return this.box?.devices;
+    }
+
+    /** The interfaces followed, with their state */
+    get interfaces(): { name: string; running: boolean }[] {
+        return this.box?.interfaces ?? [];
+    }
+
     /** Subscribes to the client's events (`meta`, `value`, ...); the answer unsubscribes */
     on(event: string, fn: (arg: any) => void): () => void {
         return this.box ? this.box.on(event, fn) : () => undefined;

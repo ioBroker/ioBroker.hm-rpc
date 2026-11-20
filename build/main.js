@@ -377,8 +377,9 @@ class HomematicRpc extends adapter_core_1.Adapter {
     }
     /**
      * Connects to the openccu-lite system: the requests through lite-rpc, the events from its stream, no callback
-     * server and no `init`. The device snapshot of the stream arrives as `newDevices`, which creates the new devices
-     * and removes the stale ones; the state of the connection follows the client's status instead of a PING.
+     * server and no `init`. The device snapshot of the stream arrives as `newDevices`, which creates the new devices;
+     * the stale ones are removed once the client is ready. The state of the connection follows the client's status
+     * instead of a PING.
      */
     async startLite() {
         clientId = this.namespace;
@@ -431,11 +432,58 @@ class HomematicRpc extends adapter_core_1.Adapter {
     onLiteStatus(state) {
         if (state === 'ready') {
             this.updateConnection();
+            void this.removeStaleLiteObjects();
         }
         else if (connected) {
             this.log.info(`Disconnected (${state})`);
             connected = false;
             this.setStateAsync('info.connection', false, true).catch(e => this.log.error(`Cannot set state info.connection: ${e.message}`));
+        }
+    }
+    /**
+     * Removes the device and channel objects the system does not know any more (unless "Don't delete devices" is
+     * set): once the client is ready, at the start and after every reconnect, against the client's live picture of
+     * the devices. A `newDevices` is no ground for it on openccu-lite: the snapshot at connect carries the whole list,
+     * but a device paired later comes alone.
+     */
+    async removeStaleLiteObjects() {
+        const devices = this.lite?.devices;
+        if (!devices || this.config.dontDelete) {
+            return;
+        }
+        const iface = this.config.liteInterface;
+        if (!this.lite.interfaces.some(i => i.name === iface && i.running)) {
+            // a stopped interface process has no device list: its objects stay
+            return;
+        }
+        let objects;
+        try {
+            objects = {
+                ...(await this.getForeignObjectsAsync(`${this.namespace}.*`, 'device')),
+                ...(await this.getForeignObjectsAsync(`${this.namespace}.*`, 'channel')),
+            };
+        }
+        catch (e) {
+            this.log.error(`Cannot read the objects to remove the stale ones: ${e.message}`);
+            return;
+        }
+        for (const obj of Object.values(objects)) {
+            const address = obj.native?.ADDRESS;
+            if (typeof address !== 'string' || devices.has(`${iface}.${address}`)) {
+                continue;
+            }
+            const id = obj._id.slice(this.namespace.length + 1);
+            if (!(await this.getObjectAsync(id))) {
+                // the channel of a device removed a moment ago
+                continue;
+            }
+            try {
+                await this.deleteObjectTree(id);
+                this.log.info(`obsolete ${obj.type} ${address} deleted`);
+            }
+            catch (e) {
+                this.log.error(`Could not delete obsolete ${obj.type} ${address}: ${e.message}`);
+            }
         }
     }
     /**
@@ -1269,7 +1317,7 @@ class HomematicRpc extends adapter_core_1.Adapter {
             this.log.info(`${this.config.type}rpc <- newDevices ${newDevices.length}`);
             // for a HmIP-adapter (and virtual-devices) we have to filter out the devices that
             // are already present if forceReinit is not set. The same for every interface of an openccu-lite
-            // system, whose stream sends the whole device list at every connect
+            // system, whose stream sends the whole device list at connect
             const filterKnown = this.lite
                 ? !this.config.forceReInit
                 : this.config.forceReInit === false &&
@@ -1306,9 +1354,10 @@ class HomematicRpc extends adapter_core_1.Adapter {
                             }
                         }
                         // if index is -1 than the newDevices doesn't have the
-                        // device with address val.ADDRESS anymore, thus we can delete it
+                        // device with address val.ADDRESS anymore, thus we can delete it. Not on openccu-lite:
+                        // a device paired later comes alone, the stale ones go when the client is ready
                         if (index === -1) {
-                            if (val.ADDRESS && !this.config.dontDelete) {
+                            if (val.ADDRESS && !this.config.dontDelete && !this.lite) {
                                 if (val.ADDRESS.includes(':')) {
                                     const address = val.ADDRESS.replace(':', '.').replace(tools.FORBIDDEN_CHARS, '_');
                                     const parts = address.split('.');
