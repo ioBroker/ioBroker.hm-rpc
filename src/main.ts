@@ -94,6 +94,8 @@ export class HomematicRpc extends Adapter {
     private lite: LiteConnection | undefined;
     /** Names and rooms from the openccu-lite system, when switched on */
     private liteNames: LiteNames | undefined;
+    /** The removal of the objects of devices the system no longer has, while it runs (it catches its own errors) */
+    private liteCleanup: Promise<void> = Promise.resolve();
     /** The pairing with an openccu-lite system, created with the first request of the admin */
     private litePairing: LitePairing | undefined;
     /** The language of ioBroker, for the names of rooms and functions and the pairing texts */
@@ -462,7 +464,11 @@ export class HomematicRpc extends Adapter {
         }
 
         if (this.config.liteNames !== false && this.lite.meta) {
-            this.liteNames = new LiteNames(this, this.lite.meta, this.config.liteInterface, this.liteLanguage);
+            this.liteNames = new LiteNames(this, this.lite.meta, this.config.liteInterface, this.liteLanguage, {
+                // a pass waits for the removal of the devices the system no longer has, and skips them
+                settled: () => this.liteCleanup,
+                known: address => this.liteKnows(address),
+            });
             // every change of the names, rooms and functions on the system, once the client's copy is in step again
             // (right after a change applied in place, or once the snapshot is read again): a pass, debounced
             this.lite.on('metaSettled', () => this.liteNames?.schedule());
@@ -480,7 +486,12 @@ export class HomematicRpc extends Adapter {
     private onLiteStatus(state: string): void {
         if (state === 'ready') {
             this.updateConnection();
-            void this.removeStaleLiteObjects();
+            // one cleanup after the other; the names pass waits for it
+            this.liteCleanup = this.liteCleanup
+                .then(() => this.removeStaleLiteObjects())
+                .catch((e: unknown) =>
+                    this.log.error(`Could not remove the objects of removed devices: ${(e as Error).message}`),
+                );
         } else if (connected) {
             this.log.info(`Disconnected (${state})`);
             connected = false;
@@ -488,6 +499,21 @@ export class HomematicRpc extends Adapter {
                 this.log.error(`Cannot set state info.connection: ${e.message}`),
             );
         }
+    }
+
+    /**
+     * Whether the system lists a device or channel address of this instance's interface. True while it has no device
+     * list for it (not connected yet, or the interface process is stopped): nothing is removed then either.
+     *
+     * @param address the device or channel address
+     */
+    private liteKnows(address: string): boolean {
+        const devices = this.lite?.devices;
+        const iface = this.config.liteInterface;
+        if (!devices || !this.lite!.interfaces.some(i => i.name === iface && i.running)) {
+            return true;
+        }
+        return devices.has(`${iface}.${address}`);
     }
 
     /**
