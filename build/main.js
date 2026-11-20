@@ -96,6 +96,8 @@ class HomematicRpc extends adapter_core_1.Adapter {
             EPAPER_TONE_INTERVAL: 'number',
             EPAPER_TONE_REPETITIONS: 'number',
         };
+        /** The removal of the objects of devices the system no longer has, while it runs (it catches its own errors) */
+        this.liteCleanup = Promise.resolve();
         /** The language of ioBroker, for the names of rooms and functions and the pairing texts */
         this.liteLanguage = 'en';
         /** admin/icons sits next to build/ in the installed package */
@@ -415,7 +417,11 @@ class HomematicRpc extends adapter_core_1.Adapter {
             return;
         }
         if (this.config.liteNames !== false && this.lite.meta) {
-            this.liteNames = new liteNames_1.LiteNames(this, this.lite.meta, this.config.liteInterface, this.liteLanguage);
+            this.liteNames = new liteNames_1.LiteNames(this, this.lite.meta, this.config.liteInterface, this.liteLanguage, {
+                // a pass waits for the removal of the devices the system no longer has, and skips them
+                settled: () => this.liteCleanup,
+                known: address => this.liteKnows(address),
+            });
             // every change of the names, rooms and functions on the system, once the client's copy is in step again
             // (right after a change applied in place, or once the snapshot is read again): a pass, debounced
             this.lite.on('metaSettled', () => this.liteNames?.schedule());
@@ -432,13 +438,30 @@ class HomematicRpc extends adapter_core_1.Adapter {
     onLiteStatus(state) {
         if (state === 'ready') {
             this.updateConnection();
-            void this.removeStaleLiteObjects();
+            // one cleanup after the other; the names pass waits for it
+            this.liteCleanup = this.liteCleanup
+                .then(() => this.removeStaleLiteObjects())
+                .catch((e) => this.log.error(`Could not remove the objects of removed devices: ${e.message}`));
         }
         else if (connected) {
             this.log.info(`Disconnected (${state})`);
             connected = false;
             this.setStateAsync('info.connection', false, true).catch(e => this.log.error(`Cannot set state info.connection: ${e.message}`));
         }
+    }
+    /**
+     * Whether the system lists a device or channel address of this instance's interface. True while it has no device
+     * list for it (not connected yet, or the interface process is stopped): nothing is removed then either.
+     *
+     * @param address the device or channel address
+     */
+    liteKnows(address) {
+        const devices = this.lite?.devices;
+        const iface = this.config.liteInterface;
+        if (!devices || !this.lite.interfaces.some(i => i.name === iface && i.running)) {
+            return true;
+        }
+        return devices.has(`${iface}.${address}`);
     }
     /**
      * Removes the device and channel objects the system does not know any more (unless "Don't delete devices" is
