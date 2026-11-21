@@ -395,6 +395,9 @@ npm run update-images
 ```
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (@GermanBluefox) `LEVEL` is sent together with `HUE` and `SATURATION`, HmIP-RGBW still rejected the color with `MISSING_NON_OPTIONAL_PARAMETER` (#1557)
+
 ### 4.3.1 (2026-11-21)
 - (@hobbyquaker) openccu-lite: a device paired later no longer deletes the objects of the other devices of the instance; objects of devices removed on the system are cleaned up when the instance connects, without leaving broken objects behind ("obj.type has to exist")
 
