@@ -395,6 +395,10 @@ npm run update-images
 ```
 
 ## Changelog
+### **WORK IN PROGRESS**
+- (@hobbyquaker) openccu-lite: the stale-object cleanup leaves the objects alone while the interface lists no device at all (e.g. right after its process on the system was restarted)
+- (@hobbyquaker) openccu-lite: the help text of the interface field is shown in the admin's language
+
 ### 4.3.1 (2026-11-21)
 - (@hobbyquaker) openccu-lite: a device paired later no longer deletes the objects of the other devices of the instance; objects of devices removed on the system are cleaned up when the instance connects, without leaving broken objects behind ("obj.type has to exist")
 
