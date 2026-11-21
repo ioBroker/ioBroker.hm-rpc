@@ -532,6 +532,12 @@ export class HomematicRpc extends Adapter {
             // a stopped interface process has no device list: its objects stay
             return;
         }
+        if (![...devices.keys()].some(key => key.startsWith(`${iface}.`))) {
+            // an interface that lists no device at all - e.g. its process on the system was just restarted and has
+            // not loaded its devices yet - is no reason to delete every object: they stay until it lists some
+            this.log.debug(`${iface} lists no devices: no stale objects removed`);
+            return;
+        }
         let objects: Record<string, ioBroker.Object>;
         try {
             objects = {
