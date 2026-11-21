@@ -32,6 +32,17 @@ interface EnumNative {
     hmRpc?: { path: string };
 }
 
+/** How a pass fits in with the rest of the adapter */
+export interface LiteNamesOptions {
+    /**
+     * Resolves once the removal of the objects of devices the system no longer has is through: a pass waits for it,
+     * so it does not rename objects while they are deleted (a rename of a deleted id would create a new object)
+     */
+    settled?: () => Promise<void>;
+    /** Whether the system still lists a device or channel address; a pass leaves the ones it does not alone */
+    known?: (address: string) => boolean;
+}
+
 /**
  * Keeps the objects of one instance named as the system names them
  */
@@ -45,12 +56,14 @@ export class LiteNames {
      * @param meta the system's metadata, live
      * @param iface the interface of this instance
      * @param lang the language the node names are taken in
+     * @param opts the cleanup to wait for and the addresses the system still lists
      */
     constructor(
         private readonly adapter: NamesAdapter,
         private readonly meta: MetaReader,
         private readonly iface: string,
         private readonly lang: string,
+        private readonly opts: LiteNamesOptions = {},
     ) {}
 
     /**
@@ -100,6 +113,7 @@ export class LiteNames {
     }
 
     private async pass(): Promise<void> {
+        await this.opts.settled?.();
         const ns = `${this.adapter.namespace}.`;
         const devices = await this.adapter.getForeignObjectsAsync(`${ns}*`, 'device');
         const channels = await this.adapter.getForeignObjectsAsync(`${ns}*`, 'channel');
@@ -113,7 +127,9 @@ export class LiteNames {
 
         for (const obj of [...Object.values(devices), ...Object.values(channels)]) {
             const address = obj.native?.ADDRESS as string | undefined;
-            if (typeof address !== 'string') {
+            if (typeof address !== 'string' || this.opts.known?.(address) === false) {
+                // a device removed on the system: its objects are being deleted, and so are its datapoints, which
+                // are skipped with their channel
                 continue;
             }
             const ref = refOfAddress(this.iface, address);

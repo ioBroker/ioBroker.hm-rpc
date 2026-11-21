@@ -113,6 +113,31 @@ describe('LiteNames', () => {
         expect(db.getObject('enum.rooms.eg')).to.be.undefined;
     });
 
+    it('leaves the objects of an address the system no longer lists alone', async () => {
+        names = new LiteNames(adapter, meta, IFACE, 'de', { known: address => !address.startsWith(DEVICE) });
+        await names.apply();
+        expect(db.getObject(DEV)!.common.name).to.equal(DEVICE);
+        expect(db.getObject(CH1)!.common.name).to.equal(`${DEVICE}:1`);
+        expect(db.getObject(`${CH1}.STATE`)!.common.name).to.equal('STATE');
+        expect(db.getObject('enum.rooms.eg_wohnzimmer')).to.be.undefined;
+    });
+
+    it('waits for the cleanup before it reads the objects', async () => {
+        let release!: () => void;
+        const cleanup = new Promise<void>(res => (release = res));
+        names = new LiteNames(adapter, meta, IFACE, 'de', { settled: () => cleanup });
+        const pass = names.apply();
+        await new Promise(res => setTimeout(res, 50));
+        expect(adapter.extendForeignObject.called, 'nothing renamed before the cleanup').to.equal(false);
+        // the cleanup removes the device meanwhile: the pass must not bring any of it back
+        for (const id of [...db.objects.keys()].filter(k => k.startsWith(DEV))) {
+            db.deleteObject(id);
+        }
+        release();
+        await pass;
+        expect([...db.objects.keys()].filter(k => k.startsWith(DEV))).to.deep.equal([]);
+    });
+
     it('writes nothing when nothing changed', async () => {
         await names.apply();
         adapter.extendForeignObject.resetHistory();

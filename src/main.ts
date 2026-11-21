@@ -94,6 +94,8 @@ export class HomematicRpc extends Adapter {
     private lite: LiteConnection | undefined;
     /** Names and rooms from the openccu-lite system, when switched on */
     private liteNames: LiteNames | undefined;
+    /** The removal of the objects of devices the system no longer has, while it runs (it catches its own errors) */
+    private liteCleanup: Promise<void> = Promise.resolve();
     /** The pairing with an openccu-lite system, created with the first request of the admin */
     private litePairing: LitePairing | undefined;
     /** The language of ioBroker, for the names of rooms and functions and the pairing texts */
@@ -419,8 +421,9 @@ export class HomematicRpc extends Adapter {
 
     /**
      * Connects to the openccu-lite system: the requests through lite-rpc, the events from its stream, no callback
-     * server and no `init`. The device snapshot of the stream arrives as `newDevices`, which creates the new devices
-     * and removes the stale ones; the state of the connection follows the client's status instead of a PING.
+     * server and no `init`. The device snapshot of the stream arrives as `newDevices`, which creates the new devices;
+     * the stale ones are removed once the client is ready. The state of the connection follows the client's status
+     * instead of a PING.
      */
     private async startLite(): Promise<void> {
         clientId = this.namespace;
@@ -461,7 +464,11 @@ export class HomematicRpc extends Adapter {
         }
 
         if (this.config.liteNames !== false && this.lite.meta) {
-            this.liteNames = new LiteNames(this, this.lite.meta, this.config.liteInterface, this.liteLanguage);
+            this.liteNames = new LiteNames(this, this.lite.meta, this.config.liteInterface, this.liteLanguage, {
+                // a pass waits for the removal of the devices the system no longer has, and skips them
+                settled: () => this.liteCleanup,
+                known: address => this.liteKnows(address),
+            });
             // every change of the names, rooms and functions on the system, once the client's copy is in step again
             // (right after a change applied in place, or once the snapshot is read again): a pass, debounced
             this.lite.on('metaSettled', () => this.liteNames?.schedule());
@@ -479,12 +486,78 @@ export class HomematicRpc extends Adapter {
     private onLiteStatus(state: string): void {
         if (state === 'ready') {
             this.updateConnection();
+            // one cleanup after the other; the names pass waits for it
+            this.liteCleanup = this.liteCleanup
+                .then(() => this.removeStaleLiteObjects())
+                .catch((e: unknown) =>
+                    this.log.error(`Could not remove the objects of removed devices: ${(e as Error).message}`),
+                );
         } else if (connected) {
             this.log.info(`Disconnected (${state})`);
             connected = false;
             this.setStateAsync('info.connection', false, true).catch(e =>
                 this.log.error(`Cannot set state info.connection: ${e.message}`),
             );
+        }
+    }
+
+    /**
+     * Whether the system lists a device or channel address of this instance's interface. True while it has no device
+     * list for it (not connected yet, or the interface process is stopped): nothing is removed then either.
+     *
+     * @param address the device or channel address
+     */
+    private liteKnows(address: string): boolean {
+        const devices = this.lite?.devices;
+        const iface = this.config.liteInterface;
+        if (!devices || !this.lite!.interfaces.some(i => i.name === iface && i.running)) {
+            return true;
+        }
+        return devices.has(`${iface}.${address}`);
+    }
+
+    /**
+     * Removes the device and channel objects the system does not know any more (unless "Don't delete devices" is
+     * set): once the client is ready, at the start and after every reconnect, against the client's live picture of
+     * the devices. A `newDevices` is no ground for it on openccu-lite: the snapshot at connect carries the whole list,
+     * but a device paired later comes alone.
+     */
+    private async removeStaleLiteObjects(): Promise<void> {
+        const devices = this.lite?.devices;
+        if (!devices || this.config.dontDelete) {
+            return;
+        }
+        const iface = this.config.liteInterface;
+        if (!this.lite!.interfaces.some(i => i.name === iface && i.running)) {
+            // a stopped interface process has no device list: its objects stay
+            return;
+        }
+        let objects: Record<string, ioBroker.Object>;
+        try {
+            objects = {
+                ...(await this.getForeignObjectsAsync(`${this.namespace}.*`, 'device')),
+                ...(await this.getForeignObjectsAsync(`${this.namespace}.*`, 'channel')),
+            };
+        } catch (e: unknown) {
+            this.log.error(`Cannot read the objects to remove the stale ones: ${(e as Error).message}`);
+            return;
+        }
+        for (const obj of Object.values(objects)) {
+            const address = obj.native?.ADDRESS;
+            if (typeof address !== 'string' || devices.has(`${iface}.${address}`)) {
+                continue;
+            }
+            const id = obj._id.slice(this.namespace.length + 1);
+            if (!(await this.getObjectAsync(id))) {
+                // the channel of a device removed a moment ago
+                continue;
+            }
+            try {
+                await this.deleteObjectTree(id);
+                this.log.info(`obsolete ${obj.type} ${address} deleted`);
+            } catch (e: unknown) {
+                this.log.error(`Could not delete obsolete ${obj.type} ${address}: ${(e as Error).message}`);
+            }
         }
     }
 
@@ -1439,7 +1512,7 @@ export class HomematicRpc extends Adapter {
 
             // for a HmIP-adapter (and virtual-devices) we have to filter out the devices that
             // are already present if forceReinit is not set. The same for every interface of an openccu-lite
-            // system, whose stream sends the whole device list at every connect
+            // system, whose stream sends the whole device list at connect
             const filterKnown = this.lite
                 ? !this.config.forceReInit
                 : this.config.forceReInit === false &&
@@ -1480,9 +1553,10 @@ export class HomematicRpc extends Adapter {
                         }
 
                         // if index is -1 than the newDevices doesn't have the
-                        // device with address val.ADDRESS anymore, thus we can delete it
+                        // device with address val.ADDRESS anymore, thus we can delete it. Not on openccu-lite:
+                        // a device paired later comes alone, the stale ones go when the client is ready
                         if (index === -1) {
-                            if (val.ADDRESS && !this.config.dontDelete) {
+                            if (val.ADDRESS && !this.config.dontDelete && !this.lite) {
                                 if (val.ADDRESS.includes(':')) {
                                     const address = val.ADDRESS.replace(':', '.').replace(tools.FORBIDDEN_CHARS, '_');
                                     const parts = address.split('.');

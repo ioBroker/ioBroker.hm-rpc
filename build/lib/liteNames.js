@@ -16,12 +16,14 @@ class LiteNames {
      * @param meta the system's metadata, live
      * @param iface the interface of this instance
      * @param lang the language the node names are taken in
+     * @param opts the cleanup to wait for and the addresses the system still lists
      */
-    constructor(adapter, meta, iface, lang) {
+    constructor(adapter, meta, iface, lang, opts = {}) {
         this.adapter = adapter;
         this.meta = meta;
         this.iface = iface;
         this.lang = lang;
+        this.opts = opts;
         this.again = false;
     }
     /**
@@ -66,6 +68,7 @@ class LiteNames {
         return this.running;
     }
     async pass() {
+        await this.opts.settled?.();
         const ns = `${this.adapter.namespace}.`;
         const devices = await this.adapter.getForeignObjectsAsync(`${ns}*`, 'device');
         const channels = await this.adapter.getForeignObjectsAsync(`${ns}*`, 'channel');
@@ -77,7 +80,9 @@ class LiteNames {
         let renamed = 0;
         for (const obj of [...Object.values(devices), ...Object.values(channels)]) {
             const address = obj.native?.ADDRESS;
-            if (typeof address !== 'string') {
+            if (typeof address !== 'string' || this.opts.known?.(address) === false) {
+                // a device removed on the system: its objects are being deleted, and so are its datapoints, which
+                // are skipped with their channel
                 continue;
             }
             const ref = (0, lite_1.refOfAddress)(this.iface, address);

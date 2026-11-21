@@ -32,6 +32,16 @@ export interface MetaReader {
         }[];
     };
 }
+/** How a pass fits in with the rest of the adapter */
+export interface LiteNamesOptions {
+    /**
+     * Resolves once the removal of the objects of devices the system no longer has is through: a pass waits for it,
+     * so it does not rename objects while they are deleted (a rename of a deleted id would create a new object)
+     */
+    settled?: () => Promise<void>;
+    /** Whether the system still lists a device or channel address; a pass leaves the ones it does not alone */
+    known?: (address: string) => boolean;
+}
 /**
  * Keeps the objects of one instance named as the system names them
  */
@@ -40,6 +50,7 @@ export declare class LiteNames {
     private readonly meta;
     private readonly iface;
     private readonly lang;
+    private readonly opts;
     private timer;
     private running;
     private again;
@@ -48,8 +59,9 @@ export declare class LiteNames {
      * @param meta the system's metadata, live
      * @param iface the interface of this instance
      * @param lang the language the node names are taken in
+     * @param opts the cleanup to wait for and the addresses the system still lists
      */
-    constructor(adapter: NamesAdapter, meta: MetaReader, iface: string, lang: string);
+    constructor(adapter: NamesAdapter, meta: MetaReader, iface: string, lang: string, opts?: LiteNamesOptions);
     /**
      * Applies the names soon: several changes in a row (an import, a renamed floor) become one pass
      *

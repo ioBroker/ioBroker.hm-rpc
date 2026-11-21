@@ -343,6 +343,79 @@ describe('hm-rpc in the openccu-lite mode', function () {
             expect(db.getObject(`${NS}.OLD0000001`)).not.to.be.undefined;
         });
 
+        it('leaves no object without a type when the names pass meets the removal of a device', async () => {
+            // a device removed on the system while the instance was off: its objects are stale at the start, and the
+            // first names pass would rename them (address as name) while the cleanup deletes them
+            box = await startFakeBox();
+            db.publishObject({
+                _id: `${NS}.OLD0000001`,
+                type: 'device',
+                common: { name: 'old' },
+                native: { ADDRESS: 'OLD0000001', VERSION: 1 },
+            });
+            for (const ch of [1, 2]) {
+                db.publishObject({
+                    _id: `${NS}.OLD0000001.${ch}`,
+                    type: 'channel',
+                    common: { name: `old:${ch}` },
+                    native: { ADDRESS: `OLD0000001:${ch}`, VERSION: 1 },
+                });
+                for (const dp of ['STATE', 'LEVEL', 'WORKING']) {
+                    db.publishObject({
+                        _id: `${NS}.OLD0000001.${ch}.${dp}`,
+                        type: 'state',
+                        // named by an earlier pass, so this one renames them
+                        common: { name: `old:${ch}.${dp}`, type: 'boolean' },
+                        native: {},
+                    });
+                }
+            }
+            adapter = createAdapter(db, liteConfig());
+            onMessage = adapter.messageHandler;
+            // a slow object database, as with a few thousand objects: the deletion takes a while, and so does each
+            // rename
+            const a = adapter as any;
+            const del = a.delObjectAsync.bind(a);
+            a.delObjectAsync = async (id: string, options?: { recursive?: boolean }) => {
+                await new Promise(res => setTimeout(res, 500));
+                return del(id, options);
+            };
+            const extend = a.extendForeignObjectAsync.bind(a);
+            a.extendForeignObjectAsync = async (id: string, part: ioBroker.PartialObject) => {
+                await new Promise(res => setTimeout(res, 60));
+                return extend(id, part);
+            };
+            await adapter.readyHandler();
+            await waitFor(() => db.getObject(`${NS}.OLD0000001`) === undefined, 5000, 'the stale device gone');
+            await waitFor(
+                () => db.getObject(`${CH1}.STATE`)?.common.name === 'Stehlampe Schalter.STATE',
+                10_000,
+                'the names pass through',
+            );
+            await new Promise(res => setTimeout(res, 1000));
+            // js-controller creates an object without a type for a rename of a deleted id (and warns about it); the
+            // mock database refuses it, and the pass ends there
+            expect((adapter as any).log.warn.calledWithMatch(/Could not apply the names/)).to.equal(false);
+            const typeless = [...db.objects.values()].filter(obj => !obj.type).map(obj => obj._id);
+            expect(typeless, 'objects without a type').to.deep.equal([]);
+            expect(Object.keys(db.getObjects(`${NS}.OLD0000001*`))).to.deep.equal([]);
+            expect(db.getObject(`${CH1}.STATE`)!.common.name).to.equal('Stehlampe Schalter.STATE');
+        });
+
+        it('keeps the objects of an interface that is not running', async () => {
+            box = await startFakeBox({ interfaces: [{ name: IFACE, running: false }] });
+            db.publishObject({
+                _id: `${NS}.OLD0000001`,
+                type: 'device',
+                common: { name: 'old' },
+                native: { ADDRESS: 'OLD0000001', VERSION: 1 },
+            });
+            await start(liteConfig());
+            await waitFor(() => db.getState(`${NS}.info.connection`)?.val === true, 5000, 'connected');
+            await new Promise(res => setTimeout(res, 300));
+            expect(db.getObject(`${NS}.OLD0000001`)).not.to.be.undefined;
+        });
+
         it('keeps the known devices and their names across a reconnect', async () => {
             box = await startFakeBox();
             await start(liteConfig());
@@ -396,6 +469,8 @@ describe('hm-rpc in the openccu-lite mode', function () {
             box.push('newDevices', { interface: IFACE, addresses: ['NEW000000001', 'NEW000000001:1'] });
             await waitFor(() => db.getObject(`${NS}.NEW000000001.1.STATE`) !== undefined, 5000, 'the new device');
             expect(db.getObject(`${NS}.NEW000000001`)?.type).to.equal('device');
+            await new Promise(res => setTimeout(res, 300));
+            expect(db.getObject(DEV), 'the known device stays').not.to.be.undefined;
         });
 
         it('replaces a device', async () => {

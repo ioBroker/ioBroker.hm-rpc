@@ -32,6 +32,8 @@ export declare class HomematicRpc extends Adapter {
     private lite;
     /** Names and rooms from the openccu-lite system, when switched on */
     private liteNames;
+    /** The removal of the objects of devices the system no longer has, while it runs (it catches its own errors) */
+    private liteCleanup;
     /** The pairing with an openccu-lite system, created with the first request of the admin */
     private litePairing;
     /** The language of ioBroker, for the names of rooms and functions and the pairing texts */
@@ -69,8 +71,9 @@ export declare class HomematicRpc extends Adapter {
     private onReady;
     /**
      * Connects to the openccu-lite system: the requests through lite-rpc, the events from its stream, no callback
-     * server and no `init`. The device snapshot of the stream arrives as `newDevices`, which creates the new devices
-     * and removes the stale ones; the state of the connection follows the client's status instead of a PING.
+     * server and no `init`. The device snapshot of the stream arrives as `newDevices`, which creates the new devices;
+     * the stale ones are removed once the client is ready. The state of the connection follows the client's status
+     * instead of a PING.
      */
     private startLite;
     /**
@@ -80,6 +83,20 @@ export declare class HomematicRpc extends Adapter {
      * @param state the client's status
      */
     private onLiteStatus;
+    /**
+     * Whether the system lists a device or channel address of this instance's interface. True while it has no device
+     * list for it (not connected yet, or the interface process is stopped): nothing is removed then either.
+     *
+     * @param address the device or channel address
+     */
+    private liteKnows;
+    /**
+     * Removes the device and channel objects the system does not know any more (unless "Don't delete devices" is
+     * set): once the client is ready, at the start and after every reconnect, against the client's live picture of
+     * the devices. A `newDevices` is no ground for it on openccu-lite: the snapshot at connect carries the whole list,
+     * but a device paired later comes alone.
+     */
+    private removeStaleLiteObjects;
     /**
      * Writes the values the system's state store holds into the states, through the event path: at connect, for
      * the devices just created and after a resync, so a restart of ioBroker shows the current values before the
