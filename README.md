@@ -395,7 +395,7 @@ npm run update-images
 ```
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 4.3.1 (2026-11-21)
 - (@hobbyquaker) openccu-lite: a device paired later no longer deletes the objects of the other devices of the instance; objects of devices removed on the system are cleaned up when the instance connects, without leaving broken objects behind ("obj.type has to exist")
 
 ### 4.3.0 (2026-11-18)
@@ -417,9 +417,6 @@ npm run update-images
 * (@GermanBluefox) The virtual devices of CCU-Jack can be connected with the new daemon `CCU-Jack` (port 2121, HTTPS 2122, XML-RPC only) (#1003)
 * (@GermanBluefox) The state `updated` (new devices for hm-rega) is no longer marked as writable, as expected for the role `indicator`
 * (@GermanBluefox) Homebrew devices (AskSin++) of the add-ons from jp112sdl (JP-HB-Devices-addon) and TomMajor (HB-TM-Devices-AddOn) get the same icon as in the CCU WebUI (#903)
-
-### 4.2.0 (2026-10-13)
-* (@GermanBluefox) The firmware update state of Homematic IP devices is available in the new state `<device>.0.FIRMWARE_UPDATE_STATE`, e.g. `READY_FOR_UPDATE` when the firmware is transferred. The firmware information of the device object is updated, too (#1137)
 
 ### Older changelog
 [here](OLD_CHANGELOG.md)
