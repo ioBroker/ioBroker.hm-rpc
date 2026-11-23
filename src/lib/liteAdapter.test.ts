@@ -15,6 +15,7 @@ import {
     DEVICE,
     IFACE,
     liteUrlPartsOf,
+    metaDocument,
     startFakeBox,
     stopTimers,
     TOKEN,
@@ -198,10 +199,10 @@ describe('hm-rpc in the openccu-lite mode', function () {
             expect(db.getObject(CH1)?.common.name).to.equal('Stehlampe Schalter');
             expect(db.getObject(`${CH1}.STATE`)?.common.name).to.equal('Stehlampe Schalter.STATE');
             expect(db.getObject(CH0)?.common.name).to.equal(`${DEVICE}:0`);
-            const room = db.getObject('enum.rooms.eg_wohnzimmer')!;
+            const room = db.getObject('enum.rooms.Ground floor_Living room')!;
             expect(room.common.name).to.equal('Living room'); // the system language defaults to English
             expect(Object.values(room.common.members)).to.deep.equal([CH1]);
-            expect(Object.values(db.getObject('enum.functions.licht')!.common.members)).to.deep.equal([CH1]);
+            expect(Object.values(db.getObject('enum.functions.Light')!.common.members)).to.deep.equal([CH1]);
             // one instance, one interface: the daemon follows the interface
             expect(adapter!.config.daemon).to.equal('HMIP');
             expect(adapter!.log.error.called, JSON.stringify(adapter!.log.error.args)).to.equal(false);
@@ -279,10 +280,49 @@ describe('hm-rpc in the openccu-lite mode', function () {
                 3000,
                 'the datapoint names',
             );
-            await waitFor(() => db.getObject('enum.rooms.eg_wohnzimmer') === undefined, 3000, 'the old room gone');
-            expect(Object.values(db.getObject('enum.rooms.og_bad')!.common.members)).to.deep.equal([CH1]);
-            expect(db.getObject('enum.rooms.og_bad')!.common.name).to.equal('Bad');
-            expect(db.getObject('enum.functions.licht')).to.be.undefined;
+            await waitFor(
+                () => db.getObject('enum.rooms.Ground floor_Living room') === undefined,
+                3000,
+                'the old room gone',
+            );
+            expect(Object.values(db.getObject('enum.rooms.Upper floor_Bad')!.common.members)).to.deep.equal([CH1]);
+            expect(db.getObject('enum.rooms.Upper floor_Bad')!.common.name).to.equal('Bad');
+            expect(db.getObject('enum.functions.Light')).to.be.undefined;
+        });
+
+        it('carries on the rooms hm-rega made and leaves the rooms made in ioBroker alone', async () => {
+            const meta = metaDocument();
+            meta.objects[`${IFACE}.${DEVICE}:1`] = { name: 'Stehlampe Schalter', enums: ['room/living-room'] };
+            (meta.enums.room as { tree: unknown[] }).tree.push({ id: 'living-room', name: 'Living Room' });
+            box = await startFakeBox({ meta });
+            // what an ioBroker that ran hm-rega against the CCU holds: hm-rega's room, and admin's standard room
+            // into which the user put the channel by hand
+            db.publishObject({
+                _id: 'enum.rooms.Living Room',
+                type: 'enum',
+                common: { name: 'Living Room', members: [CH1, 'hue.0.light1'] },
+                native: { Name: 'Living Room', TypeName: 'ENUM', EnumInfo: '' },
+            });
+            db.publishObject({
+                _id: 'enum.rooms.living_room',
+                type: 'enum',
+                common: { name: { en: 'Living room', de: 'Wohnzimmer' }, members: [CH1] },
+                native: {},
+            });
+            await start(liteConfig());
+            await named();
+            await waitFor(
+                () => db.getObject('enum.rooms.Living Room')?.native.hmRpc !== undefined,
+                3000,
+                'the room taken over',
+            );
+            expect(Object.values(db.getObject('enum.rooms.Living Room')!.common.members)).to.deep.equal([
+                'hue.0.light1',
+                CH1,
+            ]);
+            expect(db.getObject('enum.rooms.Living Room')!.native.Name).to.equal('Living Room');
+            expect(Object.values(db.getObject('enum.rooms.living_room')!.common.members)).to.deep.equal([CH1]);
+            expect(db.getObject('enum.rooms.living-room')).to.be.undefined;
         });
 
         it('follows a new room once the snapshot is read again', async () => {
@@ -299,9 +339,15 @@ describe('hm-rpc in the openccu-lite mode', function () {
             meta.revision++;
             // a created node is no change the copy applies in place: the client reads the snapshot again
             box.metaEvent({ revision: meta.revision, kind: 'node.created', enum: 'room', path: 'og/kind' });
-            await waitFor(() => db.getObject('enum.rooms.og_kind') !== undefined, 5000, 'the new room');
-            expect(Object.values(db.getObject('enum.rooms.og_kind')!.common.members)).to.deep.equal([CH1]);
-            expect(db.getObject('enum.rooms.og_kind')!.common.name).to.equal('Kinderzimmer');
+            await waitFor(
+                () => db.getObject('enum.rooms.Upper floor_Kinderzimmer') !== undefined,
+                5000,
+                'the new room',
+            );
+            expect(Object.values(db.getObject('enum.rooms.Upper floor_Kinderzimmer')!.common.members)).to.deep.equal([
+                CH1,
+            ]);
+            expect(db.getObject('enum.rooms.Upper floor_Kinderzimmer')!.common.name).to.equal('Kinderzimmer');
         });
 
         it('removes stale objects with the snapshot, unless "Don\'t delete devices" is set', async () => {
@@ -499,7 +545,7 @@ describe('hm-rpc in the openccu-lite mode', function () {
             await start(liteConfig({ liteNames: false }));
             await new Promise(res => setTimeout(res, 500));
             expect(db.getObject(DEV)?.common.name).to.equal(DEVICE);
-            expect(db.getObject('enum.rooms.eg_wohnzimmer')).to.be.undefined;
+            expect(db.getObject('enum.rooms.Ground floor_Living room')).to.be.undefined;
         });
 
         it('stops without an init call and closes the stream', async () => {

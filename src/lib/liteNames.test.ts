@@ -31,6 +31,28 @@ class FakeMeta implements MetaReader {
         expect(opts.inherit, 'the direct nodes only').to.equal(false);
         return this.nodes.get(ref) ?? { rooms: [], functions: [] };
     }
+
+    /** path → name of the nodes the tree has besides the direct nodes of the objects (the floors) */
+    tree = new Map<string, string>([['room/eg', 'EG']]);
+
+    private all(kind: string, opts: { inherit?: boolean; lang?: string }): { path: string; name: string }[] {
+        expect(opts.lang).to.equal('de');
+        const out = new Map(this.tree);
+        for (const m of this.nodes.values()) {
+            for (const n of [...m.rooms, ...m.functions]) {
+                out.set(n.path, n.name);
+            }
+        }
+        return [...out].filter(([path]) => path.startsWith(`${kind}/`)).map(([path, name]) => ({ path, name }));
+    }
+
+    rooms(opts: { inherit?: boolean; lang?: string }): { path: string; name: string }[] {
+        return this.all('room', opts);
+    }
+
+    functions(opts: { inherit?: boolean; lang?: string }): { path: string; name: string }[] {
+        return this.all('function', opts);
+    }
 }
 
 describe('LiteNames', () => {
@@ -102,15 +124,15 @@ describe('LiteNames', () => {
 
     it('creates the enums of the direct nodes with this instance as member, marked as its own', async () => {
         await names.apply();
-        const room = db.getObject('enum.rooms.eg_wohnzimmer')!;
+        const room = db.getObject('enum.rooms.EG_Wohnzimmer')!;
         expect(room.type).to.equal('enum');
         expect(room.common.name).to.equal('Wohnzimmer');
-        expect(membersIn(db, 'enum.rooms.eg_wohnzimmer')).to.deep.equal([CH1]);
+        expect(membersIn(db, 'enum.rooms.EG_Wohnzimmer')).to.deep.equal([CH1]);
         expect(room.native).to.deep.equal({ hmRpc: { path: 'room/eg/wohnzimmer' } });
-        expect(db.getObject('enum.functions.licht')!.common.name).to.equal('Licht');
-        expect(membersIn(db, 'enum.functions.licht')).to.deep.equal([CH1]);
+        expect(db.getObject('enum.functions.Licht')!.common.name).to.equal('Licht');
+        expect(membersIn(db, 'enum.functions.Licht')).to.deep.equal([CH1]);
         // the innermost room only: no enum for the floor
-        expect(db.getObject('enum.rooms.eg')).to.be.undefined;
+        expect(db.getObject('enum.rooms.EG')).to.be.undefined;
     });
 
     it('leaves the objects of an address the system no longer lists alone', async () => {
@@ -119,7 +141,7 @@ describe('LiteNames', () => {
         expect(db.getObject(DEV)!.common.name).to.equal(DEVICE);
         expect(db.getObject(CH1)!.common.name).to.equal(`${DEVICE}:1`);
         expect(db.getObject(`${CH1}.STATE`)!.common.name).to.equal('STATE');
-        expect(db.getObject('enum.rooms.eg_wohnzimmer')).to.be.undefined;
+        expect(db.getObject('enum.rooms.EG_Wohnzimmer')).to.be.undefined;
     });
 
     it('waits for the cleanup before it reads the objects', async () => {
@@ -170,30 +192,30 @@ describe('LiteNames', () => {
         await names.apply();
         meta.nodes.set(`${IFACE}.${DEVICE}:1`, { rooms: [{ path: 'room/og/bad', name: 'Bad' }], functions: [] });
         await names.apply();
-        expect(db.getObject('enum.rooms.eg_wohnzimmer')).to.be.undefined;
-        expect(db.getObject('enum.functions.licht')).to.be.undefined;
-        expect(membersIn(db, 'enum.rooms.og_bad')).to.deep.equal([CH1]);
+        expect(db.getObject('enum.rooms.EG_Wohnzimmer')).to.be.undefined;
+        expect(db.getObject('enum.functions.Licht')).to.be.undefined;
+        expect(membersIn(db, 'enum.rooms.og_Bad')).to.deep.equal([CH1]);
     });
 
     it('manages only the members of its own namespace in an enum', async () => {
         db.publishObject({
-            _id: 'enum.rooms.eg_wohnzimmer',
+            _id: 'enum.rooms.EG_Wohnzimmer',
             type: 'enum',
             common: { name: 'Living', members: ['hue.0.light1', 'hm-rpc.1.ABC.1', `${NS}.OLD.1`] },
             native: {},
         });
         await names.apply();
-        const room = db.getObject('enum.rooms.eg_wohnzimmer')!;
+        const room = db.getObject('enum.rooms.EG_Wohnzimmer')!;
         // the other members stay, the stale one of this instance goes, the new one comes
-        expect(membersIn(db, 'enum.rooms.eg_wohnzimmer')).to.deep.equal(['hue.0.light1', 'hm-rpc.1.ABC.1', CH1]);
-        // not this adapter's enum: its name is not touched
+        expect(membersIn(db, 'enum.rooms.EG_Wohnzimmer')).to.deep.equal(['hue.0.light1', 'hm-rpc.1.ABC.1', CH1]);
+        // not this adapter's enum: its name is not touched, it is marked as taken over
         expect(room.common.name).to.equal('Living');
-        expect(room.native).to.deep.equal({});
+        expect(room.native).to.deep.equal({ hmRpc: { path: 'room/eg/wohnzimmer', adopted: true } });
 
         // the channel leaves the room: the enum of the user stays, without this instance
         meta.nodes.set(`${IFACE}.${DEVICE}:1`, { rooms: [], functions: [] });
         await names.apply();
-        expect(membersIn(db, 'enum.rooms.eg_wohnzimmer')).to.deep.equal(['hue.0.light1', 'hm-rpc.1.ABC.1']);
+        expect(membersIn(db, 'enum.rooms.EG_Wohnzimmer')).to.deep.equal(['hue.0.light1', 'hm-rpc.1.ABC.1']);
     });
 
     it('reads the members as the controller stores them, an array', async () => {
@@ -208,44 +230,213 @@ describe('LiteNames', () => {
             return objects;
         };
         db.publishObject({
-            _id: 'enum.rooms.eg_wohnzimmer',
+            _id: 'enum.rooms.EG_Wohnzimmer',
             type: 'enum',
             common: { name: 'Living', members: ['hue.0.light1', `${NS}.OLD.1`] },
             native: {},
         });
         await names.apply();
-        expect(membersIn(db, 'enum.rooms.eg_wohnzimmer')).to.deep.equal(['hue.0.light1', CH1]);
+        expect(membersIn(db, 'enum.rooms.EG_Wohnzimmer')).to.deep.equal(['hue.0.light1', CH1]);
     });
 
     it('keeps an enum of its own that another instance still uses', async () => {
         await names.apply();
-        const room = db.getObject('enum.rooms.eg_wohnzimmer')!;
+        const room = db.getObject('enum.rooms.EG_Wohnzimmer')!;
         room.common.members = [CH1, 'hm-rpc.1.ABC.1'];
         db.publishObject(room);
         meta.nodes.set(`${IFACE}.${DEVICE}:1`, { rooms: [], functions: [] });
         await names.apply();
-        expect(membersIn(db, 'enum.rooms.eg_wohnzimmer')).to.deep.equal(['hm-rpc.1.ABC.1']);
-        expect(db.getObject('enum.rooms.eg_wohnzimmer')!.native).to.deep.equal({
+        expect(membersIn(db, 'enum.rooms.EG_Wohnzimmer')).to.deep.equal(['hm-rpc.1.ABC.1']);
+        expect(db.getObject('enum.rooms.EG_Wohnzimmer')!.native).to.deep.equal({
             hmRpc: { path: 'room/eg/wohnzimmer' },
         });
     });
 
-    it('renames an enum of its own when the node is renamed on the system', async () => {
+    it('follows a rename of the node on the system with a new enum, as hm-rega does, and removes its own old one', async () => {
         await names.apply();
         meta.nodes.set(`${IFACE}.${DEVICE}:1`, {
             rooms: [{ path: 'room/eg/wohnzimmer', name: 'Living room' }],
             functions: [{ path: 'function/licht', name: 'Licht' }],
         });
         await names.apply();
-        expect(db.getObject('enum.rooms.eg_wohnzimmer')!.common.name).to.equal('Living room');
+        expect(db.getObject('enum.rooms.EG_Wohnzimmer')).to.be.undefined;
+        expect(db.getObject('enum.rooms.EG_Living room')!.common.name).to.equal('Living room');
+        expect(membersIn(db, 'enum.rooms.EG_Living room')).to.deep.equal([CH1]);
+    });
+
+    it('renames an enum of its own when the name changes and the id does not', async () => {
+        meta.nodes.set(`${IFACE}.${DEVICE}:1`, { rooms: [{ path: 'room/eg-1', name: 'EG.1' }], functions: [] });
+        await names.apply();
+        expect(db.getObject('enum.rooms.EG_1')!.common.name).to.equal('EG.1');
+        meta.nodes.set(`${IFACE}.${DEVICE}:1`, { rooms: [{ path: 'room/eg-1', name: 'EG_1' }], functions: [] });
+        await names.apply();
+        expect(db.getObject('enum.rooms.EG_1')!.common.name).to.equal('EG_1');
+    });
+
+    it('carries on the enum hm-rega made of a CCU room: same id, its name, icon and other members kept', async () => {
+        meta.nodes.set(`${IFACE}.${DEVICE}:1`, {
+            rooms: [{ path: 'room/living-room', name: 'Living Room' }],
+            functions: [{ path: 'function/licht', name: 'Licht' }],
+        });
+        db.publishObject({
+            _id: 'enum.rooms.Living Room',
+            type: 'enum',
+            common: { name: 'Living Room', icon: 'sofa.svg', members: ['hue.0.light1', `${NS}.OLD.1`] },
+            native: { Name: 'Living Room', TypeName: 'ENUM', EnumInfo: '' },
+        });
+        await names.apply();
+        const room = db.getObject('enum.rooms.Living Room')!;
+        expect(membersIn(db, 'enum.rooms.Living Room')).to.deep.equal(['hue.0.light1', CH1]);
+        expect(room.common.name).to.equal('Living Room');
+        expect(room.common.icon).to.equal('sofa.svg');
+        expect(room.native).to.deep.equal({
+            Name: 'Living Room',
+            TypeName: 'ENUM',
+            EnumInfo: '',
+            hmRpc: { path: 'room/living-room', adopted: true },
+        });
+        // no second enum of a slug or lower-cased id
+        expect([...db.objects.keys()].filter(k => k.startsWith('enum.rooms.'))).to.deep.equal([
+            'enum.rooms.Living Room',
+        ]);
+
+        // carried on: the node renamed on the system does not rename the enum, a second pass writes nothing
+        adapter.setForeignObject.resetHistory();
+        await names.apply();
+        expect(adapter.setForeignObject.called).to.equal(false);
+    });
+
+    it('takes the enum hm-rega made of a CCU room the import named in German (Wohnzimmer → LivingRoom)', async () => {
+        meta.nodes.set(`${IFACE}.${DEVICE}:1`, {
+            rooms: [{ path: 'room/wohnzimmer', name: 'Wohnzimmer' }],
+            functions: [{ path: 'function/licht', name: 'Licht' }],
+        });
+        db.publishObject({
+            _id: 'enum.rooms.LivingRoom',
+            type: 'enum',
+            common: { name: { en: 'LivingRoom', de: 'Wohnzimmer' }, members: [`${NS}.OLD.1`] },
+            native: { Name: 'roomLivingRoom', TypeName: 'ENUM' },
+        });
+        db.publishObject({
+            _id: 'enum.functions.Light',
+            type: 'enum',
+            common: { name: { en: 'Light', de: 'Licht' }, members: [] },
+            native: { Name: '${funcLight}', TypeName: 'ENUM' },
+        });
+        await names.apply();
+        expect(db.getObject('enum.rooms.Wohnzimmer')).to.be.undefined;
+        expect(db.getObject('enum.functions.Licht')).to.be.undefined;
+        expect(membersIn(db, 'enum.rooms.LivingRoom')).to.deep.equal([CH1]);
+        expect(membersIn(db, 'enum.functions.Light')).to.deep.equal([CH1]);
+        expect(db.getObject('enum.rooms.LivingRoom')!.common.name).to.deep.equal({
+            en: 'LivingRoom',
+            de: 'Wohnzimmer',
+        });
+        expect(db.getObject('enum.rooms.LivingRoom')!.native.hmRpc).to.deep.equal({
+            path: 'room/wohnzimmer',
+            adopted: true,
+        });
+
+        adapter.setForeignObject.resetHistory();
+        await names.apply();
+        expect(adapter.setForeignObject.called, 'stable on the next pass').to.equal(false);
+
+        // the room leaves the system: the enum hm-rega made stays, without this instance
+        meta.nodes.set(`${IFACE}.${DEVICE}:1`, { rooms: [], functions: [] });
+        await names.apply();
+        expect(membersIn(db, 'enum.rooms.LivingRoom')).to.deep.equal([]);
+        expect(membersIn(db, 'enum.functions.Light')).to.deep.equal([]);
+    });
+
+    it('prefers the enum of the name to hm-rega enum of the key, and takes no LivingRoom hm-rega did not make', async () => {
+        meta.nodes.set(`${IFACE}.${DEVICE}:1`, {
+            rooms: [{ path: 'room/wohnzimmer', name: 'Wohnzimmer' }],
+            functions: [{ path: 'function/licht', name: 'Licht' }],
+        });
+        db.publishObject({
+            _id: 'enum.rooms.Wohnzimmer',
+            type: 'enum',
+            common: { name: 'Wohnzimmer', members: [] },
+            native: { Name: 'Wohnzimmer', TypeName: 'ENUM' },
+        });
+        db.publishObject({
+            _id: 'enum.rooms.LivingRoom',
+            type: 'enum',
+            common: { name: 'LivingRoom', members: [] },
+            native: { Name: 'roomLivingRoom' },
+        });
+        db.publishObject({
+            _id: 'enum.functions.Light',
+            type: 'enum',
+            common: { name: 'Light', members: [] },
+            native: {},
+        });
+        await names.apply();
+        expect(membersIn(db, 'enum.rooms.Wohnzimmer')).to.deep.equal([CH1]);
+        expect(membersIn(db, 'enum.rooms.LivingRoom')).to.deep.equal([]);
+        expect(membersIn(db, 'enum.functions.Licht')).to.deep.equal([CH1]);
+        expect(membersIn(db, 'enum.functions.Light')).to.deep.equal([]);
+        expect(db.getObject('enum.functions.Light')!.native).to.deep.equal({});
+    });
+
+    it('unites the members when a built-in room and a room of the same id land in one enum', async () => {
+        meta.nodes.set(`${IFACE}.${DEVICE}:1`, {
+            rooms: [{ path: 'room/wohnzimmer', name: 'Wohnzimmer' }],
+            functions: [],
+        });
+        meta.nodes.set(`${IFACE}.${DEVICE}:0`, { rooms: [{ path: 'room/lr', name: 'LivingRoom' }], functions: [] });
+        db.publishObject({
+            _id: 'enum.rooms.LivingRoom',
+            type: 'enum',
+            common: { name: 'LivingRoom', members: [] },
+            native: { Name: 'roomLivingRoom' },
+        });
+        await names.apply();
+        expect(membersIn(db, 'enum.rooms.LivingRoom')).to.deep.equal([CH0, CH1]);
+        expect(db.getObject('enum.rooms.Wohnzimmer')).to.be.undefined;
+    });
+
+    it('leaves an enum alone it does not manage, even with members of this instance (made by hand, or in admin)', async () => {
+        db.publishObject({
+            _id: 'enum.rooms.living_room',
+            type: 'enum',
+            common: { name: { en: 'Living room', de: 'Wohnzimmer' }, members: [CH1, `${NS}.OLD.1`] },
+            native: {},
+        });
+        await names.apply();
+        expect(membersIn(db, 'enum.rooms.living_room')).to.deep.equal([CH1, `${NS}.OLD.1`]);
+        expect(db.getObject('enum.rooms.living_room')!.native).to.deep.equal({});
+        expect(membersIn(db, 'enum.rooms.EG_Wohnzimmer')).to.deep.equal([CH1]);
+    });
+
+    it('removes the enums of an earlier id rule it made itself when they hold nothing else (living-room)', async () => {
+        db.publishObject({
+            _id: 'enum.rooms.eg_wohnzimmer',
+            type: 'enum',
+            common: { name: 'Wohnzimmer', members: [CH1] },
+            native: { hmRpc: { path: 'room/eg/wohnzimmer' } },
+        });
+        db.publishObject({
+            _id: 'enum.rooms.living-room',
+            type: 'enum',
+            common: { name: 'Living Room', members: [CH1, 'hue.0.light1'] },
+            native: { hmRpc: { path: 'room/living-room' } },
+        });
+        await names.apply();
+        expect(db.getObject('enum.rooms.eg_wohnzimmer')).to.be.undefined;
+        // one with a member of another adapter stays, without this instance
+        expect(membersIn(db, 'enum.rooms.living-room')).to.deep.equal(['hue.0.light1']);
+        expect(membersIn(db, 'enum.rooms.EG_Wohnzimmer')).to.deep.equal([CH1]);
     });
 
     it('skips objects without an address and enum objects without members', async () => {
         db.publishObject({ _id: `${NS}.odd`, type: 'device', common: { name: 'odd' }, native: {} });
         db.publishObject({ _id: 'enum.rooms.manual', type: 'enum', common: { name: 'Manual' }, native: {} });
+        db.publishObject({ _id: 'enum.functions.Licht', type: 'enum', common: { name: 'Licht' }, native: {} });
         await names.apply();
         expect(db.getObject(`${NS}.odd`)!.common.name).to.equal('odd');
         expect(db.getObject('enum.rooms.manual')!.common.name).to.equal('Manual');
+        expect(membersIn(db, 'enum.functions.Licht')).to.deep.equal([CH1]);
     });
 
     it('runs one more pass when asked for during a pass, and reports an error of a pass as a warning', async () => {
