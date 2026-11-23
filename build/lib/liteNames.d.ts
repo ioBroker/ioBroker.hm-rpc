@@ -31,6 +31,22 @@ export interface MetaReader {
             name: string;
         }[];
     };
+    /** every node of the room tree, for the names along a path */
+    rooms(opts: {
+        inherit?: boolean;
+        lang?: string;
+    }): {
+        path: string;
+        name: string;
+    }[];
+    /** every node of the function tree */
+    functions(opts: {
+        inherit?: boolean;
+        lang?: string;
+    }): {
+        path: string;
+        name: string;
+    }[];
 }
 /** How a pass fits in with the rest of the adapter */
 export interface LiteNamesOptions {
@@ -77,12 +93,17 @@ export declare class LiteNames {
     apply(): Promise<void>;
     private pass;
     /**
-     * Brings the rooms and functions in line: only the members of this instance are managed in an enum (another
-     * instance on the same system, or the user, may have added others), an enum this adapter created goes when
-     * it has no members left. An enum is always written whole: `extendObject` merges arrays index-wise, so a
-     * shorter member list would leave the old entries behind.
+     * Brings the rooms and functions in line, as ioBroker.hm-rega does with the CCU's rooms: an enum of the id
+     * wanted is carried on, whoever made it (its name, icon and the members of others stay; it is marked as
+     * managed from then on). For one of the CCU's own rooms the import named in German, hm-rega's enum of the
+     * key is taken when there is none of the name (`Wohnzimmer` → `enum.rooms.LivingRoom`). Only the members of
+     * this instance are managed (another instance on the same system, or the user, may have added others), and
+     * only in the enums this adapter manages: an enum it does not want and never managed - one made by hand, or
+     * one hm-rega made for a room the system does not have - is not touched. An enum this adapter created goes
+     * when it has no members left. An enum is always written whole: `extendObject` merges arrays index-wise, so
+     * a shorter member list would leave the old entries behind.
      *
-     * @param wanted enum id → name, path and the members of this instance
+     * @param wantedByName enum id → name, path and the members of this instance
      * @returns how many enum objects were written or removed
      */
     private syncEnums;
