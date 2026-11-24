@@ -77,6 +77,15 @@ class LiteNames {
         const channelNames = new Map();
         /** enum id → its name and the members of this instance */
         const enums = new Map();
+        /** path → name of every node, for the names along the path of a nested one */
+        const nodeNames = new Map();
+        for (const node of [
+            ...this.meta.rooms({ inherit: false, lang: this.lang }),
+            ...this.meta.functions({ inherit: false, lang: this.lang }),
+        ]) {
+            nodeNames.set(node.path, node.name);
+        }
+        const nameOf = (path) => nodeNames.get(path);
         let renamed = 0;
         for (const obj of [...Object.values(devices), ...Object.values(channels)]) {
             const address = obj.native?.ADDRESS;
@@ -96,8 +105,13 @@ class LiteNames {
                 renamed++;
             }
             const membership = this.meta.membership(ref, { inherit: false, lang: this.lang });
-            for (const e of (0, lite_1.enumsOfNodes)([...membership.rooms, ...membership.functions])) {
-                const entry = enums.get(e.id) ?? { name: e.name, path: e.path, members: new Set() };
+            for (const e of (0, lite_1.enumsOfNodes)([...membership.rooms, ...membership.functions], nameOf)) {
+                const entry = enums.get(e.id) ?? {
+                    name: e.name,
+                    path: e.path,
+                    builtin: e.builtin,
+                    members: new Set(),
+                };
                 entry.members.add(obj._id);
                 enums.set(e.id, entry);
             }
@@ -121,40 +135,68 @@ class LiteNames {
         }
     }
     /**
-     * Brings the rooms and functions in line: only the members of this instance are managed in an enum (another
-     * instance on the same system, or the user, may have added others), an enum this adapter created goes when
-     * it has no members left. An enum is always written whole: `extendObject` merges arrays index-wise, so a
-     * shorter member list would leave the old entries behind.
+     * Brings the rooms and functions in line, as ioBroker.hm-rega does with the CCU's rooms: an enum of the id
+     * wanted is carried on, whoever made it (its name, icon and the members of others stay; it is marked as
+     * managed from then on). For one of the CCU's own rooms the import named in German, hm-rega's enum of the
+     * key is taken when there is none of the name (`Wohnzimmer` → `enum.rooms.LivingRoom`). Only the members of
+     * this instance are managed (another instance on the same system, or the user, may have added others), and
+     * only in the enums this adapter manages: an enum it does not want and never managed - one made by hand, or
+     * one hm-rega made for a room the system does not have - is not touched. An enum this adapter created goes
+     * when it has no members left. An enum is always written whole: `extendObject` merges arrays index-wise, so
+     * a shorter member list would leave the old entries behind.
      *
-     * @param wanted enum id → name, path and the members of this instance
+     * @param wantedByName enum id → name, path and the members of this instance
      * @returns how many enum objects were written or removed
      */
-    async syncEnums(wanted) {
+    async syncEnums(wantedByName) {
         const ns = `${this.adapter.namespace}.`;
         const existing = {
             ...(await this.adapter.getForeignObjectsAsync('enum.rooms.*', 'enum')),
             ...(await this.adapter.getForeignObjectsAsync('enum.functions.*', 'enum')),
         };
+        const wanted = new Map();
+        for (const [byName, want] of wantedByName) {
+            const id = !existing[byName] && want.builtin && (0, lite_1.isHmRegaEnumOf)(existing[want.builtin.id], want.builtin.key)
+                ? want.builtin.id
+                : byName;
+            const same = wanted.get(id);
+            if (same) {
+                want.members.forEach(m => same.members.add(m));
+            }
+            else {
+                wanted.set(id, want);
+            }
+        }
         let changed = 0;
         for (const [id, obj] of Object.entries(existing)) {
+            const want = wanted.get(id);
+            const mark = obj.native?.hmRpc;
+            if (!want && !mark) {
+                // not ours, never was: the user's, or a room of hm-rega the system does not have
+                continue;
+            }
             const members = membersOf(obj);
             const foreign = members.filter(m => !m.startsWith(ns));
             const ours = members.filter(m => m.startsWith(ns)).sort();
-            const want = wanted.get(id);
             const wantedOurs = want ? [...want.members].sort() : [];
-            const mine = obj.native?.hmRpc !== undefined;
-            if (!want && mine && foreign.length === 0) {
+            const adopted = mark?.adopted === true;
+            if (!want && !adopted && foreign.length === 0) {
                 await this.adapter.delForeignObjectAsync(id);
                 changed++;
                 continue;
             }
             const membersChanged = JSON.stringify(ours) !== JSON.stringify(wantedOurs);
-            const nameChanged = want !== undefined && mine && obj.common.name !== want.name;
-            if (membersChanged || nameChanged) {
+            const nameChanged = want !== undefined && mark !== undefined && !adopted && obj.common.name !== want.name;
+            const adopt = want !== undefined && mark === undefined;
+            if (membersChanged || nameChanged || adopt) {
                 const next = structuredClone(obj);
                 next.common.members = [...foreign, ...wantedOurs];
                 if (nameChanged) {
                     next.common.name = want.name;
+                }
+                if (adopt) {
+                    const native = { hmRpc: { path: want.path, adopted: true } };
+                    next.native = { ...next.native, ...native };
                 }
                 await this.adapter.setForeignObjectAsync(id, next);
                 changed++;

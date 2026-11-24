@@ -109,30 +109,66 @@ export declare function refOfAddress(iface: string, address: string): string;
  */
 export declare function datapointName(channelName: string | undefined, datapoint: string): string;
 /**
- * The id of the ioBroker enum for a node of the system's taxonomy: a room tree is flattened, every node is an
- * enum of its own named by its path (`room/eg/bad` → `enum.rooms.eg_bad`), so two rooms `bad` on two floors
- * stay apart. Undefined for an enum of the system ioBroker has no counterpart for.
+ * The part of an enum id a name gives, as ioBroker.hm-rega makes it of a CCU room: the name as it is (case,
+ * spaces and umlauts kept), a dot as `_`; a character an object id cannot hold becomes `_` as well, as the
+ * controller stores it
+ *
+ * @param name the room's or function's name
+ */
+export declare function enumIdPart(name: string): string;
+/**
+ * The id of the ioBroker enum for a node of the system's taxonomy, as ioBroker.hm-rega names the enum of a CCU
+ * room: `enum.rooms.<name>` (`Living Room` → `enum.rooms.Living Room`), so the enums hm-rega made are carried on.
+ * A room tree is flattened: a nested node is named by the names along its path (`EG` / `Bad` → `enum.rooms.EG_Bad`),
+ * so two rooms `Bad` on two floors stay apart. Undefined for an enum of the system ioBroker has no counterpart for.
  *
  * @param path the node's path, e.g. `room/eg/bad`
+ * @param nameOf the name of a node by its path, in the language asked for; a node without one is named by its id
  */
-export declare function enumIdOfPath(path: string): string | undefined;
+export declare function enumIdOfPath(path: string, nameOf: (path: string) => string | undefined): string | undefined;
+/**
+ * The enum ioBroker.hm-rega made for one of the CCU's own rooms or functions, which openccu-lite's import named
+ * in German: `Wohnzimmer` at the top of the room tree → `enum.rooms.LivingRoom`, made from the key
+ * `roomLivingRoom`. Undefined for any other node.
+ *
+ * @param path the node's path
+ * @param name the node's name
+ */
+export declare function builtinEnumOf(path: string, name: string): {
+    id: string;
+    key: string;
+} | undefined;
+/**
+ * Whether an enum object is the one ioBroker.hm-rega made for a CCU room or function of the given translation
+ * key (it keeps the CCU's name, `roomLivingRoom` or `${roomLivingRoom}`, in `native.Name`)
+ *
+ * @param obj the enum object
+ * @param key the translation key, e.g. `roomLivingRoom`
+ */
+export declare function isHmRegaEnumOf(obj: ioBroker.Object | undefined, key: string): boolean;
 /** An ioBroker enum an object belongs to directly (one of its innermost nodes) */
 export interface EnumMembership {
-    /** the enum object's id, e.g. `enum.rooms.eg_bad` */
+    /** the enum object's id, e.g. `enum.rooms.EG_Bad` */
     id: string;
     /** the node's name in the language asked for */
     name: string;
     /** the node's path in the system, e.g. `room/eg/bad` */
     path: string;
+    /** for one of the CCU's own rooms or functions: the enum hm-rega made of it, taken when `id` does not exist */
+    builtin?: {
+        id: string;
+        key: string;
+    };
 }
 /**
  * The ioBroker enums an object belongs to: its direct nodes in the system's taxonomy, each mapped to a flat enum
- * (a channel in `room/eg/bad` is a member of `enum.rooms.eg_bad` and not of `enum.rooms.eg` - the innermost room, as
- * hm-rega handles the CCU's flat rooms)
+ * (a channel in `room/eg/bad` is a member of `enum.rooms.EG_Bad` and not of `enum.rooms.EG` - the innermost room,
+ * as hm-rega handles the CCU's flat rooms)
  *
  * @param nodes the direct nodes of the object (`membership(ref, {inherit: false})` of occulite-client, rooms and functions together)
+ * @param nameOf the name of any node by its path (for the names along a nested node's path)
  */
 export declare function enumsOfNodes(nodes: {
     path: string;
     name: string;
-}[]): EnumMembership[];
+}[], nameOf?: (path: string) => string | undefined): EnumMembership[];

@@ -17,7 +17,10 @@ exports.rpcCallbackError = rpcCallbackError;
 exports.objectIdOfAddress = objectIdOfAddress;
 exports.refOfAddress = refOfAddress;
 exports.datapointName = datapointName;
+exports.enumIdPart = enumIdPart;
 exports.enumIdOfPath = enumIdOfPath;
+exports.builtinEnumOf = builtinEnumOf;
+exports.isHmRegaEnumOf = isHmRegaEnumOf;
 exports.enumsOfNodes = enumsOfNodes;
 const tools_1 = require("./tools");
 /** The interfaces lite-rpc carries (the names of `InterfacesList.xml`, as `GET /api/rpc/v1/interfaces` lists them) */
@@ -214,44 +217,119 @@ function refOfAddress(iface, address) {
 function datapointName(channelName, datapoint) {
     return channelName ? `${channelName}.${datapoint}` : datapoint;
 }
+/**
+ * The characters the controller does not keep in an object id: it stores a `_` for each run of them (its own
+ * `FORBIDDEN_CHARS`). Unlike hm-rpc's rule for addresses it allows a space, as ioBroker.hm-rega's room ids have.
+ */
+const ID_FORBIDDEN_CHARS = /[^._\-/ :!#$%&()+=@^{}|~\p{Ll}\p{Lu}\p{Nd}]+/gu;
 /** The enum kinds of ioBroker the system's taxonomy maps to: the `room` tree to `enum.rooms`, `function` to `enum.functions` */
 const ENUM_KINDS = { room: 'enum.rooms', function: 'enum.functions' };
 /**
- * The id of the ioBroker enum for a node of the system's taxonomy: a room tree is flattened, every node is an
- * enum of its own named by its path (`room/eg/bad` → `enum.rooms.eg_bad`), so two rooms `bad` on two floors
- * stay apart. Undefined for an enum of the system ioBroker has no counterpart for.
+ * The rooms and functions a CCU creates on its own, as ioBroker.hm-rega named their enums: the translation key
+ * ReGa keeps as the name of a room or function the user never renamed, the name openccu-lite's import gives such a
+ * room (German, the CCU WebUI's own word), and the id hm-rega made of the key (the English word of its table,
+ * spaces as `_`; `Climate_сontrol` is spelled with a Cyrillic `с` there).
+ */
+const BUILTIN_ENUMS = [
+    { key: 'roomLivingRoom', name: 'Wohnzimmer', id: 'enum.rooms.LivingRoom' },
+    { key: 'roomKitchen', name: 'Küche', id: 'enum.rooms.Kitchen' },
+    { key: 'roomBedroom', name: 'Schlafzimmer', id: 'enum.rooms.Bedroom' },
+    { key: 'roomChildrensRoom1', name: 'Kinderzimmer 1', id: 'enum.rooms.Childrens_room_1' },
+    { key: 'roomChildrensRoom2', name: 'Kinderzimmer 2', id: 'enum.rooms.Childrens_room_2' },
+    { key: 'roomOffice', name: 'Büro', id: 'enum.rooms.Office' },
+    { key: 'roomBathroom', name: 'Badezimmer', id: 'enum.rooms.Bathroom' },
+    { key: 'roomGarage', name: 'Garage', id: 'enum.rooms.Garage' },
+    { key: 'roomHWR', name: 'Hauswirtschaftsraum', id: 'enum.rooms.HWR' },
+    { key: 'roomGarden', name: 'Garten', id: 'enum.rooms.Garden' },
+    { key: 'roomTerrace', name: 'Terrasse', id: 'enum.rooms.Terrace' },
+    { key: 'funcLight', name: 'Licht', id: 'enum.functions.Light' },
+    { key: 'funcHeating', name: 'Heizung', id: 'enum.functions.Heating' },
+    { key: 'funcClimateControl', name: 'Klima', id: 'enum.functions.Climate_сontrol' },
+    { key: 'funcWeather', name: 'Wetter', id: 'enum.functions.Weather' },
+    { key: 'funcEnvironment', name: 'Umwelt', id: 'enum.functions.Environment' },
+    { key: 'funcSecurity', name: 'Sicherheit', id: 'enum.functions.Security' },
+    { key: 'funcLock', name: 'Verschluss', id: 'enum.functions.Lock' },
+    { key: 'funcButton', name: 'Taster', id: 'enum.functions.Button' },
+    { key: 'funcCentral', name: 'Zentrale', id: 'enum.functions.Central' },
+    { key: 'funcEnergy', name: 'Energiemanagement', id: 'enum.functions.Energy' },
+];
+/**
+ * The part of an enum id a name gives, as ioBroker.hm-rega makes it of a CCU room: the name as it is (case,
+ * spaces and umlauts kept), a dot as `_`; a character an object id cannot hold becomes `_` as well, as the
+ * controller stores it
+ *
+ * @param name the room's or function's name
+ */
+function enumIdPart(name) {
+    return name.replace(/\./g, '_').replace(ID_FORBIDDEN_CHARS, '_');
+}
+/**
+ * The id of the ioBroker enum for a node of the system's taxonomy, as ioBroker.hm-rega names the enum of a CCU
+ * room: `enum.rooms.<name>` (`Living Room` → `enum.rooms.Living Room`), so the enums hm-rega made are carried on.
+ * A room tree is flattened: a nested node is named by the names along its path (`EG` / `Bad` → `enum.rooms.EG_Bad`),
+ * so two rooms `Bad` on two floors stay apart. Undefined for an enum of the system ioBroker has no counterpart for.
  *
  * @param path the node's path, e.g. `room/eg/bad`
+ * @param nameOf the name of a node by its path, in the language asked for; a node without one is named by its id
  */
-function enumIdOfPath(path) {
-    const slash = path.indexOf('/');
-    if (slash < 0) {
+function enumIdOfPath(path, nameOf) {
+    const segments = path.split('/');
+    const kind = ENUM_KINDS[segments[0]];
+    if (!kind || segments.length < 2 || segments.some(s => !s)) {
         return undefined;
     }
-    const kind = ENUM_KINDS[path.slice(0, slash)];
-    if (!kind) {
+    const parts = [];
+    for (let i = 1; i < segments.length; i++) {
+        parts.push(enumIdPart(nameOf(segments.slice(0, i + 1).join('/')) || segments[i]));
+    }
+    return `${kind}.${parts.join('_')}`;
+}
+/**
+ * The enum ioBroker.hm-rega made for one of the CCU's own rooms or functions, which openccu-lite's import named
+ * in German: `Wohnzimmer` at the top of the room tree → `enum.rooms.LivingRoom`, made from the key
+ * `roomLivingRoom`. Undefined for any other node.
+ *
+ * @param path the node's path
+ * @param name the node's name
+ */
+function builtinEnumOf(path, name) {
+    const segments = path.split('/');
+    if (segments.length !== 2) {
         return undefined;
     }
-    const id = path
-        .slice(slash + 1)
-        .split('/')
-        .map(part => part.replace(tools_1.FORBIDDEN_CHARS, '_').replace(/\./g, '_'))
-        .join('_');
-    return id ? `${kind}.${id}` : undefined;
+    const prefix = segments[0] === 'room' ? 'room' : segments[0] === 'function' ? 'func' : undefined;
+    const entry = BUILTIN_ENUMS.find(b => prefix !== undefined &&
+        b.key.startsWith(prefix) &&
+        (b.name === name || b.key === name || `\${${b.key}}` === name));
+    return entry && { id: entry.id, key: entry.key };
+}
+/**
+ * Whether an enum object is the one ioBroker.hm-rega made for a CCU room or function of the given translation
+ * key (it keeps the CCU's name, `roomLivingRoom` or `${roomLivingRoom}`, in `native.Name`)
+ *
+ * @param obj the enum object
+ * @param key the translation key, e.g. `roomLivingRoom`
+ */
+function isHmRegaEnumOf(obj, key) {
+    const name = obj?.native?.Name;
+    return name === key || name === `\${${key}}`;
 }
 /**
  * The ioBroker enums an object belongs to: its direct nodes in the system's taxonomy, each mapped to a flat enum
- * (a channel in `room/eg/bad` is a member of `enum.rooms.eg_bad` and not of `enum.rooms.eg` - the innermost room, as
- * hm-rega handles the CCU's flat rooms)
+ * (a channel in `room/eg/bad` is a member of `enum.rooms.EG_Bad` and not of `enum.rooms.EG` - the innermost room,
+ * as hm-rega handles the CCU's flat rooms)
  *
  * @param nodes the direct nodes of the object (`membership(ref, {inherit: false})` of occulite-client, rooms and functions together)
+ * @param nameOf the name of any node by its path (for the names along a nested node's path)
  */
-function enumsOfNodes(nodes) {
+function enumsOfNodes(nodes, nameOf = () => undefined) {
     const out = [];
     for (const node of nodes) {
-        const id = enumIdOfPath(node.path);
+        const name = node.name || nameOf(node.path) || node.path.slice(node.path.lastIndexOf('/') + 1);
+        const id = enumIdOfPath(node.path, p => (p === node.path ? name : nameOf(p)));
         if (id && !out.some(e => e.id === id)) {
-            out.push({ id, name: node.name || node.path.slice(node.path.lastIndexOf('/') + 1), path: node.path });
+            const builtin = builtinEnumOf(node.path, name);
+            out.push({ id, name, path: node.path, ...(builtin ? { builtin } : {}) });
         }
     }
     return out;
