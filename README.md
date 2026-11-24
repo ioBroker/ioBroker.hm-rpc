@@ -221,7 +221,8 @@ Select the daemon **openccu-lite** and enter the address of the system in "HomeM
   innermost room only. A rename on the system gives a new enum, as with hm-rega. The adapter manages only the members
   of its own instance, and only in the enums it manages (the ones of the system's rooms and functions, and the ones it
   created): rooms and functions made in ioBroker keep what was put into them. An enum the adapter created is removed
-  when nothing is left in it. Without this option the objects keep the address as name, as with a CCU.
+  when nothing is left in it; when another adapter still has members in it, it stays and the log names it once, so it
+  can be deleted by hand. Without this option the objects keep the address as name, as with a CCU.
 
 The devices are synchronized at every start of the instance (the system sends its device list with the stream), so
 "Synchronize objects (once)" is not needed on openccu-lite. "Don't delete devices" works as with a CCU. The values the
@@ -405,6 +406,7 @@ npm run update-images
 ## Changelog
 ### **WORK IN PROGRESS**
 - (@hobbyquaker) openccu-lite: the rooms and functions of the system get the enum ids hm-rega gives them (`enum.rooms.Living Room` instead of `enum.rooms.living-room`), so the enums of a CCU with hm-rega are carried on after the move; enums the adapter does not manage (rooms made in ioBroker) are no longer emptied. Enums an earlier version created with the old ids are removed when nothing else is in them
+- (@hobbyquaker) openccu-lite: an enum the adapter created that is no longer a room or function of the system and stays because another adapter has members in it (also one with the ids of 4.3.0/4.3.1) is named in the log, so it can be deleted by hand
 - (@hobbyquaker) openccu-lite: the stale-object cleanup leaves the objects alone while the interface lists no device at all (e.g. right after its process on the system was restarted)
 - (@hobbyquaker) openccu-lite: the help text of the interface field is shown in the admin's language
 - (@GermanBluefox) `LEVEL` is sent together with `HUE` and `SATURATION`, HmIP-RGBW still rejected the color with `MISSING_NON_OPTIONAL_PARAMETER` (#1557)
