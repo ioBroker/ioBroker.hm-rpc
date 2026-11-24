@@ -462,6 +462,20 @@ describe('hm-rpc in the openccu-lite mode', function () {
             expect(db.getObject(`${NS}.OLD0000001`)).not.to.be.undefined;
         });
 
+        it('keeps the objects when the running interface lists no device', async () => {
+            box = await startFakeBox({ devices: { [IFACE]: [] } });
+            db.publishObject({
+                _id: `${NS}.OLD0000001`,
+                type: 'device',
+                common: { name: 'old' },
+                native: { ADDRESS: 'OLD0000001', VERSION: 1 },
+            });
+            await start(liteConfig());
+            await waitFor(() => db.getState(`${NS}.info.connection`)?.val === true, 5000, 'connected');
+            await new Promise(res => setTimeout(res, 300));
+            expect(db.getObject(`${NS}.OLD0000001`)).not.to.be.undefined;
+        });
+
         it('keeps the known devices and their names across a reconnect', async () => {
             box = await startFakeBox();
             await start(liteConfig());
