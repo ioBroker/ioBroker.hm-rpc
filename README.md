@@ -210,10 +210,18 @@ Select the daemon **openccu-lite** and enter the address of the system in "HomeM
   Node.js, or the system is reached over HTTP).
 - **Take names, rooms and functions from the system** (default on): the devices, channels and states are named as on
   the system (`<channel name>.<DATAPOINT>` for the states, as hm-rega names them), and the rooms and functions of the
-  system fill `enum.rooms` and `enum.functions` - live, whenever a name or a room changes on the system. A room tree is
-  flattened: every node becomes an enum of its own, named by its path (`eg/wohnzimmer` → `enum.rooms.eg_wohnzimmer`),
-  and a channel is a member of its innermost room only. The adapter manages only the members of its own instance in an
-  enum, so devices of other adapters stay. Without this option the objects keep the address as name, as with a CCU.
+  system fill `enum.rooms` and `enum.functions` - live, whenever a name or a room changes on the system. The enums get
+  the ids hm-rega gives the rooms and functions of a CCU, so scripts and visualizations keep working after a move from a
+  CCU with hm-rega: the name as it is, only a dot (and a character an object id cannot hold) becomes `_` (room
+  "Living Room" → `enum.rooms.Living Room`). An enum that exists with that id - the one hm-rega made - is carried on:
+  its name, icon and the members of other adapters stay. The CCU's own rooms and functions that hm-rega named by their
+  key (`enum.rooms.LivingRoom`, `enum.functions.Light`, …) are taken for the rooms openccu-lite named "Wohnzimmer",
+  "Licht", … when no enum of that name exists. A room tree is flattened: every node becomes an enum of its own, a
+  nested one named by the names along its path (`EG` / `Bad` → `enum.rooms.EG_Bad`), and a channel is a member of its
+  innermost room only. A rename on the system gives a new enum, as with hm-rega. The adapter manages only the members
+  of its own instance, and only in the enums it manages (the ones of the system's rooms and functions, and the ones it
+  created): rooms and functions made in ioBroker keep what was put into them. An enum the adapter created is removed
+  when nothing is left in it. Without this option the objects keep the address as name, as with a CCU.
 
 The devices are synchronized at every start of the instance (the system sends its device list with the stream), so
 "Synchronize objects (once)" is not needed on openccu-lite. "Don't delete devices" works as with a CCU. The values the
@@ -396,6 +404,7 @@ npm run update-images
 
 ## Changelog
 ### **WORK IN PROGRESS**
+- (@hobbyquaker) openccu-lite: the rooms and functions of the system get the enum ids hm-rega gives them (`enum.rooms.Living Room` instead of `enum.rooms.living-room`), so the enums of a CCU with hm-rega are carried on after the move; enums the adapter does not manage (rooms made in ioBroker) are no longer emptied. Enums an earlier version created with the old ids are removed when nothing else is in them
 - (@hobbyquaker) openccu-lite: the stale-object cleanup leaves the objects alone while the interface lists no device at all (e.g. right after its process on the system was restarted)
 - (@hobbyquaker) openccu-lite: the help text of the interface field is shown in the admin's language
 

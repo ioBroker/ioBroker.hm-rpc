@@ -2,8 +2,11 @@ import { expect } from 'chai';
 import { describe, it } from 'mocha';
 import {
     datapointName,
+    builtinEnumOf,
     enumIdOfPath,
+    enumIdPart,
     enumsOfNodes,
+    isHmRegaEnumOf,
     interfaceDaemon,
     liteUrlOf,
     liteUrlParts,
@@ -235,36 +238,119 @@ describe('addresses and names', () => {
 });
 
 describe('enumIdOfPath', () => {
-    it('flattens a room tree into one enum per node, named by the path', () => {
-        expect(enumIdOfPath('room/eg/wohnzimmer')).to.equal('enum.rooms.eg_wohnzimmer');
-        expect(enumIdOfPath('room/og/bad')).to.equal('enum.rooms.og_bad');
-        expect(enumIdOfPath('room/keller')).to.equal('enum.rooms.keller');
-        expect(enumIdOfPath('function/licht')).to.equal('enum.functions.licht');
+    const names: Record<string, string> = {
+        'room/eg': 'EG',
+        'room/eg/wohnzimmer': 'Wohnzimmer',
+        'room/living-room': 'Living Room',
+        'room/kueche': 'Küche',
+        'room/1-og': '1.OG',
+        'room/1-og/bad': 'Bad',
+        'room/bobs': "Bob's Room",
+        'room/odd': 'A,B [x]*?',
+        'function/licht': 'Licht',
+    };
+    const nameOf = (path: string): string | undefined => names[path];
+
+    it('is the name as ioBroker.hm-rega makes the id of a CCU room: case, spaces and umlauts kept', () => {
+        expect(enumIdOfPath('room/living-room', nameOf)).to.equal('enum.rooms.Living Room');
+        expect(enumIdOfPath('room/kueche', nameOf)).to.equal('enum.rooms.Küche');
+        expect(enumIdOfPath('function/licht', nameOf)).to.equal('enum.functions.Licht');
+    });
+
+    it('replaces a dot, and what the controller does not keep in an id, by _', () => {
+        expect(enumIdOfPath('room/1-og', nameOf)).to.equal('enum.rooms.1_OG');
+        expect(enumIdOfPath('room/bobs', nameOf)).to.equal('enum.rooms.Bob_s Room');
+        expect(enumIdOfPath('room/odd', nameOf)).to.equal('enum.rooms.A_B _x_');
+    });
+
+    it('names a nested node by the names along its path', () => {
+        expect(enumIdOfPath('room/eg/wohnzimmer', nameOf)).to.equal('enum.rooms.EG_Wohnzimmer');
+        expect(enumIdOfPath('room/1-og/bad', nameOf)).to.equal('enum.rooms.1_OG_Bad');
+    });
+
+    it('takes the id of a node without a name', () => {
+        expect(enumIdOfPath('room/keller', nameOf)).to.equal('enum.rooms.keller');
+        expect(enumIdOfPath('room/eg/flur', nameOf)).to.equal('enum.rooms.EG_flur');
     });
 
     it('is undefined for the root of an enum and for enums ioBroker has no counterpart for', () => {
-        expect(enumIdOfPath('room')).to.be.undefined;
-        expect(enumIdOfPath('room/')).to.be.undefined;
-        expect(enumIdOfPath('floor/eg')).to.be.undefined;
+        expect(enumIdOfPath('room', nameOf)).to.be.undefined;
+        expect(enumIdOfPath('room/', nameOf)).to.be.undefined;
+        expect(enumIdOfPath('room/eg//bad', nameOf)).to.be.undefined;
+        expect(enumIdOfPath('floor/eg', nameOf)).to.be.undefined;
+    });
+});
+
+describe('enumIdPart', () => {
+    it('keeps everything an id can hold', () => {
+        expect(enumIdPart('Wohn-Zimmer (Süd) #2')).to.equal('Wohn-Zimmer (Süd) #2');
+        expect(enumIdPart('a.b.c')).to.equal('a_b_c');
+        expect(enumIdPart('x"y`z')).to.equal('x_y_z');
+    });
+});
+
+describe('builtinEnumOf / isHmRegaEnumOf', () => {
+    it('maps the German names the import gives the CCU own rooms and functions to the enums hm-rega made', () => {
+        expect(builtinEnumOf('room/wohnzimmer', 'Wohnzimmer')).to.deep.equal({
+            id: 'enum.rooms.LivingRoom',
+            key: 'roomLivingRoom',
+        });
+        expect(builtinEnumOf('room/kinderzimmer-1', 'Kinderzimmer 1')).to.deep.equal({
+            id: 'enum.rooms.Childrens_room_1',
+            key: 'roomChildrensRoom1',
+        });
+        expect(builtinEnumOf('function/klima', 'Klima')).to.deep.equal({
+            id: 'enum.functions.Climate_сontrol',
+            key: 'funcClimateControl',
+        });
+        expect(builtinEnumOf('function/licht', 'Licht')!.id).to.equal('enum.functions.Light');
     });
 
-    it('replaces characters an object id cannot hold', () => {
-        expect(enumIdOfPath('room/eg/wohn zimmer')).to.equal('enum.rooms.eg_wohn_zimmer');
-        expect(enumIdOfPath('room/1.og/bad')).to.equal('enum.rooms.1_og_bad');
+    it('knows the key itself, in both of the forms ReGa stores it', () => {
+        expect(builtinEnumOf('room/x', 'roomKitchen')!.id).to.equal('enum.rooms.Kitchen');
+        expect(builtinEnumOf('room/x', '${roomKitchen}')!.id).to.equal('enum.rooms.Kitchen');
+    });
+
+    it('is undefined for any other node: another name, a nested node, a room name in the function tree', () => {
+        expect(builtinEnumOf('room/wohnzimmer', 'Wohnzimmer 2')).to.be.undefined;
+        expect(builtinEnumOf('room/eg/wohnzimmer', 'Wohnzimmer')).to.be.undefined;
+        expect(builtinEnumOf('function/wohnzimmer', 'Wohnzimmer')).to.be.undefined;
+        expect(builtinEnumOf('room/licht', 'Licht')).to.be.undefined;
+        expect(builtinEnumOf('floor/wohnzimmer', 'Wohnzimmer')).to.be.undefined;
+    });
+
+    it('recognises the enum hm-rega made of a key by its native.Name', () => {
+        const obj = (Name: unknown): ioBroker.Object =>
+            ({ _id: 'enum.rooms.LivingRoom', type: 'enum', common: { name: 'x' }, native: { Name } }) as any;
+        expect(isHmRegaEnumOf(obj('roomLivingRoom'), 'roomLivingRoom')).to.equal(true);
+        expect(isHmRegaEnumOf(obj('${roomLivingRoom}'), 'roomLivingRoom')).to.equal(true);
+        expect(isHmRegaEnumOf(obj('LivingRoom'), 'roomLivingRoom')).to.equal(false);
+        expect(isHmRegaEnumOf(obj(undefined), 'roomLivingRoom')).to.equal(false);
+        expect(isHmRegaEnumOf(undefined, 'roomLivingRoom')).to.equal(false);
     });
 });
 
 describe('enumsOfNodes', () => {
     it('maps the direct nodes to enums, each once, with their names', () => {
         expect(
-            enumsOfNodes([
-                { path: 'room/eg/wohnzimmer', name: 'Wohnzimmer' },
-                { path: 'function/licht', name: 'Licht' },
-                { path: 'room/eg/wohnzimmer', name: 'Wohnzimmer' },
-            ]),
+            enumsOfNodes(
+                [
+                    { path: 'room/eg/wohnzimmer', name: 'Wohnzimmer' },
+                    { path: 'function/licht', name: 'Licht' },
+                    { path: 'room/eg/wohnzimmer', name: 'Wohnzimmer' },
+                    { path: 'room/living-room', name: 'Living Room' },
+                ],
+                path => ({ 'room/eg': 'EG' })[path],
+            ),
         ).to.deep.equal([
-            { id: 'enum.rooms.eg_wohnzimmer', name: 'Wohnzimmer', path: 'room/eg/wohnzimmer' },
-            { id: 'enum.functions.licht', name: 'Licht', path: 'function/licht' },
+            { id: 'enum.rooms.EG_Wohnzimmer', name: 'Wohnzimmer', path: 'room/eg/wohnzimmer' },
+            {
+                id: 'enum.functions.Licht',
+                name: 'Licht',
+                path: 'function/licht',
+                builtin: { id: 'enum.functions.Light', key: 'funcLight' },
+            },
+            { id: 'enum.rooms.Living Room', name: 'Living Room', path: 'room/living-room' },
         ]);
     });
 
@@ -275,5 +361,20 @@ describe('enumsOfNodes', () => {
                 { path: 'floor/og', name: 'OG' },
             ]),
         ).to.deep.equal([{ id: 'enum.rooms.og_bad', name: 'bad', path: 'room/og/bad' }]);
+    });
+
+    it('takes a direct node name from the tree when the membership has none', () => {
+        expect(enumsOfNodes([{ path: 'room/bad', name: '' }], path => ({ 'room/bad': 'Bad' })[path])).to.deep.equal([
+            { id: 'enum.rooms.Bad', name: 'Bad', path: 'room/bad' },
+        ]);
+    });
+
+    it('unites two nodes of one name in one enum, as hm-rega has one id for them', () => {
+        expect(
+            enumsOfNodes([
+                { path: 'room/bad', name: 'Bad' },
+                { path: 'room/bad-2', name: 'Bad' },
+            ]).map(e => e.id),
+        ).to.deep.equal(['enum.rooms.Bad']);
     });
 });
