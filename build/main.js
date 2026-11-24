@@ -1753,6 +1753,24 @@ class HomematicRpc extends adapter_core_1.Adapter {
             }
             params[key] = dpType.TYPE === 'FLOAT' ? { explicitDouble: value } : value;
         }
+        // #1557: HmIP-RGBW also wants LEVEL in the same putParamset, else MISSING_NON_OPTIONAL_PARAMETER
+        const levelId = `${channelId}.LEVEL`;
+        const levelType = this.dpTypes[levelId];
+        if (levelType) {
+            try {
+                const state = await this.getForeignStateAsync(levelId);
+                if (typeof state?.val === 'number') {
+                    let value = state.val;
+                    if (levelType.UNIT === '100%') {
+                        value = Math.round((value / 100) * 1_000) / 1_000;
+                    }
+                    params.LEVEL = levelType.TYPE === 'FLOAT' ? { explicitDouble: value } : value;
+                }
+            }
+            catch (e) {
+                this.log.error(`Cannot read state ${levelId}: ${e.message}`);
+            }
+        }
         this.log.debug(`${this.config.type}rpc -> putParamset ${JSON.stringify([address, 'VALUES', params])}`);
         try {
             if (rpcClient && connected) {

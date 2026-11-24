@@ -407,6 +407,7 @@ npm run update-images
 - (@hobbyquaker) openccu-lite: the rooms and functions of the system get the enum ids hm-rega gives them (`enum.rooms.Living Room` instead of `enum.rooms.living-room`), so the enums of a CCU with hm-rega are carried on after the move; enums the adapter does not manage (rooms made in ioBroker) are no longer emptied. Enums an earlier version created with the old ids are removed when nothing else is in them
 - (@hobbyquaker) openccu-lite: the stale-object cleanup leaves the objects alone while the interface lists no device at all (e.g. right after its process on the system was restarted)
 - (@hobbyquaker) openccu-lite: the help text of the interface field is shown in the admin's language
+- (@GermanBluefox) `LEVEL` is sent together with `HUE` and `SATURATION`, HmIP-RGBW still rejected the color with `MISSING_NON_OPTIONAL_PARAMETER` (#1557)
 
 ### 4.3.1 (2026-11-21)
 - (@hobbyquaker) openccu-lite: a device paired later no longer deletes the objects of the other devices of the instance; objects of devices removed on the system are cleaned up when the instance connects, without leaving broken objects behind ("obj.type has to exist")
