@@ -70,6 +70,8 @@ export declare class LiteNames {
     private timer;
     private running;
     private again;
+    /** the enums already reported as left behind, so the log names each once per run of the instance */
+    private readonly reported;
     /**
      * @param adapter the adapter
      * @param meta the system's metadata, live
@@ -100,7 +102,8 @@ export declare class LiteNames {
      * this instance are managed (another instance on the same system, or the user, may have added others), and
      * only in the enums this adapter manages: an enum it does not want and never managed - one made by hand, or
      * one hm-rega made for a room the system does not have - is not touched. An enum this adapter created goes
-     * when it has no members left. An enum is always written whole: `extendObject` merges arrays index-wise, so
+     * when it has no members left; one that stays because another adapter has members in it is named in the log,
+     * once. An enum is always written whole: `extendObject` merges arrays index-wise, so
      * a shorter member list would leave the old entries behind.
      *
      * @param wantedByName enum id → name, path and the members of this instance

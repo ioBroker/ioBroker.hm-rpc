@@ -25,6 +25,8 @@ class LiteNames {
         this.lang = lang;
         this.opts = opts;
         this.again = false;
+        /** the enums already reported as left behind, so the log names each once per run of the instance */
+        this.reported = new Set();
     }
     /**
      * Applies the names soon: several changes in a row (an import, a renamed floor) become one pass
@@ -142,7 +144,8 @@ class LiteNames {
      * this instance are managed (another instance on the same system, or the user, may have added others), and
      * only in the enums this adapter manages: an enum it does not want and never managed - one made by hand, or
      * one hm-rega made for a room the system does not have - is not touched. An enum this adapter created goes
-     * when it has no members left. An enum is always written whole: `extendObject` merges arrays index-wise, so
+     * when it has no members left; one that stays because another adapter has members in it is named in the log,
+     * once. An enum is always written whole: `extendObject` merges arrays index-wise, so
      * a shorter member list would leave the old entries behind.
      *
      * @param wantedByName enum id → name, path and the members of this instance
@@ -184,6 +187,12 @@ class LiteNames {
                 await this.adapter.delForeignObjectAsync(id);
                 changed++;
                 continue;
+            }
+            if (!want && !adopted && !this.reported.has(id) && foreign.some(m => !m.startsWith('hm-rpc.'))) {
+                // one this adapter created (also with the ids of 4.3.0/4.3.1) that somebody else put members into
+                this.reported.add(id);
+                this.adapter.log.info(`${id} is not a room or function of the system (any more). It is kept because it holds ` +
+                    `members of other adapters, and can be deleted by hand if it is no longer needed`);
             }
             const membersChanged = JSON.stringify(ours) !== JSON.stringify(wantedOurs);
             const nameChanged = want !== undefined && mark !== undefined && !adopted && obj.common.name !== want.name;

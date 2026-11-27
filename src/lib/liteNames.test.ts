@@ -429,6 +429,107 @@ describe('LiteNames', () => {
         expect(membersIn(db, 'enum.rooms.EG_Wohnzimmer')).to.deep.equal([CH1]);
     });
 
+    it('names an enum of its own that stays behind with members of another adapter in the log, once', async () => {
+        db.publishObject({
+            _id: 'enum.rooms.living-room',
+            type: 'enum',
+            common: { name: 'Living Room', members: [CH1, 'hue.0.light1'] },
+            native: { hmRpc: { path: 'room/living-room' } },
+        });
+        // not reported: one another instance of this adapter still uses, one taken over, one never managed
+        db.publishObject({
+            _id: 'enum.rooms.kitchen',
+            type: 'enum',
+            common: { name: 'Kitchen', members: ['hm-rpc.1.ABC.1'] },
+            native: { hmRpc: { path: 'room/kitchen' } },
+        });
+        db.publishObject({
+            _id: 'enum.rooms.Office',
+            type: 'enum',
+            common: { name: 'Office', members: ['hue.0.light2'] },
+            native: { Name: 'roomOffice', hmRpc: { path: 'room/office', adopted: true } },
+        });
+        db.publishObject({
+            _id: 'enum.rooms.garden',
+            type: 'enum',
+            common: { name: 'Garden', members: ['hue.0.light3'] },
+            native: {},
+        });
+        await names.apply();
+        /** the enums the log names as left behind */
+        const left = (): string[] =>
+            (adapter.log.info.args as unknown[][])
+                .map(args => String(args[0]))
+                .filter(line => line.includes('can be deleted by hand'))
+                .map(line => line.split(' ')[0]);
+        expect(left()).to.deep.equal(['enum.rooms.living-room']);
+        expect(membersIn(db, 'enum.rooms.living-room')).to.deep.equal(['hue.0.light1']);
+
+        // the next passes of this run do not repeat it
+        meta.names.set(`${IFACE}.${DEVICE}`, 'Leselampe');
+        await names.apply();
+        expect(left()).to.have.length(1);
+    });
+
+    it('shares the enums with a second instance on the same system: one mark, each its own members', async () => {
+        const CH1B = 'hm-rpc.1.OEQ0000001.1';
+        // what hm-rega made for the CCU's room, and a room only the second instance has a channel in
+        db.publishObject({
+            _id: 'enum.rooms.EG_Wohnzimmer',
+            type: 'enum',
+            common: { name: 'Living', icon: 'living.png', members: ['hue.0.light1'] },
+            native: { Name: 'Wohnzimmer', TypeName: 'ENUM' },
+        });
+        db.publishObject({
+            _id: 'hm-rpc.1.OEQ0000001',
+            type: 'device',
+            common: { name: 'OEQ0000001' },
+            native: { ADDRESS: 'OEQ0000001' },
+        });
+        db.publishObject({
+            _id: CH1B,
+            type: 'channel',
+            common: { name: 'OEQ0000001:1' },
+            native: { ADDRESS: 'OEQ0000001:1' },
+        });
+        meta.nodes.set('BidCos-RF.OEQ0000001:1', {
+            rooms: [{ path: 'room/eg/wohnzimmer', name: 'Wohnzimmer' }],
+            functions: [{ path: 'function/heizung', name: 'Heizung' }],
+        });
+        const second = Object.create(adapter, { namespace: { value: 'hm-rpc.1' } }) as MockAdapter;
+        const names2 = new LiteNames(second, meta, 'BidCos-RF', 'de');
+
+        await names.apply();
+        const adopted = { Name: 'Wohnzimmer', TypeName: 'ENUM', hmRpc: { path: 'room/eg/wohnzimmer', adopted: true } };
+        expect(db.getObject('enum.rooms.EG_Wohnzimmer')!.native).to.deep.equal(adopted);
+
+        await names2.apply();
+        // the second finds the mark: same enum, same mark, name and icon as they were, its member next to the others
+        const room = db.getObject('enum.rooms.EG_Wohnzimmer')!;
+        expect(room.native).to.deep.equal(adopted);
+        expect(room.common.name).to.equal('Living');
+        expect(room.common.icon).to.equal('living.png');
+        expect(membersIn(db, 'enum.rooms.EG_Wohnzimmer')).to.deep.equal(['hue.0.light1', CH1, CH1B]);
+        // each instance has the functions of its own channels only, and leaves the other's enum in place
+        expect(membersIn(db, 'enum.functions.Licht')).to.deep.equal([CH1]);
+        expect(membersIn(db, 'enum.functions.Heizung')).to.deep.equal([CH1B]);
+
+        // nothing to do for either on the next pass
+        const writes = adapter.setForeignObjectAsync.callCount;
+        await names.apply();
+        await names2.apply();
+        expect(adapter.setForeignObjectAsync.callCount).to.equal(writes);
+        expect(db.getObject('enum.functions.Heizung')).to.not.equal(undefined);
+
+        // the room goes for the first instance: its member leaves, the second's and the user's stay, nothing deleted
+        meta.nodes.set(`${IFACE}.${DEVICE}:1`, { rooms: [], functions: [] });
+        await names.apply();
+        expect(membersIn(db, 'enum.rooms.EG_Wohnzimmer')).to.deep.equal(['hue.0.light1', CH1B]);
+        expect(db.getObject('enum.functions.Licht')).to.be.undefined;
+        expect(membersIn(db, 'enum.functions.Heizung')).to.deep.equal([CH1B]);
+        names2.stop();
+    });
+
     it('skips objects without an address and enum objects without members', async () => {
         db.publishObject({ _id: `${NS}.odd`, type: 'device', common: { name: 'odd' }, native: {} });
         db.publishObject({ _id: 'enum.rooms.manual', type: 'enum', common: { name: 'Manual' }, native: {} });
